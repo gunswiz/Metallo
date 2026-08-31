@@ -35,7 +35,11 @@ jobs:
           mkdir app
           unzip -q metallo_source.zip -d app
 
-            - name: Enable Android release internet access
+      - name: Generate Android project
+        working-directory: app
+        run: flutter create . --platforms=android --project-name metallo --org com.gunswiz
+
+      - name: Enable Android release internet access
         working-directory: app
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
