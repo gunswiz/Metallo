@@ -1,4 +1,4 @@
-name: Build Android APK
+Build Android APK
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
         working-directory: app
         run: flutter create . --platforms=android --project-name metallo --org com.gunswiz
 
-      - name: Enable Android release internet access
+      - name: Enable Android release internet acacess
         working-directory: app
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
@@ -51,6 +51,10 @@ jobs:
       - name: Install dependencies
         working-directory: app
         run: flutter pub get
+
+      - name: Generate launcher icon
+        working-directory: app
+        run: dart run flutter_launcher_icons
 
       - name: Static analysis
         working-directory: app
