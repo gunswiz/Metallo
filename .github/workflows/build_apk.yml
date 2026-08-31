@@ -35,9 +35,14 @@ jobs:
           mkdir app
           unzip -q metallo_source.zip -d app
 
-      - name: Generate Android project
+            - name: Enable Android release internet access
         working-directory: app
-        run: flutter create . --platforms=android --project-name metallo --org com.gunswiz
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          if ! grep -q 'android.permission.INTERNET' "$MANIFEST"; then
+            sed -i '/<manifest/a\    <uses-permission android:name="android.permission.INTERNET" />' "$MANIFEST"
+          fi
+          grep -n 'android.permission.INTERNET' "$MANIFEST"
 
       - name: Install dependencies
         working-directory: app
