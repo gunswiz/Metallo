@@ -1,4 +1,4 @@
-name: Build Android APK
+ name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
         working-directory: app
         run: flutter create . --platforms=android --project-name metallo --org com.gunswiz
 
-      - name: Enable Android release internet acacess
+      - name: Enable Android internet access
         working-directory: app
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
