@@ -58,6 +58,54 @@ jobs:
           PY
           grep -n 'android.permission.INTERNET\|com.gunswiz.metallo\|auth-callback' "$MANIFEST"
 
+      - name: Configure permanent Android signing
+        working-directory: app
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "Missing GitHub Actions secret: $name"
+              exit 1
+            fi
+          done
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/metallo-release.jks
+          keytool -list -keystore android/app/metallo-release.jks -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+
+          python - <<'PY'
+          from pathlib import Path
+          kts = Path('android/app/build.gradle.kts')
+          groovy = Path('android/app/build.gradle')
+
+          if kts.exists():
+              s = kts.read_text()
+              if 'create("metalloRelease")' not in s:
+                  marker = '    buildTypes {'
+                  signing = '''    signingConfigs {\n        create("metalloRelease") {\n            keyAlias = System.getenv("ANDROID_KEY_ALIAS")\n            keyPassword = System.getenv("ANDROID_KEY_PASSWORD")\n            storeFile = file("metallo-release.jks")\n            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")\n        }\n    }\n\n'''
+                  if marker not in s:
+                      raise SystemExit('Could not locate buildTypes in build.gradle.kts')
+                  s = s.replace(marker, signing + marker, 1)
+              s = s.replace('signingConfig = signingConfigs.getByName("debug")', 'signingConfig = signingConfigs.getByName("metalloRelease")')
+              kts.write_text(s)
+          elif groovy.exists():
+              s = groovy.read_text()
+              if 'metalloRelease {' not in s:
+                  marker = '    buildTypes {'
+                  signing = '''    signingConfigs {\n        metalloRelease {\n            keyAlias System.getenv("ANDROID_KEY_ALIAS")\n            keyPassword System.getenv("ANDROID_KEY_PASSWORD")\n            storeFile file("metallo-release.jks")\n            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")\n        }\n    }\n\n'''
+                  if marker not in s:
+                      raise SystemExit('Could not locate buildTypes in build.gradle')
+                  s = s.replace(marker, signing + marker, 1)
+              s = s.replace('signingConfig signingConfigs.debug', 'signingConfig signingConfigs.metalloRelease')
+              s = s.replace('signingConfig = signingConfigs.debug', 'signingConfig = signingConfigs.metalloRelease')
+              groovy.write_text(s)
+          else:
+              raise SystemExit('Android app Gradle file not found')
+          PY
+
       - name: Install dependencies
         working-directory: app
         run: flutter pub get
@@ -76,7 +124,18 @@ jobs:
 
       - name: Build release APK
         working-directory: app
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build apk --release
+
+      - name: Verify APK signature
+        working-directory: app
+        run: |
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          test -f "$APK"
+          keytool -printcert -jarfile "$APK" | grep -E 'Owner:|SHA256:'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
