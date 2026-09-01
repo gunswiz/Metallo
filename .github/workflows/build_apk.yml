@@ -39,14 +39,24 @@ jobs:
         working-directory: app
         run: flutter create . --platforms=android --project-name metallo --org com.gunswiz
 
-      - name: Enable Android internet access
+      - name: Configure Android permissions and auth deep link
         working-directory: app
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           if ! grep -q 'android.permission.INTERNET' "$MANIFEST"; then
             sed -i '/<manifest/a\    <uses-permission android:name="android.permission.INTERNET" />' "$MANIFEST"
           fi
-          grep -n 'android.permission.INTERNET' "$MANIFEST"
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('android/app/src/main/AndroidManifest.xml')
+          s = p.read_text()
+          marker = 'android:scheme="com.gunswiz.metallo"'
+          if marker not in s:
+              block = '''\n            <intent-filter>\n                <action android:name="android.intent.action.VIEW" />\n                <category android:name="android.intent.category.DEFAULT" />\n                <category android:name="android.intent.category.BROWSABLE" />\n                <data android:scheme="com.gunswiz.metallo" android:host="auth-callback" />\n            </intent-filter>\n'''
+              s = s.replace('        </activity>', block + '        </activity>', 1)
+              p.write_text(s)
+          PY
+          grep -n 'android.permission.INTERNET\|com.gunswiz.metallo\|auth-callback' "$MANIFEST"
 
       - name: Install dependencies
         working-directory: app
