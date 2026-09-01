@@ -1,0 +1,27 @@
+      - name: Verify APK signature
+        working-directory: app
+        run: |
+          set -euo pipefail
+
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          EXPECTED="5B95A774E9EED0699322EF35F5662BC37631D0F888D447320625A0CC5981827C"
+
+          test -f "$APK"
+
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          test -n "$SDK_ROOT"
+
+          APKSIGNER="$(find "$SDK_ROOT/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -n "$APKSIGNER"
+
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
+
+          ACTUAL="$("$APKSIGNER" verify --print-certs "$APK" | sed -n 's/^.*certificate SHA-256 digest: //p' | head -n 1 | tr '[:lower:]' '[:upper:]')"
+          ACTUAL="${ACTUAL//:/}"
+
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "Unexpected APK signing certificate: $ACTUAL"
+            exit 1
+          fi
+
+          echo "APK signature verified with permanent Metallo certificate."
