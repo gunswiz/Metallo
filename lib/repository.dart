@@ -122,13 +122,22 @@ class EquipmentAsset {
       itemId: m['item_id'] as String,
       teamId: m['team_id'] as String,
       code: item['code'] as String,
-      name: item['name'] as String,
+      name: equipmentTypeDisplayName(item['name'] as String),
       assetCode: m['asset_code'] as String,
       serialNumber: m['serial_number'] as String?,
       status: (m['status'] as String?) ?? 'available',
       ownershipType: ownership.type, rentalCompany: ownership.rentalCompany, rentalEndDate: ownership.rentalEndDate, notes: ownership.notes,
     );
   }
+}
+
+String equipmentTypeDisplayName(String name) {
+  final normalized = name.trim().toLowerCase()
+      .replaceAll('á', 'a').replaceAll('ã', 'a').replaceAll('â', 'a')
+      .replaceAll('é', 'e').replaceAll('ê', 'e').replaceAll('í', 'i')
+      .replaceAll('ó', 'o').replaceAll('ô', 'o').replaceAll('õ', 'o')
+      .replaceAll('ú', 'u').replaceAll('ç', 'c');
+  return normalized == 'maquina de solda' ? 'Máquina de solda trifásica' : name;
 }
 
 class DashboardSnapshot {
@@ -306,7 +315,7 @@ class MetalloRepository {
   Future<List<Map<String, dynamic>>> fetchEquipmentCatalog() async {
     final rows = await client
         .from('assets')
-        .select('id,asset_code,serial_number,status,team_id,notes,items!inner(code,name,item_type,active),teams(name)')
+        .select('id,asset_code,serial_number,status,team_id,notes,items!inner(id,code,name,item_type,active),teams(name)')
         .eq('active', true)
         .eq('items.item_type', 'equipment')
         .eq('items.active', true)
@@ -314,6 +323,19 @@ class MetalloRepository {
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
         .toList();
+  }
+
+  Future<void> updateEquipmentItem({required String itemId, required String code, required String name}) async {
+    await client.rpc('update_item_admin', params: {
+      'p_item_id': itemId,
+      'p_code': code.trim(),
+      'p_name': name.trim(),
+      'p_description': null,
+      'p_category': null,
+      'p_unit': 'un',
+      'p_minimum_stock': 0,
+    });
+    await refreshDashboard();
   }
 
 

@@ -1891,7 +1891,7 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
                               style: const TextStyle(color: Color(0xFFCFD8E3), fontWeight: FontWeight.w900),
                             ),
                           ),
-                          title: Row(children: [Expanded(child: Text(item?['name']?.toString() ?? 'Equipamento')), EquipmentOwnershipBadge(type: ownership.type)]),
+                          title: Row(children: [Expanded(child: Text(equipmentTypeDisplayName(item?['name']?.toString() ?? 'Equipamento'))), EquipmentOwnershipBadge(type: ownership.type)]),
                           subtitle: Text([
                             if ((item?['code']?.toString() ?? '').isNotEmpty) 'modelo ${item?['code']}',
                             if ((team?['name']?.toString() ?? '').isNotEmpty) team?['name'].toString(),
@@ -1963,6 +1963,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
   bool busy = false;
   String? error;
   final item = equipment['items'] as Map?;
+  final typeName = TextEditingController(text: equipmentTypeDisplayName(item?['name']?.toString() ?? ''));
 
   return showDialog<bool>(
     context: context,
@@ -1974,11 +1975,11 @@ Future<bool?> showEditEquipmentCatalogDialog(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (item != null)
-                Text(
-                  '${item['name'] ?? 'Equipamento'}${(item['code']?.toString() ?? '').isNotEmpty ? ' • modelo ${item['code']}' : ''}',
-                  style: const TextStyle(color: Colors.white60, fontWeight: FontWeight.w700),
-                ),
+              if (item != null) ...[
+                TextField(controller: typeName, decoration: const InputDecoration(labelText: 'Tipo do equipamento')),
+                const SizedBox(height: 6),
+                Text('Alterar este nome atualiza todos os patrimônios deste tipo.', style: const TextStyle(color: Colors.white60, fontSize: 12)),
+              ],
               const SizedBox(height: 12),
               TextField(controller: assetCode, decoration: const InputDecoration(labelText: 'Código/patrimônio')),
               const SizedBox(height: 10),
@@ -2037,6 +2038,13 @@ Future<bool?> showEditEquipmentCatalogDialog(
                       error = null;
                     });
                     try {
+                      if (item != null && typeName.text.trim() != item['name']?.toString()) {
+                        await repo.updateEquipmentItem(
+                          itemId: item['id'].toString(),
+                          code: item['code']?.toString() ?? '',
+                          name: typeName.text,
+                        );
+                      }
                       await repo.updateEquipmentAsset(
                         assetId: equipment['id'].toString(),
                         assetCode: assetCode.text,
@@ -3593,6 +3601,7 @@ Future<void> showEquipmentDialog(
   final rentalCompany = TextEditingController();
   final rentalEndDate = TextEditingController();
   final notes = TextEditingController();
+  String? suggestedType;
   String ownershipType = 'owned';
   String? teamId = initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
   bool busy = false;
@@ -3609,7 +3618,17 @@ Future<void> showEquipmentDialog(
             children: [
               TextField(controller: code, decoration: const InputDecoration(labelText: 'Código do tipo')),
               const SizedBox(height: 10),
-              TextField(controller: name, decoration: const InputDecoration(labelText: 'Equipamento')),
+              DropdownButtonFormField<String>(
+                initialValue: suggestedType,
+                decoration: const InputDecoration(labelText: 'Tipo comum (opcional)'),
+                items: const [
+                  DropdownMenuItem(value: 'Máquina de solda trifásica', child: Text('Máquina de solda trifásica')),
+                  DropdownMenuItem(value: 'Máquina de solda MIG', child: Text('Máquina de solda MIG')),
+                ],
+                onChanged: busy ? null : (value) => setLocal(() { suggestedType = value; if (value != null) name.text = value; }),
+              ),
+              const SizedBox(height: 10),
+              TextField(controller: name, decoration: const InputDecoration(labelText: 'Equipamento / tipo')),
               const SizedBox(height: 10),
               TextField(
                 controller: assetCode,
