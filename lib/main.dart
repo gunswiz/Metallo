@@ -1653,6 +1653,19 @@ Future<bool?> showEditMaterialCatalogDialog(BuildContext context, MetalloReposit
   ));
 }
 
+String equipmentFamilyKey(EquipmentAsset asset) {
+  final normalized = asset.name.toLowerCase()
+      .replaceAll('á', 'a').replaceAll('ã', 'a').replaceAll('â', 'a')
+      .replaceAll('é', 'e').replaceAll('ê', 'e').replaceAll('í', 'i')
+      .replaceAll('ó', 'o').replaceAll('ô', 'o').replaceAll('õ', 'o')
+      .replaceAll('ú', 'u').replaceAll('ç', 'c');
+  if (normalized.contains('maquina de solda')) return 'family:welding_machine';
+  return 'item:${asset.itemId}';
+}
+
+String equipmentFamilyLabel(List<EquipmentAsset> assets) =>
+    equipmentFamilyKey(assets.first) == 'family:welding_machine' ? 'Máquinas de solda' : assets.first.name;
+
 class EquipmentPage extends StatefulWidget {
   const EquipmentPage({
     super.key,
@@ -1704,7 +1717,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
         }).toList();
         final equipmentGroups = <String, List<EquipmentAsset>>{};
         for (final asset in equipment) {
-          equipmentGroups.putIfAbsent(asset.itemId, () => <EquipmentAsset>[]).add(asset);
+          equipmentGroups.putIfAbsent(equipmentFamilyKey(asset), () => <EquipmentAsset>[]).add(asset);
         }
 
         return Scaffold(
@@ -1784,11 +1797,11 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     Card(
                       child: ListTile(
                         leading: const Icon(Icons.handyman_outlined),
-                        title: Text(group.first.name),
-                        subtitle: Text('${group.length} ${group.length == 1 ? 'equipamento' : 'equipamentos'} • ${group.map((e) => e.teamId).toSet().length} ${group.map((e) => e.teamId).toSet().length == 1 ? 'local' : 'locais'}\nToque para ver patrimônios e equipes'),
+                        title: Text(equipmentFamilyLabel(group)),
+                        subtitle: Text('${group.map((e) => e.itemId).toSet().length} ${group.map((e) => e.itemId).toSet().length == 1 ? 'tipo' : 'tipos'} • ${group.length} ${group.length == 1 ? 'equipamento' : 'equipamentos'}\nToque para ver tipos e patrimônios'),
                         isThreeLine: true,
                         trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () => showEquipmentGroupSheet(
+                        onTap: () => showEquipmentFamilySheet(
                           context, widget.repo, data.teams, group,
                           role: widget.role, userTeamId: widget.userTeamId, canOperate: canOperate,
                         ),
@@ -3908,6 +3921,72 @@ Future<void> showMaterialQuantityDialog(
             child: Text(actionLabel),
           ),
         ],
+      ),
+    ),
+  );
+}
+
+Future<void> showEquipmentFamilySheet(
+  BuildContext context,
+  MetalloRepository repo,
+  List<Team> teams,
+  List<EquipmentAsset> assets, {
+  required String role,
+  required String? userTeamId,
+  required bool canOperate,
+}) async {
+  final types = <String, List<EquipmentAsset>>{};
+  for (final asset in assets) {
+    types.putIfAbsent(asset.itemId, () => <EquipmentAsset>[]).add(asset);
+  }
+  final sortedTypes = types.values.toList()
+    ..sort((a, b) => a.first.name.toLowerCase().compareTo(b.first.name.toLowerCase()));
+  await showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (sheetContext) => SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetContext).height * .76),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(equipmentFamilyLabel(assets), style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text('${types.length} ${types.length == 1 ? 'tipo cadastrado' : 'tipos cadastrados'} • ${assets.length} ${assets.length == 1 ? 'equipamento' : 'equipamentos'}', style: const TextStyle(color: Colors.white60)),
+              ]),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: sortedTypes.length,
+                separatorBuilder: (_, __) => const Divider(height: 1, indent: 20, endIndent: 20),
+                itemBuilder: (context, index) {
+                  final typeAssets = sortedTypes[index];
+                  return ListTile(
+                    leading: const Icon(Icons.category_outlined, color: Color(0xFF52A9FF)),
+                    title: Text(typeAssets.first.name),
+                    subtitle: Text('${typeAssets.length} ${typeAssets.length == 1 ? 'patrimônio' : 'patrimônios'} • ${typeAssets.map((e) => e.teamId).toSet().length} ${typeAssets.map((e) => e.teamId).toSet().length == 1 ? 'local' : 'locais'}'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () async {
+                      Navigator.pop(sheetContext);
+                      await showEquipmentGroupSheet(
+                        context, repo, teams, typeAssets,
+                        role: role, userTeamId: userTeamId, canOperate: canOperate,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
