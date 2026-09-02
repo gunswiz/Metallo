@@ -2645,10 +2645,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Row(children: [
-                    Expanded(child: _teamDropdown(teams, teamId, (v) => setState(() => teamId = v))),
-                    const SizedBox(width: 10),
-                    Expanded(child: DropdownButtonFormField<String>(
+                  Column(children: [
+                    _teamDropdown(teams, teamId, (v) => setState(() => teamId = v)),
+                    const SizedBox(height: 10),
+                    DropdownButtonFormField<String>(
                       initialValue: period,
                       decoration: const InputDecoration(labelText: 'Período', prefixIcon: Icon(Icons.calendar_month_outlined)),
                       items: const [
@@ -2656,7 +2656,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                         DropdownMenuItem(value: 'month', child: Text('Este mês')),
                       ],
                       onChanged: (v) => setState(() => period = v ?? 'month'),
-                    )),
+                    ),
                   ]),
                   const SizedBox(height: 14),
                   _MetricCard(
