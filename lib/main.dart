@@ -3624,6 +3624,7 @@ Future<void> showEquipmentDialog(
                 items: const [
                   DropdownMenuItem(value: 'Máquina de solda trifásica', child: Text('Máquina de solda trifásica')),
                   DropdownMenuItem(value: 'Máquina de solda MIG', child: Text('Máquina de solda MIG')),
+                  DropdownMenuItem(value: 'Máquina de solda inversora', child: Text('Máquina de solda inversora')),
                 ],
                 onChanged: busy ? null : (value) => setLocal(() { suggestedType = value; if (value != null) name.text = value; }),
               ),
