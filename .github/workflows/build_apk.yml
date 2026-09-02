@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    tags: ['v*']
     paths:
       - 'lib/**'
       - 'assets/**'
@@ -15,7 +16,7 @@ on:
       - '.github/workflows/build_apk.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -105,3 +106,13 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish direct APK download
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "build/app/outputs/flutter-apk/app-release.apk#Metallo-$GITHUB_REF_NAME.apk" \
+            --title "Metallo $GITHUB_REF_NAME" \
+            --notes "Versão para testes no Android. APK assinado com o certificado permanente do Metallo."
