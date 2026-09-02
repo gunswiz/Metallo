@@ -1429,6 +1429,10 @@ class _MaterialsPageState extends State<MaterialsPage> {
               m.code.toLowerCase().contains(q) ||
               team.toLowerCase().contains(q);
         }).toList();
+        final materialGroups = <String, List<MaterialStock>>{};
+        for (final material in materials) {
+          materialGroups.putIfAbsent(material.itemId, () => <MaterialStock>[]).add(material);
+        }
 
         return Scaffold(
           backgroundColor: const Color(0xFF05080D),
@@ -1494,17 +1498,18 @@ class _MaterialsPageState extends State<MaterialsPage> {
                     ),
                   )
                 else
-                  for (final m in materials)
+                  for (final group in materialGroups.values)
                     Card(
                       child: ListTile(
                         leading: const Icon(Icons.inventory_2_outlined, color: Color(0xFF52A9FF)),
-                        title: Text(m.name),
-                        subtitle: Text('${findTeam(data.teams, m.teamId)?.name ?? 'Local'} • ${m.code}'),
-                        trailing: Text('${m.quantity} ${m.unit}',
+                        title: Text(group.first.name),
+                        subtitle: Text('${group.length} ${group.length == 1 ? 'local' : 'locais'} • código ${group.first.code}\nToque para ver a distribuição'),
+                        isThreeLine: true,
+                        trailing: Text('${group.fold<int>(0, (sum, item) => sum + item.quantity)} ${group.first.unit}',
                           style: const TextStyle(color: Color(0xFF52A9FF), fontWeight: FontWeight.w900)),
-                        onTap: canOperate && (widget.role == 'admin' || widget.role == 'engineer' || m.teamId == widget.userTeamId)
-                            ? () => showMaterialActionsDialog(context, widget.repo, data.teams, m, widget.role, widget.userTeamId)
-                            : null,
+                        onTap: () => showMaterialDistributionSheet(
+                          context, widget.repo, data.teams, group, widget.role, widget.userTeamId,
+                        ),
                       ),
                     ),
               ],
@@ -1697,6 +1702,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
               (e.rentalCompany?.toLowerCase().contains(q) ?? false) ||
               team.toLowerCase().contains(q);
         }).toList();
+        final equipmentGroups = <String, List<EquipmentAsset>>{};
+        for (final asset in equipment) {
+          equipmentGroups.putIfAbsent(asset.itemId, () => <EquipmentAsset>[]).add(asset);
+        }
 
         return Scaffold(
           backgroundColor: const Color(0xFF05080D),
@@ -1771,24 +1780,18 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     ),
                   )
                 else
-                  for (final e in equipment)
+                  for (final group in equipmentGroups.values)
                     Card(
                       child: ListTile(
                         leading: const Icon(Icons.handyman_outlined),
-                        title: Row(children: [Expanded(child: Text(e.name)), EquipmentOwnershipBadge(type: e.ownershipType)]),
-                        subtitle: Text([findTeam(data.teams, e.teamId)?.name ?? 'Equipe', 'código ${e.assetCode}', e.ownershipType == 'rented' ? 'Alugado${e.rentalCompany?.isNotEmpty == true ? ' • ${e.rentalCompany}' : ''}' : 'Próprio'].join(' • ')),
-                        trailing: StatusBadge(status: e.status),
-                        onTap: canOperate &&
-                                (widget.role == 'admin' || widget.role == 'engineer' || e.teamId == widget.userTeamId)
-                            ? () => showEquipmentActionsSheet(
-                                  context,
-                                  widget.repo,
-                                  data.teams,
-                                  e,
-                                  role: widget.role,
-                                  userTeamId: widget.userTeamId,
-                                )
-                            : null,
+                        title: Text(group.first.name),
+                        subtitle: Text('${group.length} ${group.length == 1 ? 'equipamento' : 'equipamentos'} • ${group.map((e) => e.teamId).toSet().length} ${group.map((e) => e.teamId).toSet().length == 1 ? 'local' : 'locais'}\nToque para ver patrimônios e equipes'),
+                        isThreeLine: true,
+                        trailing: const Icon(Icons.chevron_right_rounded),
+                        onTap: () => showEquipmentGroupSheet(
+                          context, widget.repo, data.teams, group,
+                          role: widget.role, userTeamId: widget.userTeamId, canOperate: canOperate,
+                        ),
                       ),
                     ),
               ],
@@ -3685,6 +3688,65 @@ Future<void> showEquipmentDialog(
   );
 }
 
+Future<void> showMaterialDistributionSheet(
+  BuildContext context,
+  MetalloRepository repo,
+  List<Team> teams,
+  List<MaterialStock> stocks,
+  String role,
+  String? userTeamId,
+) async {
+  final sorted = [...stocks]..sort((a, b) =>
+      (findTeam(teams, a.teamId)?.name ?? '').compareTo(findTeam(teams, b.teamId)?.name ?? ''));
+  await showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (sheetContext) => SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetContext).height * .76),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(stocks.first.name, style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text('Distribuição por equipe/local • ${stocks.fold<int>(0, (sum, item) => sum + item.quantity)} ${stocks.first.unit} no total', style: const TextStyle(color: Colors.white60)),
+              ]),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: sorted.length,
+                separatorBuilder: (_, __) => const Divider(height: 1, indent: 20, endIndent: 20),
+                itemBuilder: (context, index) {
+                  final stock = sorted[index];
+                  final allowed = role == 'admin' || role == 'engineer' || stock.teamId == userTeamId;
+                  return ListTile(
+                    leading: Icon(findTeam(teams, stock.teamId)?.isCentral == true ? Icons.warehouse_outlined : Icons.groups_2_outlined),
+                    title: Text(findTeam(teams, stock.teamId)?.name ?? 'Local'),
+                    subtitle: Text(allowed ? 'Toque para registrar movimentação' : 'Somente consulta'),
+                    trailing: Text('${stock.quantity} ${stock.unit}', style: const TextStyle(color: Color(0xFF52A9FF), fontWeight: FontWeight.w900)),
+                    onTap: allowed ? () async {
+                      Navigator.pop(sheetContext);
+                      await showMaterialActionsDialog(context, repo, teams, stock, role, userTeamId);
+                    } : null,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 Future<void> showMaterialActionsDialog(
   BuildContext context,
   MetalloRepository repo,
@@ -3851,6 +3913,73 @@ Future<void> showMaterialQuantityDialog(
   );
 }
 
+Future<void> showEquipmentGroupSheet(
+  BuildContext context,
+  MetalloRepository repo,
+  List<Team> teams,
+  List<EquipmentAsset> assets, {
+  required String role,
+  required String? userTeamId,
+  required bool canOperate,
+}) async {
+  final sorted = [...assets]..sort((a, b) {
+    final teamOrder = (findTeam(teams, a.teamId)?.name ?? '').compareTo(findTeam(teams, b.teamId)?.name ?? '');
+    return teamOrder != 0 ? teamOrder : a.assetCode.compareTo(b.assetCode);
+  });
+  await showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (sheetContext) => SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetContext).height * .78),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 2, 20, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(assets.first.name, style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text('${assets.length} ${assets.length == 1 ? 'patrimônio cadastrado' : 'patrimônios cadastrados'}', style: const TextStyle(color: Colors.white60)),
+              ]),
+            ),
+            const Divider(height: 1),
+            Flexible(
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: sorted.length,
+                separatorBuilder: (_, __) => const Divider(height: 1, indent: 20, endIndent: 20),
+                itemBuilder: (context, index) {
+                  final asset = sorted[index];
+                  final allowed = canOperate && (role == 'admin' || role == 'engineer' || asset.teamId == userTeamId);
+                  return ListTile(
+                    leading: Container(
+                      constraints: const BoxConstraints(minWidth: 76),
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+                      decoration: BoxDecoration(color: const Color(0xFF263240), borderRadius: BorderRadius.circular(9)),
+                      child: Text(asset.assetCode, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900)),
+                    ),
+                    title: Row(children: [Expanded(child: Text(findTeam(teams, asset.teamId)?.name ?? 'Equipe')), EquipmentOwnershipBadge(type: asset.ownershipType)]),
+                    subtitle: Text(asset.ownershipType == 'rented' && asset.rentalCompany?.isNotEmpty == true ? '${asset.rentalCompany} • ${statusLabel(asset.status)}' : statusLabel(asset.status)),
+                    trailing: allowed ? const Icon(Icons.more_vert) : null,
+                    onTap: allowed ? () async {
+                      Navigator.pop(sheetContext);
+                      await showEquipmentActionsSheet(context, repo, teams, asset, role: role, userTeamId: userTeamId);
+                    } : null,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 Future<void> showEquipmentActionsSheet(
   BuildContext context,
   MetalloRepository repo,
@@ -3884,7 +4013,17 @@ Future<void> showEquipmentActionsSheet(
                   await showEquipmentTransferDialog(context, repo, teams, equipment);
                 },
               ),
-            if (!isMaintenance)
+            if (equipment.ownershipType == 'rented' && role == 'admin')
+              ListTile(
+                leading: const Icon(Icons.change_circle_outlined, color: Color(0xFFF5B942)),
+                title: const Text('Substituir equipamento alugado'),
+                subtitle: const Text('Trocar o patrimônio recebido sem criar outro cadastro'),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await showRentedEquipmentReplacementDialog(context, repo, equipment);
+                },
+              ),
+            if (!isMaintenance && equipment.ownershipType != 'rented')
               ListTile(
                 leading: const Icon(Icons.build_rounded, color: Color(0xFFF5B942)),
                 title: const Text('Enviar para manutenção'),
@@ -3894,7 +4033,7 @@ Future<void> showEquipmentActionsSheet(
                   await showEquipmentMaintenanceDialog(context, repo, equipment);
                 },
               ),
-            if (isMaintenance)
+            if (isMaintenance && equipment.ownershipType != 'rented')
               ListTile(
                 leading: const Icon(Icons.keyboard_return_rounded, color: Color(0xFF52A9FF)),
                 title: const Text('Retornar da manutenção'),
@@ -3970,6 +4109,90 @@ Future<void> showEquipmentMaintenanceDialog(
     ),
   );
   note.dispose();
+}
+
+Future<void> showRentedEquipmentReplacementDialog(
+  BuildContext context,
+  MetalloRepository repo,
+  EquipmentAsset equipment,
+) async {
+  final assetCode = TextEditingController();
+  final serialNumber = TextEditingController();
+  final reason = TextEditingController();
+  bool busy = false;
+  String? error;
+  await showDialog<void>(
+    context: context,
+    builder: (dialogContext) => StatefulBuilder(
+      builder: (context, setLocal) => AlertDialog(
+        title: const Text('Substituir alugado'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${equipment.name} • patrimônio atual ${equipment.assetCode}', style: const TextStyle(fontWeight: FontWeight.w800)),
+              const SizedBox(height: 8),
+              const Text('A máquina continua na mesma equipe. O patrimônio anterior ficará registrado nas observações para rastreabilidade.', style: TextStyle(color: Colors.white70)),
+              const SizedBox(height: 12),
+              TextField(controller: assetCode, decoration: const InputDecoration(labelText: 'Novo patrimônio *')),
+              const SizedBox(height: 10),
+              TextField(controller: serialNumber, decoration: const InputDecoration(labelText: 'Novo número de série (opcional)')),
+              const SizedBox(height: 10),
+              TextField(controller: reason, maxLines: 2, decoration: const InputDecoration(labelText: 'Motivo / observação', hintText: 'Ex.: troca realizada pela locadora')),
+              if (error != null) ...[
+                const SizedBox(height: 10),
+                Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: busy ? null : () => Navigator.pop(dialogContext), child: const Text('Cancelar')),
+          FilledButton.icon(
+            onPressed: busy ? null : () async {
+              final validation = requiredText(assetCode.text, 'Novo patrimônio');
+              if (validation != null) { setLocal(() => error = validation); return; }
+              if (assetCode.text.trim().toLowerCase() == equipment.assetCode.trim().toLowerCase()) {
+                setLocal(() => error = 'Informe um patrimônio diferente do atual.');
+                return;
+              }
+              setLocal(() { busy = true; error = null; });
+              try {
+                final now = DateTime.now();
+                final date = '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
+                final detail = reason.text.trim().isEmpty ? '' : ' • ${reason.text.trim()}';
+                final replacementLog = 'Substituição em $date: patrimônio ${equipment.assetCode} → ${assetCode.text.trim()}$detail';
+                final notes = [equipment.notes?.trim(), replacementLog]
+                    .whereType<String>().where((value) => value.isNotEmpty).join('\n');
+                await repo.updateEquipmentAsset(
+                  assetId: equipment.id,
+                  assetCode: assetCode.text,
+                  serialNumber: serialNumber.text,
+                  teamId: equipment.teamId,
+                  status: 'available',
+                  notes: notes,
+                  ownershipType: 'rented',
+                  rentalCompany: equipment.rentalCompany,
+                  rentalEndDate: equipment.rentalEndDate,
+                );
+                if (dialogContext.mounted) Navigator.pop(dialogContext);
+              } catch (e) {
+                if (dialogContext.mounted) setLocal(() => error = friendlyError(e));
+              } finally {
+                if (dialogContext.mounted) setLocal(() => busy = false);
+              }
+            },
+            icon: const Icon(Icons.change_circle_outlined),
+            label: busy ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Confirmar troca'),
+          ),
+        ],
+      ),
+    ),
+  );
+  assetCode.dispose();
+  serialNumber.dispose();
+  reason.dispose();
 }
 
 Future<void> showEquipmentMaintenanceReturnDialog(
