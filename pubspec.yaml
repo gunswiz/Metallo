@@ -1,0 +1,38 @@
+name: metallo
+description: Gestão de materiais e equipamentos por equipes
+publish_to: "none"
+version: 0.7.4+31
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.9.1
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/metallo_logo_outline.png
+    - assets/offline_worker.jpg
+    - assets/splash_work_01.jpg
+    - assets/splash_work_02.jpg
+    - assets/splash_work_04.jpg
+    - assets/splash_work_05.jpg
+    - assets/splash_team_final.jpg
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/app_icon.png"
+  min_sdk_android: 21
