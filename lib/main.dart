@@ -63,6 +63,7 @@ class MetalloApp extends StatelessWidget {
         navigationBarTheme: const NavigationBarThemeData(
           backgroundColor: Color(0xFF090D13),
           indicatorColor: Color(0xFF123A65),
+          labelTextStyle: WidgetStatePropertyAll(TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
@@ -1146,6 +1147,8 @@ class DashboardPage extends StatelessWidget {
                   team: team,
                   materials: data.materials.where((m) => m.teamId == team.id).toList(),
                   equipment: data.equipment.where((e) => e.teamId == team.id).toList(),
+                  role: role,
+                  userTeamId: userTeamId,
                 ),
             ],
           ),
@@ -1197,11 +1200,13 @@ class SummaryTile extends StatelessWidget {
 }
 
 class TeamOverviewCard extends StatelessWidget {
-  const TeamOverviewCard({super.key, required this.repo, required this.team, required this.materials, required this.equipment});
+  const TeamOverviewCard({super.key, required this.repo, required this.team, required this.materials, required this.equipment, required this.role, required this.userTeamId});
   final MetalloRepository repo;
   final Team team;
   final List<MaterialStock> materials;
   final List<EquipmentAsset> equipment;
+  final String role;
+  final String? userTeamId;
 
   @override
   Widget build(BuildContext context) {
@@ -1209,7 +1214,7 @@ class TeamOverviewCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => TeamDetailPage(repo: repo, team: team, materials: materials, equipment: equipment))),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => TeamDetailPage(repo: repo, team: team, materials: materials, equipment: equipment, role: role, userTeamId: userTeamId))),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(children: [
@@ -1238,21 +1243,29 @@ class _CountChip extends StatelessWidget {
 }
 
 class TeamDetailPage extends StatefulWidget {
-  const TeamDetailPage({super.key, required this.repo, required this.team, required this.materials, required this.equipment});
+  const TeamDetailPage({super.key, required this.repo, required this.team, required this.materials, required this.equipment, required this.role, required this.userTeamId});
   final MetalloRepository repo; final Team team; final List<MaterialStock> materials; final List<EquipmentAsset> equipment;
+  final String role; final String? userTeamId;
   @override State<TeamDetailPage> createState() => _TeamDetailPageState();
 }
 class _TeamDetailPageState extends State<TeamDetailPage> {
-  int tab=0; String query=''; late Future<List<Map<String,dynamic>>> people;
-  @override void initState(){super.initState(); people=widget.repo.fetchProfiles();}
+  int tab=0; String query=''; late Future<List<Map<String,dynamic>>> people; late List<MaterialStock> materials;
+  @override void initState(){super.initState(); people=widget.repo.fetchProfiles(); materials=widget.materials;}
+  bool get canConsume => widget.role == 'admin' || widget.role == 'engineer' || widget.team.id == widget.userTeamId;
+  Future<void> registerConsumption(MaterialStock material) async {
+    await showMaterialQuantityDialog(context, title:'Consumo de ${material.name}', maximum:material.quantity, actionLabel:'Registrar consumo', onConfirm:(quantity,note,_)=>widget.repo.consumeMaterial(itemId:material.itemId,teamId:widget.team.id,quantity:quantity,note:note));
+    if (!mounted) return;
+    final updated=await widget.repo.fetchDashboard();
+    if (mounted) setState(()=>materials=updated.materials.where((m)=>m.teamId==widget.team.id).toList());
+  }
   @override Widget build(BuildContext context){
     final q=query.trim().toLowerCase();
-    final mats=widget.materials.where((m)=>q.isEmpty||'${m.code} ${m.name}'.toLowerCase().contains(q)).toList();
+    final mats=materials.where((m)=>q.isEmpty||'${m.code} ${m.name}'.toLowerCase().contains(q)).toList();
     final eqs=widget.equipment.where((e)=>q.isEmpty||'${e.code} ${e.name} ${e.assetCode}'.toLowerCase().contains(q)).toList();
     return Scaffold(appBar: AppBar(title: Text(widget.team.name)), body: Column(children:[
       Padding(padding: const EdgeInsets.all(16), child: SegmentedButton<int>(segments: const [ButtonSegment(value:0,icon:Icon(Icons.inventory_2_outlined),label:Text('Materiais')),ButtonSegment(value:1,icon:Icon(Icons.handyman_outlined),label:Text('Equipamentos')),ButtonSegment(value:2,icon:Icon(Icons.people_outline),label:Text('Integrantes'))], selected:{tab}, onSelectionChanged:(v)=>setState(()=>tab=v.first))),
       Padding(padding: const EdgeInsets.fromLTRB(16,0,16,10), child: TextField(onChanged:(v)=>setState(()=>query=v), decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: tab==0?'Pesquisar material por nome ou código':tab==1?'Pesquisar equipamento, código ou patrimônio':'Pesquisar integrante'))),
-      Expanded(child: tab==0 ? ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:mats.length,itemBuilder:(_,i){final m=mats[i];return Card(child:ListTile(title:Text(m.name),subtitle:Text(m.code),trailing:Text('${m.quantity} ${m.unit}',style:const TextStyle(color:Color(0xFF52A9FF),fontWeight:FontWeight.w900))));}) : tab==1 ? ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:eqs.length,itemBuilder:(_,i){final e=eqs[i];return Card(child:ListTile(title:Text(e.name),subtitle:Text('${e.code} • Patrimônio ${e.assetCode}'),trailing:StatusBadge(status:e.status)));}) : FutureBuilder<List<Map<String,dynamic>>>(future:people,builder:(context,snap){if(!snap.hasData)return const Center(child:CircularProgressIndicator());final rows=snap.data!.where((u)=>u['team_id']?.toString()==widget.team.id && (q.isEmpty||(u['full_name']?.toString().toLowerCase().contains(q)??false))).toList();if(rows.isEmpty)return const EmptyState(icon:Icons.people_outline,title:'Nenhum integrante',subtitle:'Nenhum usuário está atribuído a este local.');return ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:rows.length,itemBuilder:(_,i){final u=rows[i];return Card(child:ListTile(leading:const CircleAvatar(child:Icon(Icons.person_outline)),title:Text(u['full_name']?.toString()??'Usuário'),subtitle:Text(roleLabel(u['role']?.toString()??'collaborator'))));});})),
+      Expanded(child: tab==0 ? ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:mats.length,itemBuilder:(_,i){final m=mats[i];return Card(child:ListTile(title:Text(m.name),subtitle:Text('${m.code} • ${m.quantity} ${m.unit} disponíveis'),trailing:canConsume?IconButton(tooltip:'Registrar consumo',icon:const Icon(Icons.remove_circle_outline,color:Color(0xFF52A9FF)),onPressed:m.quantity>0?()=>registerConsumption(m):null):Text('${m.quantity} ${m.unit}',style:const TextStyle(color:Color(0xFF52A9FF),fontWeight:FontWeight.w900)),onTap:canConsume&&m.quantity>0?()=>registerConsumption(m):null));}) : tab==1 ? ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:eqs.length,itemBuilder:(_,i){final e=eqs[i];return Card(child:ListTile(title:Text(e.name),subtitle:Text('${e.code} • Patrimônio ${e.assetCode}'),trailing:StatusBadge(status:e.status)));}) : FutureBuilder<List<Map<String,dynamic>>>(future:people,builder:(context,snap){if(!snap.hasData)return const Center(child:CircularProgressIndicator());final rows=snap.data!.where((u)=>u['team_id']?.toString()==widget.team.id && (q.isEmpty||(u['full_name']?.toString().toLowerCase().contains(q)??false))).toList();if(rows.isEmpty)return const EmptyState(icon:Icons.people_outline,title:'Nenhum integrante',subtitle:'Nenhum usuário está atribuído a este local.');return ListView.builder(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:rows.length,itemBuilder:(_,i){final u=rows[i];return Card(child:ListTile(leading:const CircleAvatar(child:Icon(Icons.person_outline)),title:Text(u['full_name']?.toString()??'Usuário'),subtitle:Text(roleLabel(u['role']?.toString()??'collaborator'))));});})),
     ]));
   }
 }
@@ -1762,9 +1775,9 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     Card(
                       child: ListTile(
                         leading: const Icon(Icons.handyman_outlined),
-                        title: Text(e.name),
+                        title: Row(children: [Expanded(child: Text(e.name)), EquipmentOwnershipBadge(type: e.ownershipType)]),
                         subtitle: Text([findTeam(data.teams, e.teamId)?.name ?? 'Equipe', 'código ${e.assetCode}', e.ownershipType == 'rented' ? 'Alugado${e.rentalCompany?.isNotEmpty == true ? ' • ${e.rentalCompany}' : ''}' : 'Próprio'].join(' • ')),
-                        trailing: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [EquipmentOwnershipBadge(type: e.ownershipType), const SizedBox(height: 4), StatusBadge(status: e.status)]),
+                        trailing: StatusBadge(status: e.status),
                         onTap: canOperate &&
                                 (widget.role == 'admin' || widget.role == 'engineer' || e.teamId == widget.userTeamId)
                             ? () => showEquipmentActionsSheet(
