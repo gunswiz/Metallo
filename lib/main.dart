@@ -3057,9 +3057,19 @@ List<Map<String, dynamic>> _groupMaterials(List<Map<String, dynamic>> current, L
   out.sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
   return out;
 }
+String _consumptionCategory(Map<String, dynamic> row) {
+  final item = row['items'] as Map?;
+  final configured = item?['category']?.toString().trim() ?? '';
+  if (configured.isNotEmpty) return configured;
+  final name = item?['name']?.toString().toLowerCase() ?? '';
+  if (name.contains('disco') || name.contains('lixa') || name.contains('abrasiv')) return 'Abrasivos';
+  if (name.contains('eletrodo') || name.contains('arame') || name.contains('solda')) return 'Consumíveis de soldagem';
+  if (name.contains('gás') || name.contains('gas') || name.contains('oxigênio') || name.contains('argon')) return 'Gases';
+  return 'Outros';
+}
 List<Map<String, dynamic>> _groupCategories(List<Map<String, dynamic>> rows) {
   final m = <String, double>{};
-  for (final r in rows) { final c = ((r['items'] as Map?)?['category']?.toString().trim().isNotEmpty ?? false) ? (r['items'] as Map)['category'].toString() : 'Outros'; m[c] = (m[c] ?? 0) + ((r['quantity'] as num?)?.toDouble() ?? 0); }
+  for (final r in rows) { final c = _consumptionCategory(r); m[c] = (m[c] ?? 0) + ((r['quantity'] as num?)?.toDouble() ?? 0); }
   final total = m.values.fold<double>(0, (a, b) => a + b);
   final out = m.entries.map((e) => {'name': e.key, 'qty': e.value, 'pct': total == 0 ? 0.0 : e.value / total * 100}).toList();
   out.sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
@@ -3731,7 +3741,7 @@ Future<void> showMaterialDistributionSheet(
 ) async {
   final sorted = [...stocks]..sort((a, b) =>
       (findTeam(teams, a.teamId)?.name ?? '').compareTo(findTeam(teams, b.teamId)?.name ?? ''));
-  await showModalBottomSheet<void>(
+  final selectedStock = await showModalBottomSheet<MaterialStock>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
@@ -3757,7 +3767,7 @@ Future<void> showMaterialDistributionSheet(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: sorted.length,
                 separatorBuilder: (_, __) => const Divider(height: 1, indent: 20, endIndent: 20),
-                itemBuilder: (context, index) {
+                itemBuilder: (rowContext, index) {
                   final stock = sorted[index];
                   final allowed = role == 'admin' || role == 'engineer' || stock.teamId == userTeamId;
                   return ListTile(
@@ -3765,10 +3775,7 @@ Future<void> showMaterialDistributionSheet(
                     title: Text(findTeam(teams, stock.teamId)?.name ?? 'Local'),
                     subtitle: Text(allowed ? 'Toque para registrar movimentação' : 'Somente consulta'),
                     trailing: Text('${stock.quantity} ${stock.unit}', style: const TextStyle(color: Color(0xFF52A9FF), fontWeight: FontWeight.w900)),
-                    onTap: allowed ? () async {
-                      Navigator.pop(sheetContext);
-                      await showMaterialActionsDialog(context, repo, teams, stock, role, userTeamId);
-                    } : null,
+                    onTap: allowed ? () => Navigator.pop(sheetContext, stock) : null,
                   );
                 },
               ),
@@ -3778,6 +3785,9 @@ Future<void> showMaterialDistributionSheet(
       ),
     ),
   );
+  if (selectedStock != null && context.mounted) {
+    await showMaterialActionsDialog(context, repo, teams, selectedStock, role, userTeamId);
+  }
 }
 
 Future<void> showMaterialActionsDialog(
