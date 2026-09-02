@@ -591,7 +591,7 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int index = 0;
+  int index = 2;
   late final MetalloRepository repo =
       MetalloRepository(Supabase.instance.client);
   late final Stream<DashboardSnapshot> dashboard = repo.watchDashboard();
@@ -633,12 +633,6 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      DashboardPage(
-        repo: repo,
-        stream: dashboard,
-        role: role,
-        userTeamId: userTeamId,
-      ),
       MaterialsPage(
         repo: repo,
         stream: dashboard,
@@ -651,6 +645,7 @@ class _MainShellState extends State<MainShell> {
         role: role,
         userTeamId: userTeamId,
       ),
+      DashboardPage(repo: repo, stream: dashboard, role: role, userTeamId: userTeamId),
       ConsumptionPage(repo: repo, stream: dashboard),
       HistoryPage(repo: repo, stream: dashboard, isAdmin: isAdmin),
     ];
@@ -709,7 +704,6 @@ class _MainShellState extends State<MainShell> {
         selectedIndex: index,
         onDestinationSelected: (v) => setState(() => index = v),
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Início'),
           NavigationDestination(
             icon: Icon(Icons.inventory_2_outlined),
             label: 'Materiais',
@@ -718,6 +712,7 @@ class _MainShellState extends State<MainShell> {
             icon: Icon(Icons.handyman_outlined),
             label: 'Equipamentos',
           ),
+          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Início'),
           NavigationDestination(
             icon: Icon(Icons.bar_chart_rounded),
             label: 'Consumo',
@@ -741,19 +736,19 @@ class _TutorialStep {
 List<_TutorialStep> _tutorialStepsForRole(String role) {
   final steps = <_TutorialStep>[
     const _TutorialStep(
-      page: 0,
+      page: 2,
       icon: Icons.home_outlined,
       title: 'Início e equipes',
       body: 'A tela inicial resume cada equipe e a COSEM. Toque em um card para consultar materiais, equipamentos e integrantes sem precisar percorrer uma lista enorme.',
     ),
     const _TutorialStep(
-      page: 1,
+      page: 0,
       icon: Icons.search_rounded,
       title: 'Encontre materiais rapidamente',
       body: 'Na aba Materiais, pesquise pelo nome ou código. Ao escolher um material já cadastrado, use a pesquisa do seletor em vez de procurar manualmente em uma lista longa.',
     ),
     const _TutorialStep(
-      page: 2,
+      page: 1,
       icon: Icons.qr_code_2_rounded,
       title: 'Equipamentos e patrimônio',
       body: 'Consulte equipamentos por nome, código ou patrimônio. O patrimônio identifica a peça física e continua o mesmo quando ela muda de equipe.',
@@ -774,22 +769,22 @@ List<_TutorialStep> _tutorialStepsForRole(String role) {
 
   if (role == 'leader') {
     steps.addAll(const [
-      _TutorialStep(page: 1, icon: Icons.add_box_outlined, title: 'Rotina do Encarregado', body: 'Você pode registrar as operações permitidas para a sua própria equipe. Antes de confirmar, confira material, quantidade e equipe para evitar correções posteriores.'),
+      _TutorialStep(page: 0, icon: Icons.add_box_outlined, title: 'Rotina do Encarregado', body: 'Você pode registrar as operações permitidas para a sua própria equipe. Antes de confirmar, confira material, quantidade e equipe para evitar correções posteriores.'),
       _TutorialStep(page: 3, icon: Icons.construction_rounded, title: 'Registrar consumo com cuidado', body: 'Consumo reduz o estoque da sua equipe. Confirme o material e a quantidade antes de concluir a operação.'),
-      _TutorialStep(page: 2, icon: Icons.build_rounded, title: 'Manutenção de equipamento', body: 'Na aba Equipamentos, toque no patrimônio e escolha Enviar para manutenção. Durante a manutenção ele fica indisponível. Quando voltar, use Retornar da manutenção e confirme a equipe de destino.'),
+      _TutorialStep(page: 1, icon: Icons.build_rounded, title: 'Manutenção de equipamento', body: 'Na aba Equipamentos, toque no patrimônio e escolha Enviar para manutenção. Durante a manutenção ele fica indisponível. Quando voltar, use Retornar da manutenção e confirme a equipe de destino.'),
     ]);
   } else if (role == 'engineer') {
     steps.addAll(const [
-      _TutorialStep(page: 0, icon: Icons.groups_2_outlined, title: 'Visão do Engenheiro', body: 'Você pode consultar e operar em todas as equipes e na COSEM. Sempre confira a origem e o destino antes de registrar uma movimentação.'),
-      _TutorialStep(page: 1, icon: Icons.warehouse_outlined, title: 'Reposição pela COSEM', body: 'Na reposição, a origem deve ser a COSEM e o destino uma equipe de campo. Use a busca por código ou nome para selecionar o material correto.'),
-      _TutorialStep(page: 2, icon: Icons.build_rounded, title: 'Ciclo de manutenção', body: 'Toque em um equipamento para enviá-lo à manutenção. O patrimônio permanece rastreado e o status muda para Em manutenção. No retorno, escolha a equipe/local e registre a conclusão do serviço.'),
+      _TutorialStep(page: 2, icon: Icons.groups_2_outlined, title: 'Visão do Engenheiro', body: 'Você pode consultar e operar em todas as equipes e na COSEM. Sempre confira a origem e o destino antes de registrar uma movimentação.'),
+      _TutorialStep(page: 0, icon: Icons.warehouse_outlined, title: 'Reposição pela COSEM', body: 'Na reposição, a origem deve ser a COSEM e o destino uma equipe de campo. Use a busca por código ou nome para selecionar o material correto.'),
+      _TutorialStep(page: 1, icon: Icons.build_rounded, title: 'Ciclo de manutenção', body: 'Toque em um equipamento para enviá-lo à manutenção. O patrimônio permanece rastreado e o status muda para Em manutenção. No retorno, escolha a equipe/local e registre a conclusão do serviço.'),
     ]);
   } else if (role == 'admin') {
     steps.addAll(const [
-      _TutorialStep(page: 0, icon: Icons.admin_panel_settings_outlined, title: 'Administração', body: 'O ícone de Administração no topo dá acesso a usuários e equipes. Use essas funções para atribuir cargo e equipe e manter a estrutura organizada.'),
+      _TutorialStep(page: 2, icon: Icons.admin_panel_settings_outlined, title: 'Administração', body: 'O ícone de Administração no topo dá acesso a usuários e equipes. Use essas funções para atribuir cargo e equipe e manter a estrutura organizada.'),
       _TutorialStep(page: 4, icon: Icons.edit_note_rounded, title: 'Correções de histórico', body: 'Como Admin, você pode corrigir registros do histórico. Faça isso somente quando necessário, pois a correção precisa manter o estoque consistente.'),
-      _TutorialStep(page: 1, icon: Icons.inventory_rounded, title: 'Catálogo e códigos', body: 'Mantenha um único código por material. Para equipamentos, use o código do tipo e um patrimônio único para cada unidade física.'),
-      _TutorialStep(page: 2, icon: Icons.build_rounded, title: 'Manutenção e retorno', body: 'Em Equipamentos, use Enviar para manutenção para retirar temporariamente o patrimônio de operação sem perder seu rastreio. Depois use Retornar da manutenção, escolha a equipe/local e confira o registro no Histórico.'),
+      _TutorialStep(page: 0, icon: Icons.inventory_rounded, title: 'Catálogo e códigos', body: 'Mantenha um único código por material. Para equipamentos, use o código do tipo e um patrimônio único para cada unidade física.'),
+      _TutorialStep(page: 1, icon: Icons.build_rounded, title: 'Manutenção e retorno', body: 'Em Equipamentos, use Enviar para manutenção para retirar temporariamente o patrimônio de operação sem perder seu rastreio. Depois use Retornar da manutenção, escolha a equipe/local e confira o registro no Histórico.'),
     ]);
   }
   return steps;
@@ -1659,6 +1654,7 @@ class EquipmentPage extends StatefulWidget {
 
 class _EquipmentPageState extends State<EquipmentPage> {
   final search = TextEditingController();
+  String ownershipFilter = 'all';
 
   @override
   void dispose() {
@@ -1680,10 +1676,12 @@ class _EquipmentPageState extends State<EquipmentPage> {
             : data.teams;
         final q = search.text.trim().toLowerCase();
         final equipment = data.equipment.where((e) {
+          if (ownershipFilter != 'all' && e.ownershipType != ownershipFilter) return false;
           if (q.isEmpty) return true;
           final team = findTeam(data.teams, e.teamId)?.name ?? '';
           return e.name.toLowerCase().contains(q) ||
               e.assetCode.toLowerCase().contains(q) ||
+              (e.rentalCompany?.toLowerCase().contains(q) ?? false) ||
               team.toLowerCase().contains(q);
         }).toList();
 
@@ -1725,11 +1723,17 @@ class _EquipmentPageState extends State<EquipmentPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                SegmentedButton<String>(segments: const [
+                  ButtonSegment(value: 'all', label: Text('Todos'), icon: Icon(Icons.apps_rounded)),
+                  ButtonSegment(value: 'owned', label: Text('Próprios'), icon: Icon(Icons.business_rounded)),
+                  ButtonSegment(value: 'rented', label: Text('Alugados'), icon: Icon(Icons.key_rounded)),
+                ], selected: {ownershipFilter}, onSelectionChanged: (value) => setState(() => ownershipFilter = value.first)),
+                const SizedBox(height: 10),
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.menu_book_outlined, color: Colors.blueGrey),
                     title: const Text('Catálogo de equipamentos', style: TextStyle(fontWeight: FontWeight.w800)),
-                    subtitle: const Text('Consultar os códigos individuais dos equipamentos'),
+                    subtitle: const Text('Consultar próprios e alugados por patrimônio'),
                     trailing: const Icon(Icons.chevron_left),
                     onTap: () => Scaffold.of(innerContext).openEndDrawer(),
                   ),
@@ -1759,10 +1763,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
                       child: ListTile(
                         leading: const Icon(Icons.handyman_outlined),
                         title: Text(e.name),
-                        subtitle: Text(
-                          '${findTeam(data.teams, e.teamId)?.name ?? 'Equipe'} • código ${e.assetCode}',
-                        ),
-                        trailing: StatusBadge(status: e.status),
+                        subtitle: Text([findTeam(data.teams, e.teamId)?.name ?? 'Equipe', 'código ${e.assetCode}', e.ownershipType == 'rented' ? 'Alugado${e.rentalCompany?.isNotEmpty == true ? ' • ${e.rentalCompany}' : ''}' : 'Próprio'].join(' • ')),
+                        trailing: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [EquipmentOwnershipBadge(type: e.ownershipType), const SizedBox(height: 4), StatusBadge(status: e.status)]),
                         onTap: canOperate &&
                                 (widget.role == 'admin' || widget.role == 'engineer' || e.teamId == widget.userTeamId)
                             ? () => showEquipmentActionsSheet(
@@ -1845,6 +1847,7 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
                         final e = snap.data![i];
                         final item = e['items'] as Map?;
                         final team = e['teams'] as Map?;
+                        final ownership = parseEquipmentOwnership(e['notes'] as String?);
                         return ListTile(
                           leading: Container(
                             constraints: const BoxConstraints(minWidth: 62),
@@ -1859,10 +1862,12 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
                               style: const TextStyle(color: Color(0xFFCFD8E3), fontWeight: FontWeight.w900),
                             ),
                           ),
-                          title: Text(item?['name']?.toString() ?? 'Equipamento'),
+                          title: Row(children: [Expanded(child: Text(item?['name']?.toString() ?? 'Equipamento')), EquipmentOwnershipBadge(type: ownership.type)]),
                           subtitle: Text([
                             if ((item?['code']?.toString() ?? '').isNotEmpty) 'modelo ${item?['code']}',
                             if ((team?['name']?.toString() ?? '').isNotEmpty) team?['name'].toString(),
+                            if (ownership.isRented && ownership.rentalCompany?.isNotEmpty == true) ownership.rentalCompany!,
+                            if (ownership.isRented && ownership.rentalEndDate?.isNotEmpty == true) 'até ${ownership.rentalEndDate}',
                             statusLabel(e['status']?.toString() ?? 'available'),
                           ].join(' • ')),
                           trailing: widget.isAdmin
@@ -1918,7 +1923,11 @@ Future<bool?> showEditEquipmentCatalogDialog(
 ) async {
   final assetCode = TextEditingController(text: equipment['asset_code']?.toString() ?? '');
   final serialNumber = TextEditingController(text: equipment['serial_number']?.toString() ?? '');
-  final notes = TextEditingController(text: equipment['notes']?.toString() ?? '');
+  final ownership = parseEquipmentOwnership(equipment['notes'] as String?);
+  final notes = TextEditingController(text: ownership.notes ?? '');
+  final rentalCompany = TextEditingController(text: ownership.rentalCompany ?? '');
+  final rentalEndDate = TextEditingController(text: ownership.rentalEndDate ?? '');
+  String ownershipType = ownership.type;
   String? teamId = equipment['team_id']?.toString();
   String status = equipment['status']?.toString() ?? 'available';
   const statuses = ['available', 'in_use', 'maintenance', 'damaged', 'lost', 'retired'];
@@ -1945,6 +1954,9 @@ Future<bool?> showEditEquipmentCatalogDialog(
               TextField(controller: assetCode, decoration: const InputDecoration(labelText: 'Código/patrimônio')),
               const SizedBox(height: 10),
               TextField(controller: serialNumber, decoration: const InputDecoration(labelText: 'Número de série (opcional)')),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(initialValue: ownershipType, decoration: const InputDecoration(labelText: 'Propriedade'), items: const [DropdownMenuItem(value: 'owned', child: Text('Próprio da empresa')), DropdownMenuItem(value: 'rented', child: Text('Equipamento alugado'))], onChanged: busy ? null : (v) => setLocal(() => ownershipType = v ?? 'owned')),
+              if (ownershipType == 'rented') ...[const SizedBox(height: 10), TextField(controller: rentalCompany, decoration: const InputDecoration(labelText: 'Empresa locadora')), const SizedBox(height: 10), TextField(controller: rentalEndDate, decoration: const InputDecoration(labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))],
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 initialValue: teams.any((t) => t.id == teamId) ? teamId : null,
@@ -1986,6 +1998,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
                       setLocal(() => error = validation);
                       return;
                     }
+                    if (ownershipType == 'rented' && rentalCompany.text.trim().isEmpty) { setLocal(() => error = 'Informe a empresa locadora.'); return; }
                     if (teamId == null) {
                       setLocal(() => error = 'Selecione a equipe/localização.');
                       return;
@@ -2002,6 +2015,9 @@ Future<bool?> showEditEquipmentCatalogDialog(
                         teamId: teamId!,
                         status: status,
                         notes: notes.text,
+                        ownershipType: ownershipType,
+                        rentalCompany: rentalCompany.text,
+                        rentalEndDate: rentalEndDate.text,
                       );
                       if (dialogContext.mounted) Navigator.pop(dialogContext, true);
                     } catch (e) {
@@ -3545,6 +3561,10 @@ Future<void> showEquipmentDialog(
   final name = TextEditingController();
   final assetCode = TextEditingController();
   final serial = TextEditingController();
+  final rentalCompany = TextEditingController();
+  final rentalEndDate = TextEditingController();
+  final notes = TextEditingController();
+  String ownershipType = 'owned';
   String? teamId = initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
   bool busy = false;
   String? error;
@@ -3571,6 +3591,11 @@ Future<void> showEquipmentDialog(
                 controller: serial,
                 decoration: const InputDecoration(labelText: 'Número de série (opcional)'),
               ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(initialValue: ownershipType, decoration: const InputDecoration(labelText: 'Propriedade'), items: const [DropdownMenuItem(value: 'owned', child: Text('Próprio da empresa')), DropdownMenuItem(value: 'rented', child: Text('Equipamento alugado'))], onChanged: busy ? null : (v) => setLocal(() => ownershipType = v ?? 'owned')),
+              if (ownershipType == 'rented') ...[const SizedBox(height: 10), TextField(controller: rentalCompany, decoration: const InputDecoration(labelText: 'Empresa locadora')), const SizedBox(height: 10), TextField(controller: rentalEndDate, decoration: const InputDecoration(labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))],
+              const SizedBox(height: 10),
+              TextField(controller: notes, maxLines: 2, decoration: const InputDecoration(labelText: 'Observações (opcional)')),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 initialValue: teamId,
@@ -3604,6 +3629,7 @@ Future<void> showEquipmentDialog(
                     final validation = requiredText(code.text, 'Código') ??
                         requiredText(name.text, 'Equipamento') ??
                         requiredText(assetCode.text, 'Patrimônio') ??
+                        (ownershipType == 'rented' && rentalCompany.text.trim().isEmpty ? 'Informe a empresa locadora.' : null) ??
                         (teamId == null ? 'Selecione a equipe.' : null);
                     if (validation != null) {
                       setLocal(() => error = validation);
@@ -3620,6 +3646,10 @@ Future<void> showEquipmentDialog(
                         assetCode: assetCode.text,
                         serialNumber: serial.text,
                         teamId: teamId!,
+                        ownershipType: ownershipType,
+                        rentalCompany: rentalCompany.text,
+                        rentalEndDate: rentalEndDate.text,
+                        notes: notes.text,
                       );
                       if (dialogContext.mounted) Navigator.pop(dialogContext);
                     } catch (e) {
@@ -4411,6 +4441,11 @@ Future<void> showAssetHistoryEdit(
       ),
     ),
   );
+}
+
+class EquipmentOwnershipBadge extends StatelessWidget {
+  const EquipmentOwnershipBadge({super.key, required this.type}); final String type;
+  @override Widget build(BuildContext context) { final rented = type == 'rented'; return Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: rented ? const Color(0xFF3A2E13) : const Color(0xFF173326), borderRadius: BorderRadius.circular(999)), child: Text(rented ? 'Alugado' : 'Próprio', style: TextStyle(color: rented ? const Color(0xFFFFCC66) : const Color(0xFF72D6A0), fontSize: 11, fontWeight: FontWeight.w800))); }
 }
 
 class StatusBadge extends StatelessWidget {

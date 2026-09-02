@@ -1,7 +1,7 @@
 name: metallo
 description: Gestão de materiais e equipamentos por equipes
 publish_to: "none"
-version: 0.7.4+31
+version: 0.7.5+32
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

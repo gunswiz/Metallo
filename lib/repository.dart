@@ -1,6 +1,37 @@
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class EquipmentOwnershipInfo {
+  final String type;
+  final String? rentalCompany;
+  final String? rentalEndDate;
+  final String? notes;
+  const EquipmentOwnershipInfo({this.type = 'owned', this.rentalCompany, this.rentalEndDate, this.notes});
+  bool get isRented => type == 'rented';
+}
+
+EquipmentOwnershipInfo parseEquipmentOwnership(String? rawNotes) {
+  var type = 'owned'; String? company; String? endDate; final visible = <String>[];
+  for (final line in (rawNotes ?? '').split('\n')) {
+    if (line.startsWith('#metallo:ownership=')) {
+      type = line.substring('#metallo:ownership='.length) == 'rented' ? 'rented' : 'owned';
+    } else if (line.startsWith('#metallo:rental_company=')) {
+      final value = line.substring('#metallo:rental_company='.length); if (value.isNotEmpty) company = Uri.decodeComponent(value);
+    } else if (line.startsWith('#metallo:rental_end=')) {
+      final value = line.substring('#metallo:rental_end='.length).trim(); if (value.isNotEmpty) endDate = value;
+    } else if (line.trim().isNotEmpty) { visible.add(line); }
+  }
+  return EquipmentOwnershipInfo(type: type, rentalCompany: company, rentalEndDate: endDate, notes: visible.isEmpty ? null : visible.join('\n'));
+}
+
+String? buildEquipmentNotes({required String ownershipType, String? rentalCompany, String? rentalEndDate, String? notes}) {
+  final lines = <String>['#metallo:ownership=${ownershipType == 'rented' ? 'rented' : 'owned'}'];
+  if (ownershipType == 'rented' && (rentalCompany?.trim().isNotEmpty ?? false)) lines.add('#metallo:rental_company=${Uri.encodeComponent(rentalCompany!.trim())}');
+  if (ownershipType == 'rented' && (rentalEndDate?.trim().isNotEmpty ?? false)) lines.add('#metallo:rental_end=${rentalEndDate!.trim()}');
+  if (notes?.trim().isNotEmpty ?? false) lines.add(notes!.trim());
+  return lines.join('\n');
+}
+
 class Team {
   final String id;
   final String name;
@@ -69,6 +100,7 @@ class EquipmentAsset {
   final String assetCode;
   final String? serialNumber;
   final String status;
+  final String ownershipType; final String? rentalCompany; final String? rentalEndDate; final String? notes;
 
   const EquipmentAsset({
     required this.id,
@@ -79,10 +111,12 @@ class EquipmentAsset {
     required this.assetCode,
     this.serialNumber,
     required this.status,
+    this.ownershipType = 'owned', this.rentalCompany, this.rentalEndDate, this.notes,
   });
 
   factory EquipmentAsset.fromMap(Map<String, dynamic> m) {
     final item = Map<String, dynamic>.from(m['items'] as Map);
+    final ownership = parseEquipmentOwnership(m['notes'] as String?);
     return EquipmentAsset(
       id: m['id'] as String,
       itemId: m['item_id'] as String,
@@ -92,6 +126,7 @@ class EquipmentAsset {
       assetCode: m['asset_code'] as String,
       serialNumber: m['serial_number'] as String?,
       status: (m['status'] as String?) ?? 'available',
+      ownershipType: ownership.type, rentalCompany: ownership.rentalCompany, rentalEndDate: ownership.rentalEndDate, notes: ownership.notes,
     );
   }
 }
@@ -158,7 +193,7 @@ class MetalloRepository {
     final assetsRaw = await client
         .from('assets')
         .select(
-          'id,item_id,asset_code,serial_number,team_id,status,items!inner(id,code,name,item_type,active)',
+          'id,item_id,asset_code,serial_number,team_id,status,notes,items!inner(id,code,name,item_type,active)',
         )
         .eq('active', true)
         .eq('items.item_type', 'equipment')
@@ -289,6 +324,7 @@ class MetalloRepository {
     required String teamId,
     required String status,
     required String? notes,
+    String ownershipType = 'owned', String? rentalCompany, String? rentalEndDate,
   }) async {
     await client.rpc('update_asset_admin', params: {
       'p_asset_id': assetId,
@@ -296,7 +332,7 @@ class MetalloRepository {
       'p_serial_number': _nullable(serialNumber),
       'p_team_id': teamId,
       'p_status': status,
-      'p_notes': _nullable(notes),
+      'p_notes': buildEquipmentNotes(ownershipType: ownershipType, rentalCompany: rentalCompany, rentalEndDate: rentalEndDate, notes: notes),
       'p_active': true,
     });
     await refreshDashboard();
@@ -438,6 +474,7 @@ class MetalloRepository {
     required String assetCode,
     required String teamId,
     String? serialNumber,
+    String ownershipType = 'owned', String? rentalCompany, String? rentalEndDate, String? notes,
   }) async {
     await client.rpc('create_equipment_for_team', params: {
       'p_code': code.trim(),
@@ -447,7 +484,7 @@ class MetalloRepository {
       'p_description': null,
       'p_category': null,
       'p_team_id': teamId,
-      'p_notes': null,
+      'p_notes': buildEquipmentNotes(ownershipType: ownershipType, rentalCompany: rentalCompany, rentalEndDate: rentalEndDate, notes: notes),
     });
     await refreshDashboard();
   }
