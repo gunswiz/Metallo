@@ -1465,62 +1465,202 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
 }
 
 Future<void> _showPractice(BuildContext context, _HelpTopic topic) async {
-  var step = 0;
-  await showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (dialogContext) => StatefulBuilder(builder: (context, setLocal) {
-      final finished = step >= topic.steps.length;
-      return AlertDialog(
-        icon: Icon(finished ? Icons.verified_rounded : topic.icon,
-            color: finished ? const Color(0xFF67D39A) : const Color(0xFF52A9FF),
-            size: 36),
-        title: Text(finished ? 'Treino concluído' : topic.title),
-        content: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 220),
-          child: finished
-              ? Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text(topic.result,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 8),
-                  const Text(
-                      'Agora você pode repetir esse procedimento na tela real.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white60)),
-                ])
-              : Column(mainAxisSize: MainAxisSize.min, children: [
-                  LinearProgressIndicator(
-                      value: (step + 1) / topic.steps.length),
-                  const SizedBox(height: 18),
-                  CircleAvatar(child: Text('${step + 1}')),
-                  const SizedBox(height: 12),
-                  Text(topic.steps[step],
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 12),
-                  Text('Exemplo: ${topic.example}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white60)),
-                ]),
+  await Navigator.of(context).push(MaterialPageRoute(
+    fullscreenDialog: true,
+    builder: (_) => _PracticePage(topic: topic),
+  ));
+}
+
+class _PracticePage extends StatefulWidget {
+  const _PracticePage({required this.topic});
+  final _HelpTopic topic;
+  @override
+  State<_PracticePage> createState() => _PracticePageState();
+}
+
+class _PracticePageState extends State<_PracticePage> {
+  int step = 0;
+
+  void completeStep() {
+    if (step < widget.topic.steps.length) setState(() => step++);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final finished = step >= widget.topic.steps.length;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Treinamento interativo'),
+        leading: IconButton(
+          tooltip: 'Voltar ao guia',
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.close),
         ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(finished ? 'Fechar' : 'Sair do treino')),
-          if (!finished)
-            FilledButton.icon(
-              onPressed: () => setLocal(() => step++),
-              icon: const Icon(Icons.check_rounded),
-              label: Text(step == topic.steps.length - 1
-                  ? 'Concluir'
-                  : 'Fiz esta etapa'),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(18),
+          children: [
+            Icon(finished ? Icons.verified_rounded : widget.topic.icon,
+                color: finished
+                    ? const Color(0xFF67D39A)
+                    : const Color(0xFF52A9FF),
+                size: 48),
+            const SizedBox(height: 12),
+            Text(finished ? 'Treino concluído' : widget.topic.title,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 8),
+            Text(widget.topic.example,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white60, height: 1.35)),
+            const SizedBox(height: 20),
+            LinearProgressIndicator(
+                value: finished ? 1 : step / widget.topic.steps.length),
+            const SizedBox(height: 22),
+            if (finished) ...[
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(children: [
+                    const Icon(Icons.check_circle_outline,
+                        color: Color(0xFF67D39A), size: 42),
+                    const SizedBox(height: 12),
+                    Text(widget.topic.result,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 8),
+                    const Text(
+                        'Você praticou todas as ações sem alterar os dados reais.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white60)),
+                  ]),
+                ),
+              ),
+              const SizedBox(height: 14),
+              FilledButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.menu_book_outlined),
+                label: const Text('Voltar ao guia'),
+              ),
+              TextButton.icon(
+                onPressed: () => setState(() => step = 0),
+                icon: const Icon(Icons.replay),
+                label: const Text('Praticar novamente'),
+              ),
+            ] else ...[
+              Text('Etapa ${step + 1} de ${widget.topic.steps.length}',
+                  style: const TextStyle(
+                      color: Color(0xFF52A9FF), fontWeight: FontWeight.w900)),
+              const SizedBox(height: 8),
+              Text(widget.topic.steps[step],
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 16),
+              _PracticeInteraction(
+                key: ValueKey('${widget.topic.title}-$step'),
+                instruction: widget.topic.steps[step],
+                onComplete: completeStep,
+              ),
+              if (step > 0)
+                TextButton.icon(
+                  onPressed: () => setState(() => step--),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Rever etapa anterior'),
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PracticeInteraction extends StatefulWidget {
+  const _PracticeInteraction(
+      {super.key, required this.instruction, required this.onComplete});
+  final String instruction;
+  final VoidCallback onComplete;
+  @override
+  State<_PracticeInteraction> createState() => _PracticeInteractionState();
+}
+
+class _PracticeInteractionState extends State<_PracticeInteraction> {
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lower = widget.instruction.toLowerCase();
+    final needsInput = lower.contains('pesquis') || lower.contains('informe');
+    return Card(
+      color: const Color(0xFF101A27),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          const Row(children: [
+            Icon(Icons.touch_app_outlined, color: Color(0xFF52A9FF)),
+            SizedBox(width: 8),
+            Text('Área de prática',
+                style: TextStyle(fontWeight: FontWeight.w900)),
+          ]),
+          const SizedBox(height: 14),
+          if (needsInput) ...[
+            TextField(
+              controller: controller,
+              keyboardType:
+                  lower.contains('informe') ? TextInputType.number : null,
+              decoration: InputDecoration(
+                prefixIcon: Icon(lower.contains('pesquis')
+                    ? Icons.search
+                    : Icons.numbers_outlined),
+                hintText: lower.contains('pesquis')
+                    ? 'Digite o exemplo para pesquisar'
+                    : 'Digite a quantidade do exemplo',
+              ),
             ),
-        ],
-      );
-    }),
-  );
+            const SizedBox(height: 12),
+          ] else ...[
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0A1420),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(children: [
+                const Icon(Icons.radio_button_unchecked,
+                    color: Color(0xFF52A9FF)),
+                const SizedBox(width: 12),
+                Expanded(child: Text(widget.instruction)),
+              ]),
+            ),
+            const SizedBox(height: 12),
+          ],
+          FilledButton.icon(
+            onPressed: () {
+              if (needsInput && controller.text.trim().isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Faça a ação do exemplo para continuar.')));
+                return;
+              }
+              widget.onComplete();
+            },
+            icon: Icon(needsInput ? Icons.check : Icons.touch_app),
+            label: Text(
+                needsInput ? 'Confirmar na demonstração' : 'Executar ação'),
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 class RoleBadge extends StatelessWidget {
