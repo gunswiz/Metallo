@@ -6,28 +6,54 @@ class EquipmentOwnershipInfo {
   final String? rentalCompany;
   final String? rentalEndDate;
   final String? notes;
-  const EquipmentOwnershipInfo({this.type = 'owned', this.rentalCompany, this.rentalEndDate, this.notes});
+  const EquipmentOwnershipInfo(
+      {this.type = 'owned',
+      this.rentalCompany,
+      this.rentalEndDate,
+      this.notes});
   bool get isRented => type == 'rented';
 }
 
 EquipmentOwnershipInfo parseEquipmentOwnership(String? rawNotes) {
-  var type = 'owned'; String? company; String? endDate; final visible = <String>[];
+  var type = 'owned';
+  String? company;
+  String? endDate;
+  final visible = <String>[];
   for (final line in (rawNotes ?? '').split('\n')) {
     if (line.startsWith('#metallo:ownership=')) {
-      type = line.substring('#metallo:ownership='.length) == 'rented' ? 'rented' : 'owned';
+      type = line.substring('#metallo:ownership='.length) == 'rented'
+          ? 'rented'
+          : 'owned';
     } else if (line.startsWith('#metallo:rental_company=')) {
-      final value = line.substring('#metallo:rental_company='.length); if (value.isNotEmpty) company = Uri.decodeComponent(value);
+      final value = line.substring('#metallo:rental_company='.length);
+      if (value.isNotEmpty) company = Uri.decodeComponent(value);
     } else if (line.startsWith('#metallo:rental_end=')) {
-      final value = line.substring('#metallo:rental_end='.length).trim(); if (value.isNotEmpty) endDate = value;
-    } else if (line.trim().isNotEmpty) { visible.add(line); }
+      final value = line.substring('#metallo:rental_end='.length).trim();
+      if (value.isNotEmpty) endDate = value;
+    } else if (line.trim().isNotEmpty) {
+      visible.add(line);
+    }
   }
-  return EquipmentOwnershipInfo(type: type, rentalCompany: company, rentalEndDate: endDate, notes: visible.isEmpty ? null : visible.join('\n'));
+  return EquipmentOwnershipInfo(
+      type: type,
+      rentalCompany: company,
+      rentalEndDate: endDate,
+      notes: visible.isEmpty ? null : visible.join('\n'));
 }
 
-String? buildEquipmentNotes({required String ownershipType, String? rentalCompany, String? rentalEndDate, String? notes}) {
-  final lines = <String>['#metallo:ownership=${ownershipType == 'rented' ? 'rented' : 'owned'}'];
-  if (ownershipType == 'rented' && (rentalCompany?.trim().isNotEmpty ?? false)) lines.add('#metallo:rental_company=${Uri.encodeComponent(rentalCompany!.trim())}');
-  if (ownershipType == 'rented' && (rentalEndDate?.trim().isNotEmpty ?? false)) lines.add('#metallo:rental_end=${rentalEndDate!.trim()}');
+String? buildEquipmentNotes(
+    {required String ownershipType,
+    String? rentalCompany,
+    String? rentalEndDate,
+    String? notes}) {
+  final lines = <String>[
+    '#metallo:ownership=${ownershipType == 'rented' ? 'rented' : 'owned'}'
+  ];
+  if (ownershipType == 'rented' && (rentalCompany?.trim().isNotEmpty ?? false))
+    lines.add(
+        '#metallo:rental_company=${Uri.encodeComponent(rentalCompany!.trim())}');
+  if (ownershipType == 'rented' && (rentalEndDate?.trim().isNotEmpty ?? false))
+    lines.add('#metallo:rental_end=${rentalEndDate!.trim()}');
   if (notes?.trim().isNotEmpty ?? false) lines.add(notes!.trim());
   return lines.join('\n');
 }
@@ -100,7 +126,10 @@ class EquipmentAsset {
   final String assetCode;
   final String? serialNumber;
   final String status;
-  final String ownershipType; final String? rentalCompany; final String? rentalEndDate; final String? notes;
+  final String ownershipType;
+  final String? rentalCompany;
+  final String? rentalEndDate;
+  final String? notes;
 
   const EquipmentAsset({
     required this.id,
@@ -111,7 +140,10 @@ class EquipmentAsset {
     required this.assetCode,
     this.serialNumber,
     required this.status,
-    this.ownershipType = 'owned', this.rentalCompany, this.rentalEndDate, this.notes,
+    this.ownershipType = 'owned',
+    this.rentalCompany,
+    this.rentalEndDate,
+    this.notes,
   });
 
   factory EquipmentAsset.fromMap(Map<String, dynamic> m) {
@@ -126,17 +158,29 @@ class EquipmentAsset {
       assetCode: m['asset_code'] as String,
       serialNumber: m['serial_number'] as String?,
       status: (m['status'] as String?) ?? 'available',
-      ownershipType: ownership.type, rentalCompany: ownership.rentalCompany, rentalEndDate: ownership.rentalEndDate, notes: ownership.notes,
+      ownershipType: ownership.type,
+      rentalCompany: ownership.rentalCompany,
+      rentalEndDate: ownership.rentalEndDate,
+      notes: ownership.notes,
     );
   }
 }
 
 String equipmentTypeDisplayName(String name) {
-  final normalized = name.trim().toLowerCase()
-      .replaceAll('á', 'a').replaceAll('ã', 'a').replaceAll('â', 'a')
-      .replaceAll('é', 'e').replaceAll('ê', 'e').replaceAll('í', 'i')
-      .replaceAll('ó', 'o').replaceAll('ô', 'o').replaceAll('õ', 'o')
-      .replaceAll('ú', 'u').replaceAll('ç', 'c');
+  final normalized = name
+      .trim()
+      .toLowerCase()
+      .replaceAll('á', 'a')
+      .replaceAll('ã', 'a')
+      .replaceAll('â', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ô', 'o')
+      .replaceAll('õ', 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ç', 'c');
   return normalized == 'maquina de solda' ? 'Máquina de solda trifásica' : name;
 }
 
@@ -182,6 +226,291 @@ class MetalloRepository {
         .toList();
   }
 
+  Future<List<Map<String, dynamic>>> fetchEpiEmployees() async {
+    try {
+      final rows = await client
+          .from('epi_employees')
+          .select(
+              'id,full_name,registration_code,profession,team_id,shirt_size,pants_size,shoe_size,active,created_at,teams(name)')
+          .eq('active', true)
+          .order('full_name');
+      return (rows as List)
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
+    } on PostgrestException catch (e) {
+      if (e.code != 'PGRST205' && !e.message.contains('epi_employees')) rethrow;
+      final dashboard = await fetchDashboard();
+      final field = dashboard.teams.where((t) => !t.isCentral).toList();
+      Map<String, dynamic> preview(String id, String name, String profession,
+          int teamIndex, String shirt, String pants, String shoe) {
+        final team = field.isEmpty
+            ? dashboard.teams.first
+            : field[teamIndex % field.length];
+        return {
+          'id': id,
+          'full_name': name,
+          'registration_code': 'DEMO-$id',
+          'profession': profession,
+          'team_id': team.id,
+          'shirt_size': shirt,
+          'pants_size': pants,
+          'shoe_size': shoe,
+          'active': true,
+          'teams': {'name': team.name},
+          '_preview': true
+        };
+      }
+
+      return [
+        preview('001', 'João Silva', 'Soldador', 0, 'G', '42', '41'),
+        preview(
+            '002', 'Carlos Santos', 'Montador industrial', 0, 'M', '40', '40'),
+        preview('003', 'Marcos Oliveira', 'Soldador', 1, 'GG', '44', '42'),
+        preview('004', 'Paulo Souza', 'Ajudante', 2, 'M', '40', '39'),
+      ];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchEpiItems() async {
+    final rows = await client
+        .from('epi_items')
+        .select(
+            'id,code,name,item_kind,unit,ca_number,brand_model,minimum_stock,replacement_days,active,created_at')
+        .eq('active', true)
+        .order('name');
+    return (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchEpiStock() async {
+    final rows = await client
+        .from('epi_stock_batches')
+        .select(
+            'id,item_id,quantity,variant,ca_number,brand_model,lot_number,expires_on,received_at,epi_items(code,name,item_kind,unit)')
+        .order('received_at', ascending: false);
+    return (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchEpiDeliveries() async {
+    final rows = await client
+        .from('epi_deliveries')
+        .select(
+            'id,employee_id,team_id,item_id,stock_batch_id,delivery_group_id,quantity,delivered_at,delivery_reason,current_status,variant_snapshot,ca_snapshot,brand_model_snapshot,lot_snapshot,note,epi_employees(full_name,profession),epi_items(code,name,item_kind,unit),teams(name)')
+        .order('delivered_at', ascending: false);
+    return (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchEpiRequests() async {
+    final rows = await client
+        .from('epi_requests')
+        .select(
+            'id,employee_id,team_id,item_id,quantity,status,created_at,fulfilled_at,epi_employees(full_name,profession,shoe_size),epi_items(code,name,item_kind,unit,ca_number),teams(name)')
+        .order('created_at', ascending: false);
+    return (rows as List)
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
+  }
+
+  Future<void> requestEpiItem({
+    required String employeeId,
+    required String teamId,
+    required String itemId,
+    required int quantity,
+  }) async {
+    await client.from('epi_requests').insert({
+      'employee_id': employeeId,
+      'team_id': teamId,
+      'item_id': itemId,
+      'quantity': quantity,
+    });
+  }
+
+  Future<void> fulfillEpiRequest(String requestId, String stockBatchId) async {
+    await client.rpc('fulfill_epi_request', params: {
+      'p_request_id': requestId,
+      'p_stock_batch_id': stockBatchId,
+    });
+  }
+
+  Future<void> createEpiEmployee({
+    required String fullName,
+    required String profession,
+    required String teamId,
+    String? registrationCode,
+    String? shirtSize,
+    String? pantsSize,
+    String? shoeSize,
+  }) async {
+    await client.from('epi_employees').insert({
+      'full_name': fullName.trim(),
+      'profession': profession.trim(),
+      'team_id': teamId,
+      'registration_code': _nullable(registrationCode),
+      'shirt_size': _nullable(shirtSize),
+      'pants_size': _nullable(pantsSize),
+      'shoe_size': _nullable(shoeSize),
+    });
+  }
+
+  Future<void> updateEpiEmployee({
+    required String id,
+    required String fullName,
+    required String profession,
+    required String teamId,
+    String? registrationCode,
+    String? shirtSize,
+    String? pantsSize,
+    String? shoeSize,
+  }) async {
+    await client.from('epi_employees').update({
+      'full_name': fullName.trim(),
+      'profession': profession.trim(),
+      'team_id': teamId,
+      'registration_code': _nullable(registrationCode),
+      'shirt_size': _nullable(shirtSize),
+      'pants_size': _nullable(pantsSize),
+      'shoe_size': _nullable(shoeSize),
+    }).eq('id', id);
+  }
+
+  Future<Map<String, dynamic>> fetchEpiEmployeeItemSet(
+      String employeeId) async {
+    final sets = await client
+        .from('epi_employee_item_sets')
+        .select('employee_id')
+        .eq('employee_id', employeeId);
+    final rows = await client
+        .from('epi_employee_items')
+        .select('employee_id,item_id,required_quantity')
+        .eq('employee_id', employeeId);
+    return {
+      'configured': (sets as List).isNotEmpty,
+      'rows': (rows as List)
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList(),
+    };
+  }
+
+  Future<void> setEpiEmployeeItems(
+      String employeeId, List<Map<String, dynamic>> lines) async {
+    await client.rpc('set_epi_employee_items', params: {
+      'p_employee_id': employeeId,
+      'p_lines': lines,
+    });
+  }
+
+  Future<void> createEpiItem({
+    required String code,
+    required String name,
+    required String kind,
+    required String unit,
+    String? caNumber,
+    String? brandModel,
+    int minimumStock = 0,
+    int? replacementDays,
+  }) async {
+    await client.from('epi_items').insert({
+      'code': code.trim(),
+      'name': name.trim(),
+      'item_kind': kind,
+      'unit': unit.trim().isEmpty ? 'un' : unit.trim(),
+      'ca_number': _nullable(caNumber),
+      'brand_model': _nullable(brandModel),
+      'minimum_stock': minimumStock,
+      'replacement_days': replacementDays,
+    });
+  }
+
+  Future<void> updateEpiItem({
+    required String id,
+    required String code,
+    required String name,
+    required String kind,
+    required String unit,
+    String? caNumber,
+    String? brandModel,
+    int minimumStock = 0,
+    int? replacementDays,
+  }) async {
+    await client.from('epi_items').update({
+      'code': code.trim(),
+      'name': name.trim(),
+      'item_kind': kind,
+      'unit': unit.trim().isEmpty ? 'un' : unit.trim(),
+      'ca_number': kind == 'epi' ? _nullable(caNumber) : null,
+      'brand_model': _nullable(brandModel),
+      'minimum_stock': minimumStock,
+      'replacement_days': replacementDays,
+    }).eq('id', id);
+  }
+
+  Future<void> deactivateEpiItem(String id) async {
+    await client.from('epi_items').update({'active': false}).eq('id', id);
+  }
+
+  Future<void> addEpiStock({
+    required String itemId,
+    required int quantity,
+    String? caNumber,
+    String? brandModel,
+    String? lotNumber,
+    String? variant,
+  }) async {
+    await client.from('epi_stock_batches').insert({
+      'item_id': itemId,
+      'quantity': quantity,
+      'ca_number': _nullable(caNumber),
+      'brand_model': _nullable(brandModel),
+      'lot_number': _nullable(lotNumber),
+      'variant': _nullable(variant),
+    });
+  }
+
+  Future<void> registerEpiDelivery({
+    required String employeeId,
+    required String itemId,
+    required String stockBatchId,
+    required int quantity,
+    String reason = 'initial',
+    String? note,
+  }) async {
+    await client.rpc('register_epi_delivery', params: {
+      'p_employee_id': employeeId,
+      'p_item_id': itemId,
+      'p_stock_batch_id': stockBatchId,
+      'p_quantity': quantity,
+      'p_delivery_reason': reason,
+      'p_note': _nullable(note),
+    });
+  }
+
+  Future<void> registerEpiDeliveryBatch({
+    required String employeeId,
+    required List<Map<String, dynamic>> lines,
+    String reason = 'initial',
+    String? note,
+  }) async {
+    await client.rpc('register_epi_delivery_batch', params: {
+      'p_employee_id': employeeId,
+      'p_lines': lines,
+      'p_delivery_reason': reason,
+      'p_note': _nullable(note),
+    });
+  }
+
+  Future<void> closeEpiDelivery(String id, String status) async {
+    await client.from('epi_deliveries').update({
+      'current_status': status,
+      'closed_at': DateTime.now().toUtc().toIso8601String(),
+      'closed_by': client.auth.currentUser?.id,
+    }).eq('id', id);
+  }
+
   Future<DashboardSnapshot> fetchDashboard() async {
     final teamsRaw = await client
         .from('teams')
@@ -215,10 +544,12 @@ class MetalloRepository {
           .map((e) => Team.fromMap(Map<String, dynamic>.from(e as Map)))
           .toList(),
       materials: (inventoryRaw as List)
-          .map((e) => MaterialStock.fromMap(Map<String, dynamic>.from(e as Map)))
+          .map(
+              (e) => MaterialStock.fromMap(Map<String, dynamic>.from(e as Map)))
           .toList(),
       equipment: (assetsRaw as List)
-          .map((e) => EquipmentAsset.fromMap(Map<String, dynamic>.from(e as Map)))
+          .map((e) =>
+              EquipmentAsset.fromMap(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
   }
@@ -295,9 +626,7 @@ class MetalloRepository {
         .eq('active', true)
         .eq('item_type', 'material')
         .order('code');
-    final inventory = await client
-        .from('inventory')
-        .select('item_id,quantity');
+    final inventory = await client.from('inventory').select('item_id,quantity');
     final totals = <String, num>{};
     for (final raw in inventory as List) {
       final row = Map<String, dynamic>.from(raw as Map);
@@ -315,7 +644,8 @@ class MetalloRepository {
   Future<List<Map<String, dynamic>>> fetchEquipmentCatalog() async {
     final rows = await client
         .from('assets')
-        .select('id,asset_code,serial_number,status,team_id,notes,items!inner(id,code,name,item_type,active),teams(name)')
+        .select(
+            'id,asset_code,serial_number,status,team_id,notes,items!inner(id,code,name,item_type,active),teams(name)')
         .eq('active', true)
         .eq('items.item_type', 'equipment')
         .eq('items.active', true)
@@ -325,7 +655,10 @@ class MetalloRepository {
         .toList();
   }
 
-  Future<void> updateEquipmentItem({required String itemId, required String code, required String name}) async {
+  Future<void> updateEquipmentItem(
+      {required String itemId,
+      required String code,
+      required String name}) async {
     await client.rpc('update_item_admin', params: {
       'p_item_id': itemId,
       'p_code': code.trim(),
@@ -338,7 +671,6 @@ class MetalloRepository {
     await refreshDashboard();
   }
 
-
   Future<void> updateEquipmentAsset({
     required String assetId,
     required String assetCode,
@@ -346,7 +678,9 @@ class MetalloRepository {
     required String teamId,
     required String status,
     required String? notes,
-    String ownershipType = 'owned', String? rentalCompany, String? rentalEndDate,
+    String ownershipType = 'owned',
+    String? rentalCompany,
+    String? rentalEndDate,
   }) async {
     await client.rpc('update_asset_admin', params: {
       'p_asset_id': assetId,
@@ -354,7 +688,11 @@ class MetalloRepository {
       'p_serial_number': _nullable(serialNumber),
       'p_team_id': teamId,
       'p_status': status,
-      'p_notes': buildEquipmentNotes(ownershipType: ownershipType, rentalCompany: rentalCompany, rentalEndDate: rentalEndDate, notes: notes),
+      'p_notes': buildEquipmentNotes(
+          ownershipType: ownershipType,
+          rentalCompany: rentalCompany,
+          rentalEndDate: rentalEndDate,
+          notes: notes),
       'p_active': true,
     });
     await refreshDashboard();
@@ -433,7 +771,9 @@ class MetalloRepository {
     );
     final data = response.data;
     if (response.status < 200 || response.status >= 300) {
-      throw Exception(data is Map ? (data['error'] ?? 'Falha ao criar funcionário') : 'Falha ao criar funcionário');
+      throw Exception(data is Map
+          ? (data['error'] ?? 'Falha ao criar funcionário')
+          : 'Falha ao criar funcionário');
     }
     if (data is Map && data['ok'] != true) {
       throw Exception(data['error'] ?? 'Falha ao criar funcionário');
@@ -463,7 +803,9 @@ class MetalloRepository {
     );
     final data = response.data;
     if (response.status < 200 || response.status >= 300) {
-      throw Exception(data is Map ? (data['error'] ?? 'Falha ao excluir usuário') : 'Falha ao excluir usuário');
+      throw Exception(data is Map
+          ? (data['error'] ?? 'Falha ao excluir usuário')
+          : 'Falha ao excluir usuário');
     }
     if (data is Map && data['ok'] != true) {
       throw Exception(data['error'] ?? 'Falha ao excluir usuário');
@@ -496,7 +838,10 @@ class MetalloRepository {
     required String assetCode,
     required String teamId,
     String? serialNumber,
-    String ownershipType = 'owned', String? rentalCompany, String? rentalEndDate, String? notes,
+    String ownershipType = 'owned',
+    String? rentalCompany,
+    String? rentalEndDate,
+    String? notes,
   }) async {
     await client.rpc('create_equipment_for_team', params: {
       'p_code': code.trim(),
@@ -506,7 +851,11 @@ class MetalloRepository {
       'p_description': null,
       'p_category': null,
       'p_team_id': teamId,
-      'p_notes': buildEquipmentNotes(ownershipType: ownershipType, rentalCompany: rentalCompany, rentalEndDate: rentalEndDate, notes: notes),
+      'p_notes': buildEquipmentNotes(
+          ownershipType: ownershipType,
+          rentalCompany: rentalCompany,
+          rentalEndDate: rentalEndDate,
+          notes: notes),
     });
     await refreshDashboard();
   }
@@ -624,8 +973,10 @@ class MetalloRepository {
       rows.add({...Map<String, dynamic>.from(e as Map), '_kind': 'equipment'});
     }
     rows.sort((a, b) {
-      final ad = DateTime.tryParse(a['created_at']?.toString() ?? '') ?? DateTime(1970);
-      final bd = DateTime.tryParse(b['created_at']?.toString() ?? '') ?? DateTime(1970);
+      final ad = DateTime.tryParse(a['created_at']?.toString() ?? '') ??
+          DateTime(1970);
+      final bd = DateTime.tryParse(b['created_at']?.toString() ?? '') ??
+          DateTime(1970);
       return bd.compareTo(ad);
     });
     return rows.take(100).toList();

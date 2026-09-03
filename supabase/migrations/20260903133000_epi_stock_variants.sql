@@ -1,0 +1,122 @@
+alter table public.epi_stock_batches
+  add column if not exists variant text;
+
+alter table public.epi_deliveries
+  add column if not exists variant_snapshot text;
+
+create index if not exists epi_stock_item_variant_idx
+  on public.epi_stock_batches(item_id, variant);
+
+create or replace function public.register_epi_delivery_batch(
+  p_employee_id uuid,
+  p_lines jsonb,
+  p_delivery_reason text default 'initial',
+  p_note text default null
+) returns uuid
+language plpgsql
+security invoker
+set search_path = public
+as $$
+declare
+  v_employee public.epi_employees%rowtype;
+  v_batch public.epi_stock_batches%rowtype;
+  v_line jsonb;
+  v_quantity integer;
+  v_group_id uuid := gen_random_uuid();
+begin
+  if jsonb_typeof(p_lines) <> 'array' or jsonb_array_length(p_lines) = 0 then
+    raise exception 'empty_delivery';
+  end if;
+
+  select * into v_employee from public.epi_employees
+  where id = p_employee_id and active for update;
+  if not found then raise exception 'employee_not_found'; end if;
+
+  for v_line in select value from jsonb_array_elements(p_lines) loop
+    v_quantity := (v_line->>'quantity')::integer;
+    if v_quantity <= 0 then raise exception 'invalid_quantity'; end if;
+
+    select * into v_batch from public.epi_stock_batches
+    where id = (v_line->>'stock_batch_id')::uuid
+      and item_id = (v_line->>'item_id')::uuid for update;
+    if not found then raise exception 'stock_batch_not_found'; end if;
+    if v_batch.quantity < v_quantity then raise exception 'insufficient_epi_stock'; end if;
+
+    update public.epi_stock_batches set quantity = quantity - v_quantity
+    where id = v_batch.id;
+
+    insert into public.epi_deliveries(
+      employee_id, team_id, item_id, stock_batch_id, quantity,
+      delivery_reason, delivery_group_id, ca_snapshot,
+      brand_model_snapshot, lot_snapshot, variant_snapshot, note
+    ) values (
+      v_employee.id, v_employee.team_id, v_batch.item_id, v_batch.id,
+      v_quantity, p_delivery_reason, v_group_id, v_batch.ca_number,
+      v_batch.brand_model, v_batch.lot_number, v_batch.variant,
+      nullif(trim(p_note), '')
+    );
+  end loop;
+
+  return v_group_id;
+end;
+$$;
+
+revoke execute on function public.register_epi_delivery_batch(uuid,jsonb,text,text)
+  from public, anon;
+grant execute on function public.register_epi_delivery_batch(uuid,jsonb,text,text)
+  to authenticated;
+
+drop function if exists public.fulfill_epi_request(uuid);
+create or replace function public.fulfill_epi_request(
+  p_request_id uuid,
+  p_stock_batch_id uuid
+) returns uuid
+language plpgsql
+security invoker
+set search_path = public
+as $$
+declare
+  v_request public.epi_requests%rowtype;
+  v_employee public.epi_employees%rowtype;
+  v_batch public.epi_stock_batches%rowtype;
+  v_group_id uuid := gen_random_uuid();
+begin
+  select * into v_request from public.epi_requests
+  where id = p_request_id and status = 'pending' for update;
+  if not found then raise exception 'request_not_pending'; end if;
+
+  select * into v_employee from public.epi_employees
+  where id = v_request.employee_id and active;
+  if not found then raise exception 'employee_not_found'; end if;
+
+  select * into v_batch from public.epi_stock_batches
+  where id = p_stock_batch_id and item_id = v_request.item_id for update;
+  if not found then raise exception 'stock_batch_not_found'; end if;
+  if v_batch.quantity < v_request.quantity then
+    raise exception 'insufficient_epi_stock';
+  end if;
+
+  update public.epi_stock_batches
+    set quantity = quantity - v_request.quantity where id = v_batch.id;
+  insert into public.epi_deliveries(
+    employee_id, team_id, item_id, stock_batch_id, quantity,
+    delivery_reason, delivery_group_id, ca_snapshot,
+    brand_model_snapshot, lot_snapshot, variant_snapshot, note
+  ) values (
+    v_employee.id, v_employee.team_id, v_batch.item_id, v_batch.id,
+    v_request.quantity, 'replacement', v_group_id, v_batch.ca_number,
+    v_batch.brand_model, v_batch.lot_number, v_batch.variant,
+    'Atendimento de pendência'
+  );
+
+  update public.epi_requests set status = 'fulfilled',
+    fulfilled_by = auth.uid(), fulfilled_at = now()
+  where id = v_request.id;
+  return v_group_id;
+end;
+$$;
+
+revoke execute on function public.fulfill_epi_request(uuid,uuid)
+  from public, anon;
+grant execute on function public.fulfill_epi_request(uuid,uuid)
+  to authenticated;
