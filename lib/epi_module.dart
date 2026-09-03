@@ -498,7 +498,7 @@ class _CosemPageState extends State<_CosemPage> {
                 (request['epi_items'] as Map?)?['name']?.toString() ?? 'Item',
                 style: const TextStyle(fontWeight: FontWeight.w800)),
             subtitle: Text(
-                '${(request['epi_employees'] as Map?)?['full_name'] ?? 'Funcionário'} • ${(request['teams'] as Map?)?['name'] ?? 'Equipe'}\n${request['quantity']} ${(request['epi_items'] as Map?)?['unit'] ?? 'un'}'),
+                '${(request['epi_employees'] as Map?)?['full_name'] ?? 'Funcionário'} • ${(request['teams'] as Map?)?['name'] ?? 'Equipe'}\n${request['quantity']} ${(request['epi_items'] as Map?)?['unit'] ?? 'un'}${request['requested_variant'] == null ? '' : ' • ${request['requested_variant']}'}'),
             isThreeLine: true,
             trailing: SizedBox(
               width: 76,
@@ -524,6 +524,9 @@ class _CosemPageState extends State<_CosemPage> {
     final available = batches
         .where((b) =>
             b['item_id'].toString() == request['item_id'].toString() &&
+            (request['requested_variant'] == null ||
+                b['variant']?.toString() ==
+                    request['requested_variant']?.toString()) &&
             ((b['quantity'] as num?)?.toInt() ?? 0) >=
                 ((request['quantity'] as num?)?.toInt() ?? 1))
         .toList();
@@ -1920,7 +1923,7 @@ Future<bool> _stockForm(BuildContext context, MetalloRepository repo,
                           decoration: const InputDecoration(
                               labelText: 'Número da botina'),
                           items: [
-                            for (var size = 34; size <= 48; size++)
+                            for (var size = 38; size <= 46; size++)
                               DropdownMenuItem(
                                   value: '$size', child: Text('Número $size')),
                           ],
@@ -2212,11 +2215,20 @@ class _AssignmentList extends StatelessWidget {
                 : item['code'] == 'EPI-BOT'
                     ? 'Número ${variants.join(', ')}'
                     : variants.join(', ');
-            final pending = requests.any((r) =>
-                r['item_id']?.toString() == itemId && r['status'] == 'pending');
+            final pendingRequest = requests
+                .where((r) =>
+                    r['item_id']?.toString() == itemId &&
+                    r['status'] == 'pending')
+                .firstOrNull;
+            final pending = pendingRequest != null;
+            final pendingVariant =
+                pendingRequest?['requested_variant']?.toString();
             return _assignmentCard(item['name']?.toString() ?? 'Item',
                 '$deliveredQty/${rec.$2}', deliveredQty >= rec.$2, null,
-                detail: variantDetail,
+                detail: variantDetail ??
+                    (pendingVariant == null
+                        ? null
+                        : 'Solicitado: $pendingVariant • aguardando COSEM'),
                 pending: pending,
                 onTap: deliveredQty >= rec.$2 || pending
                     ? null
@@ -2247,12 +2259,41 @@ class _AssignmentList extends StatelessWidget {
       _message(context, 'Associe o funcionário a uma equipe primeiro.');
       return;
     }
+    String? requestedVariant;
+    if (item['code'] == 'EPI-OCU') {
+      requestedVariant = await showModalBottomSheet<String>(
+        context: context,
+        showDragHandle: true,
+        builder: (sheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              const Text('Qual óculos deve ser solicitado?',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 10),
+              ListTile(
+                leading: const Icon(Icons.light_mode_outlined, color: _epiBlue),
+                title: const Text('Óculos claro'),
+                onTap: () => Navigator.pop(sheetContext, 'Claro'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.dark_mode_outlined, color: _epiBlue),
+                title: const Text('Óculos escuro'),
+                onTap: () => Navigator.pop(sheetContext, 'Escuro'),
+              ),
+            ]),
+          ),
+        ),
+      );
+      if (requestedVariant == null) return;
+    }
     try {
       await repo.requestEpiItem(
           employeeId: person['id'].toString(),
           teamId: teamId,
           itemId: item['id'].toString(),
-          quantity: quantity);
+          quantity: quantity,
+          requestedVariant: requestedVariant);
       if (context.mounted) {
         _message(context, 'Solicitação enviada para a COSEM.');
         onChanged();

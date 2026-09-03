@@ -309,7 +309,7 @@ class MetalloRepository {
     final rows = await client
         .from('epi_requests')
         .select(
-            'id,employee_id,team_id,item_id,quantity,status,created_at,fulfilled_at,epi_employees(full_name,profession,shoe_size),epi_items(code,name,item_kind,unit,ca_number),teams(name)')
+            'id,employee_id,team_id,item_id,quantity,requested_variant,status,created_at,fulfilled_at,epi_employees(full_name,profession,shoe_size),epi_items(code,name,item_kind,unit,ca_number),teams(name)')
         .order('created_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -321,12 +321,14 @@ class MetalloRepository {
     required String teamId,
     required String itemId,
     required int quantity,
+    String? requestedVariant,
   }) async {
     await client.from('epi_requests').insert({
       'employee_id': employeeId,
       'team_id': teamId,
       'item_id': itemId,
       'quantity': quantity,
+      'requested_variant': _nullable(requestedVariant),
     });
   }
 
