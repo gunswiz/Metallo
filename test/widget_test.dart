@@ -3,6 +3,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:metallo/main.dart';
 
 void main() {
+  testWidgets('guia abre tela real somente após confirmação', (tester) async {
+    var opened = false;
+    await tester.pumpWidget(MaterialApp(
+        home: HelpGuidePage(
+      role: 'admin',
+      onStartGuidedPractice: (_) async {
+        opened = true;
+      },
+    )));
+    await tester.tap(find.text('Primeiros passos'));
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -260));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Praticar no aplicativo').first);
+    await tester.pumpAndSettle();
+    expect(opened, isFalse);
+    await tester.tap(find.text('Abrir tela real'));
+    await tester.pumpAndSettle();
+    expect(opened, isTrue);
+    expect(find.text('Executar ação'), findsNothing);
+  });
   test('sanity', () => expect(true, isTrue));
 
   testWidgets('guia prático mantém o treinamento dentro do aplicativo',

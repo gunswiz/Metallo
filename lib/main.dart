@@ -624,6 +624,7 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int index = 2;
+  OverlayEntry? _guideOverlay;
   late final MetalloRepository repo =
       MetalloRepository(Supabase.instance.client);
   late final Stream<DashboardSnapshot> dashboard = repo.watchDashboard();
@@ -663,8 +664,108 @@ class _MainShellState extends State<MainShell> {
     });
   }
 
+  Future<void> _startGuidedPractice(_HelpTopic topic) async {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    final title = topic.title.toLowerCase();
+    setState(() => index = title.contains('equipamento')
+        ? 1
+        : title.contains('material') || title.contains('consumo')
+            ? 0
+            : title.contains('histórico')
+                ? 4
+                : 2);
+    if (topic.restricted) {
+      final data = await repo.fetchDashboard();
+      if (!mounted) return;
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) =>
+              EpiManagementShell(repo: repo, teams: data.teams, role: role)));
+    }
+    _guideOverlay?.remove();
+    var step = topic.steps.length > 1 ? 1 : 0;
+    var collapsed = false;
+    _guideOverlay = OverlayEntry(
+        builder: (overlayContext) => Positioned(
+              left: 12,
+              right: 12,
+              top: MediaQuery.of(overlayContext).padding.top + 64,
+              child: Material(
+                elevation: 12,
+                color: const Color(0xFF102A43),
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Row(children: [
+                      const Icon(Icons.school_outlined,
+                          color: Color(0xFF52A9FF)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Text(
+                              'Guia • ${step + 1}/${topic.steps.length}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w900))),
+                      IconButton(
+                        tooltip: collapsed
+                            ? 'Mostrar orientação'
+                            : 'Recolher orientação',
+                        onPressed: () {
+                          collapsed = !collapsed;
+                          _guideOverlay?.markNeedsBuild();
+                        },
+                        icon: Icon(
+                            collapsed ? Icons.expand_more : Icons.expand_less),
+                      ),
+                      IconButton(
+                        tooltip: 'Encerrar guia',
+                        onPressed: () {
+                          _guideOverlay?.remove();
+                          _guideOverlay = null;
+                        },
+                        icon: const Icon(Icons.close),
+                      ),
+                    ]),
+                    if (!collapsed) ...[
+                      Text(topic.steps[step],
+                          style: const TextStyle(fontSize: 16)),
+                      const SizedBox(height: 6),
+                      const Text(
+                          'Use a tela real abaixo. Confirmações salvam dados reais.',
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 12)),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        if (step > 0)
+                          TextButton(
+                              onPressed: () {
+                                step--;
+                                _guideOverlay?.markNeedsBuild();
+                              },
+                              child: const Text('Anterior')),
+                        FilledButton(
+                            onPressed: () {
+                              if (step == topic.steps.length - 1) {
+                                _guideOverlay?.remove();
+                                _guideOverlay = null;
+                              } else {
+                                step++;
+                                _guideOverlay?.markNeedsBuild();
+                              }
+                            },
+                            child: Text(step == topic.steps.length - 1
+                                ? 'Concluir guia'
+                                : 'Próxima etapa')),
+                      ]),
+                    ],
+                  ]),
+                ),
+              ),
+            ));
+    if (mounted) Overlay.of(context, rootOverlay: true).insert(_guideOverlay!);
+  }
+
   @override
   void dispose() {
+    _guideOverlay?.remove();
     repo.dispose();
     super.dispose();
   }
@@ -725,7 +826,9 @@ class _MainShellState extends State<MainShell> {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                   builder: (_) => AccountSettingsPage(
-                      role: role, onReplayTutorial: _replayTutorial)),
+                      role: role,
+                      onReplayTutorial: _replayTutorial,
+                      onStartGuidedPractice: _startGuidedPractice)),
             ),
             icon: const Icon(Icons.account_circle_outlined),
           ),
@@ -1116,9 +1219,13 @@ Widget _tutorialInfo(IconData icon, String title, String text, Color color) =>
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage(
-      {super.key, required this.role, required this.onReplayTutorial});
+      {super.key,
+      required this.role,
+      required this.onReplayTutorial,
+      this.onStartGuidedPractice});
   final String role;
   final Future<void> Function() onReplayTutorial;
+  final Future<void> Function(_HelpTopic)? onStartGuidedPractice;
 
   @override
   State<AccountSettingsPage> createState() => _AccountSettingsPageState();
@@ -1236,7 +1343,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               onPressed: busy
                   ? null
                   : () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => HelpGuidePage(role: widget.role))),
+                      builder: (_) => HelpGuidePage(
+                          role: widget.role,
+                          onStartGuidedPractice:
+                              widget.onStartGuidedPractice))),
               icon: const Icon(Icons.menu_book_outlined),
               label: const Text('Abrir guia prático'),
             ),
@@ -1289,8 +1399,10 @@ class _HelpTopic {
 }
 
 class HelpGuidePage extends StatefulWidget {
-  const HelpGuidePage({super.key, required this.role});
+  const HelpGuidePage(
+      {super.key, required this.role, this.onStartGuidedPractice});
   final String role;
+  final Future<void> Function(_HelpTopic)? onStartGuidedPractice;
   @override
   State<HelpGuidePage> createState() => _HelpGuidePageState();
 }
@@ -1449,9 +1561,35 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
                       topic.warning!, const Color(0xFFFFB74D)),
                 const SizedBox(height: 10),
                 OutlinedButton.icon(
-                    onPressed: () => _showPractice(context, topic),
+                    onPressed: () async {
+                      if (widget.onStartGuidedPractice == null) {
+                        await _showPractice(context, topic);
+                        return;
+                      }
+                      final accepted = await showDialog<bool>(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                                title: const Text('Praticar no aplicativo'),
+                                content: const Text(
+                                    'O guia ficará sobre as telas reais e poderá ser recolhido. Ao confirmar entregas, consumos ou outras operações, os dados reais serão alterados. Use este modo quando for realizar uma operação de verdade.'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(dialogContext, false),
+                                      child: const Text('Cancelar')),
+                                  FilledButton(
+                                      onPressed: () =>
+                                          Navigator.pop(dialogContext, true),
+                                      child: const Text('Abrir tela real')),
+                                ],
+                              ));
+                      if (accepted == true)
+                        await widget.onStartGuidedPractice!(topic);
+                    },
                     icon: const Icon(Icons.play_circle_outline),
-                    label: const Text('Praticar com demonstração')),
+                    label: Text(widget.onStartGuidedPractice == null
+                        ? 'Praticar com demonstração'
+                        : 'Praticar no aplicativo')),
               ],
             ),
           ),
@@ -6498,6 +6636,20 @@ Future<void> showEquipmentActionsSheet(
               ),
             if (equipment.ownershipType == 'rented' && role == 'admin')
               ListTile(
+                leading: const Icon(Icons.assignment_return_outlined,
+                    color: Color(0xFFFFB74D)),
+                title: const Text('Devolver à locadora'),
+                subtitle: const Text(
+                    'Devolver somente este patrimônio e manter os demais na equipe'),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await Future<void>.delayed(const Duration(milliseconds: 250));
+                  if (!pageContext.mounted) return;
+                  await showRentalReturnDialog(pageContext, repo, equipment);
+                },
+              ),
+            if (equipment.ownershipType == 'rented' && role == 'admin')
+              ListTile(
                 leading: const Icon(Icons.change_circle_outlined,
                     color: Color(0xFFF5B942)),
                 title: const Text('Substituir equipamento alugado'),
@@ -6549,6 +6701,68 @@ Future<void> showEquipmentActionsSheet(
       ),
     ),
   );
+}
+
+Future<void> showRentalReturnDialog(BuildContext context,
+    MetalloRepository repo, EquipmentAsset equipment) async {
+  final note = TextEditingController();
+  var busy = false;
+  String? error;
+  await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+          builder: (context, setLocal) => AlertDialog(
+                title: const Text('Devolver equipamento alugado'),
+                content: SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text('${equipment.name} • ${equipment.assetCode}',
+                          style: const TextStyle(fontWeight: FontWeight.w900)),
+                      const SizedBox(height: 10),
+                      const Text(
+                          'Será devolvida 1 unidade: este patrimônio. Os outros equipamentos da equipe não serão alterados. O cadastro será arquivado, preservando os registros.'),
+                      const SizedBox(height: 12),
+                      TextField(
+                          controller: note,
+                          decoration: const InputDecoration(
+                              labelText: 'Observação da devolução')),
+                      if (error != null)
+                        Text(error!,
+                            style: const TextStyle(color: Colors.redAccent)),
+                    ])),
+                actions: [
+                  TextButton(
+                      onPressed:
+                          busy ? null : () => Navigator.pop(dialogContext),
+                      child: const Text('Cancelar')),
+                  FilledButton(
+                      onPressed: busy
+                          ? null
+                          : () async {
+                              setLocal(() {
+                                busy = true;
+                                error = null;
+                              });
+                              try {
+                                await repo.returnRentedEquipment(
+                                    equipment, note.text);
+                                if (dialogContext.mounted)
+                                  Navigator.pop(dialogContext);
+                              } catch (e) {
+                                if (dialogContext.mounted)
+                                  setLocal(() {
+                                    busy = false;
+                                    error = friendlyError(e);
+                                  });
+                              }
+                            },
+                      child:
+                          Text(busy ? 'Devolvendo...' : 'Confirmar devolução')),
+                ],
+              )));
+  note.dispose();
 }
 
 Future<void> showEquipmentMaintenanceDialog(

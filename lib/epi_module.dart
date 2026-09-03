@@ -733,7 +733,7 @@ class _EmployeesPageState extends State<_EmployeesPage> {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w800)),
                               subtitle: Text(
-                                  '${person['profession'] ?? 'Profissão não informada'} • $teamName'),
+                                  '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${_asoLabel(person)}'),
                               trailing: const Icon(Icons.chevron_right_rounded),
                               onTap: () => _openEmployeeDetails(
                                   context, widget.repo, person),
@@ -2087,6 +2087,13 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
                     ]))
               ]),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: _AsoCard(
+                  repo: widget.repo,
+                  person: widget.person,
+                  onChanged: () => setState(() {})),
+            ),
             const TabBar(tabs: [
               Tab(text: 'EPI'),
               Tab(text: 'Fardamento'),
@@ -2151,6 +2158,87 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
           ]),
         ),
       );
+}
+
+String _asoLabel(Map<String, dynamic> person) {
+  final expiry = DateTime.tryParse(person['aso_expiry_date']?.toString() ?? '');
+  if (expiry == null) return 'ASO não informado • cadastrar validade';
+  final now = DateTime.now();
+  final days = expiry.difference(DateTime(now.year, now.month, now.day)).inDays;
+  final date =
+      '${expiry.day.toString().padLeft(2, '0')}/${expiry.month.toString().padLeft(2, '0')}/${expiry.year}';
+  if (days < 0) return 'ASO vencido em $date • renovar';
+  if (days <= 30) return 'ASO vence em $date • renovar em breve';
+  return 'ASO válido até $date';
+}
+
+class _AsoCard extends StatelessWidget {
+  const _AsoCard(
+      {required this.repo, required this.person, required this.onChanged});
+  final MetalloRepository repo;
+  final Map<String, dynamic> person;
+  final VoidCallback onChanged;
+
+  Future<void> _renew(BuildContext context) async {
+    final profile = await repo.currentProfile();
+    if (!context.mounted) return;
+    if (profile?['role'] != 'admin') {
+      _message(
+          context, 'Solicite ao administrador o registro da renovação do ASO.');
+      return;
+    }
+    final now = DateTime.now();
+    final exam = await showDatePicker(
+        context: context,
+        helpText: 'Data do exame ASO',
+        initialDate: now,
+        firstDate: DateTime(2000),
+        lastDate: now);
+    if (exam == null || !context.mounted) return;
+    final expiry = await showDatePicker(
+        context: context,
+        helpText: 'Validade informada para o ASO',
+        initialDate: now,
+        firstDate: exam,
+        lastDate: DateTime(now.year + 10));
+    if (expiry == null || !context.mounted) return;
+    try {
+      await repo.renewEmployeeAso(person['id'].toString(), exam, expiry);
+      person['aso_exam_date'] = exam.toIso8601String().substring(0, 10);
+      person['aso_expiry_date'] = expiry.toIso8601String().substring(0, 10);
+      onChanged();
+      if (context.mounted) _message(context, 'ASO atualizado.');
+    } catch (_) {
+      if (context.mounted)
+        _message(context, 'Não foi possível atualizar o ASO.');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final expiry =
+        DateTime.tryParse(person['aso_expiry_date']?.toString() ?? '');
+    final alert = expiry == null ||
+        expiry.isBefore(DateTime.now().add(const Duration(days: 31)));
+    final color = alert ? Colors.orangeAccent : Colors.greenAccent;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: .1),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: color.withValues(alpha: .5))),
+      child: Row(children: [
+        Icon(Icons.medical_information_outlined, color: color),
+        const SizedBox(width: 10),
+        Expanded(
+            child: Text(_asoLabel(person),
+                style: TextStyle(color: color, fontWeight: FontWeight.w800))),
+        TextButton(
+            onPressed: () => _renew(context),
+            child: Text(expiry == null ? 'Cadastrar' : 'Renovar')),
+      ]),
+    );
+  }
 }
 
 class _AssignmentList extends StatelessWidget {

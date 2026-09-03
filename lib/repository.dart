@@ -231,7 +231,7 @@ class MetalloRepository {
       final rows = await client
           .from('epi_employees')
           .select(
-              'id,full_name,registration_code,profession,team_id,shirt_size,pants_size,shoe_size,active,created_at,teams(name)')
+              'id,full_name,registration_code,profession,team_id,shirt_size,pants_size,shoe_size,aso_exam_date,aso_expiry_date,active,created_at,teams(name)')
           .eq('active', true)
           .order('full_name');
       return (rows as List)
@@ -378,6 +378,19 @@ class MetalloRepository {
       'pants_size': _nullable(pantsSize),
       'shoe_size': _nullable(shoeSize),
     }).eq('id', id);
+  }
+
+  Future<void> renewEmployeeAso(
+      String employeeId, DateTime examDate, DateTime expiryDate) async {
+    await client
+        .from('epi_employees')
+        .update({
+          'aso_exam_date': examDate.toIso8601String().substring(0, 10),
+          'aso_expiry_date': expiryDate.toIso8601String().substring(0, 10),
+        })
+        .eq('id', employeeId)
+        .select('id')
+        .single();
   }
 
   Future<Map<String, dynamic>> fetchEpiEmployeeItemSet(
@@ -904,6 +917,17 @@ class MetalloRepository {
       'p_destination_team_id': toTeamId,
       'p_new_status': 'available',
       'p_note': 'Transferência pelo aplicativo',
+    });
+    await refreshDashboard();
+  }
+
+  Future<void> returnRentedEquipment(EquipmentAsset asset, String? note) async {
+    if (asset.ownershipType != 'rented') {
+      throw StateError('Somente equipamentos alugados podem ser devolvidos.');
+    }
+    await client.rpc('return_rented_equipment', params: {
+      'p_asset_id': asset.id,
+      'p_note': note,
     });
     await refreshDashboard();
   }
