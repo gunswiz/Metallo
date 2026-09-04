@@ -39,6 +39,17 @@ part 'features/equipment/grouping.dart';
 part 'features/equipment/equipment_page.dart';
 part 'features/equipment/equipment_catalog_drawer.dart';
 part 'features/equipment/dialogs.dart';
+part 'features/consumption/consumption_page.dart';
+part 'features/consumption/consumption_materials_page.dart';
+part 'features/consumption/consumption_graphs_page.dart';
+part 'features/consumption/consumption_material_detail_page.dart';
+part 'features/consumption/consumption_teams_compare_page.dart';
+part 'features/consumption/calculations.dart';
+part 'features/consumption/widgets.dart';
+part 'features/consumption/charts.dart';
+part 'features/history/helpers.dart';
+part 'features/history/history_page.dart';
+part 'features/history/dialogs.dart';
 part 'features/legacy.dart';
 
 class MetalloApp extends StatelessWidget {
