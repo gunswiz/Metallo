@@ -31,6 +31,14 @@ part 'features/auth/pending_access_page.dart';
 part 'features/shell/main_shell.dart';
 part 'features/shell/tutorial.dart';
 part 'features/shell/guide.dart';
+part 'features/dashboard/dashboard_page.dart';
+part 'features/materials/materials_page.dart';
+part 'features/materials/material_catalog_drawer.dart';
+part 'features/materials/dialogs.dart';
+part 'features/equipment/grouping.dart';
+part 'features/equipment/equipment_page.dart';
+part 'features/equipment/equipment_catalog_drawer.dart';
+part 'features/equipment/dialogs.dart';
 part 'features/legacy.dart';
 
 class MetalloApp extends StatelessWidget {

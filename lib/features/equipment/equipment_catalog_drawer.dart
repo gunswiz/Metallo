@@ -1,0 +1,163 @@
+part of '../../app.dart';
+
+class EquipmentCatalogDrawer extends StatefulWidget {
+  const EquipmentCatalogDrawer({
+    super.key,
+    required this.repo,
+    required this.isAdmin,
+    required this.teams,
+  });
+  final MetalloRepository repo;
+  final bool isAdmin;
+  final List<Team> teams;
+
+  @override
+  State<EquipmentCatalogDrawer> createState() => _EquipmentCatalogDrawerState();
+}
+
+class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
+  late Future<List<Map<String, dynamic>>> catalog =
+      widget.repo.fetchEquipmentCatalog();
+  void reload() =>
+      setState(() => catalog = widget.repo.fetchEquipmentCatalog());
+
+  @override
+  Widget build(BuildContext context) => Drawer(
+        width: MediaQuery.sizeOf(context).width * .90,
+        backgroundColor: const Color(0xFF0A0F16),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 14, 8, 10),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Catálogo de equipamentos',
+                              style: TextStyle(
+                                  fontSize: 21, fontWeight: FontWeight.w900)),
+                          Text('Ordenado pelo código individual',
+                              style: TextStyle(color: Colors.white60)),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: reload, icon: const Icon(Icons.refresh)),
+                    IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close)),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: catalog,
+                  builder: (context, snap) {
+                    if (snap.hasError) return ErrorState(error: snap.error);
+                    if (!snap.hasData)
+                      return const Center(child: CircularProgressIndicator());
+                    if (snap.data!.isEmpty)
+                      return const Center(
+                          child: Text('Nenhum equipamento cadastrado.'));
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: snap.data!.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (context, i) {
+                        final e = snap.data![i];
+                        final item = e['items'] as Map?;
+                        final team = e['teams'] as Map?;
+                        final ownership =
+                            parseEquipmentOwnership(e['notes'] as String?);
+                        return ListTile(
+                          leading: Container(
+                            constraints: const BoxConstraints(minWidth: 62),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF26313D),
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: Text(
+                              e['asset_code']?.toString() ?? '-',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Color(0xFFCFD8E3),
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                          title: Row(children: [
+                            Expanded(
+                                child: Text(equipmentTypeDisplayName(
+                                    item?['name']?.toString() ??
+                                        'Equipamento'))),
+                            EquipmentOwnershipBadge(type: ownership.type)
+                          ]),
+                          subtitle: Text([
+                            if ((item?['code']?.toString() ?? '').isNotEmpty)
+                              'modelo ${item?['code']}',
+                            if ((team?['name']?.toString() ?? '').isNotEmpty)
+                              team?['name'].toString(),
+                            if (ownership.isRented &&
+                                ownership.rentalCompany?.isNotEmpty == true)
+                              ownership.rentalCompany!,
+                            if (ownership.isRented &&
+                                ownership.rentalEndDate?.isNotEmpty == true)
+                              'até ${ownership.rentalEndDate}',
+                            statusLabel(e['status']?.toString() ?? 'available'),
+                          ].join(' • ')),
+                          trailing: widget.isAdmin
+                              ? PopupMenuButton<String>(
+                                  onSelected: (value) async {
+                                    if (value == 'edit') {
+                                      final changed =
+                                          await showEditEquipmentCatalogDialog(
+                                        context,
+                                        widget.repo,
+                                        widget.teams,
+                                        e,
+                                      );
+                                      if (changed == true) reload();
+                                    } else if (value == 'delete') {
+                                      final ok = await confirm(
+                                        context,
+                                        'Excluir equipamento?',
+                                        'O equipamento será desativado e deixará de aparecer no estoque e no catálogo. O histórico será preservado.',
+                                      );
+                                      if (ok == true) {
+                                        try {
+                                          await widget.repo
+                                              .deactivateEquipmentAsset(
+                                                  e['id'].toString());
+                                          reload();
+                                        } catch (err) {
+                                          if (context.mounted)
+                                            showError(context, err);
+                                        }
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (_) => const [
+                                    PopupMenuItem(
+                                        value: 'edit', child: Text('Editar')),
+                                    PopupMenuItem(
+                                        value: 'delete',
+                                        child: Text('Excluir')),
+                                  ],
+                                )
+                              : null,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
