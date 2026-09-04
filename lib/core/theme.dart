@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 const metalloPrimary = Color(0xFF1687FF);
 const metalloSecondary = Color(0xFF55A9FF);
+const metalloAccent = Color(0xFF52A9FF);
+const metalloSuccess = Color(0xFF67D39A);
 const metalloBackground = Color(0xFF05080D);
 const metalloSurface = Color(0xFF111720);
+const metalloFeatureCard = Color(0xFF101A27);
 const metalloInputFill = Color(0xFF121820);
 const metalloBorder = Color(0xFF2B394B);
 const metalloNavigationBackground = Color(0xFF090D13);
