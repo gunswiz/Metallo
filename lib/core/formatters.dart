@@ -1,4 +1,4 @@
-import '../repository.dart';
+import '../data/models/team.dart';
 
 String removePortugueseAccents(String value) => value
     .replaceAll('á', 'a')

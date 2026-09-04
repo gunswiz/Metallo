@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metallo/repository.dart';
+import 'package:metallo/data/models/equipment_ownership.dart';
 
 void main() {
   test('existing equipment defaults to company owned', () {

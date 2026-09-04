@@ -164,7 +164,6 @@ class _StartupSplashState extends State<StartupSplash> {
   }
 }
 
-
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -1694,7 +1693,6 @@ class _PracticeInteractionState extends State<_PracticeInteraction> {
   }
 }
 
-
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
     super.key,
@@ -1856,7 +1854,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
-
 
 class TeamOverviewCard extends StatelessWidget {
   const TeamOverviewCard(
@@ -2640,19 +2637,7 @@ Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
 }
 
 String equipmentFamilyKey(EquipmentAsset asset) {
-  final normalized = asset.name
-      .toLowerCase()
-      .replaceAll('á', 'a')
-      .replaceAll('ã', 'a')
-      .replaceAll('â', 'a')
-      .replaceAll('é', 'e')
-      .replaceAll('ê', 'e')
-      .replaceAll('í', 'i')
-      .replaceAll('ó', 'o')
-      .replaceAll('ô', 'o')
-      .replaceAll('õ', 'o')
-      .replaceAll('ú', 'u')
-      .replaceAll('ç', 'c');
+  final normalized = removePortugueseAccents(asset.name.toLowerCase());
   if (normalized.contains('maquina de solda')) return 'family:welding_machine';
   return 'item:${asset.itemId}';
 }
