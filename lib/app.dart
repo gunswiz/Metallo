@@ -60,7 +60,12 @@ part 'features/epi/reports_page.dart';
 part 'features/epi/delivery.dart';
 part 'features/epi/forms.dart';
 part 'features/epi/epi_catalog.dart';
-part 'features/legacy.dart';
+part 'features/account/account_settings_page.dart';
+part 'features/admin/administration_page.dart';
+part 'features/admin/create_employee_page.dart';
+part 'features/admin/users_management_page.dart';
+part 'features/admin/teams_page.dart';
+part 'features/admin/dialogs.dart';
 
 class MetalloApp extends StatelessWidget {
   const MetalloApp({super.key});
