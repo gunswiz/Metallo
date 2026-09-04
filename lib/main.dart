@@ -4,13 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'config.dart';
-import 'app_update.dart';
+import 'core/config.dart';
+import 'core/app_update.dart';
 import 'epi_module.dart';
 import 'repository.dart';
-import 'validation.dart';
-import 'ui_action_lock.dart';
-import 'guided_practice_card.dart';
+import 'core/errors.dart';
+import 'core/formatters.dart';
+import 'core/theme.dart';
+import 'shared/widgets/brand_logo.dart';
+import 'shared/widgets/role_badge.dart';
+import 'shared/widgets/summary_tile.dart';
+import 'shared/widgets/equipment_ownership_badge.dart';
+import 'shared/widgets/status_badge.dart';
+import 'shared/widgets/empty_state.dart';
+import 'shared/widgets/error_state.dart';
+import 'shared/widgets/error_page.dart';
+import 'core/validation.dart';
+import 'shared/widgets/ui_action_lock.dart';
+import 'shared/widgets/guided_practice_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,59 +37,10 @@ class MetalloApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF1687FF),
-      brightness: Brightness.dark,
-    ).copyWith(
-      primary: const Color(0xFF1687FF),
-      secondary: const Color(0xFF55A9FF),
-      surface: const Color(0xFF111720),
-    );
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Metallo',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: scheme,
-        scaffoldBackgroundColor: const Color(0xFF05080D),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF05080D),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        cardTheme: CardThemeData(
-          color: const Color(0xFF111720),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFF121820),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFF2B394B)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFF2B394B)),
-          ),
-        ),
-        navigationBarTheme: const NavigationBarThemeData(
-          backgroundColor: Color(0xFF090D13),
-          indicatorColor: Color(0xFF123A65),
-          labelTextStyle: WidgetStatePropertyAll(
-              TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-        ),
-        filledButtonTheme: FilledButtonThemeData(
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(50),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          ),
-        ),
-      ),
+      theme: metalloTheme(),
       builder: (context, child) {
         final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
         return Stack(
@@ -202,19 +164,6 @@ class _StartupSplashState extends State<StartupSplash> {
   }
 }
 
-class BrandLogo extends StatelessWidget {
-  const BrandLogo({super.key, this.height = 86});
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/metallo_logo_outline.png',
-      height: height,
-      fit: BoxFit.contain,
-    );
-  }
-}
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -1745,30 +1694,6 @@ class _PracticeInteractionState extends State<_PracticeInteraction> {
   }
 }
 
-class RoleBadge extends StatelessWidget {
-  const RoleBadge({super.key, required this.role});
-  final String role;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0E3965),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF2C8BE8)),
-      ),
-      child: Text(
-        roleLabel(role),
-        style: const TextStyle(
-          color: Color(0xFF8CC8FF),
-          fontWeight: FontWeight.w800,
-          fontSize: 11,
-        ),
-      ),
-    );
-  }
-}
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
@@ -1932,46 +1857,6 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-class SummaryTile extends StatelessWidget {
-  const SummaryTile({
-    super.key,
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-  final IconData icon;
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF141C27),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFF243449)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: const Color(0xFF3B9EFF), size: 19),
-          const SizedBox(height: 7),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-          ),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11, color: Colors.white60),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class TeamOverviewCard extends StatelessWidget {
   const TeamOverviewCard(
@@ -7588,340 +7473,4 @@ Future<void> showAssetHistoryEdit(
   } finally {
     actionLock.release();
   }
-}
-
-class EquipmentOwnershipBadge extends StatelessWidget {
-  const EquipmentOwnershipBadge({super.key, required this.type});
-  final String type;
-  @override
-  Widget build(BuildContext context) {
-    final rented = type == 'rented';
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-            color: rented ? const Color(0xFF3A2E13) : const Color(0xFF173326),
-            borderRadius: BorderRadius.circular(999)),
-        child: Text(rented ? 'Alugado' : 'Próprio',
-            style: TextStyle(
-                color:
-                    rented ? const Color(0xFFFFCC66) : const Color(0xFF72D6A0),
-                fontSize: 11,
-                fontWeight: FontWeight.w800)));
-  }
-}
-
-class StatusBadge extends StatelessWidget {
-  const StatusBadge({super.key, required this.status});
-  final String status;
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(label: Text(statusLabel(status)));
-  }
-}
-
-class EmptyState extends StatelessWidget {
-  const EmptyState({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          children: [
-            Icon(icon, size: 64, color: const Color(0xFF1687FF)),
-            const SizedBox(height: 14),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white60),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ErrorState extends StatelessWidget {
-  const ErrorState({super.key, required this.error});
-  final Object? error;
-
-  @override
-  Widget build(BuildContext context) {
-    if (_isConnectivityError(error)) {
-      return const OfflineState();
-    }
-    return EmptyState(
-      icon: Icons.error_outline,
-      title: 'Não foi possível carregar',
-      subtitle: friendlyError(error),
-    );
-  }
-}
-
-class OfflineState extends StatelessWidget {
-  const OfflineState({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 430),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
-            decoration: BoxDecoration(
-              color: const Color(0xFF121722),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: const Color(0xFF2A3445)),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x33000000),
-                  blurRadius: 20,
-                  offset: Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: AspectRatio(
-                    aspectRatio: 4 / 3,
-                    child: Image.asset(
-                      'assets/offline_worker.jpg',
-                      fit: BoxFit.cover,
-                      alignment: const Alignment(0, -0.18),
-                      filterQuality: FilterQuality.medium,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    'tá liso? Não pagou a internet foi?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      height: 1.12,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    'Verifique sua conexão e tente novamente.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white60,
-                      fontSize: 14,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ErrorPage extends StatelessWidget {
-  const ErrorPage({super.key, required this.message, required this.onRetry});
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline, size: 64),
-              const SizedBox(height: 14),
-              Text(message, textAlign: TextAlign.center),
-              const SizedBox(height: 18),
-              FilledButton(
-                  onPressed: onRetry, child: const Text('Tentar novamente')),
-              TextButton(
-                onPressed: () => Supabase.instance.client.auth.signOut(),
-                child: const Text('Sair'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Team? findTeam(List<Team> teams, String id) {
-  for (final t in teams) {
-    if (t.id == id) return t;
-  }
-  return null;
-}
-
-String firstName(String name) {
-  final clean = name.trim();
-  return clean.isEmpty ? 'Usuário' : clean.split(RegExp(r'\s+')).first;
-}
-
-String roleLabel(String role) {
-  switch (role) {
-    case 'admin':
-      return 'Admin';
-    case 'engineer':
-      return 'Engenheiro';
-    case 'leader':
-      return 'Encarregado';
-    default:
-      return 'Colaborador';
-  }
-}
-
-String statusLabel(String status) {
-  const labels = {
-    'available': 'Disponível',
-    'in_use': 'Em uso',
-    'maintenance': 'Manutenção',
-    'damaged': 'Danificado',
-    'lost': 'Perdido',
-    'retired': 'Baixado',
-  };
-  return labels[status] ?? status;
-}
-
-String movementLabel(String type) {
-  const labels = {
-    'entry': 'Entrada',
-    'exit': 'Saída',
-    'transfer': 'Transferência',
-    'return': 'Retorno',
-    'maintenance': 'Manutenção',
-    'assign': 'Atribuição',
-    'status_change': 'Status',
-    'consumption': 'Consumo',
-    'replenishment': 'Reposição',
-    'adjustment': 'Ajuste',
-  };
-  return labels[type] ?? type;
-}
-
-bool _isConnectivityError(Object? error) {
-  final text = (error?.toString() ?? '').toLowerCase();
-  return text.contains('socketexception') ||
-      text.contains('failed host lookup') ||
-      text.contains('handshakeexception') ||
-      text.contains('handshake error') ||
-      text.contains('certificate_verify_failed') ||
-      text.contains('connection refused') ||
-      text.contains('connection reset') ||
-      text.contains('network is unreachable') ||
-      text.contains('connection timed out') ||
-      text.contains('timed out');
-}
-
-String friendlyError(Object? error) {
-  final t = error.toString().replaceFirst('Exception: ', '');
-  if (t.contains('email_not_confirmed') ||
-      t.toLowerCase().contains('email not confirmed')) {
-    return 'Seu cadastro foi criado, mas o e-mail ainda não foi confirmado. Confirme pelo link enviado ao seu e-mail e, depois, aguarde a liberação do administrador.';
-  }
-  if (t.contains('invalid_credentials') ||
-      t.toLowerCase().contains('invalid login credentials')) {
-    return 'E-mail ou senha incorretos.';
-  }
-  if (t.contains('user_already_exists') ||
-      t.toLowerCase().contains('user already registered')) {
-    return 'Já existe uma conta cadastrada com este e-mail.';
-  }
-  if (t.contains('weak_password')) {
-    return 'A senha não atende aos requisitos configurados no servidor.';
-  }
-  if (t.contains('admin_required'))
-    return 'Apenas o administrador pode fazer isso.';
-  if (t.contains('forbidden_role'))
-    return 'Seu cargo não possui permissão para esta ação.';
-  if (t.contains('forbidden_team') || t.contains('forbidden_origin_team')) {
-    return 'Você só pode operar a sua própria equipe.';
-  }
-  if (t.contains('team_has_inventory'))
-    return 'A equipe ainda possui materiais em estoque.';
-  if (t.contains('team_has_assets'))
-    return 'A equipe ainda possui equipamentos.';
-  if (t.contains('team_has_active_users'))
-    return 'A equipe ainda possui usuários ativos.';
-  if (t.contains('only_latest_asset_movement_can_change')) {
-    return 'Por segurança, somente a movimentação mais recente deste equipamento pode ser corrigida ou excluída.';
-  }
-  if (t.contains('cannot_reverse_destination_stock')) {
-    return 'Não é possível desfazer este histórico porque o estoque atual já foi consumido ou transferido.';
-  }
-  if (t.contains('insufficient_stock'))
-    return 'Quantidade insuficiente na localização de origem.';
-  if (t.contains('item_has_stock'))
-    return 'Não é possível excluir: este material ainda possui saldo em uma localização.';
-  if (t.contains('item_has_assets'))
-    return 'Não é possível excluir: este cadastro ainda possui equipamentos ativos.';
-  if (t.contains('duplicate key') || t.contains('23505')) {
-    return 'Este código ou patrimônio já está em uso.';
-  }
-  if (_isConnectivityError(error)) {
-    return 'Sem conexão com o servidor. Verifique sua internet.';
-  }
-  return t;
-}
-
-Future<bool?> confirm(BuildContext context, String title, String text) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Text(text),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancelar'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: const Text('Confirmar'),
-        ),
-      ],
-    ),
-  );
-}
-
-void showError(BuildContext context, Object error) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(friendlyError(error))),
-  );
 }

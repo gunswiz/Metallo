@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'repository.dart';
-import 'ui_action_lock.dart';
+import 'shared/widgets/ui_action_lock.dart';
 
 const _epiBlue = Color(0xFF168CFF);
 const _epiCard = Color(0xFF101A27);

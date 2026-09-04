@@ -4,6 +4,8 @@ String? requiredText(String? value, String label) {
 }
 
 String? positiveQuantity(int? value) {
-  if (value == null || value <= 0) return 'A quantidade deve ser maior que zero.';
+  if (value == null || value <= 0) {
+    return 'A quantidade deve ser maior que zero.';
+  }
   return null;
 }

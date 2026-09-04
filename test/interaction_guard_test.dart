@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metallo/epi_module.dart';
-import 'package:metallo/guided_practice_card.dart';
+import 'package:metallo/shared/widgets/guided_practice_card.dart';
 import 'package:metallo/main.dart';
 import 'package:metallo/repository.dart';
-import 'package:metallo/ui_action_lock.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 ThemeData appTheme() => ThemeData.dark().copyWith(

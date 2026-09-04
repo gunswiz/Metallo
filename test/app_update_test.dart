@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metallo/app_update.dart';
+import 'package:metallo/core/app_update.dart';
 
 void main() {
   String manifest(String url, {Object build = 44, Object version = '0.9.3'}) =>

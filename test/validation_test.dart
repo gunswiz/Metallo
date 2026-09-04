@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metallo/validation.dart';
+import 'package:metallo/core/validation.dart';
 
 void main() {
   test('required text', () {
