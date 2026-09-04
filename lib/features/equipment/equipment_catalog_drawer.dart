@@ -7,7 +7,7 @@ class EquipmentCatalogDrawer extends StatefulWidget {
     required this.isAdmin,
     required this.teams,
   });
-  final MetalloRepository repo;
+  final CatalogRepository repo;
   final bool isAdmin;
   final List<Team> teams;
 
@@ -58,11 +58,13 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
                   future: catalog,
                   builder: (context, snap) {
                     if (snap.hasError) return ErrorState(error: snap.error);
-                    if (!snap.hasData)
+                    if (!snap.hasData) {
                       return const Center(child: CircularProgressIndicator());
-                    if (snap.data!.isEmpty)
+                    }
+                    if (snap.data!.isEmpty) {
                       return const Center(
                           child: Text('Nenhum equipamento cadastrado.'));
+                    }
                     return ListView.separated(
                       padding: const EdgeInsets.all(10),
                       itemCount: snap.data!.length,
@@ -135,8 +137,9 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
                                                   e['id'].toString());
                                           reload();
                                         } catch (err) {
-                                          if (context.mounted)
+                                          if (context.mounted) {
                                             showError(context, err);
+                                          }
                                         }
                                       }
                                     }

@@ -11,9 +11,18 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int index = 2;
   OverlayEntry? _guideOverlay;
-  late final MetalloRepository repo =
-      MetalloRepository(Supabase.instance.client);
-  late final Stream<DashboardSnapshot> dashboard = repo.watchDashboard();
+  late final DashboardRepository dashboardRepository =
+      DashboardRepository(Supabase.instance.client);
+  late final CatalogRepository catalogRepository =
+      CatalogRepository(Supabase.instance.client, dashboardRepository);
+  late final EpiRepository epiRepository =
+      EpiRepository(Supabase.instance.client, dashboardRepository);
+  late final AdminRepository adminRepository =
+      AdminRepository(Supabase.instance.client, dashboardRepository);
+  late final MovementRepository movementRepository =
+      MovementRepository(Supabase.instance.client, dashboardRepository);
+  late final Stream<DashboardSnapshot> dashboard =
+      dashboardRepository.watchDashboard();
 
   String get role => widget.profile['role']?.toString() ?? 'collaborator';
   String? get userTeamId => widget.profile['team_id']?.toString();
@@ -50,7 +59,7 @@ class _MainShellState extends State<MainShell> {
     });
   }
 
-  Future<void> _startGuidedPractice(_HelpTopic topic) async {
+  Future<void> _startGuidedPractice(HelpTopic topic) async {
     Navigator.of(context).popUntil((route) => route.isFirst);
     final title = topic.title.toLowerCase();
     setState(() => index = title.contains('equipamento')
@@ -61,11 +70,14 @@ class _MainShellState extends State<MainShell> {
                 ? 4
                 : 2);
     if (topic.restricted) {
-      final data = await repo.fetchDashboard();
+      final data = await dashboardRepository.fetchDashboard();
       if (!mounted) return;
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) =>
-              EpiManagementShell(repo: repo, teams: data.teams, role: role)));
+          builder: (_) => EpiManagementShell(
+              repo: epiRepository,
+              adminRepository: adminRepository,
+              teams: data.teams,
+              role: role)));
     }
     _guideOverlay?.remove();
     _guideOverlay = OverlayEntry(
@@ -94,7 +106,7 @@ class _MainShellState extends State<MainShell> {
   @override
   void dispose() {
     _guideOverlay?.remove();
-    repo.dispose();
+    dashboardRepository.dispose();
     super.dispose();
   }
 
@@ -102,21 +114,36 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final pages = [
       MaterialsPage(
-        repo: repo,
+        catalogRepository: catalogRepository,
+        movementRepository: movementRepository,
         stream: dashboard,
         role: role,
         userTeamId: userTeamId,
       ),
       EquipmentPage(
-        repo: repo,
+        catalogRepository: catalogRepository,
+        movementRepository: movementRepository,
         stream: dashboard,
         role: role,
         userTeamId: userTeamId,
       ),
       DashboardPage(
-          repo: repo, stream: dashboard, role: role, userTeamId: userTeamId),
-      ConsumptionPage(repo: repo, stream: dashboard),
-      HistoryPage(repo: repo, stream: dashboard, isAdmin: isAdmin),
+          dashboardRepository: dashboardRepository,
+          adminRepository: adminRepository,
+          epiRepository: epiRepository,
+          movementRepository: movementRepository,
+          stream: dashboard,
+          role: role,
+          userTeamId: userTeamId),
+      ConsumptionPage(
+          movementRepository: movementRepository,
+          dashboardRepository: dashboardRepository,
+          stream: dashboard),
+      HistoryPage(
+          movementRepository: movementRepository,
+          dashboardRepository: dashboardRepository,
+          stream: dashboard,
+          isAdmin: isAdmin),
     ];
 
     final name = widget.profile['full_name']?.toString() ?? 'Usuário';
@@ -144,7 +171,7 @@ class _MainShellState extends State<MainShell> {
               tooltip: 'Administração',
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => AdministrationPage(repo: repo),
+                  builder: (_) => AdministrationPage(repo: adminRepository),
                 ),
               ),
               icon: const Icon(Icons.admin_panel_settings_outlined),
@@ -162,7 +189,7 @@ class _MainShellState extends State<MainShell> {
           ),
           IconButton(
             tooltip: 'Atualizar',
-            onPressed: repo.refreshDashboard,
+            onPressed: dashboardRepository.refreshDashboard,
             icon: const Icon(Icons.refresh),
           ),
           IconButton(

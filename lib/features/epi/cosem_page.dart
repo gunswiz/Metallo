@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class _CosemPage extends StatefulWidget {
   const _CosemPage({required this.repo});
-  final MetalloRepository repo;
+  final EpiRepository repo;
   @override
   State<_CosemPage> createState() => _CosemPageState();
 }

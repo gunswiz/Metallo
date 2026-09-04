@@ -105,7 +105,7 @@ Future<void> showHistoryDetails(
 
 Future<void> showMaterialHistoryEdit(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   Map<String, dynamic> row,
 ) async {
@@ -207,13 +207,15 @@ Future<void> showMaterialHistoryEdit(
                             destinationTeamId: destinationId,
                             note: note.text,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: const Text('Salvar correção'),
@@ -233,7 +235,7 @@ Future<void> showMaterialHistoryEdit(
 
 Future<void> showAssetHistoryEdit(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   Map<String, dynamic> row,
 ) async {
@@ -318,13 +320,15 @@ Future<void> showAssetHistoryEdit(
                             status: status,
                             note: note.text,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: const Text('Salvar correção'),

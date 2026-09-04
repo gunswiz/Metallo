@@ -4,11 +4,13 @@ class EpiManagementShell extends StatefulWidget {
   const EpiManagementShell({
     super.key,
     required this.repo,
+    required this.adminRepository,
     required this.teams,
     required this.role,
   });
 
-  final MetalloRepository repo;
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final List<Team> teams;
   final String role;
 
@@ -44,11 +46,13 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
     final pages = <Widget>[
       _EpiHome(
           repo: widget.repo,
+          adminRepository: widget.adminRepository,
           people: _people,
           teams: widget.teams,
           onRefresh: _refresh),
       _EmployeesPage(
           repo: widget.repo,
+          adminRepository: widget.adminRepository,
           people: _people,
           teams: widget.teams,
           role: widget.role,

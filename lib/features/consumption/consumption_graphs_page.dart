@@ -30,8 +30,9 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
     final categories = _groupCategories(filtered);
     final materials = _groupMaterials(filtered, const []);
     if (materialId != null &&
-        !materials.any((g) => g['id'].toString() == materialId))
+        !materials.any((g) => g['id'].toString() == materialId)) {
       materialId = null;
+    }
     materialId ??=
         materials.isNotEmpty ? materials.first['id'].toString() : null;
     final materialRows = materialId == null

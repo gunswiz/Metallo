@@ -8,7 +8,7 @@ class AccountSettingsPage extends StatefulWidget {
       this.onStartGuidedPractice});
   final String role;
   final Future<void> Function() onReplayTutorial;
-  final Future<void> Function(_HelpTopic)? onStartGuidedPractice;
+  final Future<void> Function(HelpTopic)? onStartGuidedPractice;
 
   @override
   State<AccountSettingsPage> createState() => _AccountSettingsPageState();
@@ -38,9 +38,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     try {
       await Supabase.instance.client.auth
           .updateUser(UserAttributes(email: value));
-      if (mounted)
+      if (mounted) {
         setState(() => message =
             'Solicitação enviada. Confirme a alteração pelos e-mails de segurança enviados pelo Supabase.');
+      }
     } catch (e) {
       if (mounted) setState(() => error = friendlyError(e));
     } finally {
@@ -163,7 +164,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             ),
             if (message != null) ...[
               const SizedBox(height: 14),
-              Text(message!, style: const TextStyle(color: Color(0xFF67D39A))),
+              Text(message!, style: const TextStyle(color: metalloSuccess)),
             ],
             if (error != null) ...[
               const SizedBox(height: 14),

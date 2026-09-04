@@ -2,9 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metallo/data/models/equipment_asset.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/shared/widgets/guided_practice_card.dart';
 import 'package:metallo/main.dart';
-import 'package:metallo/repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -14,17 +20,19 @@ ThemeData appTheme() => ThemeData.dark().copyWith(
       ),
     );
 
-class _FakeRepository extends MetalloRepository {
-  _FakeRepository()
-      : super(SupabaseClient('https://example.invalid', 'test',
-            authOptions: const AuthClientOptions(autoRefreshToken: false)));
+SupabaseClient _testClient() => SupabaseClient(
+      'https://example.invalid',
+      'test',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+    );
+
+class _FakeEpiRepository extends EpiRepository {
+  _FakeEpiRepository(super.client, super.dashboardRepository);
+
   int stockLoads = 0;
   int deliveries = 0;
-  int catalogLoads = 0;
-  int transfers = 0;
   final stock = Completer<List<Map<String, dynamic>>>();
   final saved = Completer<void>();
-  final catalog = Completer<List<Map<String, dynamic>>>();
 
   @override
   Future<List<Map<String, dynamic>>> fetchEpiEmployees() async => [
@@ -59,12 +67,26 @@ class _FakeRepository extends MetalloRepository {
     deliveries++;
     return saved.future;
   }
+}
+
+class _FakeCatalogRepository extends CatalogRepository {
+  _FakeCatalogRepository(super.client, super.dashboardRepository);
+
+  int catalogLoads = 0;
+  final catalog = Completer<List<Map<String, dynamic>>>();
 
   @override
   Future<List<Map<String, dynamic>>> fetchMaterialCatalog() {
     catalogLoads++;
     return catalog.future;
   }
+}
+
+class _FakeMovementRepository extends MovementRepository {
+  _FakeMovementRepository(super.client, super.dashboardRepository);
+
+  int transfers = 0;
+  final saved = Completer<void>();
 
   @override
   Future<void> transferEquipment(
@@ -157,11 +179,18 @@ void main() {
 
   testWidgets('Entrega não empilha telas nem envia duas vezes com rede lenta',
       (tester) async {
-    final repo = _FakeRepository();
-    addTearDown(repo.dispose);
+    final client = _testClient();
+    final dashboardRepository = DashboardRepository(client);
+    final repo = _FakeEpiRepository(client, dashboardRepository);
+    final adminRepository = AdminRepository(client, dashboardRepository);
+    addTearDown(dashboardRepository.dispose);
     await tester.pumpWidget(MaterialApp(
         theme: appTheme(),
-        home: EpiManagementShell(repo: repo, teams: const [], role: 'admin')));
+        home: EpiManagementShell(
+            repo: repo,
+            adminRepository: adminRepository,
+            teams: const [],
+            role: 'admin')));
     await tester.pumpAndSettle();
     for (var i = 0; i < 10; i++) {
       await tester.tap(find.text('Entrega'));
@@ -214,8 +243,13 @@ void main() {
 
   testWidgets('equipamento ignora seleção e confirmação repetidas',
       (tester) async {
-    final repo = _FakeRepository();
-    addTearDown(repo.dispose);
+    final client = _testClient();
+    final dashboardRepository = DashboardRepository(client);
+    final catalogRepository =
+        _FakeCatalogRepository(client, dashboardRepository);
+    final movementRepository =
+        _FakeMovementRepository(client, dashboardRepository);
+    addTearDown(dashboardRepository.dispose);
     const equipment = EquipmentAsset(
         id: 'asset',
         itemId: 'item',
@@ -231,7 +265,8 @@ void main() {
                   body: TextButton(
                 onPressed: () => showEquipmentActionsSheet(
                     context,
-                    repo,
+                    catalogRepository,
+                    movementRepository,
                     const [
                       Team(id: 'team', name: 'Origem', locationType: 'team'),
                       Team(id: 'other', name: 'Destino', locationType: 'team'),
@@ -262,8 +297,8 @@ void main() {
     await tester.tap(find.text('Transferir'));
     await tester.tap(find.text('Transferir'));
     await tester.pump();
-    expect(repo.transfers, 1);
-    repo.saved.complete();
+    expect(movementRepository.transfers, 1);
+    movementRepository.saved.complete();
     await tester.pumpAndSettle();
     expect(find.text('Abrir equipamento').hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -271,8 +306,10 @@ void main() {
 
   testWidgets('entrada de material faz uma busca e abre um único diálogo',
       (tester) async {
-    final repo = _FakeRepository();
-    addTearDown(repo.dispose);
+    final client = _testClient();
+    final dashboardRepository = DashboardRepository(client);
+    final repo = _FakeCatalogRepository(client, dashboardRepository);
+    addTearDown(dashboardRepository.dispose);
     await tester.pumpWidget(MaterialApp(
         theme: appTheme(),
         home: Builder(

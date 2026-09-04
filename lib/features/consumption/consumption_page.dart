@@ -1,8 +1,13 @@
 part of '../../app.dart';
 
 class ConsumptionPage extends StatefulWidget {
-  const ConsumptionPage({super.key, required this.repo, required this.stream});
-  final MetalloRepository repo;
+  const ConsumptionPage(
+      {super.key,
+      required this.movementRepository,
+      required this.dashboardRepository,
+      required this.stream});
+  final MovementRepository movementRepository;
+  final DashboardRepository dashboardRepository;
   final Stream<DashboardSnapshot> stream;
 
   @override
@@ -18,15 +23,17 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
     return StreamBuilder<DashboardSnapshot>(
       stream: widget.stream,
       builder: (context, ds) {
-        if (!ds.hasData)
+        if (!ds.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final teams = ds.data!.teams.where((t) => !t.isCentral).toList();
         return FutureBuilder<List<Map<String, dynamic>>>(
-          future: widget.repo.fetchMaterialConsumption(),
+          future: widget.movementRepository.fetchMaterialConsumption(),
           builder: (context, snap) {
             if (snap.hasError) return ErrorState(error: snap.error);
-            if (!snap.hasData)
+            if (!snap.hasData) {
               return const Center(child: CircularProgressIndicator());
+            }
             final rows = snap.data!;
             final now = DateTime.now();
             final current = _filterConsumption(rows, teamId,
@@ -46,7 +53,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
             return RefreshIndicator(
               onRefresh: () async {
                 setState(() {});
-                await widget.repo.refreshDashboard();
+                await widget.dashboardRepository.refreshDashboard();
               },
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 92),

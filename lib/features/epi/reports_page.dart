@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class _ReportsPage extends StatefulWidget {
   const _ReportsPage({required this.repo});
-  final MetalloRepository repo;
+  final EpiRepository repo;
   @override
   State<_ReportsPage> createState() => _ReportsPageState();
 }
@@ -19,8 +19,9 @@ class _ReportsPageState extends State<_ReportsPage> {
         future: future,
         builder: (context, snap) {
           if (snap.hasError) return _ModuleError(onRetry: reload);
-          if (!snap.hasData)
+          if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           final groups = <String, List<Map<String, dynamic>>>{};
           for (final row in snap.data!) {
             final key =
@@ -66,7 +67,7 @@ class _ReportsPageState extends State<_ReportsPage> {
       );
 }
 
-void _deliveryGroupDetails(BuildContext context, MetalloRepository repo,
+void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
     List<Map<String, dynamic>> rows, VoidCallback onChanged) {
   showModalBottomSheet<void>(
       context: context,
@@ -80,7 +81,7 @@ void _deliveryGroupDetails(BuildContext context, MetalloRepository repo,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Itens entregues',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.w900)),
                     Text(
                         (rows.first['epi_employees'] as Map?)?['full_name']

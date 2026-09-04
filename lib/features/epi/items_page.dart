@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class _ItemsPage extends StatefulWidget {
   const _ItemsPage({required this.repo, required this.role});
-  final MetalloRepository repo;
+  final EpiRepository repo;
   final String role;
   @override
   State<_ItemsPage> createState() => _ItemsPageState();
@@ -19,8 +19,9 @@ class _ItemsPageState extends State<_ItemsPage> {
         future: future,
         builder: (context, snap) {
           if (snap.hasError) return _ModuleError(onRetry: reload);
-          if (!snap.hasData)
+          if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           final normalizedQuery = query.trim().toLowerCase();
           final items = snap.data!.where((item) {
             final matchesKind = kind == 'all' || item['item_kind'] == kind;

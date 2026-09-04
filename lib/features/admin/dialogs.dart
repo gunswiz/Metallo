@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 Future<void> showUserEditDialog(
   BuildContext context,
-  MetalloRepository repo,
+  AdminRepository repo,
   List<Team> teams,
   Map<String, dynamic> user,
 ) async {
@@ -94,13 +94,15 @@ Future<void> showUserEditDialog(
                             teamId: role == 'admin' ? teamId : teamId,
                             active: active,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: const Text('Salvar'),
@@ -119,7 +121,7 @@ Future<void> showUserEditDialog(
 
 Future<void> showTeamDialog(
   BuildContext context,
-  MetalloRepository repo, {
+  AdminRepository repo, {
   Team? team,
 }) async {
   final actionLock = UiActionLock.acquire(context, 'showTeamDialog');
@@ -128,73 +130,30 @@ Future<void> showTeamDialog(
     final name = TextEditingController(text: team?.name ?? '');
     final desc = TextEditingController(text: team?.description ?? '');
     try {
-      bool busy = false;
-      String? error;
-
-      await showDialog(
+      await showAsyncActionDialog(
         context: context,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setLocal) => AlertDialog(
-            title: Text(team == null ? 'Nova equipe' : 'Editar equipe'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                    controller: name,
-                    decoration: const InputDecoration(labelText: 'Nome')),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: desc,
-                  decoration:
-                      const InputDecoration(labelText: 'Descrição (opcional)'),
-                ),
-                if (error != null) ...[
-                  const SizedBox(height: 10),
-                  Text(error!,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.error)),
-                ],
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: busy ? null : () => Navigator.pop(dialogContext),
-                child: const Text('Cancelar'),
-              ),
-              FilledButton(
-                onPressed: busy
-                    ? null
-                    : () async {
-                        if (busy) return;
-                        if (name.text.trim().isEmpty) {
-                          setLocal(() => error = 'Informe o nome.');
-                          return;
-                        }
-                        setLocal(() {
-                          busy = true;
-                          error = null;
-                        });
-                        try {
-                          if (team == null) {
-                            await repo.createTeam(name.text, desc.text);
-                          } else {
-                            await repo.updateTeam(
-                                team.id, name.text, desc.text);
-                          }
-                          if (dialogContext.mounted)
-                            Navigator.pop(dialogContext);
-                        } catch (e) {
-                          setLocal(() => error = friendlyError(e));
-                        } finally {
-                          if (dialogContext.mounted)
-                            setLocal(() => busy = false);
-                        }
-                      },
-                child: Text(team == null ? 'Criar' : 'Salvar'),
-              ),
-            ],
+        title: Text(team == null ? 'Nova equipe' : 'Editar equipe'),
+        content: [
+          TextField(
+              controller: name,
+              decoration: const InputDecoration(labelText: 'Nome')),
+          const SizedBox(height: 10),
+          TextField(
+            controller: desc,
+            decoration:
+                const InputDecoration(labelText: 'Descrição (opcional)'),
           ),
-        ),
+        ],
+        actionLabel: team == null ? 'Criar' : 'Salvar',
+        validate: () => name.text.trim().isEmpty ? 'Informe o nome.' : null,
+        onAction: () async {
+          if (team == null) {
+            await repo.createTeam(name.text, desc.text);
+          } else {
+            await repo.updateTeam(team.id, name.text, desc.text);
+          }
+        },
+        errorText: friendlyError,
       );
     } finally {
       name.dispose();

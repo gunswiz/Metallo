@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class AdministrationPage extends StatelessWidget {
   const AdministrationPage({super.key, required this.repo});
-  final MetalloRepository repo;
+  final AdminRepository repo;
 
   @override
   Widget build(BuildContext context) {

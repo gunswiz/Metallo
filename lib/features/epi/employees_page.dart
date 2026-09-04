@@ -2,8 +2,12 @@ part of '../../app.dart';
 
 class _TeamPeoplePage extends StatelessWidget {
   const _TeamPeoplePage(
-      {required this.repo, required this.team, required this.people});
-  final MetalloRepository repo;
+      {required this.repo,
+      required this.adminRepository,
+      required this.team,
+      required this.people});
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final Team team;
   final List<Map<String, dynamic>> people;
   @override
@@ -27,7 +31,8 @@ class _TeamPeoplePage extends StatelessWidget {
                                 const TextStyle(fontWeight: FontWeight.w800)),
                         subtitle: Text(p['profession']?.toString() ?? ''),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => _openEmployeeDetails(context, repo, p),
+                        onTap: () => _openEmployeeDetails(
+                            context, repo, adminRepository, p),
                       ));
                 },
               ),
@@ -37,11 +42,13 @@ class _TeamPeoplePage extends StatelessWidget {
 class _EmployeesPage extends StatefulWidget {
   const _EmployeesPage(
       {required this.repo,
+      required this.adminRepository,
       required this.people,
       required this.teams,
       required this.role,
       required this.onRefresh});
-  final MetalloRepository repo;
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final Future<List<Map<String, dynamic>>> people;
   final List<Team> teams;
   final String role;
@@ -58,8 +65,9 @@ class _EmployeesPageState extends State<_EmployeesPage> {
         future: widget.people,
         builder: (context, snap) {
           if (snap.hasError) return _ModuleError(onRetry: widget.onRefresh);
-          if (!snap.hasData)
+          if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           final rows = snap.data!
               .where((p) =>
                   p['active'] == true &&
@@ -86,7 +94,9 @@ class _EmployeesPageState extends State<_EmployeesPage> {
                   onPressed: () async {
                     if (await _employeeForm(
                             context, widget.repo, widget.teams) &&
-                        mounted) widget.onRefresh();
+                        mounted) {
+                      widget.onRefresh();
+                    }
                   },
                   icon: const Icon(Icons.person_add_alt_1_outlined),
                   label: const Text('Cadastrar funcionário'),
@@ -121,8 +131,8 @@ class _EmployeesPageState extends State<_EmployeesPage> {
                               subtitle: Text(
                                   '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${_asoLabel(person)}'),
                               trailing: const Icon(Icons.chevron_right_rounded),
-                              onTap: () => _openEmployeeDetails(
-                                  context, widget.repo, person),
+                              onTap: () => _openEmployeeDetails(context,
+                                  widget.repo, widget.adminRepository, person),
                               onLongPress: widget.role == 'admin'
                                   ? () => _employeeActions(context, widget.repo,
                                       widget.teams, person, widget.onRefresh)

@@ -8,13 +8,15 @@ class ProfileGate extends StatefulWidget {
 }
 
 class _ProfileGateState extends State<ProfileGate> {
-  late final MetalloRepository repo =
-      MetalloRepository(Supabase.instance.client);
-  late Future<Map<String, dynamic>?> profile = repo.currentProfile();
+  late final DashboardRepository dashboardRepository =
+      DashboardRepository(Supabase.instance.client);
+  late final AdminRepository adminRepository =
+      AdminRepository(Supabase.instance.client, dashboardRepository);
+  late Future<Map<String, dynamic>?> profile = adminRepository.currentProfile();
 
   @override
   void dispose() {
-    repo.dispose();
+    dashboardRepository.dispose();
     super.dispose();
   }
 
@@ -26,7 +28,8 @@ class _ProfileGateState extends State<ProfileGate> {
         if (snap.hasError) {
           return ErrorPage(
             message: friendlyError(snap.error),
-            onRetry: () => setState(() => profile = repo.currentProfile()),
+            onRetry: () =>
+                setState(() => profile = adminRepository.currentProfile()),
           );
         }
         if (!snap.hasData) {
@@ -36,7 +39,8 @@ class _ProfileGateState extends State<ProfileGate> {
         final p = snap.data!;
         if (p['active'] != true) {
           return PendingAccessPage(
-            onRetry: () => setState(() => profile = repo.currentProfile()),
+            onRetry: () =>
+                setState(() => profile = adminRepository.currentProfile()),
           );
         }
         return MainShell(profile: p);

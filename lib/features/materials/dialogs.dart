@@ -1,7 +1,7 @@
 part of '../../app.dart';
 
 Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
-    MetalloRepository repo, Map<String, dynamic> material) async {
+    CatalogRepository repo, Map<String, dynamic> material) async {
   final actionLock =
       UiActionLock.acquire(context, 'showEditMaterialCatalogDialog');
   if (actionLock == null) return null;
@@ -85,13 +85,15 @@ Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
                                       unit: unit.text,
                                       category: category.text,
                                       description: description.text);
-                                  if (dialogContext.mounted)
+                                  if (dialogContext.mounted) {
                                     Navigator.pop(dialogContext, true);
+                                  }
                                 } catch (e) {
                                   setLocal(() => error = friendlyError(e));
                                 } finally {
-                                  if (dialogContext.mounted)
+                                  if (dialogContext.mounted) {
                                     setLocal(() => busy = false);
+                                  }
                                 }
                               },
                         child: busy
@@ -182,7 +184,7 @@ class _MaterialPickerSheetState extends State<_MaterialPickerSheet> {
 
 Future<void> showMaterialDialog(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository repo,
   List<Team> teams,
   String? initialTeamId,
 ) async {
@@ -358,13 +360,15 @@ Future<void> showMaterialDialog(
                             quantity: q!,
                             unit: unit.text,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: busy
@@ -392,7 +396,7 @@ Future<void> showMaterialDialog(
 
 Future<void> showMaterialDistributionSheet(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   List<MaterialStock> stocks,
   String role,
@@ -451,8 +455,7 @@ Future<void> showMaterialDistributionSheet(
                         : 'Somente consulta'),
                     trailing: Text('${stock.quantity} ${stock.unit}',
                         style: const TextStyle(
-                            color: Color(0xFF52A9FF),
-                            fontWeight: FontWeight.w900)),
+                            color: metalloAccent, fontWeight: FontWeight.w900)),
                     onTap: allowed
                         ? () => Navigator.pop(sheetContext, stock)
                         : null,
@@ -473,7 +476,7 @@ Future<void> showMaterialDistributionSheet(
 
 Future<void> showMaterialActionsDialog(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   MaterialStock material,
   String role,
@@ -502,8 +505,8 @@ Future<void> showMaterialActionsDialog(
           ),
           if (canConsume)
             ListTile(
-              leading: const Icon(Icons.remove_circle_outline,
-                  color: Color(0xFF52A9FF)),
+              leading:
+                  const Icon(Icons.remove_circle_outline, color: metalloAccent),
               title: const Text('Registrar consumo'),
               subtitle: const Text('Baixa o material desta localização.'),
               onTap: () => Navigator.pop(sheetContext, 'consume'),
@@ -511,7 +514,7 @@ Future<void> showMaterialActionsDialog(
           if (canReplenish)
             ListTile(
               leading: const Icon(Icons.local_shipping_outlined,
-                  color: Color(0xFF52A9FF)),
+                  color: metalloAccent),
               title: const Text('Repor equipe'),
               subtitle: const Text('Move estoque da COSEM para uma equipe.'),
               onTap: () => Navigator.pop(sheetContext, 'replenish'),
@@ -654,13 +657,15 @@ Future<void> showMaterialQuantityDialog(
                         try {
                           await onConfirm(
                               quantity, note.text, destinationTeamId);
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: Text(actionLabel),

@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       message!,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Color(0xFF67D39A)),
+                      style: const TextStyle(color: metalloSuccess),
                     ),
                   ],
                   if (error != null) ...[

@@ -1,9 +1,10 @@
 part of '../../app.dart';
 
 DateTime _periodStart(DateTime now, String period) {
-  if (period == 'week')
+  if (period == 'week') {
     return DateTime(now.year, now.month, now.day)
         .subtract(Duration(days: now.weekday - 1));
+  }
   return DateTime(now.year, now.month, 1);
 }
 
@@ -116,15 +117,17 @@ List<Map<String, dynamic>> _groupMaterials(
   }
   for (final r in current) {
     final id = r['item_id']?.toString() ?? '';
-    if (grouped[id] != null)
+    if (grouped[id] != null) {
       grouped[id]!['qty'] = (grouped[id]!['qty'] as double) +
           ((r['quantity'] as num?)?.toDouble() ?? 0);
+    }
   }
   for (final r in previous) {
     final id = r['item_id']?.toString() ?? '';
-    if (grouped[id] != null)
+    if (grouped[id] != null) {
       grouped[id]!['prev'] = (grouped[id]!['prev'] as double) +
           ((r['quantity'] as num?)?.toDouble() ?? 0);
+    }
   }
   final out = grouped.values.where((g) => (g['qty'] as double) > 0).toList();
   out.sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
@@ -138,14 +141,20 @@ String _consumptionCategory(Map<String, dynamic> row) {
   final name = item?['name']?.toString().toLowerCase() ?? '';
   if (name.contains('disco') ||
       name.contains('lixa') ||
-      name.contains('abrasiv')) return 'Abrasivos';
+      name.contains('abrasiv')) {
+    return 'Abrasivos';
+  }
   if (name.contains('eletrodo') ||
       name.contains('arame') ||
-      name.contains('solda')) return 'Consumíveis de soldagem';
+      name.contains('solda')) {
+    return 'Consumíveis de soldagem';
+  }
   if (name.contains('gás') ||
       name.contains('gas') ||
       name.contains('oxigênio') ||
-      name.contains('argon')) return 'Gases';
+      name.contains('argon')) {
+    return 'Gases';
+  }
   return 'Outros';
 }
 

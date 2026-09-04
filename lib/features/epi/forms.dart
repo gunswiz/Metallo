@@ -1,7 +1,7 @@
 part of '../../app.dart';
 
 Future<bool> _employeeForm(
-    BuildContext context, MetalloRepository repo, List<Team> teams,
+    BuildContext context, EpiRepository repo, List<Team> teams,
     {Map<String, dynamic>? existing}) async {
   final actionLock = UiActionLock.acquire(context, '_employeeForm');
   if (actionLock == null) return false;
@@ -15,7 +15,6 @@ Future<bool> _employeeForm(
         text: existing?['registration_code']?.toString() ?? '');
     final shirt =
         TextEditingController(text: existing?['shirt_size']?.toString() ?? 'M');
-    final pants = TextEditingController();
     final shoe =
         TextEditingController(text: existing?['shoe_size']?.toString() ?? '');
     try {
@@ -125,8 +124,10 @@ Future<bool> _employeeForm(
                               ? null
                               : () async {
                                   if (busy) return;
-                                  if (!(form.currentState?.validate() ?? false))
+                                  if (!(form.currentState?.validate() ??
+                                      false)) {
                                     return;
+                                  }
                                   setLocal(() {
                                     busy = true;
                                     error = null;
@@ -152,8 +153,9 @@ Future<bool> _employeeForm(
                                           pantsSize: shirt.text,
                                           shoeSize: shoe.text);
                                     }
-                                    if (dialogContext.mounted)
+                                    if (dialogContext.mounted) {
                                       Navigator.pop(dialogContext, true);
+                                    }
                                   } catch (_) {
                                     setLocal(() {
                                       busy = false;
@@ -172,7 +174,6 @@ Future<bool> _employeeForm(
       profession.dispose();
       registration.dispose();
       shirt.dispose();
-      pants.dispose();
       shoe.dispose();
     }
   } finally {
@@ -182,7 +183,7 @@ Future<bool> _employeeForm(
 
 Future<void> _employeeActions(
     BuildContext context,
-    MetalloRepository repo,
+    EpiRepository repo,
     List<Team> teams,
     Map<String, dynamic> person,
     VoidCallback onChanged) async {
@@ -223,7 +224,7 @@ Future<void> _employeeActions(
   }
 }
 
-Future<bool> _employeeItemsForm(BuildContext context, MetalloRepository repo,
+Future<bool> _employeeItemsForm(BuildContext context, EpiRepository repo,
     Map<String, dynamic> person) async {
   final actionLock = UiActionLock.acquire(context, '_employeeItemsForm');
   if (actionLock == null) return false;
@@ -238,8 +239,9 @@ Future<bool> _employeeItemsForm(BuildContext context, MetalloRepository repo,
       items = List<Map<String, dynamic>>.from(values[0] as List);
       saved = Map<String, dynamic>.from(values[1] as Map);
     } catch (_) {
-      if (context.mounted)
+      if (context.mounted) {
         _message(context, 'Não foi possível carregar os itens.');
+      }
       return false;
     }
     if (!context.mounted) return false;
@@ -328,8 +330,9 @@ Future<bool> _employeeItemsForm(BuildContext context, MetalloRepository repo,
                                 }),
                                 onDecrease: () => setLocal(() {
                                   final id = item['id'].toString();
-                                  if ((selected[id] ?? 1) > 1)
+                                  if ((selected[id] ?? 1) > 1) {
                                     selected[id] = selected[id]! - 1;
+                                  }
                                 }),
                                 onIncrease: () => setLocal(() {
                                   final id = item['id'].toString();
@@ -457,7 +460,7 @@ class _EmployeeItemSelector extends StatelessWidget {
   }
 }
 
-Future<bool> _itemForm(BuildContext context, MetalloRepository repo,
+Future<bool> _itemForm(BuildContext context, EpiRepository repo,
     {Map<String, dynamic>? existing}) async {
   final actionLock = UiActionLock.acquire(context, '_itemForm');
   if (actionLock == null) return false;
@@ -567,8 +570,10 @@ Future<bool> _itemForm(BuildContext context, MetalloRepository repo,
                               ? null
                               : () async {
                                   if (busy) return;
-                                  if (!(form.currentState?.validate() ?? false))
+                                  if (!(form.currentState?.validate() ??
+                                      false)) {
                                     return;
+                                  }
                                   setLocal(() {
                                     busy = true;
                                     error = null;
@@ -596,8 +601,9 @@ Future<bool> _itemForm(BuildContext context, MetalloRepository repo,
                                           minimumStock:
                                               int.tryParse(minimum.text) ?? 0);
                                     }
-                                    if (dialogContext.mounted)
+                                    if (dialogContext.mounted) {
                                       Navigator.pop(dialogContext, true);
+                                    }
                                   } catch (_) {
                                     setLocal(() {
                                       busy = false;
@@ -624,7 +630,7 @@ Future<bool> _itemForm(BuildContext context, MetalloRepository repo,
   }
 }
 
-Future<void> _itemActions(BuildContext context, MetalloRepository repo,
+Future<void> _itemActions(BuildContext context, EpiRepository repo,
     Map<String, dynamic> item, VoidCallback reload) async {
   final action = await showModalBottomSheet<String>(
       context: context,
@@ -687,8 +693,8 @@ Future<void> _itemActions(BuildContext context, MetalloRepository repo,
   }
 }
 
-Future<bool> _stockForm(BuildContext context, MetalloRepository repo,
-    Map<String, dynamic> item) async {
+Future<bool> _stockForm(
+    BuildContext context, EpiRepository repo, Map<String, dynamic> item) async {
   final actionLock = UiActionLock.acquire(context, '_stockForm');
   if (actionLock == null) return false;
   try {
@@ -799,8 +805,10 @@ Future<bool> _stockForm(BuildContext context, MetalloRepository repo,
                               ? null
                               : () async {
                                   if (busy) return;
-                                  if (!(form.currentState?.validate() ?? false))
+                                  if (!(form.currentState?.validate() ??
+                                      false)) {
                                     return;
+                                  }
                                   setLocal(() {
                                     busy = true;
                                     error = null;
@@ -813,8 +821,9 @@ Future<bool> _stockForm(BuildContext context, MetalloRepository repo,
                                         brandModel: brand.text,
                                         lotNumber: lot.text,
                                         variant: variant);
-                                    if (dialogContext.mounted)
+                                    if (dialogContext.mounted) {
                                       Navigator.pop(dialogContext, true);
+                                    }
                                   } catch (_) {
                                     setLocal(() {
                                       busy = false;

@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class CreateEmployeePage extends StatefulWidget {
   const CreateEmployeePage({super.key, required this.repo});
-  final MetalloRepository repo;
+  final AdminRepository repo;
 
   @override
   State<CreateEmployeePage> createState() => _CreateEmployeePageState();
@@ -16,8 +16,6 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
   String? teamId;
   bool busy = false;
   String? error;
-  late Future<DashboardSnapshot> dashboard = widget.repo.fetchDashboard();
-
   Future<void> create() async {
     if (teamId == null) {
       setState(() => error = 'Selecione a equipe.');
@@ -70,7 +68,7 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DashboardSnapshot>(
-      stream: widget.repo.watchDashboard(),
+      stream: widget.repo.dashboardRepository.watchDashboard(),
       builder: (context, snap) {
         if (!snap.hasData) {
           return const Scaffold(

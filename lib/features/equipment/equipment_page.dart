@@ -3,12 +3,14 @@ part of '../../app.dart';
 class EquipmentPage extends StatefulWidget {
   const EquipmentPage({
     super.key,
-    required this.repo,
+    required this.catalogRepository,
+    required this.movementRepository,
     required this.stream,
     required this.role,
     required this.userTeamId,
   });
-  final MetalloRepository repo;
+  final CatalogRepository catalogRepository;
+  final MovementRepository movementRepository;
   final Stream<DashboardSnapshot> stream;
   final String role;
   final String? userTeamId;
@@ -33,8 +35,9 @@ class _EquipmentPageState extends State<EquipmentPage> {
       stream: widget.stream,
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error);
-        if (!snap.hasData)
+        if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final data = snap.data!;
         final canOperate = widget.role == 'admin' ||
             widget.role == 'engineer' ||
@@ -44,8 +47,9 @@ class _EquipmentPageState extends State<EquipmentPage> {
             : data.teams;
         final q = search.text.trim().toLowerCase();
         final equipment = data.equipment.where((e) {
-          if (ownershipFilter != 'all' && e.ownershipType != ownershipFilter)
+          if (ownershipFilter != 'all' && e.ownershipType != ownershipFilter) {
             return false;
+          }
           if (q.isEmpty) return true;
           final team = findTeam(data.teams, e.teamId)?.name ?? '';
           return e.name.toLowerCase().contains(q) ||
@@ -63,7 +67,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
         return Scaffold(
           backgroundColor: metalloBackground,
           endDrawer: EquipmentCatalogDrawer(
-              repo: widget.repo,
+              repo: widget.catalogRepository,
               isAdmin: widget.role == 'admin',
               teams: data.teams),
           floatingActionButton: canOperate && allowedTeams.isNotEmpty
@@ -71,7 +75,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
                   heroTag: 'equipment-create-fab',
                   onPressed: () => showEquipmentDialog(
                     context,
-                    widget.repo,
+                    widget.catalogRepository,
                     allowedTeams,
                     widget.role == 'leader' ? widget.userTeamId : null,
                   ),
@@ -166,7 +170,8 @@ class _EquipmentPageState extends State<EquipmentPage> {
                         trailing: const Icon(Icons.chevron_right_rounded),
                         onTap: () => showEquipmentFamilySheet(
                           context,
-                          widget.repo,
+                          widget.catalogRepository,
+                          widget.movementRepository,
                           data.teams,
                           group,
                           role: widget.role,

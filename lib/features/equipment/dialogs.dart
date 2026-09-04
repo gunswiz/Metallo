@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 Future<bool?> showEditEquipmentCatalogDialog(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository repo,
   List<Team> teams,
   Map<String, dynamic> equipment,
 ) async {
@@ -190,13 +190,15 @@ Future<bool?> showEditEquipmentCatalogDialog(
                             rentalCompany: rentalCompany.text,
                             rentalEndDate: rentalEndDate.text,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext, true);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: busy
@@ -222,7 +224,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
 
 Future<void> showEquipmentDialog(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository repo,
   List<Team> teams,
   String? initialTeamId,
 ) async {
@@ -393,13 +395,15 @@ Future<void> showEquipmentDialog(
                             rentalEndDate: rentalEndDate.text,
                             notes: notes.text,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
                           setLocal(() => error = friendlyError(e));
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 child: busy
@@ -430,7 +434,8 @@ Future<void> showEquipmentDialog(
 
 Future<void> showEquipmentFamilySheet(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository catalogRepository,
+  MovementRepository movementRepository,
   List<Team> teams,
   List<EquipmentAsset> assets, {
   required String role,
@@ -483,7 +488,7 @@ Future<void> showEquipmentFamilySheet(
                   final typeAssets = sortedTypes[index];
                   return ListTile(
                     leading: const Icon(Icons.category_outlined,
-                        color: Color(0xFF52A9FF)),
+                        color: metalloAccent),
                     title: Text(typeAssets.first.name),
                     subtitle: Text(
                         '${typeAssets.length} ${typeAssets.length == 1 ? 'patrimônio' : 'patrimônios'} • ${typeAssets.map((e) => e.teamId).toSet().length} ${typeAssets.map((e) => e.teamId).toSet().length == 1 ? 'local' : 'locais'}'),
@@ -495,7 +500,8 @@ Future<void> showEquipmentFamilySheet(
                       if (!pageContext.mounted) return;
                       await showEquipmentGroupSheet(
                         pageContext,
-                        repo,
+                        catalogRepository,
+                        movementRepository,
                         teams,
                         typeAssets,
                         role: role,
@@ -516,7 +522,8 @@ Future<void> showEquipmentFamilySheet(
 
 Future<void> showEquipmentGroupSheet(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository catalogRepository,
+  MovementRepository movementRepository,
   List<Team> teams,
   List<EquipmentAsset> assets, {
   required String role,
@@ -599,8 +606,13 @@ Future<void> showEquipmentGroupSheet(
                                 const Duration(milliseconds: 250));
                             if (!pageContext.mounted) return;
                             await showEquipmentActionsSheet(
-                                pageContext, repo, teams, asset,
-                                role: role, userTeamId: userTeamId);
+                                pageContext,
+                                catalogRepository,
+                                movementRepository,
+                                teams,
+                                asset,
+                                role: role,
+                                userTeamId: userTeamId);
                           }
                         : null,
                   );
@@ -616,7 +628,8 @@ Future<void> showEquipmentGroupSheet(
 
 Future<void> showEquipmentActionsSheet(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository catalogRepository,
+  MovementRepository movementRepository,
   List<Team> teams,
   EquipmentAsset equipment, {
   required String role,
@@ -659,7 +672,7 @@ Future<void> showEquipmentActionsSheet(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;
                     await showEquipmentTransferDialog(
-                        pageContext, repo, teams, equipment);
+                        pageContext, movementRepository, teams, equipment);
                   },
                 ),
               if (equipment.ownershipType == 'rented' && role == 'admin')
@@ -676,7 +689,8 @@ Future<void> showEquipmentActionsSheet(
                     await Future<void>.delayed(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;
-                    await showRentalReturnDialog(pageContext, repo, equipment);
+                    await showRentalReturnDialog(
+                        pageContext, movementRepository, equipment);
                   },
                 ),
               if (equipment.ownershipType == 'rented' && role == 'admin')
@@ -694,7 +708,7 @@ Future<void> showEquipmentActionsSheet(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;
                     await showRentedEquipmentReplacementDialog(
-                        pageContext, repo, equipment);
+                        pageContext, catalogRepository, equipment);
                   },
                 ),
               if (!isMaintenance && equipment.ownershipType != 'rented')
@@ -712,13 +726,13 @@ Future<void> showEquipmentActionsSheet(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;
                     await showEquipmentMaintenanceDialog(
-                        pageContext, repo, equipment);
+                        pageContext, movementRepository, equipment);
                   },
                 ),
               if (isMaintenance && equipment.ownershipType != 'rented')
                 ListTile(
                   leading: const Icon(Icons.keyboard_return_rounded,
-                      color: Color(0xFF52A9FF)),
+                      color: metalloAccent),
                   title: const Text('Retornar da manutenção'),
                   subtitle: const Text(
                       'Escolha a equipe/local de retorno e disponibilize o equipamento novamente'),
@@ -732,8 +746,8 @@ Future<void> showEquipmentActionsSheet(
                     await Future<void>.delayed(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;
-                    await showEquipmentMaintenanceReturnDialog(
-                        pageContext, repo, destinations, equipment);
+                    await showEquipmentMaintenanceReturnDialog(pageContext,
+                        movementRepository, destinations, equipment);
                   },
                 ),
             ],
@@ -747,7 +761,7 @@ Future<void> showEquipmentActionsSheet(
 }
 
 Future<void> showRentalReturnDialog(BuildContext context,
-    MetalloRepository repo, EquipmentAsset equipment) async {
+    MovementRepository repo, EquipmentAsset equipment) async {
   final actionLock = UiActionLock.acquire(context, 'showRentalReturnDialog');
   if (actionLock == null) return;
   try {
@@ -798,14 +812,16 @@ Future<void> showRentalReturnDialog(BuildContext context,
                                   try {
                                     await repo.returnRentedEquipment(
                                         equipment, note.text);
-                                    if (dialogContext.mounted)
+                                    if (dialogContext.mounted) {
                                       Navigator.pop(dialogContext);
+                                    }
                                   } catch (e) {
-                                    if (dialogContext.mounted)
+                                    if (dialogContext.mounted) {
                                       setLocal(() {
                                         busy = false;
                                         error = friendlyError(e);
                                       });
+                                    }
                                   }
                                 },
                           child: Text(
@@ -822,7 +838,7 @@ Future<void> showRentalReturnDialog(BuildContext context,
 
 Future<void> showEquipmentMaintenanceDialog(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   EquipmentAsset equipment,
 ) async {
   final actionLock =
@@ -830,72 +846,32 @@ Future<void> showEquipmentMaintenanceDialog(
   if (actionLock == null) return;
   try {
     final note = TextEditingController();
-    bool busy = false;
-    String? error;
     try {
-      await showDialog<void>(
+      await showAsyncActionDialog(
         context: context,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setLocal) => AlertDialog(
-            title: const Text('Enviar para manutenção'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${equipment.name} • ${equipment.assetCode}',
-                    style: const TextStyle(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 8),
-                const Text(
-                    'O patrimônio continuará vinculado à equipe atual, mas ficará indisponível até o retorno da manutenção.',
-                    style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: note,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                      labelText: 'Motivo / observação',
-                      hintText: 'Ex.: troca de rolamento, revisão elétrica...'),
-                ),
-                if (error != null) ...[
-                  const SizedBox(height: 10),
-                  Text(error!,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.error)),
-                ],
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: busy ? null : () => Navigator.pop(dialogContext),
-                  child: const Text('Cancelar')),
-              FilledButton.icon(
-                onPressed: busy
-                    ? null
-                    : () async {
-                        if (busy) return;
-                        setLocal(() {
-                          busy = true;
-                          error = null;
-                        });
-                        try {
-                          await repo.sendEquipmentToMaintenance(
-                              assetId: equipment.id, note: note.text);
-                          if (dialogContext.mounted)
-                            Navigator.pop(dialogContext);
-                        } catch (e) {
-                          if (dialogContext.mounted)
-                            setLocal(() => error = friendlyError(e));
-                        } finally {
-                          if (dialogContext.mounted)
-                            setLocal(() => busy = false);
-                        }
-                      },
-                icon: const Icon(Icons.build_rounded),
-                label: const Text('Enviar'),
-              ),
-            ],
+        title: const Text('Enviar para manutenção'),
+        contentCrossAxisAlignment: CrossAxisAlignment.start,
+        content: [
+          Text('${equipment.name} • ${equipment.assetCode}',
+              style: const TextStyle(fontWeight: FontWeight.w800)),
+          const SizedBox(height: 8),
+          const Text(
+              'O patrimônio continuará vinculado à equipe atual, mas ficará indisponível até o retorno da manutenção.',
+              style: TextStyle(color: Colors.white70)),
+          const SizedBox(height: 12),
+          TextField(
+            controller: note,
+            maxLines: 3,
+            decoration: const InputDecoration(
+                labelText: 'Motivo / observação',
+                hintText: 'Ex.: troca de rolamento, revisão elétrica...'),
           ),
-        ),
+        ],
+        actionLabel: 'Enviar',
+        actionIcon: Icons.build_rounded,
+        onAction: () => repo.sendEquipmentToMaintenance(
+            assetId: equipment.id, note: note.text),
+        errorText: friendlyError,
       );
     } finally {
       note.dispose();
@@ -907,7 +883,7 @@ Future<void> showEquipmentMaintenanceDialog(
 
 Future<void> showRentedEquipmentReplacementDialog(
   BuildContext context,
-  MetalloRepository repo,
+  CatalogRepository repo,
   EquipmentAsset equipment,
 ) async {
   final actionLock =
@@ -1015,14 +991,17 @@ Future<void> showRentedEquipmentReplacementDialog(
                             rentalCompany: equipment.rentalCompany,
                             rentalEndDate: equipment.rentalEndDate,
                           );
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => error = friendlyError(e));
+                          }
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 icon: const Icon(Icons.change_circle_outlined),
@@ -1049,7 +1028,7 @@ Future<void> showRentedEquipmentReplacementDialog(
 
 Future<void> showEquipmentMaintenanceReturnDialog(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   EquipmentAsset equipment,
 ) async {
@@ -1124,14 +1103,17 @@ Future<void> showEquipmentMaintenanceReturnDialog(
                               assetId: equipment.id,
                               toTeamId: to,
                               note: note.text);
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);
+                          }
                         } catch (e) {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => error = friendlyError(e));
+                          }
                         } finally {
-                          if (dialogContext.mounted)
+                          if (dialogContext.mounted) {
                             setLocal(() => busy = false);
+                          }
                         }
                       },
                 icon: const Icon(Icons.keyboard_return_rounded),
@@ -1151,7 +1133,7 @@ Future<void> showEquipmentMaintenanceReturnDialog(
 
 Future<void> showEquipmentTransferDialog(
   BuildContext context,
-  MetalloRepository repo,
+  MovementRepository repo,
   List<Team> teams,
   EquipmentAsset equipment,
 ) async {

@@ -1,16 +1,21 @@
 part of '../../app.dart';
 
-void _openEmployeeDetails(
-    BuildContext context, MetalloRepository repo, Map<String, dynamic> person) {
+void _openEmployeeDetails(BuildContext context, EpiRepository repo,
+    AdminRepository adminRepository, Map<String, dynamic> person) {
   Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (_) => _EmployeeDetailsPage(repo: repo, person: person)));
+          builder: (_) => _EmployeeDetailsPage(
+              repo: repo, adminRepository: adminRepository, person: person)));
 }
 
 class _EmployeeDetailsPage extends StatefulWidget {
-  const _EmployeeDetailsPage({required this.repo, required this.person});
-  final MetalloRepository repo;
+  const _EmployeeDetailsPage(
+      {required this.repo,
+      required this.adminRepository,
+      required this.person});
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final Map<String, dynamic> person;
 
   @override
@@ -72,6 +77,7 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: _AsoCard(
                   repo: widget.repo,
+                  adminRepository: widget.adminRepository,
                   person: widget.person,
                   onChanged: () => setState(() {})),
             ),
@@ -85,8 +91,9 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
               future: future,
               builder: (context, snap) {
                 if (snap.hasError) return _ModuleError(onRetry: reload);
-                if (!snap.hasData)
+                if (!snap.hasData) {
                   return const Center(child: CircularProgressIndicator());
+                }
                 final rows = (snap.data![0] as List<Map<String, dynamic>>)
                     .where((d) =>
                         d['employee_id']?.toString() ==
@@ -155,8 +162,12 @@ String _asoLabel(Map<String, dynamic> person) {
 
 class _AsoCard extends StatelessWidget {
   const _AsoCard(
-      {required this.repo, required this.person, required this.onChanged});
-  final MetalloRepository repo;
+      {required this.repo,
+      required this.adminRepository,
+      required this.person,
+      required this.onChanged});
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final Map<String, dynamic> person;
   final VoidCallback onChanged;
 
@@ -164,7 +175,7 @@ class _AsoCard extends StatelessWidget {
     final actionLock = UiActionLock.acquire(context, '_renew');
     if (actionLock == null) return;
     try {
-      final profile = await repo.currentProfile();
+      final profile = await adminRepository.currentProfile();
       if (!context.mounted) return;
       if (profile?['role'] != 'admin') {
         _message(context,
@@ -193,8 +204,9 @@ class _AsoCard extends StatelessWidget {
         onChanged();
         if (context.mounted) _message(context, 'ASO atualizado.');
       } catch (_) {
-        if (context.mounted)
+        if (context.mounted) {
           _message(context, 'Não foi possível atualizar o ASO.');
+        }
       }
     } finally {
       actionLock.release();
@@ -245,7 +257,7 @@ class _AssignmentList extends StatelessWidget {
   final List<Map<String, dynamic>> requests;
   final Map<String, dynamic> person;
   final List<Map<String, dynamic>>? customItems;
-  final MetalloRepository repo;
+  final EpiRepository repo;
   final VoidCallback onChanged;
   @override
   Widget build(BuildContext context) {
@@ -387,8 +399,9 @@ class _AssignmentList extends StatelessWidget {
           onChanged();
         }
       } catch (_) {
-        if (context.mounted)
+        if (context.mounted) {
           _message(context, 'Esta pendência já foi solicitada.');
+        }
       }
     } finally {
       actionLock.release();

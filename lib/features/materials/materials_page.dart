@@ -3,12 +3,14 @@ part of '../../app.dart';
 class MaterialsPage extends StatefulWidget {
   const MaterialsPage({
     super.key,
-    required this.repo,
+    required this.catalogRepository,
+    required this.movementRepository,
     required this.stream,
     required this.role,
     required this.userTeamId,
   });
-  final MetalloRepository repo;
+  final CatalogRepository catalogRepository;
+  final MovementRepository movementRepository;
   final Stream<DashboardSnapshot> stream;
   final String role;
   final String? userTeamId;
@@ -32,8 +34,9 @@ class _MaterialsPageState extends State<MaterialsPage> {
       stream: widget.stream,
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error);
-        if (!snap.hasData)
+        if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final data = snap.data!;
         final canOperate = widget.role == 'admin' ||
             widget.role == 'engineer' ||
@@ -59,13 +62,13 @@ class _MaterialsPageState extends State<MaterialsPage> {
         return Scaffold(
           backgroundColor: metalloBackground,
           endDrawer: MaterialCatalogDrawer(
-              repo: widget.repo, isAdmin: widget.role == 'admin'),
+              repo: widget.catalogRepository, isAdmin: widget.role == 'admin'),
           floatingActionButton: canOperate && allowedTeams.isNotEmpty
               ? FloatingActionButton.extended(
                   heroTag: 'material-entry-fab',
                   onPressed: () => showMaterialDialog(
                     context,
-                    widget.repo,
+                    widget.catalogRepository,
                     allowedTeams,
                     widget.role == 'leader' ? widget.userTeamId : null,
                   ),
@@ -99,7 +102,7 @@ class _MaterialsPageState extends State<MaterialsPage> {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.menu_book_outlined,
-                        color: Color(0xFF52A9FF)),
+                        color: metalloAccent),
                     title: const Text('Catálogo de materiais',
                         style: TextStyle(fontWeight: FontWeight.w800)),
                     subtitle: const Text(
@@ -133,7 +136,7 @@ class _MaterialsPageState extends State<MaterialsPage> {
                     Card(
                       child: ListTile(
                         leading: const Icon(Icons.inventory_2_outlined,
-                            color: Color(0xFF52A9FF)),
+                            color: metalloAccent),
                         title: Text(group.first.name),
                         subtitle: Text(
                             '${group.length} ${group.length == 1 ? 'local' : 'locais'} • código ${group.first.code}\nToque para ver a distribuição'),
@@ -141,11 +144,11 @@ class _MaterialsPageState extends State<MaterialsPage> {
                         trailing: Text(
                             '${group.fold<int>(0, (sum, item) => sum + item.quantity)} ${group.first.unit}',
                             style: const TextStyle(
-                                color: Color(0xFF52A9FF),
+                                color: metalloAccent,
                                 fontWeight: FontWeight.w900)),
                         onTap: () => showMaterialDistributionSheet(
                           context,
-                          widget.repo,
+                          widget.movementRepository,
                           data.teams,
                           group,
                           widget.role,

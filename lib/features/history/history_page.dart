@@ -3,10 +3,12 @@ part of '../../app.dart';
 class HistoryPage extends StatefulWidget {
   const HistoryPage(
       {super.key,
-      required this.repo,
+      required this.movementRepository,
+      required this.dashboardRepository,
       required this.stream,
       required this.isAdmin});
-  final MetalloRepository repo;
+  final MovementRepository movementRepository;
+  final DashboardRepository dashboardRepository;
   final Stream<DashboardSnapshot> stream;
   final bool isAdmin;
 
@@ -93,12 +95,13 @@ class _HistoryPageState extends State<HistoryPage> {
         },
       ),
     );
-    if (result != null && mounted)
+    if (result != null && mounted) {
       setState(() {
         movementFilters
           ..clear()
           ..addAll(result);
       });
+    }
   }
 
   @override
@@ -110,18 +113,20 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DashboardSnapshot>(
-      stream: widget.repo.watchDashboard(),
+      stream: widget.dashboardRepository.watchDashboard(),
       builder: (context, dSnap) {
-        if (!dSnap.hasData)
+        if (!dSnap.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final teams = dSnap.data!.teams;
 
         return FutureBuilder<List<Map<String, dynamic>>>(
-          future: widget.repo.fetchHistory(),
+          future: widget.movementRepository.fetchHistory(),
           builder: (context, snap) {
             if (snap.hasError) return ErrorState(error: snap.error);
-            if (!snap.hasData)
+            if (!snap.hasData) {
               return const Center(child: CircularProgressIndicator());
+            }
             final q = search.text.trim().toLowerCase();
             final rows = snap.data!
                 .where((row) => q.isEmpty || historySearchText(row).contains(q))
@@ -134,7 +139,7 @@ class _HistoryPageState extends State<HistoryPage> {
             return RefreshIndicator(
               onRefresh: () async {
                 reload();
-                await widget.repo.refreshDashboard();
+                await widget.dashboardRepository.refreshDashboard();
               },
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 90),
@@ -333,20 +338,21 @@ class _HistoryPageState extends State<HistoryPage> {
                                             if (isMaterial) {
                                               await showMaterialHistoryEdit(
                                                   context,
-                                                  widget.repo,
+                                                  widget.movementRepository,
                                                   teams,
                                                   row);
                                             } else {
                                               await showAssetHistoryEdit(
                                                   context,
-                                                  widget.repo,
+                                                  widget.movementRepository,
                                                   teams,
                                                   row);
                                             }
                                             reload();
                                           } catch (e) {
-                                            if (context.mounted)
+                                            if (context.mounted) {
                                               showError(context, e);
+                                            }
                                           }
                                         } else if (action == 'delete') {
                                           final yes = await confirm(
@@ -357,18 +363,19 @@ class _HistoryPageState extends State<HistoryPage> {
                                           if (yes == true) {
                                             try {
                                               if (isMaterial) {
-                                                await widget.repo
+                                                await widget.movementRepository
                                                     .deleteMaterialHistory(
                                                         row['id'].toString());
                                               } else {
-                                                await widget.repo
+                                                await widget.movementRepository
                                                     .deleteAssetHistory(
                                                         row['id'].toString());
                                               }
                                               reload();
                                             } catch (e) {
-                                              if (context.mounted)
+                                              if (context.mounted) {
                                                 showError(context, e);
+                                              }
                                             }
                                           }
                                         }

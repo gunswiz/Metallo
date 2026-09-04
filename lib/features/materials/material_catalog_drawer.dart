@@ -3,7 +3,7 @@ part of '../../app.dart';
 class MaterialCatalogDrawer extends StatefulWidget {
   const MaterialCatalogDrawer(
       {super.key, required this.repo, required this.isAdmin});
-  final MetalloRepository repo;
+  final CatalogRepository repo;
   final bool isAdmin;
 
   @override
@@ -48,11 +48,13 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
                   future: catalog,
                   builder: (context, snap) {
                     if (snap.hasError) return ErrorState(error: snap.error);
-                    if (!snap.hasData)
+                    if (!snap.hasData) {
                       return const Center(child: CircularProgressIndicator());
-                    if (snap.data!.isEmpty)
+                    }
+                    if (snap.data!.isEmpty) {
                       return const Center(
                           child: Text('Nenhum material cadastrado.'));
+                    }
                     return ListView.separated(
                       padding: const EdgeInsets.all(10),
                       itemCount: snap.data!.length,
@@ -105,8 +107,9 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
                                                   m['id'].toString());
                                           reload();
                                         } catch (e) {
-                                          if (context.mounted)
+                                          if (context.mounted) {
                                             showError(context, e);
+                                          }
                                         }
                                       }
                                     }

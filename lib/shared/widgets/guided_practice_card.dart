@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme.dart';
+
 /// Bounded controls remain visible with the app's full-width button theme.
 class GuidedPracticeCard extends StatefulWidget {
   const GuidedPracticeCard({
@@ -30,7 +32,7 @@ class _GuidedPracticeCardState extends State<GuidedPracticeCard> {
           padding: const EdgeInsets.all(12),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Row(children: [
-              const Icon(Icons.school_outlined, color: Color(0xFF52A9FF)),
+              const Icon(Icons.school_outlined, color: metalloAccent),
               const SizedBox(width: 8),
               Expanded(
                 child: Text('Guia • ${step + 1}/${widget.steps.length}',

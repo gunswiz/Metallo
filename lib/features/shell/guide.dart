@@ -1,8 +1,8 @@
 part of '../../app.dart';
 
-class _HelpTopic {
-  const _HelpTopic(this.title, this.icon, this.summary, this.example,
-      this.steps, this.result,
+class HelpTopic {
+  const HelpTopic(this.title, this.icon, this.summary, this.example, this.steps,
+      this.result,
       {this.warning, this.restricted = false});
   final String title;
   final IconData icon;
@@ -18,7 +18,7 @@ class HelpGuidePage extends StatefulWidget {
   const HelpGuidePage(
       {super.key, required this.role, this.onStartGuidedPractice});
   final String role;
-  final Future<void> Function(_HelpTopic)? onStartGuidedPractice;
+  final Future<void> Function(HelpTopic)? onStartGuidedPractice;
   @override
   State<HelpGuidePage> createState() => _HelpGuidePageState();
 }
@@ -27,7 +27,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
   String query = '';
 
   static const topics = [
-    _HelpTopic(
+    HelpTopic(
         'Primeiros passos',
         Icons.rocket_launch_outlined,
         'Entenda a tela inicial, as equipes e a COSEM.',
@@ -38,7 +38,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
           'Consulte os resumos e os itens distribuídos.'
         ],
         'Você começa a operação no local correto.'),
-    _HelpTopic(
+    HelpTopic(
         'Materiais e distribuição',
         Icons.inventory_2_outlined,
         'Localize materiais e veja quanto existe em cada equipe.',
@@ -49,7 +49,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
           'Toque no resultado para abrir a distribuição.'
         ],
         'As quantidades da COSEM e das equipes aparecem juntas.'),
-    _HelpTopic(
+    HelpTopic(
         'Registrar consumo',
         Icons.remove_circle_outline,
         'Dê baixa somente no estoque da equipe que utilizou o material.',
@@ -62,7 +62,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         'O estoque diminui e o consumo entra no ranking.',
         warning:
             'Nunca registre consumo na COSEM se o material foi utilizado por uma equipe.'),
-    _HelpTopic(
+    HelpTopic(
         'Equipamentos e patrimônios',
         Icons.handyman_outlined,
         'Consulte tipos de equipamento e cada patrimônio físico.',
@@ -74,7 +74,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         ],
         'O mesmo patrimônio passa a aparecer na nova equipe.',
         warning: 'Transferir não significa cadastrar uma máquina nova.'),
-    _HelpTopic(
+    HelpTopic(
         'Equipamento alugado substituído',
         Icons.swap_horiz_rounded,
         'Registre a troca feita pela locadora sem enviar a máquina para manutenção.',
@@ -85,7 +85,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
           'Informe os dados da máquina recebida.'
         ],
         'A troca fica rastreada sem manter a máquina antiga em operação.'),
-    _HelpTopic(
+    HelpTopic(
         'Entrega completa de EPI',
         Icons.health_and_safety_outlined,
         'Entregue EPIs, fardas e itens pessoais ao mesmo funcionário.',
@@ -99,7 +99,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         'Todos os itens saem da COSEM e aparecem agrupados no relatório.',
         warning: 'Confira funcionário, itens e quantidades antes de confirmar.',
         restricted: true),
-    _HelpTopic(
+    HelpTopic(
         'Devolvido, danificado ou perdido',
         Icons.assignment_turned_in_outlined,
         'Atualize individualmente a situação de um item entregue.',
@@ -111,7 +111,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         ],
         'Somente a situação da trena será alterada.',
         restricted: true),
-    _HelpTopic(
+    HelpTopic(
         'Histórico e conferência',
         Icons.history_rounded,
         'Encontre operações antigas por tipo, nome ou código.',
@@ -199,8 +199,9 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
                                       child: const Text('Abrir tela real')),
                                 ],
                               ));
-                      if (accepted == true)
+                      if (accepted == true) {
                         await widget.onStartGuidedPractice!(topic);
+                      }
                     },
                     icon: const Icon(Icons.play_circle_outline),
                     label: Text(widget.onStartGuidedPractice == null
@@ -218,7 +219,7 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
   }
 }
 
-Future<void> _showPractice(BuildContext context, _HelpTopic topic) async {
+Future<void> _showPractice(BuildContext context, HelpTopic topic) async {
   await Navigator.of(context).push(MaterialPageRoute(
     fullscreenDialog: true,
     builder: (_) => _PracticePage(topic: topic),
@@ -227,7 +228,7 @@ Future<void> _showPractice(BuildContext context, _HelpTopic topic) async {
 
 class _PracticePage extends StatefulWidget {
   const _PracticePage({required this.topic});
-  final _HelpTopic topic;
+  final HelpTopic topic;
   @override
   State<_PracticePage> createState() => _PracticePageState();
 }

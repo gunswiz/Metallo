@@ -2,16 +2,18 @@ part of '../../app.dart';
 
 class TeamsPage extends StatefulWidget {
   const TeamsPage({super.key, required this.repo});
-  final MetalloRepository repo;
+  final AdminRepository repo;
 
   @override
   State<TeamsPage> createState() => _TeamsPageState();
 }
 
 class _TeamsPageState extends State<TeamsPage> {
-  late Future<DashboardSnapshot> future = widget.repo.fetchDashboard();
+  late Future<DashboardSnapshot> future =
+      widget.repo.dashboardRepository.fetchDashboard();
 
-  void reload() => setState(() => future = widget.repo.fetchDashboard());
+  void reload() =>
+      setState(() => future = widget.repo.dashboardRepository.fetchDashboard());
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +32,9 @@ class _TeamsPageState extends State<TeamsPage> {
         future: future,
         builder: (context, snap) {
           if (snap.hasError) return ErrorState(error: snap.error);
-          if (!snap.hasData)
+          if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           final teams = snap.data!.teams;
           return ListView(
             padding: const EdgeInsets.all(16),

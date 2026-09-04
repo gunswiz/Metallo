@@ -3,10 +3,12 @@ part of '../../app.dart';
 class _EpiHome extends StatelessWidget {
   const _EpiHome(
       {required this.repo,
+      required this.adminRepository,
       required this.people,
       required this.teams,
       required this.onRefresh});
-  final MetalloRepository repo;
+  final EpiRepository repo;
+  final AdminRepository adminRepository;
   final Future<List<Map<String, dynamic>>> people;
   final List<Team> teams;
   final VoidCallback onRefresh;
@@ -17,8 +19,9 @@ class _EpiHome extends StatelessWidget {
       future: Future.wait([people, repo.fetchEpiDeliveries()]),
       builder: (context, snap) {
         if (snap.hasError) return _ModuleError(onRetry: onRefresh);
-        if (!snap.hasData)
+        if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final active = snap.data![0].where((p) => p['active'] == true).toList();
         final deliveries = snap.data![1];
         final monthStart = DateTime(DateTime.now().year, DateTime.now().month);
@@ -119,6 +122,7 @@ class _EpiHome extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (_) => _TeamPeoplePage(
                               repo: repo,
+                              adminRepository: adminRepository,
                               team: team,
                               people: active
                                   .where((p) =>

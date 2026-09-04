@@ -2,7 +2,7 @@ part of '../../app.dart';
 
 class UsersManagementPage extends StatefulWidget {
   const UsersManagementPage({super.key, required this.repo});
-  final MetalloRepository repo;
+  final AdminRepository repo;
 
   @override
   State<UsersManagementPage> createState() => _UsersManagementPageState();
@@ -10,14 +10,12 @@ class UsersManagementPage extends StatefulWidget {
 
 class _UsersManagementPageState extends State<UsersManagementPage> {
   late Future<List<Map<String, dynamic>>> users = widget.repo.fetchProfiles();
-  late Future<DashboardSnapshot> dashboard = widget.repo.fetchDashboard();
-
   void reload() => setState(() => users = widget.repo.fetchProfiles());
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DashboardSnapshot>(
-      stream: widget.repo.watchDashboard(),
+      stream: widget.repo.dashboardRepository.watchDashboard(),
       builder: (context, teamSnap) {
         if (!teamSnap.hasData) {
           return const Scaffold(
@@ -31,8 +29,9 @@ class _UsersManagementPageState extends State<UsersManagementPage> {
             future: users,
             builder: (context, snap) {
               if (snap.hasError) return ErrorState(error: snap.error);
-              if (!snap.hasData)
+              if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
+              }
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [

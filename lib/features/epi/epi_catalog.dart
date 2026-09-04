@@ -24,24 +24,28 @@ String _statusLabel(String? status) => switch (status) {
 List<(String, int)> _recommendedCodes(String profession, String kind) {
   final common = ['EPI-CAP', 'EPI-OCU', 'EPI-AUR', 'EPI-BOT'];
   final p = profession.toLowerCase();
-  if (kind == 'uniform')
+  if (kind == 'uniform') {
     return [(p == 'encarregado' ? 'FARD-AZUL' : 'FARD-CINZA', 2)];
+  }
   if (kind == 'personal_tool') {
-    if (p == 'montador' || p == 'encarregado')
+    if (p == 'montador' || p == 'encarregado') {
       return [
         ('PES-TRENA', 1),
         ('PES-ESQ', 1),
         ('PES-RISC', 1),
         ('PES-LAPIS', 1)
       ];
+    }
     if (p == 'soldador') return [('PES-BAT-SOLDA', 1)];
     return [];
   }
   var items = [...common];
-  if (p == 'soldador')
+  if (p == 'soldador') {
     items.addAll(['EPI-LUV-RASPA', 'EPI-MASC-SOLDA', 'EPI-AVENTAL']);
-  if (p == 'montador' || p == 'encarregado' || p == 'ajudante')
+  }
+  if (p == 'montador' || p == 'encarregado' || p == 'ajudante') {
     items.add('EPI-LUV-RASPA');
+  }
   if (p.contains('operador de munck')) {
     items = ['EPI-LUV-RASPA', 'EPI-AUR', 'EPI-OCU', 'EPI-BOT'];
   }

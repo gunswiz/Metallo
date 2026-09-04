@@ -3,13 +3,19 @@ part of '../../app.dart';
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
     super.key,
-    required this.repo,
+    required this.dashboardRepository,
+    required this.adminRepository,
+    required this.epiRepository,
+    required this.movementRepository,
     required this.stream,
     required this.role,
     required this.userTeamId,
   });
 
-  final MetalloRepository repo;
+  final DashboardRepository dashboardRepository;
+  final AdminRepository adminRepository;
+  final EpiRepository epiRepository;
+  final MovementRepository movementRepository;
   final Stream<DashboardSnapshot> stream;
   final String role;
   final String? userTeamId;
@@ -23,12 +29,13 @@ class DashboardPage extends StatelessWidget {
       stream: stream,
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error);
-        if (!snap.hasData)
+        if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
         final data = snap.data!;
 
         return RefreshIndicator(
-          onRefresh: repo.refreshDashboard,
+          onRefresh: dashboardRepository.refreshDashboard,
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 30),
             children: [
@@ -88,7 +95,8 @@ class DashboardPage extends StatelessWidget {
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => EpiManagementShell(
-                          repo: repo,
+                          repo: epiRepository,
+                          adminRepository: adminRepository,
                           teams: data.teams,
                           role: role,
                         ),
@@ -145,7 +153,9 @@ class DashboardPage extends StatelessWidget {
               const SizedBox(height: 14),
               for (final team in data.teams)
                 TeamOverviewCard(
-                  repo: repo,
+                  dashboardRepository: dashboardRepository,
+                  adminRepository: adminRepository,
+                  movementRepository: movementRepository,
                   team: team,
                   materials:
                       data.materials.where((m) => m.teamId == team.id).toList(),
@@ -165,13 +175,17 @@ class DashboardPage extends StatelessWidget {
 class TeamOverviewCard extends StatelessWidget {
   const TeamOverviewCard(
       {super.key,
-      required this.repo,
+      required this.dashboardRepository,
+      required this.adminRepository,
+      required this.movementRepository,
       required this.team,
       required this.materials,
       required this.equipment,
       required this.role,
       required this.userTeamId});
-  final MetalloRepository repo;
+  final DashboardRepository dashboardRepository;
+  final AdminRepository adminRepository;
+  final MovementRepository movementRepository;
   final Team team;
   final List<MaterialStock> materials;
   final List<EquipmentAsset> equipment;
@@ -188,7 +202,9 @@ class TeamOverviewCard extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (_) => TeamDetailPage(
-                    repo: repo,
+                    dashboardRepository: dashboardRepository,
+                    adminRepository: adminRepository,
+                    movementRepository: movementRepository,
                     team: team,
                     materials: materials,
                     equipment: equipment,
@@ -246,13 +262,17 @@ class _CountChip extends StatelessWidget {
 class TeamDetailPage extends StatefulWidget {
   const TeamDetailPage(
       {super.key,
-      required this.repo,
+      required this.dashboardRepository,
+      required this.adminRepository,
+      required this.movementRepository,
       required this.team,
       required this.materials,
       required this.equipment,
       required this.role,
       required this.userTeamId});
-  final MetalloRepository repo;
+  final DashboardRepository dashboardRepository;
+  final AdminRepository adminRepository;
+  final MovementRepository movementRepository;
   final Team team;
   final List<MaterialStock> materials;
   final List<EquipmentAsset> equipment;
@@ -270,7 +290,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   @override
   void initState() {
     super.initState();
-    people = widget.repo.fetchProfiles();
+    people = widget.adminRepository.fetchProfiles();
     materials = widget.materials;
   }
 
@@ -283,16 +303,18 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
         title: 'Consumo de ${material.name}',
         maximum: material.quantity,
         actionLabel: 'Registrar consumo',
-        onConfirm: (quantity, note, _) => widget.repo.consumeMaterial(
-            itemId: material.itemId,
-            teamId: widget.team.id,
-            quantity: quantity,
-            note: note));
+        onConfirm: (quantity, note, _) => widget.movementRepository
+            .consumeMaterial(
+                itemId: material.itemId,
+                teamId: widget.team.id,
+                quantity: quantity,
+                note: note));
     if (!mounted) return;
-    final updated = await widget.repo.fetchDashboard();
-    if (mounted)
+    final updated = await widget.dashboardRepository.fetchDashboard();
+    if (mounted) {
       setState(() => materials =
           updated.materials.where((m) => m.teamId == widget.team.id).toList());
+    }
   }
 
   @override
@@ -356,13 +378,13 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                                         tooltip: 'Registrar consumo',
                                         icon: const Icon(
                                             Icons.remove_circle_outline,
-                                            color: Color(0xFF52A9FF)),
+                                            color: metalloAccent),
                                         onPressed: m.quantity > 0
                                             ? () => registerConsumption(m)
                                             : null)
                                     : Text('${m.quantity} ${m.unit}',
                                         style: const TextStyle(
-                                            color: Color(0xFF52A9FF),
+                                            color: metalloAccent,
                                             fontWeight: FontWeight.w900)),
                                 onTap: canConsume && m.quantity > 0
                                     ? () => registerConsumption(m)
@@ -384,9 +406,10 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                       : FutureBuilder<List<Map<String, dynamic>>>(
                           future: people,
                           builder: (context, snap) {
-                            if (!snap.hasData)
+                            if (!snap.hasData) {
                               return const Center(
                                   child: CircularProgressIndicator());
+                            }
                             final rows = snap.data!
                                 .where((u) =>
                                     u['team_id']?.toString() ==
@@ -398,12 +421,13 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                                                 .contains(q) ??
                                             false)))
                                 .toList();
-                            if (rows.isEmpty)
+                            if (rows.isEmpty) {
                               return const EmptyState(
                                   icon: Icons.people_outline,
                                   title: 'Nenhum integrante',
                                   subtitle:
                                       'Nenhum usuário está atribuído a este local.');
+                            }
                             return ListView.builder(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -424,123 +448,5 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                                 });
                           })),
         ]));
-  }
-}
-
-class TeamInventoryCard extends StatelessWidget {
-  const TeamInventoryCard({
-    super.key,
-    required this.team,
-    required this.materials,
-    required this.equipment,
-    required this.canOperate,
-    required this.onAddMaterial,
-    required this.onAddEquipment,
-  });
-
-  final Team team;
-  final List<MaterialStock> materials;
-  final List<EquipmentAsset> equipment;
-  final bool canOperate;
-  final VoidCallback onAddMaterial;
-  final VoidCallback onAddEquipment;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 14),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Color(0xFF0E3157),
-                  child: Icon(Icons.groups_2, color: Color(0xFF52A9FF)),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    team.name,
-                    style: const TextStyle(
-                        fontSize: 19, fontWeight: FontWeight.w900),
-                  ),
-                ),
-                Text(
-                  '${materials.length} mat. • ${equipment.length} eq.',
-                  style: const TextStyle(color: Colors.white54),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Text('Materiais',
-                style: TextStyle(fontWeight: FontWeight.w800)),
-            if (materials.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('Nenhum material.',
-                    style: TextStyle(color: Colors.white54)),
-              )
-            else
-              for (final m in materials.take(5))
-                ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(m.name),
-                  subtitle: Text(m.code),
-                  trailing: Text(
-                    '${m.quantity} ${m.unit}',
-                    style: const TextStyle(
-                      color: Color(0xFF52A9FF),
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-            const Divider(),
-            const Text('Equipamentos',
-                style: TextStyle(fontWeight: FontWeight.w800)),
-            if (equipment.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('Nenhum equipamento.',
-                    style: TextStyle(color: Colors.white54)),
-              )
-            else
-              for (final e in equipment.take(5))
-                ListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(e.name),
-                  subtitle: Text('Patrimônio ${e.assetCode}'),
-                  trailing: StatusBadge(status: e.status),
-                ),
-            if (canOperate) ...[
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: onAddMaterial,
-                      icon: const Icon(Icons.add_box_outlined),
-                      label: const Text('Material'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: FilledButton.tonalIcon(
-                      onPressed: onAddEquipment,
-                      icon: const Icon(Icons.add),
-                      label: const Text('Equipamento'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,7 +1,7 @@
 part of '../../app.dart';
 
 const _epiBlue = Color(0xFF168CFF);
-const _epiCard = Color(0xFF101A27);
+const _epiCard = metalloFeatureCard;
 const _epiBackground = Color(0xFF03101B);
 
 class _ModuleError extends StatelessWidget {
