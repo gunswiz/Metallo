@@ -47,6 +47,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Permite instalar a versao de desenvolvimento ao lado do app oficial,
+            // preservando os dados e a assinatura da instalacao de producao.
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
         release {
             signingConfig = if (hasReleaseSigning) {
                 signingConfigs.getByName("metalloRelease")
