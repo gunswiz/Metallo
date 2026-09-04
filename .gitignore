@@ -21,3 +21,10 @@ android/app/*.keystore
 # OS
 .DS_Store
 Thumbs.db
+
+# Private local snapshots, exports and temporary build/download files
+/backups/
+/outputs/
+.env
+.env.*
+!.env.example

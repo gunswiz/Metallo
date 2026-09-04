@@ -9,6 +9,8 @@ import 'app_update.dart';
 import 'epi_module.dart';
 import 'repository.dart';
 import 'validation.dart';
+import 'ui_action_lock.dart';
+import 'guided_practice_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -682,84 +684,26 @@ class _MainShellState extends State<MainShell> {
               EpiManagementShell(repo: repo, teams: data.teams, role: role)));
     }
     _guideOverlay?.remove();
-    var step = topic.steps.length > 1 ? 1 : 0;
-    var collapsed = false;
     _guideOverlay = OverlayEntry(
-        builder: (overlayContext) => Positioned(
-              left: 12,
-              right: 12,
-              top: MediaQuery.of(overlayContext).padding.top + 64,
-              child: Material(
-                elevation: 12,
-                color: const Color(0xFF102A43),
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Row(children: [
-                      const Icon(Icons.school_outlined,
-                          color: Color(0xFF52A9FF)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                          child: Text(
-                              'Guia • ${step + 1}/${topic.steps.length}',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w900))),
-                      IconButton(
-                        tooltip: collapsed
-                            ? 'Mostrar orientação'
-                            : 'Recolher orientação',
-                        onPressed: () {
-                          collapsed = !collapsed;
-                          _guideOverlay?.markNeedsBuild();
-                        },
-                        icon: Icon(
-                            collapsed ? Icons.expand_more : Icons.expand_less),
-                      ),
-                      IconButton(
-                        tooltip: 'Encerrar guia',
-                        onPressed: () {
-                          _guideOverlay?.remove();
-                          _guideOverlay = null;
-                        },
-                        icon: const Icon(Icons.close),
-                      ),
-                    ]),
-                    if (!collapsed) ...[
-                      Text(topic.steps[step],
-                          style: const TextStyle(fontSize: 16)),
-                      const SizedBox(height: 6),
-                      const Text(
-                          'Use a tela real abaixo. Confirmações salvam dados reais.',
-                          style:
-                              TextStyle(color: Colors.white70, fontSize: 12)),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        if (step > 0)
-                          TextButton(
-                              onPressed: () {
-                                step--;
-                                _guideOverlay?.markNeedsBuild();
-                              },
-                              child: const Text('Anterior')),
-                        FilledButton(
-                            onPressed: () {
-                              if (step == topic.steps.length - 1) {
-                                _guideOverlay?.remove();
-                                _guideOverlay = null;
-                              } else {
-                                step++;
-                                _guideOverlay?.markNeedsBuild();
-                              }
-                            },
-                            child: Text(step == topic.steps.length - 1
-                                ? 'Concluir guia'
-                                : 'Próxima etapa')),
-                      ]),
-                    ],
-                  ]),
-                ),
-              ),
-            ));
+      builder: (overlayContext) => Positioned(
+        left: 12,
+        right: 12,
+        top: MediaQuery.of(overlayContext).padding.top + 64,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(overlayContext).height * .6,
+          ),
+          child: GuidedPracticeCard(
+            steps: topic.steps,
+            initialStep: topic.steps.length > 1 ? 1 : 0,
+            onClose: () {
+              _guideOverlay?.remove();
+              _guideOverlay = null;
+            },
+          ),
+        ),
+      ),
+    );
     if (mounted) Overlay.of(context, rootOverlay: true).insert(_guideOverlay!);
   }
 
@@ -2709,94 +2653,105 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
 
 Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
     MetalloRepository repo, Map<String, dynamic> material) async {
-  final code = TextEditingController(text: material['code']?.toString() ?? '');
-  final name = TextEditingController(text: material['name']?.toString() ?? '');
-  final unit =
-      TextEditingController(text: material['unit']?.toString() ?? 'un');
-  final category =
-      TextEditingController(text: material['category']?.toString() ?? '');
-  final description =
-      TextEditingController(text: material['description']?.toString() ?? '');
-  bool busy = false;
-  String? error;
-  return showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-            builder: (context, setLocal) => AlertDialog(
-              title: const Text('Editar material'),
-              content: SingleChildScrollView(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                TextField(
-                    controller: code,
-                    decoration:
-                        const InputDecoration(labelText: 'Código global')),
-                const SizedBox(height: 10),
-                TextField(
-                    controller: name,
-                    decoration: const InputDecoration(labelText: 'Nome')),
-                const SizedBox(height: 10),
-                TextField(
-                    controller: unit,
-                    decoration: const InputDecoration(labelText: 'Unidade')),
-                const SizedBox(height: 10),
-                TextField(
-                    controller: category,
-                    decoration: const InputDecoration(
-                        labelText: 'Categoria (opcional)')),
-                const SizedBox(height: 10),
-                TextField(
-                    controller: description,
-                    decoration: const InputDecoration(
-                        labelText: 'Descrição (opcional)')),
-                if (error != null) ...[
+  final actionLock =
+      UiActionLock.acquire(context, 'showEditMaterialCatalogDialog');
+  if (actionLock == null) return null;
+  try {
+    final code =
+        TextEditingController(text: material['code']?.toString() ?? '');
+    final name =
+        TextEditingController(text: material['name']?.toString() ?? '');
+    final unit =
+        TextEditingController(text: material['unit']?.toString() ?? 'un');
+    final category =
+        TextEditingController(text: material['category']?.toString() ?? '');
+    final description =
+        TextEditingController(text: material['description']?.toString() ?? '');
+    bool busy = false;
+    String? error;
+    return await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+              builder: (context, setLocal) => AlertDialog(
+                title: const Text('Editar material'),
+                content: SingleChildScrollView(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextField(
+                      controller: code,
+                      decoration:
+                          const InputDecoration(labelText: 'Código global')),
                   const SizedBox(height: 10),
-                  Text(error!,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error))
+                  TextField(
+                      controller: name,
+                      decoration: const InputDecoration(labelText: 'Nome')),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: unit,
+                      decoration: const InputDecoration(labelText: 'Unidade')),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: category,
+                      decoration: const InputDecoration(
+                          labelText: 'Categoria (opcional)')),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: description,
+                      decoration: const InputDecoration(
+                          labelText: 'Descrição (opcional)')),
+                  if (error != null) ...[
+                    const SizedBox(height: 10),
+                    Text(error!,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.error))
+                  ],
+                ])),
+                actions: [
+                  TextButton(
+                      onPressed: busy
+                          ? null
+                          : () => Navigator.pop(dialogContext, false),
+                      child: const Text('Cancelar')),
+                  FilledButton(
+                      onPressed: busy
+                          ? null
+                          : () async {
+                              if (busy) return;
+                              final v = requiredText(code.text, 'Código') ??
+                                  requiredText(name.text, 'Nome');
+                              if (v != null) {
+                                setLocal(() => error = v);
+                                return;
+                              }
+                              setLocal(() {
+                                busy = true;
+                                error = null;
+                              });
+                              try {
+                                await repo.updateMaterialItem(
+                                    itemId: material['id'].toString(),
+                                    code: code.text,
+                                    name: name.text,
+                                    unit: unit.text,
+                                    category: category.text,
+                                    description: description.text);
+                                if (dialogContext.mounted)
+                                  Navigator.pop(dialogContext, true);
+                              } catch (e) {
+                                setLocal(() => error = friendlyError(e));
+                              } finally {
+                                if (dialogContext.mounted)
+                                  setLocal(() => busy = false);
+                              }
+                            },
+                      child: busy
+                          ? const CircularProgressIndicator(strokeWidth: 2)
+                          : const Text('Salvar')),
                 ],
-              ])),
-              actions: [
-                TextButton(
-                    onPressed:
-                        busy ? null : () => Navigator.pop(dialogContext, false),
-                    child: const Text('Cancelar')),
-                FilledButton(
-                    onPressed: busy
-                        ? null
-                        : () async {
-                            final v = requiredText(code.text, 'Código') ??
-                                requiredText(name.text, 'Nome');
-                            if (v != null) {
-                              setLocal(() => error = v);
-                              return;
-                            }
-                            setLocal(() {
-                              busy = true;
-                              error = null;
-                            });
-                            try {
-                              await repo.updateMaterialItem(
-                                  itemId: material['id'].toString(),
-                                  code: code.text,
-                                  name: name.text,
-                                  unit: unit.text,
-                                  category: category.text,
-                                  description: description.text);
-                              if (dialogContext.mounted)
-                                Navigator.pop(dialogContext, true);
-                            } catch (e) {
-                              setLocal(() => error = friendlyError(e));
-                            } finally {
-                              if (dialogContext.mounted)
-                                setLocal(() => busy = false);
-                            }
-                          },
-                    child: busy
-                        ? const CircularProgressIndicator(strokeWidth: 2)
-                        : const Text('Salvar')),
-              ],
-            ),
-          ));
+              ),
+            ));
+  } finally {
+    actionLock.release();
+  }
 }
 
 String equipmentFamilyKey(EquipmentAsset asset) {
@@ -3174,192 +3129,204 @@ Future<bool?> showEditEquipmentCatalogDialog(
   List<Team> teams,
   Map<String, dynamic> equipment,
 ) async {
-  final assetCode =
-      TextEditingController(text: equipment['asset_code']?.toString() ?? '');
-  final serialNumber =
-      TextEditingController(text: equipment['serial_number']?.toString() ?? '');
-  final ownership = parseEquipmentOwnership(equipment['notes'] as String?);
-  final notes = TextEditingController(text: ownership.notes ?? '');
-  final rentalCompany =
-      TextEditingController(text: ownership.rentalCompany ?? '');
-  final rentalEndDate =
-      TextEditingController(text: ownership.rentalEndDate ?? '');
-  String ownershipType = ownership.type;
-  String? teamId = equipment['team_id']?.toString();
-  String status = equipment['status']?.toString() ?? 'available';
-  const statuses = [
-    'available',
-    'in_use',
-    'maintenance',
-    'damaged',
-    'lost',
-    'retired'
-  ];
-  bool busy = false;
-  String? error;
-  final item = equipment['items'] as Map?;
-  final typeName = TextEditingController(
-      text: equipmentTypeDisplayName(item?['name']?.toString() ?? ''));
+  final actionLock =
+      UiActionLock.acquire(context, 'showEditEquipmentCatalogDialog');
+  if (actionLock == null) return null;
+  try {
+    final assetCode =
+        TextEditingController(text: equipment['asset_code']?.toString() ?? '');
+    final serialNumber = TextEditingController(
+        text: equipment['serial_number']?.toString() ?? '');
+    final ownership = parseEquipmentOwnership(equipment['notes'] as String?);
+    final notes = TextEditingController(text: ownership.notes ?? '');
+    final rentalCompany =
+        TextEditingController(text: ownership.rentalCompany ?? '');
+    final rentalEndDate =
+        TextEditingController(text: ownership.rentalEndDate ?? '');
+    String ownershipType = ownership.type;
+    String? teamId = equipment['team_id']?.toString();
+    String status = equipment['status']?.toString() ?? 'available';
+    const statuses = [
+      'available',
+      'in_use',
+      'maintenance',
+      'damaged',
+      'lost',
+      'retired'
+    ];
+    bool busy = false;
+    String? error;
+    final item = equipment['items'] as Map?;
+    final typeName = TextEditingController(
+        text: equipmentTypeDisplayName(item?['name']?.toString() ?? ''));
 
-  return showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Editar equipamento'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (item != null) ...[
+    return await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Editar equipamento'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (item != null) ...[
+                  TextField(
+                      controller: typeName,
+                      decoration: const InputDecoration(
+                          labelText: 'Tipo do equipamento')),
+                  const SizedBox(height: 6),
+                  Text(
+                      'Alterar este nome atualiza todos os patrimônios deste tipo.',
+                      style:
+                          const TextStyle(color: Colors.white60, fontSize: 12)),
+                ],
+                const SizedBox(height: 12),
                 TextField(
-                    controller: typeName,
+                    controller: assetCode,
+                    decoration:
+                        const InputDecoration(labelText: 'Código/patrimônio')),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: serialNumber,
                     decoration: const InputDecoration(
-                        labelText: 'Tipo do equipamento')),
-                const SizedBox(height: 6),
-                Text(
-                    'Alterar este nome atualiza todos os patrimônios deste tipo.',
-                    style:
-                        const TextStyle(color: Colors.white60, fontSize: 12)),
-              ],
-              const SizedBox(height: 12),
-              TextField(
-                  controller: assetCode,
+                        labelText: 'Número de série (opcional)')),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                    initialValue: ownershipType,
+                    decoration: const InputDecoration(labelText: 'Propriedade'),
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'owned', child: Text('Próprio da empresa')),
+                      DropdownMenuItem(
+                          value: 'rented', child: Text('Equipamento alugado'))
+                    ],
+                    onChanged: busy
+                        ? null
+                        : (v) => setLocal(() => ownershipType = v ?? 'owned')),
+                if (ownershipType == 'rented') ...[
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: rentalCompany,
+                      decoration:
+                          const InputDecoration(labelText: 'Empresa locadora')),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: rentalEndDate,
+                      decoration: const InputDecoration(
+                          labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))
+                ],
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue:
+                      teams.any((t) => t.id == teamId) ? teamId : null,
                   decoration:
-                      const InputDecoration(labelText: 'Código/patrimônio')),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: serialNumber,
-                  decoration: const InputDecoration(
-                      labelText: 'Número de série (opcional)')),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                  initialValue: ownershipType,
-                  decoration: const InputDecoration(labelText: 'Propriedade'),
-                  items: const [
-                    DropdownMenuItem(
-                        value: 'owned', child: Text('Próprio da empresa')),
-                    DropdownMenuItem(
-                        value: 'rented', child: Text('Equipamento alugado'))
-                  ],
+                      const InputDecoration(labelText: 'Equipe / localização'),
+                  items: teams
+                      .map((t) =>
+                          DropdownMenuItem(value: t.id, child: Text(t.name)))
+                      .toList(),
+                  onChanged: busy ? null : (v) => setLocal(() => teamId = v),
+                ),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue:
+                      statuses.contains(status) ? status : 'available',
+                  decoration: const InputDecoration(labelText: 'Status'),
+                  items: statuses
+                      .map((s) => DropdownMenuItem(
+                          value: s, child: Text(statusLabel(s))))
+                      .toList(),
                   onChanged: busy
                       ? null
-                      : (v) => setLocal(() => ownershipType = v ?? 'owned')),
-              if (ownershipType == 'rented') ...[
+                      : (v) => setLocal(() => status = v ?? 'available'),
+                ),
                 const SizedBox(height: 10),
                 TextField(
-                    controller: rentalCompany,
-                    decoration:
-                        const InputDecoration(labelText: 'Empresa locadora')),
-                const SizedBox(height: 10),
-                TextField(
-                    controller: rentalEndDate,
-                    decoration: const InputDecoration(
-                        labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))
+                  controller: notes,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                      labelText: 'Observações (opcional)'),
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ],
               ],
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: teams.any((t) => t.id == teamId) ? teamId : null,
-                decoration:
-                    const InputDecoration(labelText: 'Equipe / localização'),
-                items: teams
-                    .map((t) =>
-                        DropdownMenuItem(value: t.id, child: Text(t.name)))
-                    .toList(),
-                onChanged: busy ? null : (v) => setLocal(() => teamId = v),
-              ),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: statuses.contains(status) ? status : 'available',
-                decoration: const InputDecoration(labelText: 'Status'),
-                items: statuses
-                    .map((s) =>
-                        DropdownMenuItem(value: s, child: Text(statusLabel(s))))
-                    .toList(),
-                onChanged: busy
-                    ? null
-                    : (v) => setLocal(() => status = v ?? 'available'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: notes,
-                maxLines: 3,
-                decoration:
-                    const InputDecoration(labelText: 'Observações (opcional)'),
-              ),
-              if (error != null) ...[
-                const SizedBox(height: 10),
-                Text(error!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
-              ],
-            ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    final validation =
-                        requiredText(assetCode.text, 'Código/patrimônio');
-                    if (validation != null) {
-                      setLocal(() => error = validation);
-                      return;
-                    }
-                    if (ownershipType == 'rented' &&
-                        rentalCompany.text.trim().isEmpty) {
-                      setLocal(() => error = 'Informe a empresa locadora.');
-                      return;
-                    }
-                    if (teamId == null) {
-                      setLocal(() => error = 'Selecione a equipe/localização.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      if (item != null &&
-                          typeName.text.trim() != item['name']?.toString()) {
-                        await repo.updateEquipmentItem(
-                          itemId: item['id'].toString(),
-                          code: item['code']?.toString() ?? '',
-                          name: typeName.text,
-                        );
+          actions: [
+            TextButton(
+              onPressed:
+                  busy ? null : () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final validation =
+                          requiredText(assetCode.text, 'Código/patrimônio');
+                      if (validation != null) {
+                        setLocal(() => error = validation);
+                        return;
                       }
-                      await repo.updateEquipmentAsset(
-                        assetId: equipment['id'].toString(),
-                        assetCode: assetCode.text,
-                        serialNumber: serialNumber.text,
-                        teamId: teamId!,
-                        status: status,
-                        notes: notes.text,
-                        ownershipType: ownershipType,
-                        rentalCompany: rentalCompany.text,
-                        rentalEndDate: rentalEndDate.text,
-                      );
-                      if (dialogContext.mounted)
-                        Navigator.pop(dialogContext, true);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: busy
-                ? const CircularProgressIndicator(strokeWidth: 2)
-                : const Text('Salvar'),
-          ),
-        ],
+                      if (ownershipType == 'rented' &&
+                          rentalCompany.text.trim().isEmpty) {
+                        setLocal(() => error = 'Informe a empresa locadora.');
+                        return;
+                      }
+                      if (teamId == null) {
+                        setLocal(
+                            () => error = 'Selecione a equipe/localização.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        if (item != null &&
+                            typeName.text.trim() != item['name']?.toString()) {
+                          await repo.updateEquipmentItem(
+                            itemId: item['id'].toString(),
+                            code: item['code']?.toString() ?? '',
+                            name: typeName.text,
+                          );
+                        }
+                        await repo.updateEquipmentAsset(
+                          assetId: equipment['id'].toString(),
+                          assetCode: assetCode.text,
+                          serialNumber: serialNumber.text,
+                          teamId: teamId!,
+                          status: status,
+                          notes: notes.text,
+                          ownershipType: ownershipType,
+                          rentalCompany: rentalCompany.text,
+                          rentalEndDate: rentalEndDate.text,
+                        );
+                        if (dialogContext.mounted)
+                          Navigator.pop(dialogContext, true);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: busy
+                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  : const Text('Salvar'),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 class AdministrationPage extends StatelessWidget {
@@ -5770,186 +5737,195 @@ Future<void> showMaterialDialog(
   List<Team> teams,
   String? initialTeamId,
 ) async {
-  final catalog = await repo.fetchMaterialCatalog();
-  if (!context.mounted) return;
+  final actionLock = UiActionLock.acquire(context, 'showMaterialDialog');
+  if (actionLock == null) return;
+  try {
+    final catalog = await repo.fetchMaterialCatalog();
+    if (!context.mounted) return;
 
-  final code = TextEditingController();
-  final name = TextEditingController();
-  final quantity = TextEditingController(text: '1');
-  final unit = TextEditingController(text: 'un');
-  String? teamId = initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
-  bool existing = catalog.isNotEmpty;
-  String? selectedId;
-  bool busy = false;
-  String? error;
+    final code = TextEditingController();
+    final name = TextEditingController();
+    final quantity = TextEditingController(text: '1');
+    final unit = TextEditingController(text: 'un');
+    String? teamId =
+        initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
+    bool existing = catalog.isNotEmpty;
+    String? selectedId;
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Entrada de material'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (catalog.isNotEmpty) ...[
-                SegmentedButton<bool>(
-                  segments: const [
-                    ButtonSegment(value: true, label: Text('Existente')),
-                    ButtonSegment(value: false, label: Text('Novo')),
-                  ],
-                  selected: {existing},
-                  onSelectionChanged: busy
-                      ? null
-                      : (v) => setLocal(() {
-                            existing = v.first;
-                            selectedId = null;
-                            code.clear();
-                            name.clear();
-                            unit.text = 'un';
-                          }),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (existing && catalog.isNotEmpty)
-                InkWell(
-                  onTap: busy
-                      ? null
-                      : () async {
-                          final selected = await showSearchableMaterialPicker(
-                              context, catalog);
-                          if (selected == null) return;
-                          setLocal(() {
-                            selectedId = selected['id'].toString();
-                            code.text = selected['code']?.toString() ?? '';
-                            name.text = selected['name']?.toString() ?? '';
-                            unit.text = selected['unit']?.toString() ?? 'un';
-                          });
-                        },
-                  child: InputDecorator(
-                    decoration: const InputDecoration(
-                        labelText: 'Material cadastrado',
-                        prefixIcon: Icon(Icons.search)),
-                    child: Row(children: [
-                      Expanded(
-                          child: Text(
-                              selectedId == null
-                                  ? 'Pesquisar por nome ou código…'
-                                  : '${code.text} • ${name.text}',
-                              overflow: TextOverflow.ellipsis)),
-                      const Icon(Icons.arrow_drop_down)
-                    ]),
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Entrada de material'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (catalog.isNotEmpty) ...[
+                  SegmentedButton<bool>(
+                    segments: const [
+                      ButtonSegment(value: true, label: Text('Existente')),
+                      ButtonSegment(value: false, label: Text('Novo')),
+                    ],
+                    selected: {existing},
+                    onSelectionChanged: busy
+                        ? null
+                        : (v) => setLocal(() {
+                              existing = v.first;
+                              selectedId = null;
+                              code.clear();
+                              name.clear();
+                              unit.text = 'un';
+                            }),
                   ),
-                )
-              else ...[
-                TextField(
-                  controller: code,
-                  decoration: const InputDecoration(labelText: 'Código'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: name,
-                  decoration: const InputDecoration(labelText: 'Material'),
-                ),
-              ],
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: teamId,
-                decoration: const InputDecoration(labelText: 'Equipe'),
-                items: teams
-                    .map((t) =>
-                        DropdownMenuItem(value: t.id, child: Text(t.name)))
-                    .toList(),
-                onChanged: busy ? null : (v) => setLocal(() => teamId = v),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: quantity,
-                      keyboardType: TextInputType.number,
-                      decoration:
-                          const InputDecoration(labelText: 'Quantidade'),
+                  const SizedBox(height: 12),
+                ],
+                if (existing && catalog.isNotEmpty)
+                  InkWell(
+                    onTap: busy
+                        ? null
+                        : () async {
+                            final selected = await showSearchableMaterialPicker(
+                                context, catalog);
+                            if (selected == null) return;
+                            setLocal(() {
+                              selectedId = selected['id'].toString();
+                              code.text = selected['code']?.toString() ?? '';
+                              name.text = selected['name']?.toString() ?? '';
+                              unit.text = selected['unit']?.toString() ?? 'un';
+                            });
+                          },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                          labelText: 'Material cadastrado',
+                          prefixIcon: Icon(Icons.search)),
+                      child: Row(children: [
+                        Expanded(
+                            child: Text(
+                                selectedId == null
+                                    ? 'Pesquisar por nome ou código…'
+                                    : '${code.text} • ${name.text}',
+                                overflow: TextOverflow.ellipsis)),
+                        const Icon(Icons.arrow_drop_down)
+                      ]),
                     ),
+                  )
+                else ...[
+                  TextField(
+                    controller: code,
+                    decoration: const InputDecoration(labelText: 'Código'),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: unit,
-                      enabled: !(existing && catalog.isNotEmpty),
-                      decoration: const InputDecoration(labelText: 'Unidade'),
-                    ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: name,
+                    decoration: const InputDecoration(labelText: 'Material'),
                   ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Um material possui um único código. Cada equipe mantém apenas sua própria quantidade.',
-                style: TextStyle(fontSize: 12, color: Colors.white60),
-              ),
-              if (error != null) ...[
                 const SizedBox(height: 10),
-                Text(error!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
+                DropdownButtonFormField<String>(
+                  initialValue: teamId,
+                  decoration: const InputDecoration(labelText: 'Equipe'),
+                  items: teams
+                      .map((t) =>
+                          DropdownMenuItem(value: t.id, child: Text(t.name)))
+                      .toList(),
+                  onChanged: busy ? null : (v) => setLocal(() => teamId = v),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: quantity,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            const InputDecoration(labelText: 'Quantidade'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: unit,
+                        enabled: !(existing && catalog.isNotEmpty),
+                        decoration: const InputDecoration(labelText: 'Unidade'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Um material possui um único código. Cada equipe mantém apenas sua própria quantidade.',
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ],
               ],
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final q = int.tryParse(quantity.text.trim());
+                      final validation =
+                          (existing && catalog.isNotEmpty && selectedId == null)
+                              ? 'Selecione um material.'
+                              : requiredText(code.text, 'Código') ??
+                                  requiredText(name.text, 'Material') ??
+                                  (teamId == null
+                                      ? 'Selecione uma equipe.'
+                                      : null) ??
+                                  positiveQuantity(q);
+                      if (validation != null) {
+                        setLocal(() => error = validation);
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.createMaterial(
+                          code: code.text,
+                          name: name.text,
+                          teamId: teamId!,
+                          quantity: q!,
+                          unit: unit.text,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: busy
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Adicionar'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    final q = int.tryParse(quantity.text.trim());
-                    final validation = (existing &&
-                            catalog.isNotEmpty &&
-                            selectedId == null)
-                        ? 'Selecione um material.'
-                        : requiredText(code.text, 'Código') ??
-                            requiredText(name.text, 'Material') ??
-                            (teamId == null ? 'Selecione uma equipe.' : null) ??
-                            positiveQuantity(q);
-                    if (validation != null) {
-                      setLocal(() => error = validation);
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.createMaterial(
-                        code: code.text,
-                        name: name.text,
-                        teamId: teamId!,
-                        quantity: q!,
-                        unit: unit.text,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: busy
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Adicionar'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showEquipmentDialog(
@@ -5958,183 +5934,191 @@ Future<void> showEquipmentDialog(
   List<Team> teams,
   String? initialTeamId,
 ) async {
-  final code = TextEditingController();
-  final name = TextEditingController();
-  final assetCode = TextEditingController();
-  final serial = TextEditingController();
-  final rentalCompany = TextEditingController();
-  final rentalEndDate = TextEditingController();
-  final notes = TextEditingController();
-  String? suggestedType;
-  String ownershipType = 'owned';
-  String? teamId = initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
-  bool busy = false;
-  String? error;
+  final actionLock = UiActionLock.acquire(context, 'showEquipmentDialog');
+  if (actionLock == null) return;
+  try {
+    final code = TextEditingController();
+    final name = TextEditingController();
+    final assetCode = TextEditingController();
+    final serial = TextEditingController();
+    final rentalCompany = TextEditingController();
+    final rentalEndDate = TextEditingController();
+    final notes = TextEditingController();
+    String? suggestedType;
+    String ownershipType = 'owned';
+    String? teamId =
+        initialTeamId ?? (teams.isNotEmpty ? teams.first.id : null);
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Novo equipamento'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                  controller: code,
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Novo equipamento'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                    controller: code,
+                    decoration:
+                        const InputDecoration(labelText: 'Código do tipo')),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue: suggestedType,
                   decoration:
-                      const InputDecoration(labelText: 'Código do tipo')),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: suggestedType,
-                decoration:
-                    const InputDecoration(labelText: 'Tipo comum (opcional)'),
-                items: const [
-                  DropdownMenuItem(
-                      value: 'Máquina de solda trifásica',
-                      child: Text('Máquina de solda trifásica')),
-                  DropdownMenuItem(
-                      value: 'Máquina de solda MIG',
-                      child: Text('Máquina de solda MIG')),
-                  DropdownMenuItem(
-                      value: 'Máquina de solda inversora',
-                      child: Text('Máquina de solda inversora')),
-                ],
-                onChanged: busy
-                    ? null
-                    : (value) => setLocal(() {
-                          suggestedType = value;
-                          if (value != null) name.text = value;
-                        }),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: name,
-                  decoration:
-                      const InputDecoration(labelText: 'Equipamento / tipo')),
-              const SizedBox(height: 10),
-              TextField(
-                controller: assetCode,
-                decoration: const InputDecoration(
-                    labelText: 'Patrimônio / identificação'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: serial,
-                decoration: const InputDecoration(
-                    labelText: 'Número de série (opcional)'),
-              ),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                  initialValue: ownershipType,
-                  decoration: const InputDecoration(labelText: 'Propriedade'),
+                      const InputDecoration(labelText: 'Tipo comum (opcional)'),
                   items: const [
                     DropdownMenuItem(
-                        value: 'owned', child: Text('Próprio da empresa')),
+                        value: 'Máquina de solda trifásica',
+                        child: Text('Máquina de solda trifásica')),
                     DropdownMenuItem(
-                        value: 'rented', child: Text('Equipamento alugado'))
+                        value: 'Máquina de solda MIG',
+                        child: Text('Máquina de solda MIG')),
+                    DropdownMenuItem(
+                        value: 'Máquina de solda inversora',
+                        child: Text('Máquina de solda inversora')),
                   ],
                   onChanged: busy
                       ? null
-                      : (v) => setLocal(() => ownershipType = v ?? 'owned')),
-              if (ownershipType == 'rented') ...[
+                      : (value) => setLocal(() {
+                            suggestedType = value;
+                            if (value != null) name.text = value;
+                          }),
+                ),
                 const SizedBox(height: 10),
                 TextField(
-                    controller: rentalCompany,
+                    controller: name,
                     decoration:
-                        const InputDecoration(labelText: 'Empresa locadora')),
+                        const InputDecoration(labelText: 'Equipamento / tipo')),
                 const SizedBox(height: 10),
                 TextField(
-                    controller: rentalEndDate,
-                    decoration: const InputDecoration(
-                        labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))
-              ],
-              const SizedBox(height: 10),
-              TextField(
-                  controller: notes,
-                  maxLines: 2,
+                  controller: assetCode,
                   decoration: const InputDecoration(
-                      labelText: 'Observações (opcional)')),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: teamId,
-                decoration: const InputDecoration(labelText: 'Equipe'),
-                items: teams
-                    .map((t) =>
-                        DropdownMenuItem(value: t.id, child: Text(t.name)))
-                    .toList(),
-                onChanged: busy ? null : (v) => setLocal(() => teamId = v),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'O código identifica o tipo/modelo; o patrimônio identifica o equipamento físico.',
-                style: TextStyle(fontSize: 12, color: Colors.white60),
-              ),
-              if (error != null) ...[
+                      labelText: 'Patrimônio / identificação'),
+                ),
                 const SizedBox(height: 10),
-                Text(error!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
+                TextField(
+                  controller: serial,
+                  decoration: const InputDecoration(
+                      labelText: 'Número de série (opcional)'),
+                ),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                    initialValue: ownershipType,
+                    decoration: const InputDecoration(labelText: 'Propriedade'),
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'owned', child: Text('Próprio da empresa')),
+                      DropdownMenuItem(
+                          value: 'rented', child: Text('Equipamento alugado'))
+                    ],
+                    onChanged: busy
+                        ? null
+                        : (v) => setLocal(() => ownershipType = v ?? 'owned')),
+                if (ownershipType == 'rented') ...[
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: rentalCompany,
+                      decoration:
+                          const InputDecoration(labelText: 'Empresa locadora')),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: rentalEndDate,
+                      decoration: const InputDecoration(
+                          labelText: 'Fim da locação', hintText: 'AAAA-MM-DD'))
+                ],
+                const SizedBox(height: 10),
+                TextField(
+                    controller: notes,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                        labelText: 'Observações (opcional)')),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue: teamId,
+                  decoration: const InputDecoration(labelText: 'Equipe'),
+                  items: teams
+                      .map((t) =>
+                          DropdownMenuItem(value: t.id, child: Text(t.name)))
+                      .toList(),
+                  onChanged: busy ? null : (v) => setLocal(() => teamId = v),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'O código identifica o tipo/modelo; o patrimônio identifica o equipamento físico.',
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ],
               ],
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final validation = requiredText(code.text, 'Código') ??
+                          requiredText(name.text, 'Equipamento') ??
+                          requiredText(assetCode.text, 'Patrimônio') ??
+                          (ownershipType == 'rented' &&
+                                  rentalCompany.text.trim().isEmpty
+                              ? 'Informe a empresa locadora.'
+                              : null) ??
+                          (teamId == null ? 'Selecione a equipe.' : null);
+                      if (validation != null) {
+                        setLocal(() => error = validation);
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.createEquipment(
+                          code: code.text,
+                          name: name.text,
+                          assetCode: assetCode.text,
+                          serialNumber: serial.text,
+                          teamId: teamId!,
+                          ownershipType: ownershipType,
+                          rentalCompany: rentalCompany.text,
+                          rentalEndDate: rentalEndDate.text,
+                          notes: notes.text,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: busy
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Criar'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    final validation = requiredText(code.text, 'Código') ??
-                        requiredText(name.text, 'Equipamento') ??
-                        requiredText(assetCode.text, 'Patrimônio') ??
-                        (ownershipType == 'rented' &&
-                                rentalCompany.text.trim().isEmpty
-                            ? 'Informe a empresa locadora.'
-                            : null) ??
-                        (teamId == null ? 'Selecione a equipe.' : null);
-                    if (validation != null) {
-                      setLocal(() => error = validation);
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.createEquipment(
-                        code: code.text,
-                        name: name.text,
-                        assetCode: assetCode.text,
-                        serialNumber: serial.text,
-                        teamId: teamId!,
-                        ownershipType: ownershipType,
-                        rentalCompany: rentalCompany.text,
-                        rentalEndDate: rentalEndDate.text,
-                        notes: notes.text,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: busy
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Criar'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showMaterialDistributionSheet(
@@ -6313,98 +6297,108 @@ Future<void> showMaterialQuantityDialog(
           int quantity, String? note, String? destinationTeamId)
       onConfirm,
 }) async {
-  final qty = TextEditingController(text: '1');
-  final note = TextEditingController();
-  String? destinationTeamId = (destinations != null && destinations.isNotEmpty)
-      ? destinations.first.id
-      : null;
-  bool busy = false;
-  String? error;
+  final actionLock =
+      UiActionLock.acquire(context, 'showMaterialQuantityDialog');
+  if (actionLock == null) return;
+  try {
+    final qty = TextEditingController(text: '1');
+    final note = TextEditingController();
+    String? destinationTeamId =
+        (destinations != null && destinations.isNotEmpty)
+            ? destinations.first.id
+            : null;
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (destinations != null && destinations.isNotEmpty) ...[
-                DropdownButtonFormField<String>(
-                  initialValue: destinationTeamId,
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (destinations != null && destinations.isNotEmpty) ...[
+                  DropdownButtonFormField<String>(
+                    initialValue: destinationTeamId,
+                    decoration:
+                        const InputDecoration(labelText: 'Equipe de destino'),
+                    items: destinations
+                        .map((t) =>
+                            DropdownMenuItem(value: t.id, child: Text(t.name)))
+                        .toList(),
+                    onChanged: busy
+                        ? null
+                        : (v) => setLocal(() => destinationTeamId = v),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                TextField(
+                  controller: qty,
+                  keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(labelText: 'Equipe de destino'),
-                  items: destinations
-                      .map((t) =>
-                          DropdownMenuItem(value: t.id, child: Text(t.name)))
-                      .toList(),
-                  onChanged: busy
-                      ? null
-                      : (v) => setLocal(() => destinationTeamId = v),
+                      InputDecoration(labelText: 'Quantidade (máx. $maximum)'),
                 ),
                 const SizedBox(height: 10),
+                TextField(
+                  controller: note,
+                  decoration:
+                      const InputDecoration(labelText: 'Observação (opcional)'),
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ],
               ],
-              TextField(
-                controller: qty,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: 'Quantidade (máx. $maximum)'),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: note,
-                decoration:
-                    const InputDecoration(labelText: 'Observação (opcional)'),
-              ),
-              if (error != null) ...[
-                const SizedBox(height: 10),
-                Text(error!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
-              ],
-            ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final quantity = int.tryParse(qty.text);
+                      if (quantity == null ||
+                          quantity <= 0 ||
+                          quantity > maximum) {
+                        setLocal(() => error = 'Quantidade inválida.');
+                        return;
+                      }
+                      if (destinations != null && destinationTeamId == null) {
+                        setLocal(
+                            () => error = 'Selecione a equipe de destino.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await onConfirm(quantity, note.text, destinationTeamId);
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: Text(actionLabel),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    final quantity = int.tryParse(qty.text);
-                    if (quantity == null ||
-                        quantity <= 0 ||
-                        quantity > maximum) {
-                      setLocal(() => error = 'Quantidade inválida.');
-                      return;
-                    }
-                    if (destinations != null && destinationTeamId == null) {
-                      setLocal(() => error = 'Selecione a equipe de destino.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await onConfirm(quantity, note.text, destinationTeamId);
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: Text(actionLabel),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showEquipmentFamilySheet(
@@ -6603,166 +6597,196 @@ Future<void> showEquipmentActionsSheet(
 }) async {
   final pageContext = context;
   final isMaintenance = equipment.status == 'maintenance';
-  await showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    builder: (sheetContext) => SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(equipment.name,
-                style:
-                    const TextStyle(fontSize: 21, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 4),
-            Text('Patrimônio ${equipment.assetCode}',
-                style: const TextStyle(color: Colors.white60)),
-            const SizedBox(height: 14),
-            if (!isMaintenance)
-              ListTile(
-                leading: const Icon(Icons.swap_horiz_rounded),
-                title: const Text('Transferir equipamento'),
-                subtitle:
-                    const Text('Mover o patrimônio para outra equipe ou local'),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  await Future<void>.delayed(const Duration(milliseconds: 250));
-                  if (!pageContext.mounted) return;
-                  await showEquipmentTransferDialog(
-                      pageContext, repo, teams, equipment);
-                },
-              ),
-            if (equipment.ownershipType == 'rented' && role == 'admin')
-              ListTile(
-                leading: const Icon(Icons.assignment_return_outlined,
-                    color: Color(0xFFFFB74D)),
-                title: const Text('Devolver à locadora'),
-                subtitle: const Text(
-                    'Devolver somente este patrimônio e manter os demais na equipe'),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  await Future<void>.delayed(const Duration(milliseconds: 250));
-                  if (!pageContext.mounted) return;
-                  await showRentalReturnDialog(pageContext, repo, equipment);
-                },
-              ),
-            if (equipment.ownershipType == 'rented' && role == 'admin')
-              ListTile(
-                leading: const Icon(Icons.change_circle_outlined,
-                    color: Color(0xFFF5B942)),
-                title: const Text('Substituir equipamento alugado'),
-                subtitle: const Text(
-                    'Trocar o patrimônio recebido sem criar outro cadastro'),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  await Future<void>.delayed(const Duration(milliseconds: 250));
-                  if (!pageContext.mounted) return;
-                  await showRentedEquipmentReplacementDialog(
-                      pageContext, repo, equipment);
-                },
-              ),
-            if (!isMaintenance && equipment.ownershipType != 'rented')
-              ListTile(
-                leading:
-                    const Icon(Icons.build_rounded, color: Color(0xFFF5B942)),
-                title: const Text('Enviar para manutenção'),
-                subtitle: const Text(
-                    'Mantém o patrimônio rastreado e altera o status para Em manutenção'),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  await Future<void>.delayed(const Duration(milliseconds: 250));
-                  if (!pageContext.mounted) return;
-                  await showEquipmentMaintenanceDialog(
-                      pageContext, repo, equipment);
-                },
-              ),
-            if (isMaintenance && equipment.ownershipType != 'rented')
-              ListTile(
-                leading: const Icon(Icons.keyboard_return_rounded,
-                    color: Color(0xFF52A9FF)),
-                title: const Text('Retornar da manutenção'),
-                subtitle: const Text(
-                    'Escolha a equipe/local de retorno e disponibilize o equipamento novamente'),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  final destinations = role == 'leader'
-                      ? teams.where((t) => t.id == userTeamId).toList()
-                      : teams;
-                  await Future<void>.delayed(const Duration(milliseconds: 250));
-                  if (!pageContext.mounted) return;
-                  await showEquipmentMaintenanceReturnDialog(
-                      pageContext, repo, destinations, equipment);
-                },
-              ),
-          ],
+  final actionLock = UiActionLock.acquire(context, 'equipment-actions');
+  if (actionLock == null) return;
+  bool actionChosen = false;
+  try {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(equipment.name,
+                  style: const TextStyle(
+                      fontSize: 21, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 4),
+              Text('Patrimônio ${equipment.assetCode}',
+                  style: const TextStyle(color: Colors.white60)),
+              const SizedBox(height: 14),
+              if (!isMaintenance)
+                ListTile(
+                  leading: const Icon(Icons.swap_horiz_rounded),
+                  title: const Text('Transferir equipamento'),
+                  subtitle: const Text(
+                      'Mover o patrimônio para outra equipe ou local'),
+                  onTap: () async {
+                    if (actionChosen) return;
+                    actionChosen = true;
+                    Navigator.pop(sheetContext);
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 250));
+                    if (!pageContext.mounted) return;
+                    await showEquipmentTransferDialog(
+                        pageContext, repo, teams, equipment);
+                  },
+                ),
+              if (equipment.ownershipType == 'rented' && role == 'admin')
+                ListTile(
+                  leading: const Icon(Icons.assignment_return_outlined,
+                      color: Color(0xFFFFB74D)),
+                  title: const Text('Devolver à locadora'),
+                  subtitle: const Text(
+                      'Devolver somente este patrimônio e manter os demais na equipe'),
+                  onTap: () async {
+                    if (actionChosen) return;
+                    actionChosen = true;
+                    Navigator.pop(sheetContext);
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 250));
+                    if (!pageContext.mounted) return;
+                    await showRentalReturnDialog(pageContext, repo, equipment);
+                  },
+                ),
+              if (equipment.ownershipType == 'rented' && role == 'admin')
+                ListTile(
+                  leading: const Icon(Icons.change_circle_outlined,
+                      color: Color(0xFFF5B942)),
+                  title: const Text('Substituir equipamento alugado'),
+                  subtitle: const Text(
+                      'Trocar o patrimônio recebido sem criar outro cadastro'),
+                  onTap: () async {
+                    if (actionChosen) return;
+                    actionChosen = true;
+                    Navigator.pop(sheetContext);
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 250));
+                    if (!pageContext.mounted) return;
+                    await showRentedEquipmentReplacementDialog(
+                        pageContext, repo, equipment);
+                  },
+                ),
+              if (!isMaintenance && equipment.ownershipType != 'rented')
+                ListTile(
+                  leading:
+                      const Icon(Icons.build_rounded, color: Color(0xFFF5B942)),
+                  title: const Text('Enviar para manutenção'),
+                  subtitle: const Text(
+                      'Mantém o patrimônio rastreado e altera o status para Em manutenção'),
+                  onTap: () async {
+                    if (actionChosen) return;
+                    actionChosen = true;
+                    Navigator.pop(sheetContext);
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 250));
+                    if (!pageContext.mounted) return;
+                    await showEquipmentMaintenanceDialog(
+                        pageContext, repo, equipment);
+                  },
+                ),
+              if (isMaintenance && equipment.ownershipType != 'rented')
+                ListTile(
+                  leading: const Icon(Icons.keyboard_return_rounded,
+                      color: Color(0xFF52A9FF)),
+                  title: const Text('Retornar da manutenção'),
+                  subtitle: const Text(
+                      'Escolha a equipe/local de retorno e disponibilize o equipamento novamente'),
+                  onTap: () async {
+                    if (actionChosen) return;
+                    actionChosen = true;
+                    Navigator.pop(sheetContext);
+                    final destinations = role == 'leader'
+                        ? teams.where((t) => t.id == userTeamId).toList()
+                        : teams;
+                    await Future<void>.delayed(
+                        const Duration(milliseconds: 250));
+                    if (!pageContext.mounted) return;
+                    await showEquipmentMaintenanceReturnDialog(
+                        pageContext, repo, destinations, equipment);
+                  },
+                ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showRentalReturnDialog(BuildContext context,
     MetalloRepository repo, EquipmentAsset equipment) async {
-  final note = TextEditingController();
-  var busy = false;
-  String? error;
-  await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setLocal) => AlertDialog(
-                title: const Text('Devolver equipamento alugado'),
-                content: SingleChildScrollView(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Text('${equipment.name} • ${equipment.assetCode}',
-                          style: const TextStyle(fontWeight: FontWeight.w900)),
-                      const SizedBox(height: 10),
-                      const Text(
-                          'Será devolvida 1 unidade: este patrimônio. Os outros equipamentos da equipe não serão alterados. O cadastro será arquivado, preservando os registros.'),
-                      const SizedBox(height: 12),
-                      TextField(
-                          controller: note,
-                          decoration: const InputDecoration(
-                              labelText: 'Observação da devolução')),
-                      if (error != null)
-                        Text(error!,
-                            style: const TextStyle(color: Colors.redAccent)),
-                    ])),
-                actions: [
-                  TextButton(
-                      onPressed:
-                          busy ? null : () => Navigator.pop(dialogContext),
-                      child: const Text('Cancelar')),
-                  FilledButton(
-                      onPressed: busy
-                          ? null
-                          : () async {
-                              setLocal(() {
-                                busy = true;
-                                error = null;
-                              });
-                              try {
-                                await repo.returnRentedEquipment(
-                                    equipment, note.text);
-                                if (dialogContext.mounted)
-                                  Navigator.pop(dialogContext);
-                              } catch (e) {
-                                if (dialogContext.mounted)
-                                  setLocal(() {
-                                    busy = false;
-                                    error = friendlyError(e);
-                                  });
-                              }
-                            },
-                      child:
-                          Text(busy ? 'Devolvendo...' : 'Confirmar devolução')),
-                ],
-              )));
-  note.dispose();
+  final actionLock = UiActionLock.acquire(context, 'showRentalReturnDialog');
+  if (actionLock == null) return;
+  try {
+    final note = TextEditingController();
+    var busy = false;
+    String? error;
+    await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+            builder: (context, setLocal) => AlertDialog(
+                  title: const Text('Devolver equipamento alugado'),
+                  content: SingleChildScrollView(
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text('${equipment.name} • ${equipment.assetCode}',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w900)),
+                        const SizedBox(height: 10),
+                        const Text(
+                            'Será devolvida 1 unidade: este patrimônio. Os outros equipamentos da equipe não serão alterados. O cadastro será arquivado, preservando os registros.'),
+                        const SizedBox(height: 12),
+                        TextField(
+                            controller: note,
+                            decoration: const InputDecoration(
+                                labelText: 'Observação da devolução')),
+                        if (error != null)
+                          Text(error!,
+                              style: const TextStyle(color: Colors.redAccent)),
+                      ])),
+                  actions: [
+                    TextButton(
+                        onPressed:
+                            busy ? null : () => Navigator.pop(dialogContext),
+                        child: const Text('Cancelar')),
+                    FilledButton(
+                        onPressed: busy
+                            ? null
+                            : () async {
+                                if (busy) return;
+                                setLocal(() {
+                                  busy = true;
+                                  error = null;
+                                });
+                                try {
+                                  await repo.returnRentedEquipment(
+                                      equipment, note.text);
+                                  if (dialogContext.mounted)
+                                    Navigator.pop(dialogContext);
+                                } catch (e) {
+                                  if (dialogContext.mounted)
+                                    setLocal(() {
+                                      busy = false;
+                                      error = friendlyError(e);
+                                    });
+                                }
+                              },
+                        child: Text(
+                            busy ? 'Devolvendo...' : 'Confirmar devolução')),
+                  ],
+                )));
+    note.dispose();
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showEquipmentMaintenanceDialog(
@@ -6770,116 +6794,36 @@ Future<void> showEquipmentMaintenanceDialog(
   MetalloRepository repo,
   EquipmentAsset equipment,
 ) async {
-  final note = TextEditingController();
-  bool busy = false;
-  String? error;
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Enviar para manutenção'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${equipment.name} • ${equipment.assetCode}',
-                style: const TextStyle(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 8),
-            const Text(
-                'O patrimônio continuará vinculado à equipe atual, mas ficará indisponível até o retorno da manutenção.',
-                style: TextStyle(color: Colors.white70)),
-            const SizedBox(height: 12),
-            TextField(
-              controller: note,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                  labelText: 'Motivo / observação',
-                  hintText: 'Ex.: troca de rolamento, revisão elétrica...'),
-            ),
-            if (error != null) ...[
-              const SizedBox(height: 10),
-              Text(error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-              onPressed: busy ? null : () => Navigator.pop(dialogContext),
-              child: const Text('Cancelar')),
-          FilledButton.icon(
-            onPressed: busy
-                ? null
-                : () async {
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.sendEquipmentToMaintenance(
-                          assetId: equipment.id, note: note.text);
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      if (dialogContext.mounted)
-                        setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            icon: const Icon(Icons.build_rounded),
-            label: const Text('Enviar'),
-          ),
-        ],
-      ),
-    ),
-  );
-  note.dispose();
-}
-
-Future<void> showRentedEquipmentReplacementDialog(
-  BuildContext context,
-  MetalloRepository repo,
-  EquipmentAsset equipment,
-) async {
-  final assetCode = TextEditingController();
-  final serialNumber = TextEditingController();
-  final reason = TextEditingController();
-  bool busy = false;
-  String? error;
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Substituir alugado'),
-        content: SingleChildScrollView(
-          child: Column(
+  final actionLock =
+      UiActionLock.acquire(context, 'showEquipmentMaintenanceDialog');
+  if (actionLock == null) return;
+  try {
+    final note = TextEditingController();
+    bool busy = false;
+    String? error;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Enviar para manutenção'),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                  '${equipment.name} • patrimônio atual ${equipment.assetCode}',
+              Text('${equipment.name} • ${equipment.assetCode}',
                   style: const TextStyle(fontWeight: FontWeight.w800)),
               const SizedBox(height: 8),
               const Text(
-                  'A máquina continua na mesma equipe. O patrimônio anterior ficará registrado nas observações para rastreabilidade.',
+                  'O patrimônio continuará vinculado à equipe atual, mas ficará indisponível até o retorno da manutenção.',
                   style: TextStyle(color: Colors.white70)),
               const SizedBox(height: 12),
               TextField(
-                  controller: assetCode,
-                  decoration:
-                      const InputDecoration(labelText: 'Novo patrimônio *')),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: serialNumber,
-                  decoration: const InputDecoration(
-                      labelText: 'Novo número de série (opcional)')),
-              const SizedBox(height: 10),
-              TextField(
-                  controller: reason,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                      labelText: 'Motivo / observação',
-                      hintText: 'Ex.: troca realizada pela locadora')),
+                controller: note,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                    labelText: 'Motivo / observação',
+                    hintText: 'Ex.: troca de rolamento, revisão elétrica...'),
+              ),
               if (error != null) ...[
                 const SizedBox(height: 10),
                 Text(error!,
@@ -6888,78 +6832,175 @@ Future<void> showRentedEquipmentReplacementDialog(
               ],
             ],
           ),
+          actions: [
+            TextButton(
+                onPressed: busy ? null : () => Navigator.pop(dialogContext),
+                child: const Text('Cancelar')),
+            FilledButton.icon(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.sendEquipmentToMaintenance(
+                            assetId: equipment.id, note: note.text);
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        if (dialogContext.mounted)
+                          setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              icon: const Icon(Icons.build_rounded),
+              label: const Text('Enviar'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-              onPressed: busy ? null : () => Navigator.pop(dialogContext),
-              child: const Text('Cancelar')),
-          FilledButton.icon(
-            onPressed: busy
-                ? null
-                : () async {
-                    final validation =
-                        requiredText(assetCode.text, 'Novo patrimônio');
-                    if (validation != null) {
-                      setLocal(() => error = validation);
-                      return;
-                    }
-                    if (assetCode.text.trim().toLowerCase() ==
-                        equipment.assetCode.trim().toLowerCase()) {
-                      setLocal(() =>
-                          error = 'Informe um patrimônio diferente do atual.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      final now = DateTime.now();
-                      final date =
-                          '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
-                      final detail = reason.text.trim().isEmpty
-                          ? ''
-                          : ' • ${reason.text.trim()}';
-                      final replacementLog =
-                          'Substituição em $date: patrimônio ${equipment.assetCode} → ${assetCode.text.trim()}$detail';
-                      final notes = [equipment.notes?.trim(), replacementLog]
-                          .whereType<String>()
-                          .where((value) => value.isNotEmpty)
-                          .join('\n');
-                      await repo.updateEquipmentAsset(
-                        assetId: equipment.id,
-                        assetCode: assetCode.text,
-                        serialNumber: serialNumber.text,
-                        teamId: equipment.teamId,
-                        status: 'available',
-                        notes: notes,
-                        ownershipType: 'rented',
-                        rentalCompany: equipment.rentalCompany,
-                        rentalEndDate: equipment.rentalEndDate,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      if (dialogContext.mounted)
-                        setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            icon: const Icon(Icons.change_circle_outlined),
-            label: busy
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Confirmar troca'),
-          ),
-        ],
       ),
-    ),
-  );
-  assetCode.dispose();
-  serialNumber.dispose();
-  reason.dispose();
+    );
+    note.dispose();
+  } finally {
+    actionLock.release();
+  }
+}
+
+Future<void> showRentedEquipmentReplacementDialog(
+  BuildContext context,
+  MetalloRepository repo,
+  EquipmentAsset equipment,
+) async {
+  final actionLock =
+      UiActionLock.acquire(context, 'showRentedEquipmentReplacementDialog');
+  if (actionLock == null) return;
+  try {
+    final assetCode = TextEditingController();
+    final serialNumber = TextEditingController();
+    final reason = TextEditingController();
+    bool busy = false;
+    String? error;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Substituir alugado'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    '${equipment.name} • patrimônio atual ${equipment.assetCode}',
+                    style: const TextStyle(fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                const Text(
+                    'A máquina continua na mesma equipe. O patrimônio anterior ficará registrado nas observações para rastreabilidade.',
+                    style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 12),
+                TextField(
+                    controller: assetCode,
+                    decoration:
+                        const InputDecoration(labelText: 'Novo patrimônio *')),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: serialNumber,
+                    decoration: const InputDecoration(
+                        labelText: 'Novo número de série (opcional)')),
+                const SizedBox(height: 10),
+                TextField(
+                    controller: reason,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                        labelText: 'Motivo / observação',
+                        hintText: 'Ex.: troca realizada pela locadora')),
+                if (error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: busy ? null : () => Navigator.pop(dialogContext),
+                child: const Text('Cancelar')),
+            FilledButton.icon(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final validation =
+                          requiredText(assetCode.text, 'Novo patrimônio');
+                      if (validation != null) {
+                        setLocal(() => error = validation);
+                        return;
+                      }
+                      if (assetCode.text.trim().toLowerCase() ==
+                          equipment.assetCode.trim().toLowerCase()) {
+                        setLocal(() => error =
+                            'Informe um patrimônio diferente do atual.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        final now = DateTime.now();
+                        final date =
+                            '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
+                        final detail = reason.text.trim().isEmpty
+                            ? ''
+                            : ' • ${reason.text.trim()}';
+                        final replacementLog =
+                            'Substituição em $date: patrimônio ${equipment.assetCode} → ${assetCode.text.trim()}$detail';
+                        final notes = [equipment.notes?.trim(), replacementLog]
+                            .whereType<String>()
+                            .where((value) => value.isNotEmpty)
+                            .join('\n');
+                        await repo.updateEquipmentAsset(
+                          assetId: equipment.id,
+                          assetCode: assetCode.text,
+                          serialNumber: serialNumber.text,
+                          teamId: equipment.teamId,
+                          status: 'available',
+                          notes: notes,
+                          ownershipType: 'rented',
+                          rentalCompany: equipment.rentalCompany,
+                          rentalEndDate: equipment.rentalEndDate,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        if (dialogContext.mounted)
+                          setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              icon: const Icon(Icons.change_circle_outlined),
+              label: busy
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Confirmar troca'),
+            ),
+          ],
+        ),
+      ),
+    );
+    assetCode.dispose();
+    serialNumber.dispose();
+    reason.dispose();
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showEquipmentMaintenanceReturnDialog(
@@ -6968,84 +7009,95 @@ Future<void> showEquipmentMaintenanceReturnDialog(
   List<Team> teams,
   EquipmentAsset equipment,
 ) async {
-  if (teams.isEmpty) {
-    showError(
-        context,
-        Exception(
-            'Nenhuma equipe/local disponível para receber o equipamento.'));
-    return;
-  }
-  String to = teams.any((t) => t.id == equipment.teamId)
-      ? equipment.teamId
-      : teams.first.id;
-  final note = TextEditingController();
-  bool busy = false;
-  String? error;
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Retornar da manutenção'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<String>(
-              initialValue: to,
-              decoration:
-                  const InputDecoration(labelText: 'Equipe/local de retorno'),
-              items: teams
-                  .map(
-                      (t) => DropdownMenuItem(value: t.id, child: Text(t.name)))
-                  .toList(),
-              onChanged: busy ? null : (v) => setLocal(() => to = v!),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: note,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                  labelText: 'Observação do retorno',
-                  hintText:
-                      'Ex.: manutenção concluída, equipamento revisado...'),
-            ),
-            if (error != null) ...[
+  final actionLock =
+      UiActionLock.acquire(context, 'showEquipmentMaintenanceReturnDialog');
+  if (actionLock == null) return;
+  try {
+    if (teams.isEmpty) {
+      showError(
+          context,
+          Exception(
+              'Nenhuma equipe/local disponível para receber o equipamento.'));
+      return;
+    }
+    String to = teams.any((t) => t.id == equipment.teamId)
+        ? equipment.teamId
+        : teams.first.id;
+    final note = TextEditingController();
+    bool busy = false;
+    String? error;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Retornar da manutenção'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: to,
+                decoration:
+                    const InputDecoration(labelText: 'Equipe/local de retorno'),
+                items: teams
+                    .map((t) =>
+                        DropdownMenuItem(value: t.id, child: Text(t.name)))
+                    .toList(),
+                onChanged: busy ? null : (v) => setLocal(() => to = v!),
+              ),
               const SizedBox(height: 10),
-              Text(error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              TextField(
+                controller: note,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                    labelText: 'Observação do retorno',
+                    hintText:
+                        'Ex.: manutenção concluída, equipamento revisado...'),
+              ),
+              if (error != null) ...[
+                const SizedBox(height: 10),
+                Text(error!,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
+              ],
             ],
+          ),
+          actions: [
+            TextButton(
+                onPressed: busy ? null : () => Navigator.pop(dialogContext),
+                child: const Text('Cancelar')),
+            FilledButton.icon(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.returnEquipmentFromMaintenance(
+                            assetId: equipment.id,
+                            toTeamId: to,
+                            note: note.text);
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        if (dialogContext.mounted)
+                          setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              icon: const Icon(Icons.keyboard_return_rounded),
+              label: const Text('Retornar'),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-              onPressed: busy ? null : () => Navigator.pop(dialogContext),
-              child: const Text('Cancelar')),
-          FilledButton.icon(
-            onPressed: busy
-                ? null
-                : () async {
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.returnEquipmentFromMaintenance(
-                          assetId: equipment.id, toTeamId: to, note: note.text);
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      if (dialogContext.mounted)
-                        setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            icon: const Icon(Icons.keyboard_return_rounded),
-            label: const Text('Retornar'),
-          ),
-        ],
       ),
-    ),
-  );
-  note.dispose();
+    );
+    note.dispose();
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showEquipmentTransferDialog(
@@ -7054,65 +7106,75 @@ Future<void> showEquipmentTransferDialog(
   List<Team> teams,
   EquipmentAsset equipment,
 ) async {
-  final destinations = teams.where((t) => t.id != equipment.teamId).toList();
-  if (destinations.isEmpty) return;
-  String to = destinations.first.id;
-  bool busy = false;
-  String? error;
+  final actionLock =
+      UiActionLock.acquire(context, 'showEquipmentTransferDialog');
+  if (actionLock == null) return;
+  try {
+    final destinations = teams.where((t) => t.id != equipment.teamId).toList();
+    if (destinations.isEmpty) return;
+    String to = destinations.first.id;
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: Text('Transferir ${equipment.name}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<String>(
-              initialValue: to,
-              decoration: const InputDecoration(labelText: 'Equipe de destino'),
-              items: destinations
-                  .map(
-                      (t) => DropdownMenuItem(value: t.id, child: Text(t.name)))
-                  .toList(),
-              onChanged: busy ? null : (v) => setLocal(() => to = v!),
-            ),
-            if (error != null) ...[
-              const SizedBox(height: 10),
-              Text(error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: Text('Transferir ${equipment.name}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                initialValue: to,
+                decoration:
+                    const InputDecoration(labelText: 'Equipe de destino'),
+                items: destinations
+                    .map((t) =>
+                        DropdownMenuItem(value: t.id, child: Text(t.name)))
+                    .toList(),
+                onChanged: busy ? null : (v) => setLocal(() => to = v!),
+              ),
+              if (error != null) ...[
+                const SizedBox(height: 10),
+                Text(error!,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
+              ],
             ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.transferEquipment(
+                            assetId: equipment.id, toTeamId: to);
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: const Text('Transferir'),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.transferEquipment(
-                          assetId: equipment.id, toTeamId: to);
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: const Text('Transferir'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showUserEditDialog(
@@ -7121,100 +7183,109 @@ Future<void> showUserEditDialog(
   List<Team> teams,
   Map<String, dynamic> user,
 ) async {
-  final name = TextEditingController(text: user['full_name']?.toString() ?? '');
-  String role = user['role']?.toString() ?? 'collaborator';
-  String? teamId = user['team_id']?.toString();
-  bool active = user['active'] == true;
-  bool busy = false;
-  String? error;
+  final actionLock = UiActionLock.acquire(context, 'showUserEditDialog');
+  if (actionLock == null) return;
+  try {
+    final name =
+        TextEditingController(text: user['full_name']?.toString() ?? '');
+    String role = user['role']?.toString() ?? 'collaborator';
+    String? teamId = user['team_id']?.toString();
+    bool active = user['active'] == true;
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Editar usuário'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                  controller: name,
-                  decoration: const InputDecoration(labelText: 'Nome')),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: role,
-                decoration: const InputDecoration(labelText: 'Cargo'),
-                items: const [
-                  DropdownMenuItem(value: 'admin', child: Text('Admin')),
-                  DropdownMenuItem(
-                      value: 'engineer', child: Text('Engenheiro')),
-                  DropdownMenuItem(value: 'leader', child: Text('Encarregado')),
-                  DropdownMenuItem(
-                      value: 'collaborator', child: Text('Colaborador')),
-                ],
-                onChanged: busy ? null : (v) => setLocal(() => role = v!),
-              ),
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: teamId,
-                decoration: const InputDecoration(labelText: 'Equipe'),
-                items: teams
-                    .map((t) =>
-                        DropdownMenuItem(value: t.id, child: Text(t.name)))
-                    .toList(),
-                onChanged: busy ? null : (v) => setLocal(() => teamId = v),
-              ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Acesso liberado'),
-                value: active,
-                onChanged: busy ? null : (v) => setLocal(() => active = v),
-              ),
-              if (error != null)
-                Text(error!,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error)),
-            ],
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Editar usuário'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                    controller: name,
+                    decoration: const InputDecoration(labelText: 'Nome')),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue: role,
+                  decoration: const InputDecoration(labelText: 'Cargo'),
+                  items: const [
+                    DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                    DropdownMenuItem(
+                        value: 'engineer', child: Text('Engenheiro')),
+                    DropdownMenuItem(
+                        value: 'leader', child: Text('Encarregado')),
+                    DropdownMenuItem(
+                        value: 'collaborator', child: Text('Colaborador')),
+                  ],
+                  onChanged: busy ? null : (v) => setLocal(() => role = v!),
+                ),
+                const SizedBox(height: 10),
+                DropdownButtonFormField<String>(
+                  initialValue: teamId,
+                  decoration: const InputDecoration(labelText: 'Equipe'),
+                  items: teams
+                      .map((t) =>
+                          DropdownMenuItem(value: t.id, child: Text(t.name)))
+                      .toList(),
+                  onChanged: busy ? null : (v) => setLocal(() => teamId = v),
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Acesso liberado'),
+                  value: active,
+                  onChanged: busy ? null : (v) => setLocal(() => active = v),
+                ),
+                if (error != null)
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      if (role != 'admin' && teamId == null) {
+                        setLocal(() => error = 'Selecione uma equipe.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.updateProfileAdmin(
+                          userId: user['id'].toString(),
+                          fullName: name.text,
+                          role: role,
+                          teamId: role == 'admin' ? teamId : teamId,
+                          active: active,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: const Text('Salvar'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    if (role != 'admin' && teamId == null) {
-                      setLocal(() => error = 'Selecione uma equipe.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.updateProfileAdmin(
-                        userId: user['id'].toString(),
-                        fullName: name.text,
-                        role: role,
-                        teamId: role == 'admin' ? teamId : teamId,
-                        active: active,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: const Text('Salvar'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showTeamDialog(
@@ -7222,71 +7293,79 @@ Future<void> showTeamDialog(
   MetalloRepository repo, {
   Team? team,
 }) async {
-  final name = TextEditingController(text: team?.name ?? '');
-  final desc = TextEditingController(text: team?.description ?? '');
-  bool busy = false;
-  String? error;
+  final actionLock = UiActionLock.acquire(context, 'showTeamDialog');
+  if (actionLock == null) return;
+  try {
+    final name = TextEditingController(text: team?.name ?? '');
+    final desc = TextEditingController(text: team?.description ?? '');
+    bool busy = false;
+    String? error;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: Text(team == null ? 'Nova equipe' : 'Editar equipe'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-                controller: name,
-                decoration: const InputDecoration(labelText: 'Nome')),
-            const SizedBox(height: 10),
-            TextField(
-              controller: desc,
-              decoration:
-                  const InputDecoration(labelText: 'Descrição (opcional)'),
-            ),
-            if (error != null) ...[
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: Text(team == null ? 'Nova equipe' : 'Editar equipe'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  controller: name,
+                  decoration: const InputDecoration(labelText: 'Nome')),
               const SizedBox(height: 10),
-              Text(error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              TextField(
+                controller: desc,
+                decoration:
+                    const InputDecoration(labelText: 'Descrição (opcional)'),
+              ),
+              if (error != null) ...[
+                const SizedBox(height: 10),
+                Text(error!,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error)),
+              ],
             ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      if (name.text.trim().isEmpty) {
+                        setLocal(() => error = 'Informe o nome.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        if (team == null) {
+                          await repo.createTeam(name.text, desc.text);
+                        } else {
+                          await repo.updateTeam(team.id, name.text, desc.text);
+                        }
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: Text(team == null ? 'Criar' : 'Salvar'),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    if (name.text.trim().isEmpty) {
-                      setLocal(() => error = 'Informe o nome.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      if (team == null) {
-                        await repo.createTeam(name.text, desc.text);
-                      } else {
-                        await repo.updateTeam(team.id, name.text, desc.text);
-                      }
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: Text(team == null ? 'Criar' : 'Salvar'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 Future<void> showMaterialHistoryEdit(
@@ -7295,59 +7374,168 @@ Future<void> showMaterialHistoryEdit(
   List<Team> teams,
   Map<String, dynamic> row,
 ) async {
-  final type = row['movement_type']?.toString() ?? 'entry';
-  final qty = TextEditingController(text: row['quantity']?.toString() ?? '1');
-  final note = TextEditingController(text: row['note']?.toString() ?? '');
-  String? originId = row['origin_team_id']?.toString();
-  String? destinationId = row['destination_team_id']?.toString();
-  String? error;
-  bool busy = false;
+  final actionLock = UiActionLock.acquire(context, 'showMaterialHistoryEdit');
+  if (actionLock == null) return;
+  try {
+    final type = row['movement_type']?.toString() ?? 'entry';
+    final qty = TextEditingController(text: row['quantity']?.toString() ?? '1');
+    final note = TextEditingController(text: row['note']?.toString() ?? '');
+    String? originId = row['origin_team_id']?.toString();
+    String? destinationId = row['destination_team_id']?.toString();
+    String? error;
+    bool busy = false;
 
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Corrigir movimentação'),
-        content: SingleChildScrollView(
-          child: Column(
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Corrigir movimentação'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: qty,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Quantidade'),
+                ),
+                if (type == 'transfer' ||
+                    type == 'exit' ||
+                    type == 'maintenance') ...[
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    initialValue: originId,
+                    decoration:
+                        const InputDecoration(labelText: 'Equipe de origem'),
+                    items: teams
+                        .map((t) =>
+                            DropdownMenuItem(value: t.id, child: Text(t.name)))
+                        .toList(),
+                    onChanged:
+                        busy ? null : (v) => setLocal(() => originId = v),
+                  ),
+                ],
+                if (type == 'transfer' ||
+                    type == 'entry' ||
+                    type == 'return') ...[
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    initialValue: destinationId,
+                    decoration:
+                        const InputDecoration(labelText: 'Equipe de destino'),
+                    items: teams
+                        .map((t) =>
+                            DropdownMenuItem(value: t.id, child: Text(t.name)))
+                        .toList(),
+                    onChanged:
+                        busy ? null : (v) => setLocal(() => destinationId = v),
+                  ),
+                ],
+                const SizedBox(height: 10),
+                TextField(
+                  controller: note,
+                  decoration: const InputDecoration(labelText: 'Observação'),
+                ),
+                if (error != null)
+                  Text(error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      final q = int.tryParse(qty.text);
+                      if (q == null || q <= 0) {
+                        setLocal(() => error = 'Quantidade inválida.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.updateMaterialHistory(
+                          id: row['id'].toString(),
+                          quantity: q,
+                          originTeamId: originId,
+                          destinationTeamId: destinationId,
+                          note: note.text,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: const Text('Salvar correção'),
+            ),
+          ],
+        ),
+      ),
+    );
+  } finally {
+    actionLock.release();
+  }
+}
+
+Future<void> showAssetHistoryEdit(
+  BuildContext context,
+  MetalloRepository repo,
+  List<Team> teams,
+  Map<String, dynamic> row,
+) async {
+  final actionLock = UiActionLock.acquire(context, 'showAssetHistoryEdit');
+  if (actionLock == null) return;
+  try {
+    String? teamId = row['destination_team_id']?.toString();
+    String status = row['new_status']?.toString() ?? 'available';
+    final note = TextEditingController(text: row['note']?.toString() ?? '');
+    bool busy = false;
+    String? error;
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setLocal) => AlertDialog(
+          title: const Text('Corrigir equipamento'),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: qty,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Quantidade'),
+              DropdownButtonFormField<String>(
+                initialValue: teamId,
+                decoration: const InputDecoration(labelText: 'Equipe correta'),
+                items: teams
+                    .map((t) =>
+                        DropdownMenuItem(value: t.id, child: Text(t.name)))
+                    .toList(),
+                onChanged: busy ? null : (v) => setLocal(() => teamId = v),
               ),
-              if (type == 'transfer' ||
-                  type == 'exit' ||
-                  type == 'maintenance') ...[
-                const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  initialValue: originId,
-                  decoration:
-                      const InputDecoration(labelText: 'Equipe de origem'),
-                  items: teams
-                      .map((t) =>
-                          DropdownMenuItem(value: t.id, child: Text(t.name)))
-                      .toList(),
-                  onChanged: busy ? null : (v) => setLocal(() => originId = v),
-                ),
-              ],
-              if (type == 'transfer' ||
-                  type == 'entry' ||
-                  type == 'return') ...[
-                const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  initialValue: destinationId,
-                  decoration:
-                      const InputDecoration(labelText: 'Equipe de destino'),
-                  items: teams
-                      .map((t) =>
-                          DropdownMenuItem(value: t.id, child: Text(t.name)))
-                      .toList(),
-                  onChanged:
-                      busy ? null : (v) => setLocal(() => destinationId = v),
-                ),
-              ],
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                initialValue: status,
+                decoration: const InputDecoration(labelText: 'Status'),
+                items: const [
+                  DropdownMenuItem(
+                      value: 'available', child: Text('Disponível')),
+                  DropdownMenuItem(value: 'in_use', child: Text('Em uso')),
+                  DropdownMenuItem(
+                      value: 'maintenance', child: Text('Manutenção')),
+                  DropdownMenuItem(value: 'damaged', child: Text('Danificado')),
+                  DropdownMenuItem(value: 'lost', child: Text('Perdido')),
+                  DropdownMenuItem(value: 'retired', child: Text('Baixado')),
+                ],
+                onChanged: busy ? null : (v) => setLocal(() => status = v!),
+              ),
               const SizedBox(height: 10),
               TextField(
                 controller: note,
@@ -7359,139 +7547,47 @@ Future<void> showMaterialHistoryEdit(
                         TextStyle(color: Theme.of(context).colorScheme.error)),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    final q = int.tryParse(qty.text);
-                    if (q == null || q <= 0) {
-                      setLocal(() => error = 'Quantidade inválida.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.updateMaterialHistory(
-                        id: row['id'].toString(),
-                        quantity: q,
-                        originTeamId: originId,
-                        destinationTeamId: destinationId,
-                        note: note.text,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: const Text('Salvar correção'),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Future<void> showAssetHistoryEdit(
-  BuildContext context,
-  MetalloRepository repo,
-  List<Team> teams,
-  Map<String, dynamic> row,
-) async {
-  String? teamId = row['destination_team_id']?.toString();
-  String status = row['new_status']?.toString() ?? 'available';
-  final note = TextEditingController(text: row['note']?.toString() ?? '');
-  bool busy = false;
-  String? error;
-
-  await showDialog(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
-        title: const Text('Corrigir equipamento'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<String>(
-              initialValue: teamId,
-              decoration: const InputDecoration(labelText: 'Equipe correta'),
-              items: teams
-                  .map(
-                      (t) => DropdownMenuItem(value: t.id, child: Text(t.name)))
-                  .toList(),
-              onChanged: busy ? null : (v) => setLocal(() => teamId = v),
+          actions: [
+            TextButton(
+              onPressed: busy ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Cancelar'),
             ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              initialValue: status,
-              decoration: const InputDecoration(labelText: 'Status'),
-              items: const [
-                DropdownMenuItem(value: 'available', child: Text('Disponível')),
-                DropdownMenuItem(value: 'in_use', child: Text('Em uso')),
-                DropdownMenuItem(
-                    value: 'maintenance', child: Text('Manutenção')),
-                DropdownMenuItem(value: 'damaged', child: Text('Danificado')),
-                DropdownMenuItem(value: 'lost', child: Text('Perdido')),
-                DropdownMenuItem(value: 'retired', child: Text('Baixado')),
-              ],
-              onChanged: busy ? null : (v) => setLocal(() => status = v!),
+            FilledButton(
+              onPressed: busy
+                  ? null
+                  : () async {
+                      if (busy) return;
+                      if (teamId == null) {
+                        setLocal(() => error = 'Selecione a equipe.');
+                        return;
+                      }
+                      setLocal(() {
+                        busy = true;
+                        error = null;
+                      });
+                      try {
+                        await repo.updateAssetHistory(
+                          id: row['id'].toString(),
+                          destinationTeamId: teamId!,
+                          status: status,
+                          note: note.text,
+                        );
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      } catch (e) {
+                        setLocal(() => error = friendlyError(e));
+                      } finally {
+                        if (dialogContext.mounted) setLocal(() => busy = false);
+                      }
+                    },
+              child: const Text('Salvar correção'),
             ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: note,
-              decoration: const InputDecoration(labelText: 'Observação'),
-            ),
-            if (error != null)
-              Text(error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: busy
-                ? null
-                : () async {
-                    if (teamId == null) {
-                      setLocal(() => error = 'Selecione a equipe.');
-                      return;
-                    }
-                    setLocal(() {
-                      busy = true;
-                      error = null;
-                    });
-                    try {
-                      await repo.updateAssetHistory(
-                        id: row['id'].toString(),
-                        destinationTeamId: teamId!,
-                        status: status,
-                        note: note.text,
-                      );
-                      if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    } catch (e) {
-                      setLocal(() => error = friendlyError(e));
-                    } finally {
-                      if (dialogContext.mounted) setLocal(() => busy = false);
-                    }
-                  },
-            child: const Text('Salvar correção'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  } finally {
+    actionLock.release();
+  }
 }
 
 class EquipmentOwnershipBadge extends StatelessWidget {
