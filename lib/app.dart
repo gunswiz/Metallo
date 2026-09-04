@@ -9,7 +9,6 @@ import 'core/errors.dart';
 import 'core/formatters.dart';
 import 'core/theme.dart';
 import 'core/validation.dart';
-import 'epi_module.dart';
 import 'repository.dart';
 import 'shared/widgets/brand_logo.dart';
 import 'shared/widgets/empty_state.dart';
@@ -50,6 +49,17 @@ part 'features/consumption/charts.dart';
 part 'features/history/helpers.dart';
 part 'features/history/history_page.dart';
 part 'features/history/dialogs.dart';
+part 'features/epi/epi_ui.dart';
+part 'features/epi/epi_shell.dart';
+part 'features/epi/epi_home.dart';
+part 'features/epi/cosem_page.dart';
+part 'features/epi/employees_page.dart';
+part 'features/epi/employee_details_page.dart';
+part 'features/epi/items_page.dart';
+part 'features/epi/reports_page.dart';
+part 'features/epi/delivery.dart';
+part 'features/epi/forms.dart';
+part 'features/epi/epi_catalog.dart';
 part 'features/legacy.dart';
 
 class MetalloApp extends StatelessWidget {

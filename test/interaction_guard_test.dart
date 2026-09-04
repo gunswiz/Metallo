@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metallo/epi_module.dart';
 import 'package:metallo/shared/widgets/guided_practice_card.dart';
 import 'package:metallo/main.dart';
 import 'package:metallo/repository.dart';

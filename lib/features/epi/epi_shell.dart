@@ -1,0 +1,121 @@
+part of '../../app.dart';
+
+class EpiManagementShell extends StatefulWidget {
+  const EpiManagementShell({
+    super.key,
+    required this.repo,
+    required this.teams,
+    required this.role,
+  });
+
+  final MetalloRepository repo;
+  final List<Team> teams;
+  final String role;
+
+  @override
+  State<EpiManagementShell> createState() => _EpiManagementShellState();
+}
+
+class _EpiManagementShellState extends State<EpiManagementShell> {
+  int _page = 0;
+  bool _openingDelivery = false;
+  late Future<List<Map<String, dynamic>>> _people =
+      widget.repo.fetchEpiEmployees();
+
+  void _refresh() {
+    if (!mounted) return;
+    setState(() {
+      _people = widget.repo.fetchEpiEmployees();
+    });
+  }
+
+  Future<void> _openDelivery() async {
+    if (_openingDelivery) return;
+    setState(() => _openingDelivery = true);
+    try {
+      await _showDeliveryStart(context, widget.repo, _refresh);
+    } finally {
+      if (mounted) setState(() => _openingDelivery = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pages = <Widget>[
+      _EpiHome(
+          repo: widget.repo,
+          people: _people,
+          teams: widget.teams,
+          onRefresh: _refresh),
+      _EmployeesPage(
+          repo: widget.repo,
+          people: _people,
+          teams: widget.teams,
+          role: widget.role,
+          onRefresh: _refresh),
+      _ItemsPage(repo: widget.repo, role: widget.role),
+      _ReportsPage(repo: widget.repo),
+    ];
+    return Theme(
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: _epiBackground),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: _epiBackground,
+          titleSpacing: 4,
+          title: Row(children: [
+            Image.asset('assets/metallo_logo_outline.png',
+                height: 34, width: 42),
+            const SizedBox(width: 8),
+            const Text('METALLO',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 2)),
+          ]),
+          actions: [
+            IconButton(
+                tooltip: 'Atualizar',
+                onPressed: _refresh,
+                icon: const Icon(Icons.refresh)),
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: Icon(Icons.notifications_none_rounded),
+            ),
+          ],
+        ),
+        body: IndexedStack(index: _page, children: pages),
+        bottomNavigationBar: NavigationBar(
+          height: 72,
+          selectedIndex: _page > 1 ? _page + 1 : _page,
+          onDestinationSelected: (value) {
+            if (value == 2) {
+              _openDelivery();
+            } else {
+              setState(() => _page = value > 2 ? value - 1 : value);
+            }
+          },
+          destinations: [
+            NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home),
+                label: 'Início'),
+            NavigationDestination(
+                icon: Icon(Icons.groups_2_outlined), label: 'Funcionários'),
+            NavigationDestination(
+                icon: _openingDelivery
+                    ? const SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.add_circle, size: 42, color: _epiBlue),
+                label: 'Entrega'),
+            NavigationDestination(
+                icon: Icon(Icons.inventory_2_outlined), label: 'Itens'),
+            NavigationDestination(
+                icon: Icon(Icons.assessment_outlined), label: 'Relatórios'),
+          ],
+        ),
+      ),
+    );
+  }
+}
