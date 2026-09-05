@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/aso_date_picker.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
@@ -190,19 +191,21 @@ class _AsoCard extends StatelessWidget {
         return;
       }
       final now = DateTime.now();
-      final exam = await showDatePicker(
-          context: context,
-          helpText: 'Data do exame ASO',
-          initialDate: now,
-          firstDate: DateTime(2000),
-          lastDate: now);
+      final exam = await showAsoDatePicker(
+        context,
+        helpText: 'Data do exame ASO',
+        initialDate: now,
+        firstDate: DateTime(2000),
+        lastDate: now,
+      );
       if (exam == null || !context.mounted) return;
-      final expiry = await showDatePicker(
-          context: context,
-          helpText: 'Validade informada para o ASO',
-          initialDate: now,
-          firstDate: exam,
-          lastDate: DateTime(now.year + 10));
+      final expiry = await showAsoDatePicker(
+        context,
+        helpText: 'Validade informada para o ASO',
+        initialDate: now,
+        firstDate: exam,
+        lastDate: DateTime(now.year + 10),
+      );
       if (expiry == null || !context.mounted) return;
       try {
         await repo.renewEmployeeAso(person['id'].toString(), exam, expiry);
