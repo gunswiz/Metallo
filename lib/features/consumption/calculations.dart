@@ -1,6 +1,6 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
 
-DateTime _periodStart(DateTime now, String period) {
+DateTime consumptionPeriodStart(DateTime now, String period) {
   if (period == 'week') {
     return DateTime(now.year, now.month, now.day)
         .subtract(Duration(days: now.weekday - 1));
@@ -8,13 +8,13 @@ DateTime _periodStart(DateTime now, String period) {
   return DateTime(now.year, now.month, 1);
 }
 
-DateTime _periodEnd(DateTime now, String period) => period == 'week'
-    ? _periodStart(now, period).add(const Duration(days: 7))
+DateTime consumptionPeriodEnd(DateTime now, String period) => period == 'week'
+    ? consumptionPeriodStart(now, period).add(const Duration(days: 7))
     : DateTime(now.year, now.month + 1, 1);
 DateTime _rowDate(Map<String, dynamic> r) =>
     DateTime.tryParse(r['created_at']?.toString() ?? '')?.toLocal() ??
     DateTime(1970);
-List<Map<String, dynamic>> _filterConsumption(List<Map<String, dynamic>> rows,
+List<Map<String, dynamic>> filterConsumption(List<Map<String, dynamic>> rows,
         String? teamId, DateTime start, DateTime end) =>
     rows.where((r) {
       final d = _rowDate(r);
@@ -22,29 +22,29 @@ List<Map<String, dynamic>> _filterConsumption(List<Map<String, dynamic>> rows,
           !d.isBefore(start) &&
           d.isBefore(end);
     }).toList();
-double _sumConsumption(List<Map<String, dynamic>> rows) => rows.fold<double>(
+double sumConsumption(List<Map<String, dynamic>> rows) => rows.fold<double>(
     0, (a, r) => a + ((r['quantity'] as num?)?.toDouble() ?? 0));
-double? _percentChange(double current, double previous) =>
+double? consumptionPercentChange(double current, double previous) =>
     previous == 0 ? null : ((current - previous) / previous * 100);
-String _formatQty(double v) =>
+String formatConsumptionQuantity(double v) =>
     v.toStringAsFixed(v % 1 == 0 ? 0 : 2).replaceAll('.', ',');
-String _dateBr(DateTime d) =>
+String formatConsumptionDate(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
-String _consumptionPeriodLabel(int days) => days == 7
+String consumptionPeriodLabel(int days) => days == 7
     ? '7 DIAS'
     : days == 30
         ? '30 DIAS'
         : days == 90
             ? '3 MESES'
             : '6 MESES';
-String _consumptionScaleLabel(int days) => days == 7
+String consumptionScaleLabel(int days) => days == 7
     ? 'por dia'
     : days == 30
         ? 'a cada 5 dias'
         : days == 90
             ? 'a cada 15 dias'
             : 'por mês';
-List<Map<String, dynamic>> _consumptionTrend(List<Map<String, dynamic>> rows,
+List<Map<String, dynamic>> consumptionTrend(List<Map<String, dynamic>> rows,
     DateTime start, DateTime end, int periodDays) {
   if (periodDays >= 180) {
     final out = <Map<String, dynamic>>[];
@@ -57,8 +57,8 @@ List<Map<String, dynamic>> _consumptionTrend(List<Map<String, dynamic>> rows,
         out.add({
           'label':
               '${cursor.month.toString().padLeft(2, '0')}/${cursor.year.toString().substring(2)}',
-          'qty': _sumConsumption(
-              _filterConsumption(rows, null, bucketStart, bucketEnd))
+          'qty': sumConsumption(
+              filterConsumption(rows, null, bucketStart, bucketEnd))
         });
       }
       cursor = next;
@@ -80,14 +80,14 @@ List<Map<String, dynamic>> _consumptionTrend(List<Map<String, dynamic>> rows,
         : '${cursor.day.toString().padLeft(2, '0')}/${cursor.month.toString().padLeft(2, '0')}';
     out.add({
       'label': label,
-      'qty': _sumConsumption(_filterConsumption(rows, null, cursor, bucketEnd))
+      'qty': sumConsumption(filterConsumption(rows, null, cursor, bucketEnd))
     });
     cursor = next;
   }
   return out;
 }
 
-String _mixedUnits(List<Map<String, dynamic>> rows) {
+String hasMixedConsumptionUnits(List<Map<String, dynamic>> rows) {
   final units = <String>{};
   for (final r in rows) {
     final u = (r['items'] as Map?)?['unit']?.toString();
@@ -97,7 +97,7 @@ String _mixedUnits(List<Map<String, dynamic>> rows) {
   return units.take(3).join('/');
 }
 
-List<Map<String, dynamic>> _groupMaterials(
+List<Map<String, dynamic>> groupConsumedMaterials(
     List<Map<String, dynamic>> current, List<Map<String, dynamic>> previous) {
   final grouped = <String, Map<String, dynamic>>{};
   for (final r in [...current, ...previous]) {
@@ -158,7 +158,8 @@ String _consumptionCategory(Map<String, dynamic> row) {
   return 'Outros';
 }
 
-List<Map<String, dynamic>> _groupCategories(List<Map<String, dynamic>> rows) {
+List<Map<String, dynamic>> groupConsumptionCategories(
+    List<Map<String, dynamic>> rows) {
   final m = <String, double>{};
   for (final r in rows) {
     final c = _consumptionCategory(r);
@@ -176,7 +177,7 @@ List<Map<String, dynamic>> _groupCategories(List<Map<String, dynamic>> rows) {
   return out;
 }
 
-List<Map<String, dynamic>> _monthlyTrend(
+List<Map<String, dynamic>> monthlyConsumptionTrend(
     List<Map<String, dynamic>> rows, int months) {
   final now = DateTime.now();
   final out = <Map<String, dynamic>>[];
@@ -186,13 +187,13 @@ List<Map<String, dynamic>> _monthlyTrend(
     out.add({
       'label':
           '${m.month.toString().padLeft(2, '0')}/${m.year.toString().substring(2)}',
-      'qty': _sumConsumption(_filterConsumption(rows, null, m, n))
+      'qty': sumConsumption(filterConsumption(rows, null, m, n))
     });
   }
   return out;
 }
 
-const _consumptionColors = [
+const consumptionColors = [
   Color(0xFF2B8CFF),
   Color(0xFF59B85B),
   Color(0xFFFFA726),

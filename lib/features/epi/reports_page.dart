@@ -1,13 +1,18 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
+import 'package:metallo/features/epi/employee_details.dart';
 
-class _ReportsPage extends StatefulWidget {
-  const _ReportsPage({required this.repo});
+class ReportsPage extends StatefulWidget {
+  const ReportsPage({super.key, required this.repo});
   final EpiRepository repo;
   @override
-  State<_ReportsPage> createState() => _ReportsPageState();
+  State<ReportsPage> createState() => ReportsPageState();
 }
 
-class _ReportsPageState extends State<_ReportsPage> {
+class ReportsPageState extends State<ReportsPage> {
   late Future<List<Map<String, dynamic>>> future =
       widget.repo.fetchEpiDeliveries();
 
@@ -18,7 +23,7 @@ class _ReportsPageState extends State<_ReportsPage> {
       FutureBuilder<List<Map<String, dynamic>>>(
         future: future,
         builder: (context, snap) {
-          if (snap.hasError) return _ModuleError(onRetry: reload);
+          if (snap.hasError) return EpiModuleError(onRetry: reload);
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -41,12 +46,12 @@ class _ReportsPageState extends State<_ReportsPage> {
                       child: Text('Nenhuma entrega registrada.'))),
             for (final rows in groups.values)
               Card(
-                color: _epiCard,
+                color: epiCardColor,
                 child: ListTile(
                   leading: const CircleAvatar(
                       backgroundColor: Color(0xFF0C355C),
                       child: Icon(Icons.assignment_turned_in_outlined,
-                          color: _epiBlue)),
+                          color: epiBlue)),
                   title: Text(
                       rows.length == 1
                           ? ((rows.first['epi_items'] as Map?)?['name']
@@ -89,7 +94,7 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                             '',
                         style: const TextStyle(color: Colors.white60)),
                     const SizedBox(height: 14),
-                    _detail(
+                    epiDeliveryDetail(
                         Icons.groups_2_outlined,
                         'Equipe',
                         (rows.first['teams'] as Map?)?['name']?.toString() ??
@@ -101,13 +106,13 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                         children: [
                           for (final row in rows)
                             Card(
-                              color: _epiCard,
+                              color: epiCardColor,
                               child: ListTile(
                                 leading: Icon(
-                                    _kindIcon(
+                                    epiKindIcon(
                                         (row['epi_items'] as Map?)?['item_kind']
                                             ?.toString()),
-                                    color: _epiBlue),
+                                    color: epiBlue),
                                 title: Text(
                                     (row['epi_items'] as Map?)?['name']
                                             ?.toString() ??
@@ -115,7 +120,7 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w800)),
                                 subtitle: Text(
-                                    '${row['quantity']} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'} • ${_statusLabel(row['current_status']?.toString())}${row['variant_snapshot'] == null ? '' : ' • ${(row['epi_items'] as Map?)?['code'] == 'EPI-BOT' ? 'Nº ' : ''}${row['variant_snapshot']}'}${row['ca_snapshot'] == null ? '' : ' • CA ${row['ca_snapshot']}'}'),
+                                    '${row['quantity']} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'} • ${epiStatusLabel(row['current_status']?.toString())}${row['variant_snapshot'] == null ? '' : ' • ${(row['epi_items'] as Map?)?['code'] == 'EPI-BOT' ? 'Nº ' : ''}${row['variant_snapshot']}'}${row['ca_snapshot'] == null ? '' : ' • CA ${row['ca_snapshot']}'}'),
                                 trailing: row['current_status'] == 'active'
                                     ? const Icon(Icons.chevron_right_rounded)
                                     : null,
@@ -165,7 +170,7 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                                         if (sheetContext.mounted) {
                                           Navigator.pop(sheetContext);
                                           onChanged();
-                                          _message(context,
+                                          showEpiMessage(context,
                                               'Situação do item atualizada.');
                                         }
                                       }

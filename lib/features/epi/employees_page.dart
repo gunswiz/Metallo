@@ -1,8 +1,16 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/forms.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/employee_details.dart';
 
-class _TeamPeoplePage extends StatelessWidget {
-  const _TeamPeoplePage(
-      {required this.repo,
+class TeamPeoplePage extends StatelessWidget {
+  const TeamPeoplePage(
+      {super.key,
+      required this.repo,
       required this.adminRepository,
       required this.team,
       required this.people});
@@ -21,17 +29,17 @@ class _TeamPeoplePage extends StatelessWidget {
                 itemBuilder: (_, i) {
                   final p = people[i];
                   return Card(
-                      color: _epiCard,
+                      color: epiCardColor,
                       child: ListTile(
                         leading: const CircleAvatar(
                             backgroundColor: Color(0xFF0C355C),
-                            child: Icon(Icons.person_outline, color: _epiBlue)),
+                            child: Icon(Icons.person_outline, color: epiBlue)),
                         title: Text(p['full_name']?.toString() ?? 'Funcionário',
                             style:
                                 const TextStyle(fontWeight: FontWeight.w800)),
                         subtitle: Text(p['profession']?.toString() ?? ''),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => _openEmployeeDetails(
+                        onTap: () => openEmployeeDetails(
                             context, repo, adminRepository, p),
                       ));
                 },
@@ -39,9 +47,10 @@ class _TeamPeoplePage extends StatelessWidget {
       );
 }
 
-class _EmployeesPage extends StatefulWidget {
-  const _EmployeesPage(
-      {required this.repo,
+class EmployeesPage extends StatefulWidget {
+  const EmployeesPage(
+      {super.key,
+      required this.repo,
       required this.adminRepository,
       required this.people,
       required this.teams,
@@ -54,17 +63,17 @@ class _EmployeesPage extends StatefulWidget {
   final String role;
   final VoidCallback onRefresh;
   @override
-  State<_EmployeesPage> createState() => _EmployeesPageState();
+  State<EmployeesPage> createState() => EmployeesPageState();
 }
 
-class _EmployeesPageState extends State<_EmployeesPage> {
+class EmployeesPageState extends State<EmployeesPage> {
   String query = '';
   @override
   Widget build(BuildContext context) =>
       FutureBuilder<List<Map<String, dynamic>>>(
         future: widget.people,
         builder: (context, snap) {
-          if (snap.hasError) return _ModuleError(onRetry: widget.onRefresh);
+          if (snap.hasError) return EpiModuleError(onRetry: widget.onRefresh);
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -92,7 +101,7 @@ class _EmployeesPageState extends State<_EmployeesPage> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: FilledButton.icon(
                   onPressed: () async {
-                    if (await _employeeForm(
+                    if (await showEmployeeForm(
                             context, widget.repo, widget.teams) &&
                         mounted) {
                       widget.onRefresh();
@@ -115,27 +124,31 @@ class _EmployeesPageState extends State<_EmployeesPage> {
                               (person['teams'] as Map?)?['name']?.toString() ??
                                   'Sem equipe';
                           return Card(
-                            color: _epiCard,
+                            color: epiCardColor,
                             child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
                               leading: const CircleAvatar(
                                   backgroundColor: Color(0xFF0C355C),
                                   child: Icon(Icons.person_outline,
-                                      color: _epiBlue)),
+                                      color: epiBlue)),
                               title: Text(
                                   person['full_name']?.toString() ??
                                       'Funcionário',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w800)),
                               subtitle: Text(
-                                  '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${_asoLabel(person)}'),
+                                  '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${asoStatusLabel(person)}'),
                               trailing: const Icon(Icons.chevron_right_rounded),
-                              onTap: () => _openEmployeeDetails(context,
+                              onTap: () => openEmployeeDetails(context,
                                   widget.repo, widget.adminRepository, person),
                               onLongPress: widget.role == 'admin'
-                                  ? () => _employeeActions(context, widget.repo,
-                                      widget.teams, person, widget.onRefresh)
+                                  ? () => showEmployeeActions(
+                                      context,
+                                      widget.repo,
+                                      widget.teams,
+                                      person,
+                                      widget.onRefresh)
                                   : null,
                             ),
                           );

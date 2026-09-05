@@ -1,4 +1,6 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
 
 Color historyAccentColor(bool isMaterial, String type) {
   if (!isMaterial) return Colors.blueGrey.shade300;

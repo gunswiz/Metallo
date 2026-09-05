@@ -1,4 +1,12 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/history/helpers.dart';
 
 Future<void> showHistoryDetails(
     BuildContext context, Map<String, dynamic> row) async {

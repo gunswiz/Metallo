@@ -1,4 +1,8 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/features/auth/reset_password_page.dart';
+import 'package:metallo/features/auth/profile_gate.dart';
+import 'package:metallo/features/auth/login_page.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

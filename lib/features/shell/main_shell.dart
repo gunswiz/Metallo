@@ -1,4 +1,27 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/core/app_update.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/guided_practice_card.dart';
+import 'package:metallo/shared/widgets/role_badge.dart';
+import 'package:metallo/features/shell/tutorial.dart';
+import 'package:metallo/features/shell/guide.dart';
+import 'package:metallo/features/materials/materials_page.dart';
+import 'package:metallo/features/history/history_page.dart';
+import 'package:metallo/features/consumption/consumption_page.dart';
+import 'package:metallo/features/equipment/equipment_page.dart';
+import 'package:metallo/features/admin/administration_page.dart';
+import 'package:metallo/features/epi/epi_shell.dart';
+import 'package:metallo/features/account/account_settings_page.dart';
+import 'package:metallo/features/dashboard/dashboard_page.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key, required this.profile});

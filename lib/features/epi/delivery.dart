@@ -1,8 +1,13 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
 
-Future<void> _showDeliveryStart(
+Future<void> showDeliveryStart(
     BuildContext context, EpiRepository repo, VoidCallback onSaved) async {
-  final actionLock = UiActionLock.acquire(context, '_showDeliveryStart');
+  final actionLock = UiActionLock.acquire(context, 'showDeliveryStart');
   if (actionLock == null) return;
   try {
     late List<Map<String, dynamic>> employees;
@@ -16,7 +21,7 @@ Future<void> _showDeliveryStart(
           .toList();
     } catch (e) {
       if (context.mounted) {
-        _message(context, 'Não foi possível carregar a entrega.');
+        showEpiMessage(context, 'Não foi possível carregar a entrega.');
       }
       return;
     }
@@ -141,16 +146,16 @@ Future<void> _showDeliveryStart(
                                         variant ==
                                             employee?['shoe_size']?.toString();
                                     return Card(
-                                      color: _epiCard,
+                                      color: epiCardColor,
                                       child: ListTile(
                                         leading: Icon(
-                                            _kindIcon(
+                                            epiKindIcon(
                                                 item?['item_kind']?.toString()),
-                                            color: _epiBlue),
+                                            color: epiBlue),
                                         title: Text(
                                             '${item?['name'] ?? 'Item'}${variant == null || variant.isEmpty ? '' : item?['code'] == 'EPI-BOT' ? ' • Nº $variant' : ' • $variant'}'),
                                         subtitle: Text(
-                                            '${_kindLabel(item?['item_kind']?.toString())} • $available ${item?['unit'] ?? 'un'} disponíveis${preferredBoot ? '\nTamanho cadastrado do funcionário' : ''}'),
+                                            '${epiKindLabel(item?['item_kind']?.toString())} • $available ${item?['unit'] ?? 'un'} disponíveis${preferredBoot ? '\nTamanho cadastrado do funcionário' : ''}'),
                                         isThreeLine: preferredBoot,
                                         trailing: Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -189,7 +194,7 @@ Future<void> _showDeliveryStart(
                           ),
                           Text(
                               '${selected.values.fold<int>(0, (a, b) => a + b)} unidades selecionadas',
-                              style: const TextStyle(color: _epiBlue)),
+                              style: const TextStyle(color: epiBlue)),
                         ],
                         const SizedBox(height: 10),
                         DropdownButtonFormField<String>(

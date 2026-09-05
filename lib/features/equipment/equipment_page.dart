@@ -1,4 +1,16 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/models/equipment_asset.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/empty_state.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/equipment/grouping.dart';
+import 'package:metallo/features/equipment/equipment_catalog_drawer.dart';
+import 'package:metallo/features/equipment/dialogs.dart';
 
 class EquipmentPage extends StatefulWidget {
   const EquipmentPage({

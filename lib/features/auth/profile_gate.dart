@@ -1,4 +1,12 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/shared/widgets/error_page.dart';
+import 'package:metallo/features/shell/main_shell.dart';
+import 'package:metallo/features/auth/pending_access_page.dart';
 
 class ProfileGate extends StatefulWidget {
   const ProfileGate({super.key});

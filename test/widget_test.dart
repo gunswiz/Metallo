@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metallo/main.dart';
+import 'package:metallo/features/shell/guide.dart';
 
 void main() {
   testWidgets('guia abre tela real somente após confirmação', (tester) async {

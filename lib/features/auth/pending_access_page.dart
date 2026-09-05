@@ -1,4 +1,6 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/shared/widgets/brand_logo.dart';
 
 class PendingAccessPage extends StatelessWidget {
   const PendingAccessPage({super.key, required this.onRetry});

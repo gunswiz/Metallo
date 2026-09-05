@@ -1,4 +1,9 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/materials/dialogs.dart';
 
 class MaterialCatalogDrawer extends StatefulWidget {
   const MaterialCatalogDrawer(

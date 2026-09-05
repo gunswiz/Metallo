@@ -1,6 +1,8 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
-Widget _teamDropdown(
+Widget teamConsumptionDropdown(
         List<Team> teams, String? value, ValueChanged<String?> onChanged) =>
     DropdownButtonFormField<String?>(
       initialValue: value,
@@ -15,9 +17,10 @@ Widget _teamDropdown(
       onChanged: onChanged,
     );
 
-class _MetricCard extends StatelessWidget {
-  const _MetricCard(
-      {required this.eyebrow,
+class ConsumptionMetricCard extends StatelessWidget {
+  const ConsumptionMetricCard(
+      {super.key,
+      required this.eyebrow,
       required this.title,
       required this.value,
       required this.suffix,
@@ -73,9 +76,12 @@ class _MetricCard extends StatelessWidget {
           ])));
 }
 
-class _SmallMetric extends StatelessWidget {
-  const _SmallMetric(
-      {required this.title, required this.value, required this.suffix});
+class ConsumptionSmallMetric extends StatelessWidget {
+  const ConsumptionSmallMetric(
+      {super.key,
+      required this.title,
+      required this.value,
+      required this.suffix});
   final String title, value, suffix;
   @override
   Widget build(BuildContext context) => Card(
@@ -94,8 +100,9 @@ class _SmallMetric extends StatelessWidget {
           ])));
 }
 
-class _CategoryLegendRow extends StatelessWidget {
-  const _CategoryLegendRow({required this.index, required this.data});
+class ConsumptionCategoryLegendRow extends StatelessWidget {
+  const ConsumptionCategoryLegendRow(
+      {super.key, required this.index, required this.data});
   final int index;
   final Map<String, dynamic> data;
   @override
@@ -106,7 +113,7 @@ class _CategoryLegendRow extends StatelessWidget {
             width: 9,
             height: 9,
             decoration: BoxDecoration(
-                color: _consumptionColors[index % _consumptionColors.length],
+                color: consumptionColors[index % consumptionColors.length],
                 borderRadius: BorderRadius.circular(2))),
         const SizedBox(width: 7),
         Expanded(
@@ -118,8 +125,9 @@ class _CategoryLegendRow extends StatelessWidget {
       ]));
 }
 
-class _RankingRow extends StatelessWidget {
-  const _RankingRow({required this.index, required this.data, this.onTap});
+class ConsumptionRankingRow extends StatelessWidget {
+  const ConsumptionRankingRow(
+      {super.key, required this.index, required this.data, this.onTap});
   final int index;
   final Map<String, dynamic> data;
   final VoidCallback? onTap;
@@ -134,8 +142,7 @@ class _RankingRow extends StatelessWidget {
                 height: 22,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color:
-                        _consumptionColors[index % _consumptionColors.length],
+                    color: consumptionColors[index % consumptionColors.length],
                     borderRadius: BorderRadius.circular(5)),
                 child: Text('${index + 1}',
                     style: const TextStyle(
@@ -144,19 +151,20 @@ class _RankingRow extends StatelessWidget {
             Expanded(
                 child: Text(data['name'].toString(),
                     style: const TextStyle(fontWeight: FontWeight.w700))),
-            Text('${_formatQty(data['qty'] as double)} ${data['unit']}',
+            Text(
+                '${formatConsumptionQuantity(data['qty'] as double)} ${data['unit']}',
                 style: const TextStyle(fontWeight: FontWeight.w800))
           ])));
 }
 
-class _ConsumptionTableRow extends StatelessWidget {
-  const _ConsumptionTableRow({required this.data});
+class ConsumptionTableRow extends StatelessWidget {
+  const ConsumptionTableRow({super.key, required this.data});
   final Map<String, dynamic> data;
   @override
   Widget build(BuildContext context) {
     final q = data['qty'] as double,
         p = data['prev'] as double,
-        c = _percentChange(q, p);
+        c = consumptionPercentChange(q, p);
     return Container(
         decoration: BoxDecoration(
             border: Border(
@@ -170,7 +178,8 @@ class _ConsumptionTableRow extends StatelessWidget {
                       fontWeight: FontWeight.w700, fontSize: 12))),
           Expanded(
               flex: 2,
-              child: Text(_formatQty(q), style: const TextStyle(fontSize: 12))),
+              child: Text(formatConsumptionQuantity(q),
+                  style: const TextStyle(fontSize: 12))),
           Expanded(
               flex: 2,
               child: Text(data['unit'].toString(),

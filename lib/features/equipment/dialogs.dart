@@ -1,4 +1,18 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/core/validation.dart';
+import 'package:metallo/data/models/equipment_asset.dart';
+import 'package:metallo/data/models/equipment_ownership.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/async_action_dialog.dart';
+import 'package:metallo/shared/widgets/equipment_ownership_badge.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/equipment/grouping.dart';
 
 Future<bool?> showEditEquipmentCatalogDialog(
   BuildContext context,

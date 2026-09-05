@@ -1,4 +1,8 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/features/consumption/widgets.dart';
+import 'package:metallo/features/consumption/charts.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionMaterialDetailPage extends StatefulWidget {
   const ConsumptionMaterialDetailPage(
@@ -27,8 +31,8 @@ class _ConsumptionMaterialDetailPageState
             (teamId == null || r['origin_team_id']?.toString() == teamId))
         .toList();
     final item = itemRows.isEmpty ? null : itemRows.first['items'] as Map?;
-    final currentTrend = _monthlyTrend(itemRows, 3);
-    final previousTrend = _monthlyTrend(itemRows, 6).take(3).toList();
+    final currentTrend = monthlyConsumptionTrend(itemRows, 3);
+    final previousTrend = monthlyConsumptionTrend(itemRows, 6).take(3).toList();
     final currentTotal =
         currentTrend.fold<double>(0, (a, e) => a + (e['qty'] as double));
     final previousTotal =
@@ -65,7 +69,7 @@ class _ConsumptionMaterialDetailPageState
                   ])),
             ]),
             const SizedBox(height: 14),
-            _teamDropdown(
+            teamConsumptionDropdown(
                 widget.teams, teamId, (v) => setState(() => teamId = v)),
             const SizedBox(height: 14),
             Card(
@@ -88,25 +92,25 @@ class _ConsumptionMaterialDetailPageState
             const SizedBox(height: 12),
             Row(children: [
               Expanded(
-                  child: _SmallMetric(
+                  child: ConsumptionSmallMetric(
                       title: 'Total no período atual',
-                      value: _formatQty(currentTotal),
+                      value: formatConsumptionQuantity(currentTotal),
                       suffix: item?['unit']?.toString() ?? 'un')),
               const SizedBox(width: 10),
               Expanded(
-                  child: _SmallMetric(
+                  child: ConsumptionSmallMetric(
                       title: 'Total no período anterior',
-                      value: _formatQty(previousTotal),
+                      value: formatConsumptionQuantity(previousTotal),
                       suffix: item?['unit']?.toString() ?? 'un'))
             ]),
             const SizedBox(height: 10),
-            _MetricCard(
+            ConsumptionMetricCard(
                 eyebrow: 'VARIAÇÃO NO PERÍODO',
                 title: '',
                 value:
-                    '${_percentChange(currentTotal, previousTotal)?.abs().toStringAsFixed(1) ?? '0.0'}%',
+                    '${consumptionPercentChange(currentTotal, previousTotal)?.abs().toStringAsFixed(1) ?? '0.0'}%',
                 suffix: '',
-                change: _percentChange(currentTotal, previousTotal),
+                change: consumptionPercentChange(currentTotal, previousTotal),
                 comparisonText: 'comparado aos 3 meses anteriores'),
           ]),
     );

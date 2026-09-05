@@ -1,4 +1,8 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/features/consumption/widgets.dart';
+import 'package:metallo/features/consumption/charts.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionGraphsPage extends StatefulWidget {
   const ConsumptionGraphsPage(
@@ -25,10 +29,10 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
     final end =
         DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
     final start = end.subtract(Duration(days: periodDays));
-    final filtered = _filterConsumption(teamRows, null, start, end);
-    final trend = _consumptionTrend(teamRows, start, end, periodDays);
-    final categories = _groupCategories(filtered);
-    final materials = _groupMaterials(filtered, const []);
+    final filtered = filterConsumption(teamRows, null, start, end);
+    final trend = consumptionTrend(teamRows, start, end, periodDays);
+    final categories = groupConsumptionCategories(filtered);
+    final materials = groupConsumedMaterials(filtered, const []);
     if (materialId != null &&
         !materials.any((g) => g['id'].toString() == materialId)) {
       materialId = null;
@@ -42,7 +46,7 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
             .toList();
     final materialTrend = materialId == null
         ? <Map<String, dynamic>>[]
-        : _consumptionTrend(materialRows, start, end, periodDays);
+        : consumptionTrend(materialRows, start, end, periodDays);
     final displayTrend = tab == 2 ? materialTrend : trend;
     final totals =
         displayTrend.map((e) => (e['qty'] as num).toDouble()).toList();
@@ -64,7 +68,7 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
           children: [
             Row(children: [
               Expanded(
-                  child: _teamDropdown(
+                  child: teamConsumptionDropdown(
                       widget.teams, teamId, (v) => setState(() => teamId = v))),
               const SizedBox(width: 10),
               Expanded(
@@ -115,14 +119,14 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
                                   ? 'Consumo por categoria'
                                   : tab == 2
                                       ? 'Evolução por material'
-                                      : 'Evolução do consumo (${_consumptionScaleLabel(periodDays)})',
+                                      : 'Evolução do consumo (${consumptionScaleLabel(periodDays)})',
                               style: const TextStyle(
                                   fontWeight: FontWeight.w900, fontSize: 16)),
                           const SizedBox(height: 4),
                           Text(
                               tab == 1
                                   ? 'Participação no período'
-                                  : '${_dateBr(start)} - ${_dateBr(end.subtract(const Duration(days: 1)))} • ${_mixedUnits(filtered)}',
+                                  : '${formatConsumptionDate(start)} - ${formatConsumptionDate(end.subtract(const Duration(days: 1)))} • ${hasMixedConsumptionUnits(filtered)}',
                               style: const TextStyle(
                                   color: Colors.white54, fontSize: 12)),
                           const SizedBox(height: 18),
@@ -137,22 +141,22 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
               const SizedBox(height: 12),
               Row(children: [
                 Expanded(
-                    child: _SmallMetric(
+                    child: ConsumptionSmallMetric(
                         title: avgTitle,
-                        value: _formatQty(avg),
-                        suffix: _mixedUnits(filtered))),
+                        value: formatConsumptionQuantity(avg),
+                        suffix: hasMixedConsumptionUnits(filtered))),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: _SmallMetric(
+                    child: ConsumptionSmallMetric(
                         title: 'Maior consumo',
-                        value: _formatQty(maxValue),
-                        suffix: _mixedUnits(filtered))),
+                        value: formatConsumptionQuantity(maxValue),
+                        suffix: hasMixedConsumptionUnits(filtered))),
               ]),
               const SizedBox(height: 10),
-              _SmallMetric(
+              ConsumptionSmallMetric(
                   title: 'Total no período',
-                  value: _formatQty(total),
-                  suffix: _mixedUnits(filtered)),
+                  value: formatConsumptionQuantity(total),
+                  suffix: hasMixedConsumptionUnits(filtered)),
             ],
           ]),
     );

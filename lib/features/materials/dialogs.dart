@@ -1,4 +1,14 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/core/validation.dart';
+import 'package:metallo/data/models/material_stock.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
 
 Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
     CatalogRepository repo, Map<String, dynamic> material) async {

@@ -1,18 +1,18 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
 
-IconData _kindIcon(String? kind) => switch (kind) {
+IconData epiKindIcon(String? kind) => switch (kind) {
       'uniform' => Icons.checkroom_outlined,
       'personal_tool' => Icons.handyman_outlined,
       _ => Icons.health_and_safety_outlined,
     };
 
-String _kindLabel(String? kind) => switch (kind) {
+String epiKindLabel(String? kind) => switch (kind) {
       'uniform' => 'Fardamento',
       'personal_tool' => 'Item pessoal',
       _ => 'EPI',
     };
 
-String _statusLabel(String? status) => switch (status) {
+String epiStatusLabel(String? status) => switch (status) {
       'returned' => 'Devolvido',
       'replaced' => 'Substituído',
       'lost' => 'Perdido',
@@ -21,7 +21,7 @@ String _statusLabel(String? status) => switch (status) {
       _ => 'Em uso',
     };
 
-List<(String, int)> _recommendedCodes(String profession, String kind) {
+List<(String, int)> recommendedEpiCodes(String profession, String kind) {
   final common = ['EPI-CAP', 'EPI-OCU', 'EPI-AUR', 'EPI-BOT'];
   final p = profession.toLowerCase();
   if (kind == 'uniform') {

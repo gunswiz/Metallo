@@ -1,4 +1,10 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/shared/widgets/async_action_dialog.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
 
 Future<void> showUserEditDialog(
   BuildContext context,

@@ -1,4 +1,7 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/shared/widgets/brand_logo.dart';
+import 'package:metallo/features/auth/auth_gate.dart';
 
 class StartupSplash extends StatefulWidget {
   const StartupSplash({super.key});

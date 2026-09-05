@@ -1,4 +1,14 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/empty_state.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/history/helpers.dart';
+import 'package:metallo/features/history/dialogs.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage(

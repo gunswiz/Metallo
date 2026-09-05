@@ -1,9 +1,15 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
 
-Future<bool> _employeeForm(
+Future<bool> showEmployeeForm(
     BuildContext context, EpiRepository repo, List<Team> teams,
     {Map<String, dynamic>? existing}) async {
-  final actionLock = UiActionLock.acquire(context, '_employeeForm');
+  final actionLock = UiActionLock.acquire(context, 'showEmployeeForm');
   if (actionLock == null) return false;
   try {
     final form = GlobalKey<FormState>();
@@ -181,7 +187,7 @@ Future<bool> _employeeForm(
   }
 }
 
-Future<void> _employeeActions(
+Future<void> showEmployeeActions(
     BuildContext context,
     EpiRepository repo,
     List<Team> teams,
@@ -211,15 +217,15 @@ Future<void> _employeeActions(
   await Future<void>.delayed(const Duration(milliseconds: 250));
   if (!context.mounted) return;
   if (action == 'edit') {
-    if (await _employeeForm(context, repo, teams, existing: person) &&
+    if (await showEmployeeForm(context, repo, teams, existing: person) &&
         context.mounted) {
       onChanged();
-      _message(context, 'Funcionário atualizado.');
+      showEpiMessage(context, 'Funcionário atualizado.');
     }
   } else if (action == 'items') {
     if (await _employeeItemsForm(context, repo, person) && context.mounted) {
       onChanged();
-      _message(context, 'Itens previstos atualizados.');
+      showEpiMessage(context, 'Itens previstos atualizados.');
     }
   }
 }
@@ -240,7 +246,7 @@ Future<bool> _employeeItemsForm(BuildContext context, EpiRepository repo,
       saved = Map<String, dynamic>.from(values[1] as Map);
     } catch (_) {
       if (context.mounted) {
-        _message(context, 'Não foi possível carregar os itens.');
+        showEpiMessage(context, 'Não foi possível carregar os itens.');
       }
       return false;
     }
@@ -253,7 +259,7 @@ Future<bool> _employeeItemsForm(BuildContext context, EpiRepository repo,
       }
     } else {
       for (final kind in ['epi', 'uniform', 'personal_tool']) {
-        for (final rec in _recommendedCodes(
+        for (final rec in recommendedEpiCodes(
             person['profession']?.toString() ?? '', kind)) {
           final item = items.where((i) => i['code'] == rec.$1).firstOrNull;
           if (item != null) selected[item['id'].toString()] = rec.$2;
@@ -417,7 +423,7 @@ class _EmployeeItemSelector extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: selected ? _epiBlue.withValues(alpha: .08) : Colors.transparent,
+        color: selected ? epiBlue.withValues(alpha: .08) : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(children: [
@@ -460,9 +466,9 @@ class _EmployeeItemSelector extends StatelessWidget {
   }
 }
 
-Future<bool> _itemForm(BuildContext context, EpiRepository repo,
+Future<bool> showItemForm(BuildContext context, EpiRepository repo,
     {Map<String, dynamic>? existing}) async {
-  final actionLock = UiActionLock.acquire(context, '_itemForm');
+  final actionLock = UiActionLock.acquire(context, 'showItemForm');
   if (actionLock == null) return false;
   try {
     final form = GlobalKey<FormState>();
@@ -630,7 +636,7 @@ Future<bool> _itemForm(BuildContext context, EpiRepository repo,
   }
 }
 
-Future<void> _itemActions(BuildContext context, EpiRepository repo,
+Future<void> showItemActions(BuildContext context, EpiRepository repo,
     Map<String, dynamic> item, VoidCallback reload) async {
   final action = await showModalBottomSheet<String>(
       context: context,
@@ -653,7 +659,7 @@ Future<void> _itemActions(BuildContext context, EpiRepository repo,
           ));
   if (!context.mounted) return;
   if (action == 'edit') {
-    if (await _itemForm(context, repo, existing: item) && context.mounted) {
+    if (await showItemForm(context, repo, existing: item) && context.mounted) {
       reload();
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Item atualizado.')));
@@ -693,9 +699,9 @@ Future<void> _itemActions(BuildContext context, EpiRepository repo,
   }
 }
 
-Future<bool> _stockForm(
+Future<bool> showStockForm(
     BuildContext context, EpiRepository repo, Map<String, dynamic> item) async {
-  final actionLock = UiActionLock.acquire(context, '_stockForm');
+  final actionLock = UiActionLock.acquire(context, 'showStockForm');
   if (actionLock == null) return false;
   try {
     final form = GlobalKey<FormState>();

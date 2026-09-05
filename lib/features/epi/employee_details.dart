@@ -1,6 +1,12 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
 
-void _openEmployeeDetails(BuildContext context, EpiRepository repo,
+void openEmployeeDetails(BuildContext context, EpiRepository repo,
     AdminRepository adminRepository, Map<String, dynamic> person) {
   Navigator.push(
       context,
@@ -44,7 +50,7 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
               margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                  color: _epiCard,
+                  color: epiCardColor,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: const Color(0xFF17324B))),
               child: Row(children: [
@@ -52,7 +58,7 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
                     radius: 32,
                     backgroundColor: Color(0xFF0C355C),
                     child:
-                        Icon(Icons.person_outline, color: _epiBlue, size: 35)),
+                        Icon(Icons.person_outline, color: epiBlue, size: 35)),
                 const SizedBox(width: 14),
                 Expanded(
                     child: Column(
@@ -90,7 +96,7 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
                 child: FutureBuilder<List<dynamic>>(
               future: future,
               builder: (context, snap) {
-                if (snap.hasError) return _ModuleError(onRetry: reload);
+                if (snap.hasError) return EpiModuleError(onRetry: reload);
                 if (!snap.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -148,7 +154,7 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
       );
 }
 
-String _asoLabel(Map<String, dynamic> person) {
+String asoStatusLabel(Map<String, dynamic> person) {
   final expiry = DateTime.tryParse(person['aso_expiry_date']?.toString() ?? '');
   if (expiry == null) return 'ASO não informado • cadastrar validade';
   final now = DateTime.now();
@@ -178,7 +184,7 @@ class _AsoCard extends StatelessWidget {
       final profile = await adminRepository.currentProfile();
       if (!context.mounted) return;
       if (profile?['role'] != 'admin') {
-        _message(context,
+        showEpiMessage(context,
             'Solicite ao administrador o registro da renovação do ASO.');
         return;
       }
@@ -202,10 +208,10 @@ class _AsoCard extends StatelessWidget {
         person['aso_exam_date'] = exam.toIso8601String().substring(0, 10);
         person['aso_expiry_date'] = expiry.toIso8601String().substring(0, 10);
         onChanged();
-        if (context.mounted) _message(context, 'ASO atualizado.');
+        if (context.mounted) showEpiMessage(context, 'ASO atualizado.');
       } catch (_) {
         if (context.mounted) {
-          _message(context, 'Não foi possível atualizar o ASO.');
+          showEpiMessage(context, 'Não foi possível atualizar o ASO.');
         }
       }
     } finally {
@@ -230,7 +236,7 @@ class _AsoCard extends StatelessWidget {
         Icon(Icons.medical_information_outlined, color: color),
         const SizedBox(width: 10),
         Expanded(
-            child: Text(_asoLabel(person),
+            child: Text(asoStatusLabel(person),
                 style: TextStyle(color: color, fontWeight: FontWeight.w800))),
         TextButton(
             onPressed: () => _renew(context),
@@ -267,7 +273,7 @@ class _AssignmentList extends StatelessWidget {
             r['current_status'] == 'active')
         .toList();
     final recommended = customItems == null
-        ? _recommendedCodes(profession, kind)
+        ? recommendedEpiCodes(profession, kind)
         : customItems!
             .map((row) {
               final item = items
@@ -346,7 +352,7 @@ class _AssignmentList extends StatelessWidget {
     try {
       final teamId = person['team_id']?.toString();
       if (teamId == null) {
-        _message(context, 'Associe o funcionário a uma equipe primeiro.');
+        showEpiMessage(context, 'Associe o funcionário a uma equipe primeiro.');
         return;
       }
       String? requestedVariant;
@@ -371,13 +377,12 @@ class _AssignmentList extends StatelessWidget {
                 const SizedBox(height: 10),
                 ListTile(
                   leading:
-                      const Icon(Icons.light_mode_outlined, color: _epiBlue),
+                      const Icon(Icons.light_mode_outlined, color: epiBlue),
                   title: const Text('Óculos claro'),
                   onTap: () => chooseVariant(sheetContext, 'Claro'),
                 ),
                 ListTile(
-                  leading:
-                      const Icon(Icons.dark_mode_outlined, color: _epiBlue),
+                  leading: const Icon(Icons.dark_mode_outlined, color: epiBlue),
                   title: const Text('Óculos escuro'),
                   onTap: () => chooseVariant(sheetContext, 'Escuro'),
                 ),
@@ -395,12 +400,12 @@ class _AssignmentList extends StatelessWidget {
             quantity: quantity,
             requestedVariant: requestedVariant);
         if (context.mounted) {
-          _message(context, 'Solicitação enviada para a COSEM.');
+          showEpiMessage(context, 'Solicitação enviada para a COSEM.');
           onChanged();
         }
       } catch (_) {
         if (context.mounted) {
-          _message(context, 'Esta pendência já foi solicitada.');
+          showEpiMessage(context, 'Esta pendência já foi solicitada.');
         }
       }
     } finally {
@@ -411,7 +416,7 @@ class _AssignmentList extends StatelessWidget {
   Widget _assignmentCard(String name, String qty, bool ok, String? ca,
           {String? detail, bool pending = false, VoidCallback? onTap}) =>
       Card(
-          color: _epiCard,
+          color: epiCardColor,
           child: ListTile(
             onTap: onTap,
             leading: Icon(
@@ -423,7 +428,7 @@ class _AssignmentList extends StatelessWidget {
                 color: ok
                     ? Colors.greenAccent
                     : pending
-                        ? _epiBlue
+                        ? epiBlue
                         : Colors.orangeAccent),
             title:
                 Text(name, style: const TextStyle(fontWeight: FontWeight.w800)),
@@ -441,7 +446,7 @@ class _AssignmentList extends StatelessWidget {
                 color: (ok
                         ? Colors.greenAccent
                         : pending
-                            ? _epiBlue
+                            ? epiBlue
                             : Colors.orangeAccent)
                     .withValues(alpha: .12),
                 borderRadius: BorderRadius.circular(10),
@@ -452,16 +457,16 @@ class _AssignmentList extends StatelessWidget {
                       color: ok
                           ? Colors.greenAccent
                           : pending
-                              ? _epiBlue
+                              ? epiBlue
                               : Colors.orangeAccent)),
             ),
           ));
 }
 
-Widget _detail(IconData icon, String label, String value) => Padding(
+Widget epiDeliveryDetail(IconData icon, String label, String value) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(children: [
-      Icon(icon, color: _epiBlue),
+      Icon(icon, color: epiBlue),
       const SizedBox(width: 12),
       Expanded(
           child:

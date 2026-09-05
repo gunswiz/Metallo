@@ -1,4 +1,14 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/reports_page.dart';
+import 'package:metallo/features/epi/items_page.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_home.dart';
+import 'package:metallo/features/epi/employees_page.dart';
+import 'package:metallo/features/epi/delivery.dart';
 
 class EpiManagementShell extends StatefulWidget {
   const EpiManagementShell({
@@ -35,7 +45,7 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
     if (_openingDelivery) return;
     setState(() => _openingDelivery = true);
     try {
-      await _showDeliveryStart(context, widget.repo, _refresh);
+      await showDeliveryStart(context, widget.repo, _refresh);
     } finally {
       if (mounted) setState(() => _openingDelivery = false);
     }
@@ -44,27 +54,27 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
   @override
   Widget build(BuildContext context) {
     final pages = <Widget>[
-      _EpiHome(
+      EpiHome(
           repo: widget.repo,
           adminRepository: widget.adminRepository,
           people: _people,
           teams: widget.teams,
           onRefresh: _refresh),
-      _EmployeesPage(
+      EmployeesPage(
           repo: widget.repo,
           adminRepository: widget.adminRepository,
           people: _people,
           teams: widget.teams,
           role: widget.role,
           onRefresh: _refresh),
-      _ItemsPage(repo: widget.repo, role: widget.role),
-      _ReportsPage(repo: widget.repo),
+      ItemsPage(repo: widget.repo, role: widget.role),
+      ReportsPage(repo: widget.repo),
     ];
     return Theme(
-      data: Theme.of(context).copyWith(scaffoldBackgroundColor: _epiBackground),
+      data: Theme.of(context).copyWith(scaffoldBackgroundColor: epiBackground),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: _epiBackground,
+          backgroundColor: epiBackground,
           titleSpacing: 4,
           title: Row(children: [
             Image.asset('assets/metallo_logo_outline.png',
@@ -111,7 +121,7 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
                         width: 28,
                         height: 28,
                         child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.add_circle, size: 42, color: _epiBlue),
+                    : const Icon(Icons.add_circle, size: 42, color: epiBlue),
                 label: 'Entrega'),
             NavigationDestination(
                 icon: Icon(Icons.inventory_2_outlined), label: 'Itens'),

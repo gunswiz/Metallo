@@ -1,11 +1,12 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 
-const _epiBlue = Color(0xFF168CFF);
-const _epiCard = metalloFeatureCard;
-const _epiBackground = Color(0xFF03101B);
+const epiBlue = Color(0xFF168CFF);
+const epiCardColor = metalloFeatureCard;
+const epiBackground = Color(0xFF03101B);
 
-class _ModuleError extends StatelessWidget {
-  const _ModuleError({required this.onRetry});
+class EpiModuleError extends StatelessWidget {
+  const EpiModuleError({super.key, required this.onRetry});
   final VoidCallback onRetry;
   @override
   Widget build(BuildContext context) => Center(
@@ -17,11 +18,11 @@ class _ModuleError extends StatelessWidget {
       ]));
 }
 
-void _message(BuildContext context, String text) {
+void showEpiMessage(BuildContext context, String text) {
   final isError = text.toLowerCase().contains('erro') ||
       text.toLowerCase().contains('não foi') ||
       text.toLowerCase().contains('já foi');
-  final color = isError ? Colors.orangeAccent : _epiBlue;
+  final color = isError ? Colors.orangeAccent : epiBlue;
   final messenger = ScaffoldMessenger.of(context);
   messenger.clearSnackBars();
   messenger.showSnackBar(SnackBar(

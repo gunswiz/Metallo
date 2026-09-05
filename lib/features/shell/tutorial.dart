@@ -1,4 +1,6 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 
 class _TutorialStep {
   const _TutorialStep(
@@ -232,10 +234,10 @@ Future<void> showMetalloTutorial(
                                   height: 1.45,
                                   fontSize: 15)),
                           if (step.example != null)
-                            _tutorialInfo(Icons.lightbulb_outline, 'Exemplo',
+                            showTutorialInfo(Icons.lightbulb_outline, 'Exemplo',
                                 step.example!, const Color(0xFF65B5FF)),
                           if (step.howTo != null)
-                            _tutorialInfo(
+                            showTutorialInfo(
                                 Icons.format_list_numbered,
                                 'Como fazer',
                                 step.howTo!
@@ -245,10 +247,10 @@ Future<void> showMetalloTutorial(
                                     .join('\n'),
                                 const Color(0xFF9A8CFF)),
                           if (step.result != null)
-                            _tutorialInfo(Icons.check_circle_outline,
+                            showTutorialInfo(Icons.check_circle_outline,
                                 'Resultado', step.result!, metalloSuccess),
                           if (step.warning != null)
-                            _tutorialInfo(
+                            showTutorialInfo(
                                 Icons.warning_amber_rounded,
                                 'Atenção',
                                 step.warning!,
@@ -319,7 +321,8 @@ Future<void> showMetalloTutorial(
   );
 }
 
-Widget _tutorialInfo(IconData icon, String title, String text, Color color) =>
+Widget showTutorialInfo(
+        IconData icon, String title, String text, Color color) =>
     Container(
       width: double.infinity,
       margin: const EdgeInsets.only(top: 12),

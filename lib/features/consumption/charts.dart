@@ -1,4 +1,5 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionDonutChart extends StatelessWidget {
   const ConsumptionDonutChart(
@@ -21,8 +22,8 @@ class ConsumptionDonutChart extends StatelessWidget {
                         Container(
                             width: 8,
                             height: 8,
-                            color: _consumptionColors[
-                                i % _consumptionColors.length]),
+                            color: consumptionColors[
+                                i % consumptionColors.length]),
                         const SizedBox(width: 5),
                         Text(
                             '${data[i]['name']} ${(data[i]['pct'] as double).toStringAsFixed(0)}%',
@@ -47,7 +48,7 @@ class _DonutPainter extends CustomPainter {
     for (int i = 0; i < data.length; i++) {
       final sweep = (data[i]['qty'] as double) / total * 6.28318530718;
       final p = Paint()
-        ..color = _consumptionColors[i % _consumptionColors.length]
+        ..color = consumptionColors[i % consumptionColors.length]
         ..style = PaintingStyle.stroke
         ..strokeWidth = r * .38
         ..strokeCap = StrokeCap.butt;
@@ -110,7 +111,7 @@ class _LinePainter extends CustomPainter {
       tp.paint(canvas, Offset(x - tp.width / 2, top + h + 8));
       final vp = TextPainter(
           text: TextSpan(
-              text: _formatQty(data[i]['qty'] as double),
+              text: formatConsumptionQuantity(data[i]['qty'] as double),
               style: const TextStyle(
                   fontSize: 9,
                   color: Colors.white70,
@@ -240,13 +241,14 @@ class ConsumptionHorizontalBars extends StatelessWidget {
                                       ? const Color(0xFF2B8CFF)
                                       : i == 0
                                           ? const Color(0xFF687584)
-                                          : _consumptionColors[
-                                              i % _consumptionColors.length],
+                                          : consumptionColors[
+                                              i % consumptionColors.length],
                                   borderRadius: BorderRadius.circular(3)))))),
               const SizedBox(width: 7),
               SizedBox(
                   width: 52,
-                  child: Text(_formatQty(data[i]['qty'] as double),
+                  child: Text(
+                      formatConsumptionQuantity(data[i]['qty'] as double),
                       style: const TextStyle(
                           fontSize: 10, fontWeight: FontWeight.w800)))
             ]))

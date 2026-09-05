@@ -1,8 +1,16 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/employees_page.dart';
+import 'package:metallo/features/epi/cosem_page.dart';
 
-class _EpiHome extends StatelessWidget {
-  const _EpiHome(
-      {required this.repo,
+class EpiHome extends StatelessWidget {
+  const EpiHome(
+      {super.key,
+      required this.repo,
       required this.adminRepository,
       required this.people,
       required this.teams,
@@ -18,7 +26,7 @@ class _EpiHome extends StatelessWidget {
     return FutureBuilder<List<List<Map<String, dynamic>>>>(
       future: Future.wait([people, repo.fetchEpiDeliveries()]),
       builder: (context, snap) {
-        if (snap.hasError) return _ModuleError(onRetry: onRefresh);
+        if (snap.hasError) return EpiModuleError(onRetry: onRefresh);
         if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -50,7 +58,7 @@ class _EpiHome extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: _epiCard,
+                  color: epiCardColor,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: const Color(0xFF17324B)),
                 ),
@@ -61,7 +69,7 @@ class _EpiHome extends StatelessWidget {
                         Expanded(
                             child: Text('Resumo geral',
                                 style: TextStyle(fontWeight: FontWeight.w800))),
-                        Icon(Icons.verified_user_outlined, color: _epiBlue),
+                        Icon(Icons.verified_user_outlined, color: epiBlue),
                       ]),
                       const SizedBox(height: 14),
                       Row(children: [
@@ -109,7 +117,7 @@ class _EpiHome extends StatelessWidget {
                 people: active.where((p) => p['team_id'] == null).length,
                 central: true,
                 onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => _CosemPage(repo: repo))),
+                    MaterialPageRoute(builder: (_) => CosemPage(repo: repo))),
               ),
               for (final team in fieldTeams)
                 _TeamEpiCard(
@@ -120,7 +128,7 @@ class _EpiHome extends StatelessWidget {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => _TeamPeoplePage(
+                          builder: (_) => TeamPeoplePage(
                               repo: repo,
                               adminRepository: adminRepository,
                               team: team,
@@ -149,7 +157,7 @@ class _Metric extends StatelessWidget {
             color: const Color(0xFF142234),
             borderRadius: BorderRadius.circular(13)),
         child: Row(children: [
-          Icon(icon, color: _epiBlue, size: 25),
+          Icon(icon, color: epiBlue, size: 25),
           const SizedBox(width: 10),
           Expanded(
               child: Column(
@@ -179,7 +187,7 @@ class _TeamEpiCard extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) => Card(
-        color: _epiCard,
+        color: epiCardColor,
         margin: const EdgeInsets.only(bottom: 10),
         child: ListTile(
           onTap: onTap,
@@ -189,7 +197,7 @@ class _TeamEpiCard extends StatelessWidget {
             backgroundColor: const Color(0xFF0C355C),
             child: Icon(
                 central ? Icons.warehouse_outlined : Icons.groups_2_outlined,
-                color: _epiBlue),
+                color: epiBlue),
           ),
           title:
               Text(name, style: const TextStyle(fontWeight: FontWeight.w800)),

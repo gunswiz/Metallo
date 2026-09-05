@@ -1,4 +1,16 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/consumption/widgets.dart';
+import 'package:metallo/features/consumption/consumption_teams_compare_page.dart';
+import 'package:metallo/features/consumption/consumption_material_detail_page.dart';
+import 'package:metallo/features/consumption/consumption_materials_page.dart';
+import 'package:metallo/features/consumption/consumption_graphs_page.dart';
+import 'package:metallo/features/consumption/charts.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionPage extends StatefulWidget {
   const ConsumptionPage(
@@ -36,19 +48,24 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
             }
             final rows = snap.data!;
             final now = DateTime.now();
-            final current = _filterConsumption(rows, teamId,
-                _periodStart(now, period), _periodEnd(now, period));
+            final current = filterConsumption(
+                rows,
+                teamId,
+                consumptionPeriodStart(now, period),
+                consumptionPeriodEnd(now, period));
             final previousStart = period == 'week'
-                ? _periodStart(now, period).subtract(const Duration(days: 7))
+                ? consumptionPeriodStart(now, period)
+                    .subtract(const Duration(days: 7))
                 : DateTime(now.year, now.month - 1, 1);
-            final previousEnd = _periodStart(now, period);
+            final previousEnd = consumptionPeriodStart(now, period);
             final previous =
-                _filterConsumption(rows, teamId, previousStart, previousEnd);
-            final currentTotal = _sumConsumption(current);
-            final previousTotal = _sumConsumption(previous);
-            final change = _percentChange(currentTotal, previousTotal);
-            final ranking = _groupMaterials(current, previous);
-            final categories = _groupCategories(current);
+                filterConsumption(rows, teamId, previousStart, previousEnd);
+            final currentTotal = sumConsumption(current);
+            final previousTotal = sumConsumption(previous);
+            final change =
+                consumptionPercentChange(currentTotal, previousTotal);
+            final ranking = groupConsumedMaterials(current, previous);
+            final categories = groupConsumptionCategories(current);
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -90,7 +107,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                   ),
                   const SizedBox(height: 10),
                   Column(children: [
-                    _teamDropdown(
+                    teamConsumptionDropdown(
                         teams, teamId, (v) => setState(() => teamId = v)),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
@@ -108,12 +125,12 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                     ),
                   ]),
                   const SizedBox(height: 14),
-                  _MetricCard(
+                  ConsumptionMetricCard(
                     eyebrow:
                         'COMPARAÇÃO COM ${period == 'week' ? 'SEMANA' : 'MÊS'} ANTERIOR',
                     title: 'Total consumido',
-                    value: _formatQty(currentTotal),
-                    suffix: _mixedUnits(current),
+                    value: formatConsumptionQuantity(currentTotal),
+                    suffix: hasMixedConsumptionUnits(current),
                     change: change,
                     comparisonText:
                         'vs ${period == 'week' ? 'Semana' : 'Mês'} anterior',
@@ -147,7 +164,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                   for (int i = 0;
                                       i < categories.length && i < 5;
                                       i++)
-                                    _CategoryLegendRow(
+                                    ConsumptionCategoryLegendRow(
                                         index: i, data: categories[i])
                                 ])),
                               ]),
@@ -172,7 +189,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                       style: TextStyle(color: Colors.white54)))
                             else
                               for (int i = 0; i < ranking.length && i < 5; i++)
-                                _RankingRow(
+                                ConsumptionRankingRow(
                                     index: i,
                                     data: ranking[i],
                                     onTap: () {

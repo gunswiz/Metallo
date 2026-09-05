@@ -1,13 +1,18 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
 
-class _CosemPage extends StatefulWidget {
-  const _CosemPage({required this.repo});
+class CosemPage extends StatefulWidget {
+  const CosemPage({super.key, required this.repo});
   final EpiRepository repo;
   @override
-  State<_CosemPage> createState() => _CosemPageState();
+  State<CosemPage> createState() => CosemPageState();
 }
 
-class _CosemPageState extends State<_CosemPage> {
+class CosemPageState extends State<CosemPage> {
   String query = '';
   String kind = 'all';
   late Future<List<List<Map<String, dynamic>>>> future = _load();
@@ -36,7 +41,7 @@ class _CosemPageState extends State<_CosemPage> {
           body: FutureBuilder<List<List<Map<String, dynamic>>>>(
             future: future,
             builder: (context, snap) {
-              if (snap.hasError) return _ModuleError(onRetry: reload);
+              if (snap.hasError) return EpiModuleError(onRetry: reload);
               if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -96,24 +101,22 @@ class _CosemPageState extends State<_CosemPage> {
       const SizedBox(height: 12),
       for (final item in items)
         Card(
-          color: _epiCard,
+          color: epiCardColor,
           child: ListTile(
             onLongPress: (item['variants'] as Map).isEmpty
                 ? null
                 : () => _showVariantStock(item),
-            leading:
-                Icon(_kindIcon(item['item_kind']?.toString()), color: _epiBlue),
+            leading: Icon(epiKindIcon(item['item_kind']?.toString()),
+                color: epiBlue),
             title: Text(item['name']?.toString() ?? 'Item',
                 style: const TextStyle(fontWeight: FontWeight.w800)),
             subtitle: Text((item['variants'] as Map).isEmpty
-                ? '${_kindLabel(item['item_kind']?.toString())} • ${item['code']}'
-                : '${_kindLabel(item['item_kind']?.toString())} • ${item['code']}\nPressione para ver cada variação'),
+                ? '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}'
+                : '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}\nPressione para ver cada variação'),
             isThreeLine: (item['variants'] as Map).isNotEmpty,
             trailing: Text('${item['quantity']} ${item['unit'] ?? 'un'}',
                 style: const TextStyle(
-                    color: _epiBlue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900)),
+                    color: epiBlue, fontSize: 16, fontWeight: FontWeight.w900)),
           ),
         ),
       if (items.isEmpty)
@@ -145,12 +148,12 @@ class _CosemPageState extends State<_CosemPage> {
               ListTile(
                 leading: const CircleAvatar(
                     backgroundColor: Color(0xFF0C355C),
-                    child: Icon(Icons.inventory_2_outlined, color: _epiBlue)),
+                    child: Icon(Icons.inventory_2_outlined, color: epiBlue)),
                 title: Text(
                     item['code'] == 'EPI-BOT' ? 'Número ${row.key}' : row.key),
                 trailing: Text('${row.value} ${item['unit'] ?? 'un'}',
                     style: const TextStyle(
-                        color: _epiBlue,
+                        color: epiBlue,
                         fontSize: 17,
                         fontWeight: FontWeight.w900)),
               ),
@@ -172,11 +175,11 @@ class _CosemPageState extends State<_CosemPage> {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: _epiBlue.withValues(alpha: .12),
+                color: epiBlue.withValues(alpha: .12),
                 shape: BoxShape.circle,
               ),
               child:
-                  const Icon(Icons.task_alt_rounded, color: _epiBlue, size: 36),
+                  const Icon(Icons.task_alt_rounded, color: epiBlue, size: 36),
             ),
             const SizedBox(height: 18),
             const Text('Nenhuma pendência aberta',
@@ -201,10 +204,10 @@ class _CosemPageState extends State<_CosemPage> {
       const SizedBox(height: 12),
       for (final request in pending)
         Card(
-          color: _epiCard,
+          color: epiCardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
-            side: BorderSide(color: _epiBlue.withValues(alpha: .28)),
+            side: BorderSide(color: epiBlue.withValues(alpha: .28)),
           ),
           child: ListTile(
             contentPadding:
@@ -213,10 +216,10 @@ class _CosemPageState extends State<_CosemPage> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: _epiBlue.withValues(alpha: .14),
+                color: epiBlue.withValues(alpha: .14),
                 borderRadius: BorderRadius.circular(13),
               ),
-              child: const Icon(Icons.schedule_rounded, color: _epiBlue),
+              child: const Icon(Icons.schedule_rounded, color: epiBlue),
             ),
             title: Text(
                 (request['epi_items'] as Map?)?['name']?.toString() ?? 'Item',
@@ -258,7 +261,8 @@ class _CosemPageState extends State<_CosemPage> {
                   ((request['quantity'] as num?)?.toInt() ?? 1))
           .toList();
       if (available.isEmpty) {
-        _message(context, 'Não há estoque suficiente para esta pendência.');
+        showEpiMessage(
+            context, 'Não há estoque suficiente para esta pendência.');
         return;
       }
       final item = request['epi_items'] as Map?;
@@ -281,7 +285,7 @@ class _CosemPageState extends State<_CosemPage> {
               for (final batch in available)
                 ListTile(
                   leading:
-                      const Icon(Icons.inventory_2_outlined, color: _epiBlue),
+                      const Icon(Icons.inventory_2_outlined, color: epiBlue),
                   title: Text(batch['variant'] == null
                       ? 'Sem variação'
                       : code == 'EPI-BOT'
@@ -305,10 +309,11 @@ class _CosemPageState extends State<_CosemPage> {
             request['id'].toString(), selected['id'].toString());
         if (!mounted) return;
         reload();
-        _message(context, 'Pendência atendida e entregue ao funcionário.');
+        showEpiMessage(
+            context, 'Pendência atendida e entregue ao funcionário.');
       } catch (_) {
         if (mounted) {
-          _message(context,
+          showEpiMessage(context,
               'Estoque insuficiente ou pendência já atendida. Confira o estoque.');
         }
       }

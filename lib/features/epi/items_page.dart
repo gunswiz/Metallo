@@ -1,14 +1,19 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/features/epi/forms.dart';
+import 'package:metallo/features/epi/epi_ui.dart';
+import 'package:metallo/features/epi/epi_catalog.dart';
 
-class _ItemsPage extends StatefulWidget {
-  const _ItemsPage({required this.repo, required this.role});
+class ItemsPage extends StatefulWidget {
+  const ItemsPage({super.key, required this.repo, required this.role});
   final EpiRepository repo;
   final String role;
   @override
-  State<_ItemsPage> createState() => _ItemsPageState();
+  State<ItemsPage> createState() => ItemsPageState();
 }
 
-class _ItemsPageState extends State<_ItemsPage> {
+class ItemsPageState extends State<ItemsPage> {
   late Future<List<Map<String, dynamic>>> future = widget.repo.fetchEpiItems();
   String query = '';
   String kind = 'all';
@@ -18,7 +23,7 @@ class _ItemsPageState extends State<_ItemsPage> {
       FutureBuilder<List<Map<String, dynamic>>>(
         future: future,
         builder: (context, snap) {
-          if (snap.hasError) return _ModuleError(onRetry: reload);
+          if (snap.hasError) return EpiModuleError(onRetry: reload);
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -66,7 +71,7 @@ class _ItemsPageState extends State<_ItemsPage> {
             if (widget.role == 'admin')
               FilledButton.icon(
                   onPressed: () async {
-                    final saved = await _itemForm(context, widget.repo);
+                    final saved = await showItemForm(context, widget.repo);
                     if (!mounted) return;
                     if (saved) {
                       reload();
@@ -82,21 +87,21 @@ class _ItemsPageState extends State<_ItemsPage> {
                       child: Text('Nenhum item encontrado.'))),
             for (final item in items)
               Card(
-                color: _epiCard,
+                color: epiCardColor,
                 child: ListTile(
-                  leading: Icon(_kindIcon(item['item_kind']?.toString()),
-                      color: _epiBlue),
+                  leading: Icon(epiKindIcon(item['item_kind']?.toString()),
+                      color: epiBlue),
                   title: Text(item['name']?.toString() ?? 'Item',
                       style: const TextStyle(fontWeight: FontWeight.w800)),
                   subtitle: Text(
-                      '${_kindLabel(item['item_kind']?.toString())} • ${item['code']}${item['ca_number'] == null ? '' : ' • CA ${item['ca_number']}'}'),
+                      '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}${item['ca_number'] == null ? '' : ' • CA ${item['ca_number']}'}'),
                   trailing: widget.role == 'admin'
                       ? IconButton(
                           tooltip: 'Registrar entrada',
                           icon: const Icon(Icons.add_box_outlined),
                           onPressed: () async {
                             final registered =
-                                await _stockForm(context, widget.repo, item);
+                                await showStockForm(context, widget.repo, item);
                             if (!mounted) return;
                             if (registered) {
                               ScaffoldMessenger.of(this.context).showSnackBar(
@@ -107,7 +112,8 @@ class _ItemsPageState extends State<_ItemsPage> {
                           })
                       : null,
                   onLongPress: widget.role == 'admin'
-                      ? () => _itemActions(context, widget.repo, item, reload)
+                      ? () =>
+                          showItemActions(context, widget.repo, item, reload)
                       : null,
                 ),
               ),

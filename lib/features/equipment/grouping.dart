@@ -1,4 +1,5 @@
-part of '../../app.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/data/models/equipment_asset.dart';
 
 String equipmentFamilyKey(EquipmentAsset asset) {
   final normalized = removePortugueseAccents(asset.name.toLowerCase());

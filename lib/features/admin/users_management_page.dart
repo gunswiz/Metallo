@@ -1,4 +1,11 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/admin/dialogs.dart';
 
 class UsersManagementPage extends StatefulWidget {
   const UsersManagementPage({super.key, required this.repo});

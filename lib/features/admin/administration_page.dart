@@ -1,4 +1,9 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/shared/widgets/brand_logo.dart';
+import 'package:metallo/features/admin/users_management_page.dart';
+import 'package:metallo/features/admin/teams_page.dart';
+import 'package:metallo/features/admin/create_employee_page.dart';
 
 class AdministrationPage extends StatelessWidget {
   const AdministrationPage({super.key, required this.repo});

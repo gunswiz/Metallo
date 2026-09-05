@@ -1,4 +1,7 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/features/shell/tutorial.dart';
 
 class HelpTopic {
   const HelpTopic(this.title, this.icon, this.summary, this.example, this.steps,
@@ -159,9 +162,9 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
               childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               expandedCrossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _tutorialInfo(Icons.lightbulb_outline, 'Exemplo real',
+                showTutorialInfo(Icons.lightbulb_outline, 'Exemplo real',
                     topic.example, const Color(0xFF65B5FF)),
-                _tutorialInfo(
+                showTutorialInfo(
                     Icons.format_list_numbered,
                     'Como fazer',
                     topic.steps
@@ -170,10 +173,10 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
                         .map((e) => '${e.key + 1}. ${e.value}')
                         .join('\n'),
                     const Color(0xFF9A8CFF)),
-                _tutorialInfo(Icons.check_circle_outline, 'Resultado',
+                showTutorialInfo(Icons.check_circle_outline, 'Resultado',
                     topic.result, metalloSuccess),
                 if (topic.warning != null)
-                  _tutorialInfo(Icons.warning_amber_rounded, 'Atenção',
+                  showTutorialInfo(Icons.warning_amber_rounded, 'Atenção',
                       topic.warning!, const Color(0xFFFFB74D)),
                 const SizedBox(height: 10),
                 OutlinedButton.icon(

@@ -1,4 +1,8 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
 
 class CreateEmployeePage extends StatefulWidget {
   const CreateEmployeePage({super.key, required this.repo});

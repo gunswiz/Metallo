@@ -1,4 +1,11 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/core/app_update.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/theme.dart';
+import 'package:metallo/shared/widgets/brand_logo.dart';
+import 'package:metallo/features/shell/guide.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage(

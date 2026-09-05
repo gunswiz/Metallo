@@ -1,4 +1,13 @@
-part of '../../app.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/formatters.dart';
+import 'package:metallo/data/models/equipment_ownership.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/shared/widgets/equipment_ownership_badge.dart';
+import 'package:metallo/shared/widgets/error_state.dart';
+import 'package:metallo/features/equipment/dialogs.dart';
 
 class EquipmentCatalogDrawer extends StatefulWidget {
   const EquipmentCatalogDrawer({

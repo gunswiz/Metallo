@@ -1,4 +1,8 @@
-part of '../../app.dart';
+import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
+import 'package:metallo/features/consumption/widgets.dart';
+import 'package:metallo/features/consumption/charts.dart';
+import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionTeamsComparePage extends StatefulWidget {
   const ConsumptionTeamsComparePage(
@@ -16,18 +20,19 @@ class _ConsumptionTeamsComparePageState
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final start = _periodStart(now, period), end = _periodEnd(now, period);
-    final current = _filterConsumption(widget.rows, null, start, end);
+    final start = consumptionPeriodStart(now, period),
+        end = consumptionPeriodEnd(now, period);
+    final current = filterConsumption(widget.rows, null, start, end);
     final teamTotals = <Map<String, dynamic>>[];
     for (final t in widget.teams) {
-      final qty = _sumConsumption(current
+      final qty = sumConsumption(current
           .where((r) => r['origin_team_id']?.toString() == t.id)
           .toList());
       teamTotals.add({'name': t.name, 'qty': qty});
     }
     teamTotals
         .sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
-    final ranking = _groupMaterials(current, const []);
+    final ranking = groupConsumedMaterials(current, const []);
     return Scaffold(
       appBar: AppBar(title: const Text('Comparativo entre equipes')),
       body: ListView(
@@ -46,20 +51,20 @@ class _ConsumptionTeamsComparePageState
             const SizedBox(height: 14),
             Row(children: [
               Expanded(
-                  child: _SmallMetric(
+                  child: ConsumptionSmallMetric(
                       title: teamTotals.isEmpty
                           ? 'Equipe'
                           : teamTotals.first['name'].toString(),
-                      value: _formatQty(teamTotals.isEmpty
+                      value: formatConsumptionQuantity(teamTotals.isEmpty
                           ? 0
                           : teamTotals.first['qty'] as double),
-                      suffix: _mixedUnits(current))),
+                      suffix: hasMixedConsumptionUnits(current))),
               const SizedBox(width: 10),
               Expanded(
-                  child: _SmallMetric(
+                  child: ConsumptionSmallMetric(
                       title: 'Todas as equipes',
-                      value: _formatQty(_sumConsumption(current)),
-                      suffix: _mixedUnits(current))),
+                      value: formatConsumptionQuantity(sumConsumption(current)),
+                      suffix: hasMixedConsumptionUnits(current))),
             ]),
             const SizedBox(height: 12),
             Card(
@@ -89,7 +94,7 @@ class _ConsumptionTeamsComparePageState
                                   fontWeight: FontWeight.w900, fontSize: 16)),
                           const SizedBox(height: 8),
                           for (int i = 0; i < ranking.length && i < 5; i++)
-                            _RankingRow(index: i, data: ranking[i]),
+                            ConsumptionRankingRow(index: i, data: ranking[i]),
                         ]))),
           ]),
     );

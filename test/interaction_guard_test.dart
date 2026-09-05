@@ -10,7 +10,9 @@ import 'package:metallo/data/repositories/dashboard_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/shared/widgets/guided_practice_card.dart';
-import 'package:metallo/main.dart';
+import 'package:metallo/features/epi/epi_shell.dart';
+import 'package:metallo/features/equipment/dialogs.dart';
+import 'package:metallo/features/materials/dialogs.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
