@@ -20,18 +20,28 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
   String? teamId;
   bool busy = false;
   String? error;
-  Future<void> create() async {
-    if (teamId == null) {
-      setState(() => error = 'Selecione a equipe.');
-      return;
-    }
+
+  String? _validationError() {
+    if (teamId == null) return 'Selecione a equipe.';
     if (name.text.trim().isEmpty || email.text.trim().isEmpty) {
-      setState(() => error = 'Preencha nome e e-mail.');
-      return;
+      return 'Preencha nome e e-mail.';
     }
     if (password.text.length < 4) {
-      setState(
-          () => error = 'A senha temporária precisa ter 4 ou mais caracteres.');
+      return 'A senha temporária precisa ter 4 ou mais caracteres.';
+    }
+    return null;
+  }
+
+  void _clearForm() {
+    name.clear();
+    email.clear();
+    password.clear();
+  }
+
+  Future<void> create() async {
+    final validationError = _validationError();
+    if (validationError != null) {
+      setState(() => error = validationError);
       return;
     }
     setState(() {
@@ -50,9 +60,7 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Funcionário criado e liberado.')),
         );
-        name.clear();
-        email.clear();
-        password.clear();
+        _clearForm();
       }
     } catch (e) {
       if (mounted) setState(() => error = friendlyError(e));

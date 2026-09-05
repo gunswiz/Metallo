@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/data/models/dashboard_snapshot.dart';
+import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/shared/widgets/error_state.dart';
 import 'package:metallo/features/admin/dialogs.dart';
@@ -21,16 +22,39 @@ class _TeamsPageState extends State<TeamsPage> {
   void reload() =>
       setState(() => future = widget.repo.dashboardRepository.fetchDashboard());
 
+  Future<void> _createTeam() async {
+    await showTeamDialog(context, widget.repo);
+    reload();
+  }
+
+  Future<void> _handleTeamAction(String action, Team team) async {
+    if (action == 'edit') {
+      await showTeamDialog(context, widget.repo, team: team);
+      reload();
+      return;
+    }
+    if (action != 'delete') return;
+    final confirmed = await confirm(
+      context,
+      'Excluir equipe?',
+      'A equipe só poderá ser excluída se não tiver estoque, equipamentos ou usuários ativos.',
+    );
+    if (confirmed != true) return;
+    try {
+      await widget.repo.deleteTeam(team.id);
+      reload();
+    } catch (error) {
+      if (mounted) showError(context, error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Equipes')),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'team-create-fab',
-        onPressed: () async {
-          await showTeamDialog(context, widget.repo);
-          reload();
-        },
+        onPressed: _createTeam,
         icon: const Icon(Icons.add),
         label: const Text('Criar equipe'),
       ),
@@ -51,40 +75,10 @@ class _TeamsPageState extends State<TeamsPage> {
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
-              for (final t in teams)
-                Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.groups_2_outlined),
-                    title: Text(t.name),
-                    subtitle:
-                        t.description == null ? null : Text(t.description!),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (action) async {
-                        if (action == 'edit') {
-                          await showTeamDialog(context, widget.repo, team: t);
-                          reload();
-                        } else if (action == 'delete') {
-                          final yes = await confirm(
-                            context,
-                            'Excluir equipe?',
-                            'A equipe só poderá ser excluída se não tiver estoque, equipamentos ou usuários ativos.',
-                          );
-                          if (yes == true) {
-                            try {
-                              await widget.repo.deleteTeam(t.id);
-                              reload();
-                            } catch (e) {
-                              if (context.mounted) showError(context, e);
-                            }
-                          }
-                        }
-                      },
-                      itemBuilder: (_) => const [
-                        PopupMenuItem(value: 'edit', child: Text('Editar')),
-                        PopupMenuItem(value: 'delete', child: Text('Excluir')),
-                      ],
-                    ),
-                  ),
+              for (final team in teams)
+                _TeamCard(
+                  team: team,
+                  onAction: (action) => _handleTeamAction(action, team),
                 ),
             ],
           );
@@ -92,4 +86,27 @@ class _TeamsPageState extends State<TeamsPage> {
       ),
     );
   }
+}
+
+class _TeamCard extends StatelessWidget {
+  const _TeamCard({required this.team, required this.onAction});
+
+  final Team team;
+  final ValueChanged<String> onAction;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: ListTile(
+          leading: const Icon(Icons.groups_2_outlined),
+          title: Text(team.name),
+          subtitle: team.description == null ? null : Text(team.description!),
+          trailing: PopupMenuButton<String>(
+            onSelected: onAction,
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: 'edit', child: Text('Editar')),
+              PopupMenuItem(value: 'delete', child: Text('Excluir')),
+            ],
+          ),
+        ),
+      );
 }
