@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/theme.dart';
@@ -35,6 +36,9 @@ class MetalloApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Metallo',
       theme: metalloTheme(),
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [Locale('pt', 'BR')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       builder: (context, child) {
         final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
         return Stack(
