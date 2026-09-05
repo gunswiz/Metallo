@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metallo/data/models/team.dart';
 
 DateTime consumptionPeriodStart(DateTime now, String period) {
   if (period == 'week') {
@@ -201,3 +202,258 @@ const consumptionColors = [
   Color(0xFF7B8CA2),
   Color(0xFF27C5C3)
 ];
+
+class ConsumptionOverviewData {
+  const ConsumptionOverviewData({
+    required this.currentRows,
+    required this.previousRows,
+    required this.currentTotal,
+    required this.previousTotal,
+    required this.percentChange,
+    required this.ranking,
+    required this.categories,
+  });
+
+  final List<Map<String, dynamic>> currentRows;
+  final List<Map<String, dynamic>> previousRows;
+  final double currentTotal;
+  final double previousTotal;
+  final double? percentChange;
+  final List<Map<String, dynamic>> ranking;
+  final List<Map<String, dynamic>> categories;
+}
+
+ConsumptionOverviewData consumptionOverview(
+  List<Map<String, dynamic>> rows,
+  String? teamId,
+  String period,
+  DateTime now,
+) {
+  final currentStart = consumptionPeriodStart(now, period);
+  final currentRows = filterConsumption(
+    rows,
+    teamId,
+    currentStart,
+    consumptionPeriodEnd(now, period),
+  );
+  final previousStart = period == 'week'
+      ? currentStart.subtract(const Duration(days: 7))
+      : DateTime(now.year, now.month - 1, 1);
+  final previousRows =
+      filterConsumption(rows, teamId, previousStart, currentStart);
+  final currentTotal = sumConsumption(currentRows);
+  final previousTotal = sumConsumption(previousRows);
+  return ConsumptionOverviewData(
+    currentRows: currentRows,
+    previousRows: previousRows,
+    currentTotal: currentTotal,
+    previousTotal: previousTotal,
+    percentChange: consumptionPercentChange(currentTotal, previousTotal),
+    ranking: groupConsumedMaterials(currentRows, previousRows),
+    categories: groupConsumptionCategories(currentRows),
+  );
+}
+
+class ConsumptionRangeData {
+  const ConsumptionRangeData({
+    required this.start,
+    required this.end,
+    required this.currentRows,
+    required this.previousRows,
+    required this.groupedMaterials,
+    required this.total,
+    required this.percentChange,
+  });
+
+  final DateTime start;
+  final DateTime end;
+  final List<Map<String, dynamic>> currentRows;
+  final List<Map<String, dynamic>> previousRows;
+  final List<Map<String, dynamic>> groupedMaterials;
+  final double total;
+  final double? percentChange;
+}
+
+ConsumptionRangeData consumptionRange(
+  List<Map<String, dynamic>> rows,
+  String? teamId,
+  DateTime anchor,
+  int periodDays,
+) {
+  final end = DateTime(anchor.year, anchor.month, anchor.day)
+      .add(const Duration(days: 1));
+  final start = end.subtract(Duration(days: periodDays));
+  final previousStart = start.subtract(Duration(days: periodDays));
+  final currentRows = filterConsumption(rows, teamId, start, end);
+  final previousRows = filterConsumption(rows, teamId, previousStart, start);
+  final total = sumConsumption(currentRows);
+  return ConsumptionRangeData(
+    start: start,
+    end: end,
+    currentRows: currentRows,
+    previousRows: previousRows,
+    groupedMaterials: groupConsumedMaterials(currentRows, previousRows),
+    total: total,
+    percentChange:
+        consumptionPercentChange(total, sumConsumption(previousRows)),
+  );
+}
+
+class ConsumptionGraphData {
+  const ConsumptionGraphData({
+    required this.start,
+    required this.end,
+    required this.filteredRows,
+    required this.categories,
+    required this.materials,
+    required this.selectedMaterialId,
+    required this.displayTrend,
+    required this.total,
+    required this.average,
+    required this.maximum,
+    required this.averageTitle,
+  });
+
+  final DateTime start;
+  final DateTime end;
+  final List<Map<String, dynamic>> filteredRows;
+  final List<Map<String, dynamic>> categories;
+  final List<Map<String, dynamic>> materials;
+  final String? selectedMaterialId;
+  final List<Map<String, dynamic>> displayTrend;
+  final double total;
+  final double average;
+  final double maximum;
+  final String averageTitle;
+}
+
+ConsumptionGraphData consumptionGraphData(
+  List<Map<String, dynamic>> rows,
+  String? teamId,
+  int periodDays,
+  String? materialId,
+  int selectedTab,
+  DateTime now,
+) {
+  final teamRows = rows
+      .where((row) =>
+          teamId == null || row['origin_team_id']?.toString() == teamId)
+      .toList();
+  final end =
+      DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
+  final start = end.subtract(Duration(days: periodDays));
+  final filteredRows = filterConsumption(teamRows, null, start, end);
+  final overallTrend = consumptionTrend(teamRows, start, end, periodDays);
+  final categories = groupConsumptionCategories(filteredRows);
+  final materials = groupConsumedMaterials(filteredRows, const []);
+  final selectedMaterialExists = materialId != null &&
+      materials.any((group) => group['id'].toString() == materialId);
+  final selectedMaterialId = selectedMaterialExists
+      ? materialId
+      : materials.isEmpty
+          ? null
+          : materials.first['id'].toString();
+  final materialRows = selectedMaterialId == null
+      ? <Map<String, dynamic>>[]
+      : teamRows
+          .where((row) => row['item_id']?.toString() == selectedMaterialId)
+          .toList();
+  final materialTrend = selectedMaterialId == null
+      ? <Map<String, dynamic>>[]
+      : consumptionTrend(materialRows, start, end, periodDays);
+  final displayTrend = selectedTab == 2 ? materialTrend : overallTrend;
+  final totals =
+      displayTrend.map((point) => (point['qty'] as num).toDouble()).toList();
+  final total = totals.fold<double>(0, (sum, quantity) => sum + quantity);
+  final average = totals.isEmpty ? 0.0 : total / totals.length;
+  final maximum = totals.isEmpty
+      ? 0.0
+      : totals.reduce((first, second) => first > second ? first : second);
+  return ConsumptionGraphData(
+    start: start,
+    end: end,
+    filteredRows: filteredRows,
+    categories: categories,
+    materials: materials,
+    selectedMaterialId: selectedMaterialId,
+    displayTrend: displayTrend,
+    total: total,
+    average: average,
+    maximum: maximum,
+    averageTitle: _consumptionAverageTitle(periodDays),
+  );
+}
+
+String _consumptionAverageTitle(int periodDays) => switch (periodDays) {
+      <= 7 => 'Média diária',
+      <= 30 => 'Média por faixa',
+      <= 90 => 'Média quinzenal',
+      _ => 'Média mensal',
+    };
+
+class ConsumptionMaterialDetailData {
+  const ConsumptionMaterialDetailData({
+    required this.item,
+    required this.currentTrend,
+    required this.previousTrend,
+    required this.currentTotal,
+    required this.previousTotal,
+    required this.percentChange,
+  });
+
+  final Map? item;
+  final List<Map<String, dynamic>> currentTrend;
+  final List<Map<String, dynamic>> previousTrend;
+  final double currentTotal;
+  final double previousTotal;
+  final double? percentChange;
+}
+
+ConsumptionMaterialDetailData consumptionMaterialDetail(
+  List<Map<String, dynamic>> rows,
+  String itemId,
+  String? teamId,
+) {
+  final itemRows = rows
+      .where((row) =>
+          row['item_id']?.toString() == itemId &&
+          (teamId == null || row['origin_team_id']?.toString() == teamId))
+      .toList();
+  final item = itemRows.isEmpty ? null : itemRows.first['items'] as Map?;
+  final currentTrend = monthlyConsumptionTrend(itemRows, 3);
+  final previousTrend = monthlyConsumptionTrend(itemRows, 6).take(3).toList();
+  final currentTotal = sumConsumptionPoints(currentTrend);
+  final previousTotal = sumConsumptionPoints(previousTrend);
+  return ConsumptionMaterialDetailData(
+    item: item,
+    currentTrend: currentTrend,
+    previousTrend: previousTrend,
+    currentTotal: currentTotal,
+    previousTotal: previousTotal,
+    percentChange: consumptionPercentChange(currentTotal, previousTotal),
+  );
+}
+
+double sumConsumptionPoints(List<Map<String, dynamic>> points) =>
+    points.fold<double>(
+      0,
+      (total, point) => total + (point['qty'] as double),
+    );
+
+List<Map<String, dynamic>> consumptionTotalsByTeam(
+  List<Map<String, dynamic>> rows,
+  List<Team> teams,
+) {
+  final totals = teams.map((team) {
+    final teamRows = rows
+        .where((row) => row['origin_team_id']?.toString() == team.id)
+        .toList();
+    return <String, dynamic>{
+      'name': team.name,
+      'qty': sumConsumption(teamRows),
+    };
+  }).toList();
+  totals.sort((first, second) =>
+      (second['qty'] as double).compareTo(first['qty'] as double));
+  return totals;
+}

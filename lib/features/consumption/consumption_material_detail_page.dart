@@ -25,18 +25,9 @@ class _ConsumptionMaterialDetailPageState
   late String? teamId = widget.initialTeamId;
   @override
   Widget build(BuildContext context) {
-    final itemRows = widget.rows
-        .where((r) =>
-            r['item_id']?.toString() == widget.itemId &&
-            (teamId == null || r['origin_team_id']?.toString() == teamId))
-        .toList();
-    final item = itemRows.isEmpty ? null : itemRows.first['items'] as Map?;
-    final currentTrend = monthlyConsumptionTrend(itemRows, 3);
-    final previousTrend = monthlyConsumptionTrend(itemRows, 6).take(3).toList();
-    final currentTotal =
-        currentTrend.fold<double>(0, (a, e) => a + (e['qty'] as double));
-    final previousTotal =
-        previousTrend.fold<double>(0, (a, e) => a + (e['qty'] as double));
+    final details =
+        consumptionMaterialDetail(widget.rows, widget.itemId, teamId);
+    final item = details.item;
     return Scaffold(
       appBar: AppBar(title: const Text('Detalhes do material')),
       body: ListView(
@@ -86,21 +77,21 @@ class _ConsumptionMaterialDetailPageState
                           SizedBox(
                               height: 250,
                               child: ConsumptionGroupedBarChart(
-                                  current: currentTrend,
-                                  previous: previousTrend)),
+                                  current: details.currentTrend,
+                                  previous: details.previousTrend)),
                         ]))),
             const SizedBox(height: 12),
             Row(children: [
               Expanded(
                   child: ConsumptionSmallMetric(
                       title: 'Total no período atual',
-                      value: formatConsumptionQuantity(currentTotal),
+                      value: formatConsumptionQuantity(details.currentTotal),
                       suffix: item?['unit']?.toString() ?? 'un')),
               const SizedBox(width: 10),
               Expanded(
                   child: ConsumptionSmallMetric(
                       title: 'Total no período anterior',
-                      value: formatConsumptionQuantity(previousTotal),
+                      value: formatConsumptionQuantity(details.previousTotal),
                       suffix: item?['unit']?.toString() ?? 'un'))
             ]),
             const SizedBox(height: 10),
@@ -108,9 +99,9 @@ class _ConsumptionMaterialDetailPageState
                 eyebrow: 'VARIAÇÃO NO PERÍODO',
                 title: '',
                 value:
-                    '${consumptionPercentChange(currentTotal, previousTotal)?.abs().toStringAsFixed(1) ?? '0.0'}%',
+                    '${details.percentChange?.abs().toStringAsFixed(1) ?? '0.0'}%',
                 suffix: '',
-                change: consumptionPercentChange(currentTotal, previousTotal),
+                change: details.percentChange,
                 comparisonText: 'comparado aos 3 meses anteriores'),
           ]),
     );

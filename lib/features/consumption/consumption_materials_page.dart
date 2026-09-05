@@ -20,15 +20,7 @@ class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
   int periodDays = 7;
   @override
   Widget build(BuildContext context) {
-    final end = DateTime(anchor.year, anchor.month, anchor.day)
-        .add(const Duration(days: 1));
-    final start = end.subtract(Duration(days: periodDays));
-    final prevStart = start.subtract(Duration(days: periodDays));
-    final current = filterConsumption(widget.rows, teamId, start, end);
-    final previous = filterConsumption(widget.rows, teamId, prevStart, start);
-    final grouped = groupConsumedMaterials(current, previous);
-    final total = sumConsumption(current);
-    final change = consumptionPercentChange(total, sumConsumption(previous));
+    final range = consumptionRange(widget.rows, teamId, anchor, periodDays);
     final periodLabel = consumptionPeriodLabel(periodDays);
     return Scaffold(
       appBar: AppBar(title: const Text('Consumo de materiais')),
@@ -67,7 +59,7 @@ class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
               Expanded(
                   child: Center(
                       child: Text(
-                          '${formatConsumptionDate(start)} - ${formatConsumptionDate(end.subtract(const Duration(days: 1)))}',
+                          '${formatConsumptionDate(range.start)} - ${formatConsumptionDate(range.end.subtract(const Duration(days: 1)))}',
                           style:
                               const TextStyle(fontWeight: FontWeight.w900)))),
               IconButton.filledTonal(
@@ -79,9 +71,9 @@ class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
             ConsumptionMetricCard(
                 eyebrow: 'TOTAL CONSUMIDO EM $periodLabel',
                 title: '',
-                value: formatConsumptionQuantity(total),
-                suffix: hasMixedConsumptionUnits(current),
-                change: change,
+                value: formatConsumptionQuantity(range.total),
+                suffix: hasMixedConsumptionUnits(range.currentRows),
+                change: range.percentChange,
                 comparisonText: 'vs período anterior'),
             const SizedBox(height: 12),
             Card(
@@ -115,11 +107,12 @@ class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
                                     style: TextStyle(
                                         fontSize: 12, color: Colors.white70)))
                           ])),
-                      if (grouped.isEmpty)
+                      if (range.groupedMaterials.isEmpty)
                         const Padding(
                             padding: EdgeInsets.all(24),
                             child: Text('Nenhum consumo neste período.')),
-                      for (final g in grouped) ConsumptionTableRow(data: g),
+                      for (final material in range.groupedMaterials)
+                        ConsumptionTableRow(data: material),
                     ]))),
           ]),
     );

@@ -23,15 +23,7 @@ class _ConsumptionTeamsComparePageState
     final start = consumptionPeriodStart(now, period),
         end = consumptionPeriodEnd(now, period);
     final current = filterConsumption(widget.rows, null, start, end);
-    final teamTotals = <Map<String, dynamic>>[];
-    for (final t in widget.teams) {
-      final qty = sumConsumption(current
-          .where((r) => r['origin_team_id']?.toString() == t.id)
-          .toList());
-      teamTotals.add({'name': t.name, 'qty': qty});
-    }
-    teamTotals
-        .sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
+    final teamTotals = consumptionTotalsByTeam(current, widget.teams);
     final ranking = groupConsumedMaterials(current, const []);
     return Scaffold(
       appBar: AppBar(title: const Text('Comparativo entre equipes')),

@@ -47,25 +47,8 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
               return const Center(child: CircularProgressIndicator());
             }
             final rows = snap.data!;
-            final now = DateTime.now();
-            final current = filterConsumption(
-                rows,
-                teamId,
-                consumptionPeriodStart(now, period),
-                consumptionPeriodEnd(now, period));
-            final previousStart = period == 'week'
-                ? consumptionPeriodStart(now, period)
-                    .subtract(const Duration(days: 7))
-                : DateTime(now.year, now.month - 1, 1);
-            final previousEnd = consumptionPeriodStart(now, period);
-            final previous =
-                filterConsumption(rows, teamId, previousStart, previousEnd);
-            final currentTotal = sumConsumption(current);
-            final previousTotal = sumConsumption(previous);
-            final change =
-                consumptionPercentChange(currentTotal, previousTotal);
-            final ranking = groupConsumedMaterials(current, previous);
-            final categories = groupConsumptionCategories(current);
+            final overview =
+                consumptionOverview(rows, teamId, period, DateTime.now());
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -129,9 +112,9 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                     eyebrow:
                         'COMPARAÇÃO COM ${period == 'week' ? 'SEMANA' : 'MÊS'} ANTERIOR',
                     title: 'Total consumido',
-                    value: formatConsumptionQuantity(currentTotal),
-                    suffix: hasMixedConsumptionUnits(current),
-                    change: change,
+                    value: formatConsumptionQuantity(overview.currentTotal),
+                    suffix: hasMixedConsumptionUnits(overview.currentRows),
+                    change: overview.percentChange,
                     comparisonText:
                         'vs ${period == 'week' ? 'Semana' : 'Mês'} anterior',
                   ),
@@ -146,7 +129,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w900, fontSize: 16)),
                             const SizedBox(height: 14),
-                            if (categories.isEmpty)
+                            if (overview.categories.isEmpty)
                               const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 18),
                                   child: Text('Nenhum consumo neste período.',
@@ -157,15 +140,15 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                     width: 130,
                                     height: 130,
                                     child: ConsumptionDonutChart(
-                                        data: categories)),
+                                        data: overview.categories)),
                                 const SizedBox(width: 14),
                                 Expanded(
                                     child: Column(children: [
                                   for (int i = 0;
-                                      i < categories.length && i < 5;
+                                      i < overview.categories.length && i < 5;
                                       i++)
                                     ConsumptionCategoryLegendRow(
-                                        index: i, data: categories[i])
+                                        index: i, data: overview.categories[i])
                                 ])),
                               ]),
                           ]),
@@ -182,16 +165,18 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w900, fontSize: 16)),
                             const SizedBox(height: 8),
-                            if (ranking.isEmpty)
+                            if (overview.ranking.isEmpty)
                               const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 14),
                                   child: Text('Nenhum consumo registrado.',
                                       style: TextStyle(color: Colors.white54)))
                             else
-                              for (int i = 0; i < ranking.length && i < 5; i++)
+                              for (int i = 0;
+                                  i < overview.ranking.length && i < 5;
+                                  i++)
                                 ConsumptionRankingRow(
                                     index: i,
-                                    data: ranking[i],
+                                    data: overview.ranking[i],
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -200,7 +185,8 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                                   ConsumptionMaterialDetailPage(
                                                       rows: rows,
                                                       teams: teams,
-                                                      itemId: ranking[i]['id']
+                                                      itemId: overview
+                                                          .ranking[i]['id']
                                                           .toString(),
                                                       initialTeamId: teamId)));
                                     }),

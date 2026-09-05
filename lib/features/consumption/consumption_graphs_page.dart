@@ -21,46 +21,15 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
   String? materialId;
   @override
   Widget build(BuildContext context) {
-    final teamRows = widget.rows
-        .where(
-            (r) => teamId == null || r['origin_team_id']?.toString() == teamId)
-        .toList();
-    final now = DateTime.now();
-    final end =
-        DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
-    final start = end.subtract(Duration(days: periodDays));
-    final filtered = filterConsumption(teamRows, null, start, end);
-    final trend = consumptionTrend(teamRows, start, end, periodDays);
-    final categories = groupConsumptionCategories(filtered);
-    final materials = groupConsumedMaterials(filtered, const []);
-    if (materialId != null &&
-        !materials.any((g) => g['id'].toString() == materialId)) {
-      materialId = null;
-    }
-    materialId ??=
-        materials.isNotEmpty ? materials.first['id'].toString() : null;
-    final materialRows = materialId == null
-        ? <Map<String, dynamic>>[]
-        : teamRows
-            .where((r) => r['item_id']?.toString() == materialId)
-            .toList();
-    final materialTrend = materialId == null
-        ? <Map<String, dynamic>>[]
-        : consumptionTrend(materialRows, start, end, periodDays);
-    final displayTrend = tab == 2 ? materialTrend : trend;
-    final totals =
-        displayTrend.map((e) => (e['qty'] as num).toDouble()).toList();
-    final total = totals.fold<double>(0, (a, b) => a + b);
-    final avg = totals.isEmpty ? 0.0 : total / totals.length;
-    final maxValue =
-        totals.isEmpty ? 0.0 : totals.reduce((a, b) => a > b ? a : b);
-    final avgTitle = periodDays <= 7
-        ? 'Média diária'
-        : periodDays <= 30
-            ? 'Média por faixa'
-            : periodDays <= 90
-                ? 'Média quinzenal'
-                : 'Média mensal';
+    final graph = consumptionGraphData(
+      widget.rows,
+      teamId,
+      periodDays,
+      materialId,
+      tab,
+      DateTime.now(),
+    );
+    materialId = graph.selectedMaterialId;
     return Scaffold(
       appBar: AppBar(title: const Text('Consumo em gráficos')),
       body: ListView(
@@ -94,12 +63,12 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
             ], selected: {
               tab
             }, onSelectionChanged: (v) => setState(() => tab = v.first)),
-            if (tab == 2 && materials.isNotEmpty) ...[
+            if (tab == 2 && graph.materials.isNotEmpty) ...[
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                   initialValue: materialId,
                   decoration: const InputDecoration(labelText: 'Material'),
-                  items: materials
+                  items: graph.materials
                       .map((g) => DropdownMenuItem(
                           value: g['id'].toString(),
                           child: Text('${g['code']} • ${g['name']}',
@@ -126,7 +95,7 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
                           Text(
                               tab == 1
                                   ? 'Participação no período'
-                                  : '${formatConsumptionDate(start)} - ${formatConsumptionDate(end.subtract(const Duration(days: 1)))} • ${hasMixedConsumptionUnits(filtered)}',
+                                  : '${formatConsumptionDate(graph.start)} - ${formatConsumptionDate(graph.end.subtract(const Duration(days: 1)))} • ${hasMixedConsumptionUnits(graph.filteredRows)}',
                               style: const TextStyle(
                                   color: Colors.white54, fontSize: 12)),
                           const SizedBox(height: 18),
@@ -134,29 +103,30 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
                               height: 260,
                               child: tab == 1
                                   ? ConsumptionDonutChart(
-                                      data: categories, showLabels: true)
-                                  : ConsumptionLineChart(data: displayTrend)),
+                                      data: graph.categories, showLabels: true)
+                                  : ConsumptionLineChart(
+                                      data: graph.displayTrend)),
                         ]))),
             if (tab != 1) ...[
               const SizedBox(height: 12),
               Row(children: [
                 Expanded(
                     child: ConsumptionSmallMetric(
-                        title: avgTitle,
-                        value: formatConsumptionQuantity(avg),
-                        suffix: hasMixedConsumptionUnits(filtered))),
+                        title: graph.averageTitle,
+                        value: formatConsumptionQuantity(graph.average),
+                        suffix: hasMixedConsumptionUnits(graph.filteredRows))),
                 const SizedBox(width: 10),
                 Expanded(
                     child: ConsumptionSmallMetric(
                         title: 'Maior consumo',
-                        value: formatConsumptionQuantity(maxValue),
-                        suffix: hasMixedConsumptionUnits(filtered))),
+                        value: formatConsumptionQuantity(graph.maximum),
+                        suffix: hasMixedConsumptionUnits(graph.filteredRows))),
               ]),
               const SizedBox(height: 10),
               ConsumptionSmallMetric(
                   title: 'Total no período',
-                  value: formatConsumptionQuantity(total),
-                  suffix: hasMixedConsumptionUnits(filtered)),
+                  value: formatConsumptionQuantity(graph.total),
+                  suffix: hasMixedConsumptionUnits(graph.filteredRows)),
             ],
           ]),
     );
