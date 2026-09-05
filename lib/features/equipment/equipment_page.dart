@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:metallo/core/formatters.dart';
 import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/dashboard_snapshot.dart';
 import 'package:metallo/data/models/equipment_asset.dart';
@@ -51,30 +50,16 @@ class _EquipmentPageState extends State<EquipmentPage> {
           return const Center(child: CircularProgressIndicator());
         }
         final data = snap.data!;
-        final canOperate = widget.role == 'admin' ||
-            widget.role == 'engineer' ||
-            widget.role == 'leader';
-        final allowedTeams = widget.role == 'leader'
-            ? data.teams.where((t) => t.id == widget.userTeamId).toList()
-            : data.teams;
-        final q = search.text.trim().toLowerCase();
-        final equipment = data.equipment.where((e) {
-          if (ownershipFilter != 'all' && e.ownershipType != ownershipFilter) {
-            return false;
-          }
-          if (q.isEmpty) return true;
-          final team = findTeam(data.teams, e.teamId)?.name ?? '';
-          return e.name.toLowerCase().contains(q) ||
-              e.assetCode.toLowerCase().contains(q) ||
-              (e.rentalCompany?.toLowerCase().contains(q) ?? false) ||
-              team.toLowerCase().contains(q);
-        }).toList();
-        final equipmentGroups = <String, List<EquipmentAsset>>{};
-        for (final asset in equipment) {
-          equipmentGroups
-              .putIfAbsent(equipmentFamilyKey(asset), () => <EquipmentAsset>[])
-              .add(asset);
-        }
+        final canOperate = canOperateEquipment(widget.role);
+        final allowedTeams =
+            allowedEquipmentTeams(data.teams, widget.role, widget.userTeamId);
+        final equipment = filterEquipmentAssets(
+          data.equipment,
+          data.teams,
+          ownershipFilter,
+          search.text,
+        );
+        final equipmentGroups = groupEquipmentAssets(equipment);
 
         return Scaffold(
           backgroundColor: metalloBackground,
@@ -99,45 +84,17 @@ class _EquipmentPageState extends State<EquipmentPage> {
             builder: (innerContext) => ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
               children: [
-                TextField(
-                  controller: search,
-                  onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: 'Pesquisar equipamento por nome ou código',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: search.text.isEmpty
-                        ? null
-                        : IconButton(
-                            tooltip: 'Limpar pesquisa',
-                            onPressed: () {
-                              search.clear();
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.close),
-                          ),
-                  ),
+                _EquipmentFilters(
+                  searchController: search,
+                  ownershipFilter: ownershipFilter,
+                  onSearchChanged: () => setState(() {}),
+                  onClearSearch: () {
+                    search.clear();
+                    setState(() {});
+                  },
+                  onOwnershipChanged: (value) =>
+                      setState(() => ownershipFilter = value),
                 ),
-                const SizedBox(height: 10),
-                SegmentedButton<String>(
-                    segments: const [
-                      ButtonSegment(
-                          value: 'all',
-                          label: Text('Todos'),
-                          icon: Icon(Icons.apps_rounded)),
-                      ButtonSegment(
-                          value: 'owned',
-                          label: Text('Próprios'),
-                          icon: Icon(Icons.business_rounded)),
-                      ButtonSegment(
-                          value: 'rented',
-                          label: Text('Alugados'),
-                          icon: Icon(Icons.key_rounded)),
-                    ],
-                    selected: {
-                      ownershipFilter
-                    },
-                    onSelectionChanged: (value) =>
-                        setState(() => ownershipFilter = value.first)),
                 const SizedBox(height: 10),
                 Card(
                   child: ListTile(
@@ -171,25 +128,18 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     ),
                   )
                 else
-                  for (final group in equipmentGroups.values)
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.handyman_outlined),
-                        title: Text(equipmentFamilyLabel(group)),
-                        subtitle: Text(
-                            '${group.map((e) => e.itemId).toSet().length} ${group.map((e) => e.itemId).toSet().length == 1 ? 'tipo' : 'tipos'} • ${group.length} ${group.length == 1 ? 'equipamento' : 'equipamentos'}\nToque para ver tipos e patrimônios'),
-                        isThreeLine: true,
-                        trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () => showEquipmentFamilySheet(
-                          context,
-                          widget.catalogRepository,
-                          widget.movementRepository,
-                          data.teams,
-                          group,
-                          role: widget.role,
-                          userTeamId: widget.userTeamId,
-                          canOperate: canOperate,
-                        ),
+                  for (final group in equipmentGroups)
+                    _EquipmentGroupCard(
+                      group: group,
+                      onTap: () => showEquipmentFamilySheet(
+                        context,
+                        widget.catalogRepository,
+                        widget.movementRepository,
+                        data.teams,
+                        group,
+                        role: widget.role,
+                        userTeamId: widget.userTeamId,
+                        canOperate: canOperate,
                       ),
                     ),
               ],
@@ -199,4 +149,80 @@ class _EquipmentPageState extends State<EquipmentPage> {
       },
     );
   }
+}
+
+class _EquipmentFilters extends StatelessWidget {
+  const _EquipmentFilters({
+    required this.searchController,
+    required this.ownershipFilter,
+    required this.onSearchChanged,
+    required this.onClearSearch,
+    required this.onOwnershipChanged,
+  });
+
+  final TextEditingController searchController;
+  final String ownershipFilter;
+  final VoidCallback onSearchChanged;
+  final VoidCallback onClearSearch;
+  final ValueChanged<String> onOwnershipChanged;
+
+  @override
+  Widget build(BuildContext context) => Column(children: [
+        TextField(
+          controller: searchController,
+          onChanged: (_) => onSearchChanged(),
+          decoration: InputDecoration(
+            hintText: 'Pesquisar equipamento por nome ou código',
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: searchController.text.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Limpar pesquisa',
+                    onPressed: onClearSearch,
+                    icon: const Icon(Icons.close),
+                  ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SegmentedButton<String>(
+          segments: const [
+            ButtonSegment(
+              value: 'all',
+              label: Text('Todos'),
+              icon: Icon(Icons.apps_rounded),
+            ),
+            ButtonSegment(
+              value: 'owned',
+              label: Text('Próprios'),
+              icon: Icon(Icons.business_rounded),
+            ),
+            ButtonSegment(
+              value: 'rented',
+              label: Text('Alugados'),
+              icon: Icon(Icons.key_rounded),
+            ),
+          ],
+          selected: {ownershipFilter},
+          onSelectionChanged: (value) => onOwnershipChanged(value.first),
+        ),
+      ]);
+}
+
+class _EquipmentGroupCard extends StatelessWidget {
+  const _EquipmentGroupCard({required this.group, required this.onTap});
+
+  final List<EquipmentAsset> group;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: ListTile(
+          leading: const Icon(Icons.handyman_outlined),
+          title: Text(equipmentFamilyLabel(group)),
+          subtitle: Text(equipmentGroupSummary(group)),
+          isThreeLine: true,
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: onTap,
+        ),
+      );
 }
