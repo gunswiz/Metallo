@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:metallo/core/formatters.dart';
 import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/dashboard_snapshot.dart';
 import 'package:metallo/data/models/material_stock.dart';
@@ -10,6 +9,7 @@ import 'package:metallo/shared/widgets/empty_state.dart';
 import 'package:metallo/shared/widgets/error_state.dart';
 import 'package:metallo/features/materials/material_catalog_drawer.dart';
 import 'package:metallo/features/materials/dialogs.dart';
+import 'package:metallo/features/materials/materials_view_data.dart';
 
 class MaterialsPage extends StatefulWidget {
   const MaterialsPage({
@@ -49,26 +49,12 @@ class _MaterialsPageState extends State<MaterialsPage> {
           return const Center(child: CircularProgressIndicator());
         }
         final data = snap.data!;
-        final canOperate = widget.role == 'admin' ||
-            widget.role == 'engineer' ||
-            widget.role == 'leader';
-        final allowedTeams = widget.role == 'leader'
-            ? data.teams.where((t) => t.id == widget.userTeamId).toList()
-            : data.teams;
-        final q = search.text.trim().toLowerCase();
-        final materials = data.materials.where((m) {
-          if (q.isEmpty) return true;
-          final team = findTeam(data.teams, m.teamId)?.name ?? '';
-          return m.name.toLowerCase().contains(q) ||
-              m.code.toLowerCase().contains(q) ||
-              team.toLowerCase().contains(q);
-        }).toList();
-        final materialGroups = <String, List<MaterialStock>>{};
-        for (final material in materials) {
-          materialGroups
-              .putIfAbsent(material.itemId, () => <MaterialStock>[])
-              .add(material);
-        }
+        final canOperate = canOperateMaterials(widget.role);
+        final allowedTeams =
+            allowedMaterialTeams(data.teams, widget.role, widget.userTeamId);
+        final materials =
+            filterMaterialStocks(data.materials, data.teams, search.text);
+        final materialGroups = groupMaterialStocks(materials);
 
         return Scaffold(
           backgroundColor: metalloBackground,
@@ -143,28 +129,16 @@ class _MaterialsPageState extends State<MaterialsPage> {
                     ),
                   )
                 else
-                  for (final group in materialGroups.values)
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.inventory_2_outlined,
-                            color: metalloAccent),
-                        title: Text(group.first.name),
-                        subtitle: Text(
-                            '${group.length} ${group.length == 1 ? 'local' : 'locais'} • código ${group.first.code}\nToque para ver a distribuição'),
-                        isThreeLine: true,
-                        trailing: Text(
-                            '${group.fold<int>(0, (sum, item) => sum + item.quantity)} ${group.first.unit}',
-                            style: const TextStyle(
-                                color: metalloAccent,
-                                fontWeight: FontWeight.w900)),
-                        onTap: () => showMaterialDistributionSheet(
-                          context,
-                          widget.movementRepository,
-                          data.teams,
-                          group,
-                          widget.role,
-                          widget.userTeamId,
-                        ),
+                  for (final group in materialGroups)
+                    _MaterialGroupCard(
+                      group: group,
+                      onTap: () => showMaterialDistributionSheet(
+                        context,
+                        widget.movementRepository,
+                        data.teams,
+                        group,
+                        widget.role,
+                        widget.userTeamId,
                       ),
                     ),
               ],
@@ -174,4 +148,32 @@ class _MaterialsPageState extends State<MaterialsPage> {
       },
     );
   }
+}
+
+class _MaterialGroupCard extends StatelessWidget {
+  const _MaterialGroupCard({required this.group, required this.onTap});
+
+  final List<MaterialStock> group;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: ListTile(
+          leading: const Icon(
+            Icons.inventory_2_outlined,
+            color: metalloAccent,
+          ),
+          title: Text(group.first.name),
+          subtitle: Text(materialGroupDistributionLabel(group)),
+          isThreeLine: true,
+          trailing: Text(
+            '${materialGroupQuantity(group)} ${group.first.unit}',
+            style: const TextStyle(
+              color: metalloAccent,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          onTap: onTap,
+        ),
+      );
 }

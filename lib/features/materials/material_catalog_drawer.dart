@@ -20,6 +20,33 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
       widget.repo.fetchMaterialCatalog();
   void reload() => setState(() => catalog = widget.repo.fetchMaterialCatalog());
 
+  Future<void> _handleCatalogAction(
+    BuildContext context,
+    String action,
+    Map<String, dynamic> material,
+  ) async {
+    if (action == 'edit') {
+      final changed =
+          await showEditMaterialCatalogDialog(context, widget.repo, material);
+      if (changed == true) reload();
+      return;
+    }
+
+    if (action != 'delete') return;
+    final confirmed = await confirm(
+      context,
+      'Excluir material?',
+      'O material será retirado do catálogo. Por segurança, a exclusão só é permitida quando não houver saldo em nenhuma localização. O histórico será preservado.',
+    );
+    if (confirmed != true) return;
+    try {
+      await widget.repo.deactivateMaterialItem(material['id'].toString());
+      reload();
+    } catch (error) {
+      if (context.mounted) showError(context, error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Drawer(
         width: MediaQuery.sizeOf(context).width * .90,
@@ -65,70 +92,12 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
                       itemCount: snap.data!.length,
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (context, i) {
-                        final m = snap.data![i];
-                        return ListTile(
-                          leading: Container(
-                            constraints: const BoxConstraints(minWidth: 58),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 7),
-                            decoration: BoxDecoration(
-                                color: const Color(0xFF0E3965),
-                                borderRadius: BorderRadius.circular(9)),
-                            child: Text(m['code']?.toString() ?? '-',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    color: Color(0xFF8CC8FF),
-                                    fontWeight: FontWeight.w900)),
-                          ),
-                          title: Text(m['name']?.toString() ?? ''),
-                          subtitle: Text(
-                              '${m['unit'] ?? 'un'}${(m['category']?.toString().isNotEmpty ?? false) ? ' • ${m['category']}' : ''}'),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Total: ${(m['total_quantity'] as num?)?.toInt() ?? 0} ${m['unit'] ?? 'un'}',
-                                style: const TextStyle(
-                                    color: Color(0xFF89CFF0),
-                                    fontWeight: FontWeight.w900),
-                              ),
-                              if (widget.isAdmin)
-                                PopupMenuButton<String>(
-                                  onSelected: (value) async {
-                                    if (value == 'edit') {
-                                      final changed =
-                                          await showEditMaterialCatalogDialog(
-                                              context, widget.repo, m);
-                                      if (changed == true) reload();
-                                    } else if (value == 'delete') {
-                                      final ok = await confirm(
-                                          context,
-                                          'Excluir material?',
-                                          'O material será retirado do catálogo. Por segurança, a exclusão só é permitida quando não houver saldo em nenhuma localização. O histórico será preservado.');
-                                      if (ok == true) {
-                                        try {
-                                          await widget.repo
-                                              .deactivateMaterialItem(
-                                                  m['id'].toString());
-                                          reload();
-                                        } catch (e) {
-                                          if (context.mounted) {
-                                            showError(context, e);
-                                          }
-                                        }
-                                      }
-                                    }
-                                  },
-                                  itemBuilder: (_) => const [
-                                    PopupMenuItem(
-                                        value: 'edit', child: Text('Editar')),
-                                    PopupMenuItem(
-                                        value: 'delete',
-                                        child: Text('Excluir')),
-                                  ],
-                                ),
-                            ],
-                          ),
+                        final material = snap.data![i];
+                        return _MaterialCatalogRow(
+                          material: material,
+                          canEdit: widget.isAdmin,
+                          onAction: (action) =>
+                              _handleCatalogAction(context, action, material),
                         );
                       },
                     );
@@ -137,6 +106,62 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
               ),
             ],
           ),
+        ),
+      );
+}
+
+class _MaterialCatalogRow extends StatelessWidget {
+  const _MaterialCatalogRow({
+    required this.material,
+    required this.canEdit,
+    required this.onAction,
+  });
+
+  final Map<String, dynamic> material;
+  final bool canEdit;
+  final ValueChanged<String> onAction;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+        leading: Container(
+          constraints: const BoxConstraints(minWidth: 58),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0E3965),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Text(
+            material['code']?.toString() ?? '-',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFF8CC8FF),
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        title: Text(material['name']?.toString() ?? ''),
+        subtitle: Text(
+          '${material['unit'] ?? 'un'}${(material['category']?.toString().isNotEmpty ?? false) ? ' • ${material['category']}' : ''}',
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Total: ${(material['total_quantity'] as num?)?.toInt() ?? 0} ${material['unit'] ?? 'un'}',
+              style: const TextStyle(
+                color: Color(0xFF89CFF0),
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            if (canEdit)
+              PopupMenuButton<String>(
+                onSelected: onAction,
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'edit', child: Text('Editar')),
+                  PopupMenuItem(value: 'delete', child: Text('Excluir')),
+                ],
+              ),
+          ],
         ),
       );
 }
