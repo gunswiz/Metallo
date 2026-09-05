@@ -234,27 +234,33 @@ Future<void> showMetalloTutorial(
                                   height: 1.45,
                                   fontSize: 15)),
                           if (step.example != null)
-                            showTutorialInfo(Icons.lightbulb_outline, 'Exemplo',
-                                step.example!, const Color(0xFF65B5FF)),
+                            TutorialInfo(
+                                icon: Icons.lightbulb_outline,
+                                title: 'Exemplo',
+                                text: step.example!,
+                                color: const Color(0xFF65B5FF)),
                           if (step.howTo != null)
-                            showTutorialInfo(
-                                Icons.format_list_numbered,
-                                'Como fazer',
-                                step.howTo!
+                            TutorialInfo(
+                                icon: Icons.format_list_numbered,
+                                title: 'Como fazer',
+                                text: step.howTo!
                                     .asMap()
                                     .entries
                                     .map((e) => '${e.key + 1}. ${e.value}')
                                     .join('\n'),
-                                const Color(0xFF9A8CFF)),
+                                color: const Color(0xFF9A8CFF)),
                           if (step.result != null)
-                            showTutorialInfo(Icons.check_circle_outline,
-                                'Resultado', step.result!, metalloSuccess),
+                            TutorialInfo(
+                                icon: Icons.check_circle_outline,
+                                title: 'Resultado',
+                                text: step.result!,
+                                color: metalloSuccess),
                           if (step.warning != null)
-                            showTutorialInfo(
-                                Icons.warning_amber_rounded,
-                                'Atenção',
-                                step.warning!,
-                                const Color(0xFFFFB74D)),
+                            TutorialInfo(
+                                icon: Icons.warning_amber_rounded,
+                                title: 'Atenção',
+                                text: step.warning!,
+                                color: const Color(0xFFFFB74D)),
                         ],
                       ),
                     ),
@@ -321,27 +327,43 @@ Future<void> showMetalloTutorial(
   );
 }
 
-Widget showTutorialInfo(
-        IconData icon, String title, String text, Color color) =>
-    Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: color.withValues(alpha: .09),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withValues(alpha: .35))),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(icon, color: color, size: 21),
-        const SizedBox(width: 10),
-        Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title,
-              style: TextStyle(color: color, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 3),
-          Text(text,
-              style: const TextStyle(color: Colors.white70, height: 1.4)),
-        ]))
-      ]),
-    );
+class TutorialInfo extends StatelessWidget {
+  const TutorialInfo({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.text,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String title;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+            color: color.withValues(alpha: .09),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withValues(alpha: .35))),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(icon, color: color, size: 21),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(title,
+                    style:
+                        TextStyle(color: color, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text(text,
+                    style: const TextStyle(color: Colors.white70, height: 1.4)),
+              ]))
+        ]),
+      );
+}

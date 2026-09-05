@@ -17,6 +17,14 @@ class HelpTopic {
   final bool restricted;
 }
 
+int helpTopicDestinationIndex(HelpTopic topic) {
+  final title = topic.title.toLowerCase();
+  if (title.contains('equipamento')) return 1;
+  if (title.contains('material') || title.contains('consumo')) return 0;
+  if (title.contains('histórico')) return 4;
+  return 2;
+}
+
 class HelpGuidePage extends StatefulWidget {
   const HelpGuidePage(
       {super.key, required this.role, this.onStartGuidedPractice});
@@ -127,15 +135,46 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         'A operação, data, equipe e responsável ficam visíveis.'),
   ];
 
+  List<HelpTopic> get visibleTopics {
+    final canSeeEpi = widget.role == 'admin' || widget.role == 'engineer';
+    final normalizedQuery = query.trim().toLowerCase();
+    return topics.where((topic) {
+      if (topic.restricted && !canSeeEpi) return false;
+      final searchableText =
+          '${topic.title} ${topic.summary} ${topic.example}'.toLowerCase();
+      return searchableText.contains(normalizedQuery);
+    }).toList();
+  }
+
+  Future<void> _startPractice(HelpTopic topic) async {
+    if (widget.onStartGuidedPractice == null) {
+      await _showPractice(context, topic);
+      return;
+    }
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Praticar no aplicativo'),
+        content: const Text(
+            'O guia ficará sobre as telas reais e poderá ser recolhido. Ao confirmar entregas, consumos ou outras operações, os dados reais serão alterados. Use este modo quando for realizar uma operação de verdade.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Abrir tela real'),
+          ),
+        ],
+      ),
+    );
+    if (accepted == true) await widget.onStartGuidedPractice!(topic);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final canSeeEpi = widget.role == 'admin' || widget.role == 'engineer';
-    final visible = topics.where((topic) {
-      if (topic.restricted && !canSeeEpi) return false;
-      final text =
-          '${topic.title} ${topic.summary} ${topic.example}'.toLowerCase();
-      return text.contains(query.trim().toLowerCase());
-    }).toList();
+    final visible = visibleTopics;
     return Scaffold(
       appBar: AppBar(title: const Text('Guia prático')),
       body: ListView(padding: const EdgeInsets.all(16), children: [
@@ -153,65 +192,10 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
         ),
         const SizedBox(height: 14),
         for (final topic in visible)
-          Card(
-            child: ExpansionTile(
-              leading: Icon(topic.icon, color: metalloAccent),
-              title: Text(topic.title,
-                  style: const TextStyle(fontWeight: FontWeight.w900)),
-              subtitle: Text(topic.summary),
-              childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              expandedCrossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                showTutorialInfo(Icons.lightbulb_outline, 'Exemplo real',
-                    topic.example, const Color(0xFF65B5FF)),
-                showTutorialInfo(
-                    Icons.format_list_numbered,
-                    'Como fazer',
-                    topic.steps
-                        .asMap()
-                        .entries
-                        .map((e) => '${e.key + 1}. ${e.value}')
-                        .join('\n'),
-                    const Color(0xFF9A8CFF)),
-                showTutorialInfo(Icons.check_circle_outline, 'Resultado',
-                    topic.result, metalloSuccess),
-                if (topic.warning != null)
-                  showTutorialInfo(Icons.warning_amber_rounded, 'Atenção',
-                      topic.warning!, const Color(0xFFFFB74D)),
-                const SizedBox(height: 10),
-                OutlinedButton.icon(
-                    onPressed: () async {
-                      if (widget.onStartGuidedPractice == null) {
-                        await _showPractice(context, topic);
-                        return;
-                      }
-                      final accepted = await showDialog<bool>(
-                          context: context,
-                          builder: (dialogContext) => AlertDialog(
-                                title: const Text('Praticar no aplicativo'),
-                                content: const Text(
-                                    'O guia ficará sobre as telas reais e poderá ser recolhido. Ao confirmar entregas, consumos ou outras operações, os dados reais serão alterados. Use este modo quando for realizar uma operação de verdade.'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(dialogContext, false),
-                                      child: const Text('Cancelar')),
-                                  FilledButton(
-                                      onPressed: () =>
-                                          Navigator.pop(dialogContext, true),
-                                      child: const Text('Abrir tela real')),
-                                ],
-                              ));
-                      if (accepted == true) {
-                        await widget.onStartGuidedPractice!(topic);
-                      }
-                    },
-                    icon: const Icon(Icons.play_circle_outline),
-                    label: Text(widget.onStartGuidedPractice == null
-                        ? 'Praticar com demonstração'
-                        : 'Praticar no aplicativo')),
-              ],
-            ),
+          _HelpTopicCard(
+            topic: topic,
+            usesRealApplication: widget.onStartGuidedPractice != null,
+            onStartPractice: () => _startPractice(topic),
           ),
         if (visible.isEmpty)
           const Padding(
@@ -220,6 +204,71 @@ class _HelpGuidePageState extends State<HelpGuidePage> {
       ]),
     );
   }
+}
+
+class _HelpTopicCard extends StatelessWidget {
+  const _HelpTopicCard({
+    required this.topic,
+    required this.usesRealApplication,
+    required this.onStartPractice,
+  });
+
+  final HelpTopic topic;
+  final bool usesRealApplication;
+  final VoidCallback onStartPractice;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: ExpansionTile(
+          leading: Icon(topic.icon, color: metalloAccent),
+          title: Text(
+            topic.title,
+            style: const TextStyle(fontWeight: FontWeight.w900),
+          ),
+          subtitle: Text(topic.summary),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TutorialInfo(
+              icon: Icons.lightbulb_outline,
+              title: 'Exemplo real',
+              text: topic.example,
+              color: const Color(0xFF65B5FF),
+            ),
+            TutorialInfo(
+              icon: Icons.format_list_numbered,
+              title: 'Como fazer',
+              text: topic.steps
+                  .asMap()
+                  .entries
+                  .map((step) => '${step.key + 1}. ${step.value}')
+                  .join('\n'),
+              color: const Color(0xFF9A8CFF),
+            ),
+            TutorialInfo(
+              icon: Icons.check_circle_outline,
+              title: 'Resultado',
+              text: topic.result,
+              color: metalloSuccess,
+            ),
+            if (topic.warning != null)
+              TutorialInfo(
+                icon: Icons.warning_amber_rounded,
+                title: 'Atenção',
+                text: topic.warning!,
+                color: const Color(0xFFFFB74D),
+              ),
+            const SizedBox(height: 10),
+            OutlinedButton.icon(
+              onPressed: onStartPractice,
+              icon: const Icon(Icons.play_circle_outline),
+              label: Text(usesRealApplication
+                  ? 'Praticar no aplicativo'
+                  : 'Praticar com demonstração'),
+            ),
+          ],
+        ),
+      );
 }
 
 Future<void> _showPractice(BuildContext context, HelpTopic topic) async {

@@ -62,9 +62,6 @@ class _MainShellState extends State<MainShell> {
   String get role => widget.profile['role']?.toString() ?? 'collaborator';
   String? get userTeamId => widget.profile['team_id']?.toString();
   bool get isAdmin => role == 'admin';
-  bool get canOperate =>
-      role == 'admin' || role == 'engineer' || role == 'leader';
-
   String get _tutorialKey =>
       'metallo_tutorial_v1_${authRepository.currentUserId ?? 'local'}_$role';
 
@@ -97,14 +94,7 @@ class _MainShellState extends State<MainShell> {
 
   Future<void> _startGuidedPractice(HelpTopic topic) async {
     Navigator.of(context).popUntil((route) => route.isFirst);
-    final title = topic.title.toLowerCase();
-    setState(() => index = title.contains('equipamento')
-        ? 1
-        : title.contains('material') || title.contains('consumo')
-            ? 0
-            : title.contains('histórico')
-                ? 4
-                : 2);
+    setState(() => index = helpTopicDestinationIndex(topic));
     if (topic.restricted) {
       final data = await dashboardRepository.fetchDashboard();
       if (!mounted) return;
