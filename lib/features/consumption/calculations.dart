@@ -26,6 +26,33 @@ List<Map<String, dynamic>> filterConsumption(List<Map<String, dynamic>> rows,
     }).toList();
 double sumConsumption(List<Map<String, dynamic>> rows) => rows.fold<double>(
     0, (a, r) => a + ((r['quantity'] as num?)?.toDouble() ?? 0));
+
+String consumptionRowUnit(Map<String, dynamic> row) {
+  final unit = (row['items'] as Map?)?['unit']?.toString().trim();
+  return unit == null || unit.isEmpty ? 'un' : unit;
+}
+
+List<String> consumptionUnits(List<Map<String, dynamic>> rows) {
+  final units = rows.map(consumptionRowUnit).toSet().toList()..sort();
+  return units;
+}
+
+String? effectiveConsumptionUnit(
+  List<Map<String, dynamic>> rows,
+  String? selectedUnit,
+) {
+  final units = consumptionUnits(rows);
+  if (units.isEmpty) return null;
+  return units.contains(selectedUnit) ? selectedUnit : units.first;
+}
+
+List<Map<String, dynamic>> filterConsumptionUnit(
+  List<Map<String, dynamic>> rows,
+  String? unit,
+) =>
+    unit == null
+        ? rows
+        : rows.where((row) => consumptionRowUnit(row) == unit).toList();
 double? consumptionPercentChange(double current, double previous) =>
     previous == 0 ? null : ((current - previous) / previous * 100);
 String formatConsumptionQuantity(double v) =>
@@ -90,11 +117,7 @@ List<Map<String, dynamic>> consumptionTrend(List<Map<String, dynamic>> rows,
 }
 
 String hasMixedConsumptionUnits(List<Map<String, dynamic>> rows) {
-  final units = <String>{};
-  for (final r in rows) {
-    final u = (r['items'] as Map?)?['unit']?.toString();
-    if (u != null && u.isNotEmpty) units.add(u);
-  }
+  final units = consumptionUnits(rows);
   if (units.isEmpty) return 'un/kg/L';
   return units.take(3).join('/');
 }

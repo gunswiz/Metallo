@@ -7,6 +7,7 @@ import 'package:metallo/features/epi/aso_date_picker.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
+import 'package:metallo/features/epi/epi_view_data.dart';
 
 void openEmployeeDetails(BuildContext context, EpiRepository repo,
     AdminRepository adminRepository, Map<String, dynamic> person) {
@@ -40,7 +41,9 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
         widget.repo.fetchEpiEmployeeItemSet(widget.person['id'].toString()),
       ]);
 
-  void reload() => setState(() => future = _load());
+  void reload() => setState(() {
+        future = _load();
+      });
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
@@ -285,7 +288,7 @@ class _AssignmentList extends StatelessWidget {
                   .firstOrNull;
               if (item == null || item['item_kind'] != kind) return null;
               return (
-                item['code'].toString(),
+                epiSystemKey(item),
                 (row['required_quantity'] as num?)?.toInt() ?? 1
               );
             })
@@ -293,7 +296,7 @@ class _AssignmentList extends StatelessWidget {
             .toList();
     return ListView(padding: const EdgeInsets.all(16), children: [
       for (final rec in recommended)
-        if (items.where((i) => i['code'] == rec.$1).firstOrNull
+        if (items.where((i) => epiSystemKey(i) == rec.$1).firstOrNull
             case final item?)
           Builder(builder: (context) {
             final itemId = item['id'].toString();
@@ -309,7 +312,7 @@ class _AssignmentList extends StatelessWidget {
                 .toSet();
             final variantDetail = variants.isEmpty
                 ? null
-                : item['code'] == 'EPI-BOT'
+                : isBootEpiItem(item)
                     ? 'Número ${variants.join(', ')}'
                     : variants.join(', ');
             final pendingRequest = requests
@@ -331,8 +334,8 @@ class _AssignmentList extends StatelessWidget {
                     ? null
                     : () => _request(context, item, rec.$2 - deliveredQty));
           }),
-      for (final row in delivered.where((r) =>
-          !recommended.any((x) => x.$1 == (r['epi_items'] as Map?)?['code'])))
+      for (final row in delivered.where((r) => !recommended
+          .any((x) => x.$1 == epiSystemKey(r['epi_items'] as Map?))))
         _assignmentCard(
             (row['epi_items'] as Map?)?['name']?.toString() ?? 'Item',
             '${row['quantity']} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'}',
@@ -340,7 +343,7 @@ class _AssignmentList extends StatelessWidget {
             row['ca_snapshot']?.toString(),
             detail: row['variant_snapshot'] == null
                 ? null
-                : '${(row['epi_items'] as Map?)?['code'] == 'EPI-BOT' ? 'Número ' : ''}${row['variant_snapshot']}'),
+                : '${isBootEpiItem(row['epi_items'] as Map?) ? 'Número ' : ''}${row['variant_snapshot']}'),
       if (recommended.isEmpty && delivered.isEmpty)
         const Center(
             child: Padding(
@@ -360,7 +363,14 @@ class _AssignmentList extends StatelessWidget {
         return;
       }
       String? requestedVariant;
-      if (item['code'] == 'EPI-OCU') {
+      if (isBootEpiItem(item)) {
+        requestedVariant = validEmployeeShoeSize(person);
+        if (requestedVariant == null) {
+          showEpiMessage(context,
+              'Cadastre um número de bota de 38 a 46 para este funcionário.');
+          return;
+        }
+      } else if (isGlassesEpiItem(item)) {
         bool variantChosen = false;
         void chooseVariant(BuildContext sheetContext, String variant) {
           if (variantChosen) return;
@@ -399,7 +409,6 @@ class _AssignmentList extends StatelessWidget {
       try {
         await repo.requestEpiItem(
             employeeId: person['id'].toString(),
-            teamId: teamId,
             itemId: item['id'].toString(),
             quantity: quantity,
             requestedVariant: requestedVariant);

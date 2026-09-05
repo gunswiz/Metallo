@@ -7,8 +7,13 @@ import 'package:metallo/features/epi/epi_catalog.dart';
 import 'package:metallo/features/epi/employee_details.dart';
 
 class ReportsPage extends StatefulWidget {
-  const ReportsPage({super.key, required this.repo});
+  const ReportsPage({
+    super.key,
+    required this.repo,
+    this.refreshRevision = 0,
+  });
   final EpiRepository repo;
+  final int refreshRevision;
   @override
   State<ReportsPage> createState() => ReportsPageState();
 }
@@ -17,7 +22,15 @@ class ReportsPageState extends State<ReportsPage> {
   late Future<List<Map<String, dynamic>>> future =
       widget.repo.fetchEpiDeliveries();
 
-  void reload() => setState(() => future = widget.repo.fetchEpiDeliveries());
+  void reload() => setState(() {
+        future = widget.repo.fetchEpiDeliveries();
+      });
+
+  @override
+  void didUpdateWidget(covariant ReportsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshRevision != widget.refreshRevision) reload();
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -121,7 +134,7 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w800)),
                                 subtitle: Text(
-                                    '${row['quantity']} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'} • ${epiStatusLabel(row['current_status']?.toString())}${row['variant_snapshot'] == null ? '' : ' • ${(row['epi_items'] as Map?)?['code'] == 'EPI-BOT' ? 'Nº ' : ''}${row['variant_snapshot']}'}${row['ca_snapshot'] == null ? '' : ' • CA ${row['ca_snapshot']}'}'),
+                                    '${row['quantity']} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'} • ${epiStatusLabel(row['current_status']?.toString())}${row['variant_snapshot'] == null ? '' : ' • ${isBootEpiItem(row['epi_items'] as Map?) ? 'Nº ' : ''}${row['variant_snapshot']}'}${row['ca_snapshot'] == null ? '' : ' • CA ${row['ca_snapshot']}'}'),
                                 trailing: row['current_status'] == 'active'
                                     ? const Icon(Icons.chevron_right_rounded)
                                     : null,

@@ -49,6 +49,30 @@ String friendlyError(Object? error) {
   if (t.contains('team_has_active_users')) {
     return 'A equipe ainda possui usuários ativos.';
   }
+  if (t.contains('central_team_required')) {
+    return 'A COSEM é a central obrigatória e não pode ser excluída.';
+  }
+  if (t.contains('team_has_epi_employees')) {
+    return 'A equipe ainda possui funcionários ativos na gestão de EPI.';
+  }
+  if (t.contains('team_has_epi_requests')) {
+    return 'A equipe ainda possui pendências de EPI abertas.';
+  }
+  if (t.contains('team_has_epi_deliveries')) {
+    return 'A equipe ainda possui EPIs ou itens entregues em uso.';
+  }
+  if (t.contains('last_admin_required')) {
+    return 'Não é possível remover o único administrador ativo. Ative outro administrador primeiro.';
+  }
+  if (t.contains('required_equipment_field')) {
+    return 'Preencha o tipo, o código e o patrimônio do equipamento.';
+  }
+  if (t.contains('shoe_size_required')) {
+    return 'Informe um número de bota válido, de 38 a 46, no cadastro do funcionário.';
+  }
+  if (t.contains('glasses_variant_required')) {
+    return 'Escolha se o óculos de proteção é claro ou escuro.';
+  }
   if (t.contains('only_latest_asset_movement_can_change')) {
     return 'Por segurança, somente a movimentação mais recente deste equipamento pode ser corrigida ou excluída.';
   }

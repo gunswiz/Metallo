@@ -57,7 +57,7 @@ class EpiRepository {
     final rows = await client
         .from('epi_items')
         .select(
-            'id,code,name,item_kind,unit,ca_number,brand_model,minimum_stock,replacement_days,active,created_at')
+            'id,code,system_key,name,item_kind,unit,ca_number,brand_model,minimum_stock,replacement_days,active,created_at')
         .eq('active', true)
         .order('name');
     return (rows as List)
@@ -69,7 +69,7 @@ class EpiRepository {
     final rows = await client
         .from('epi_stock_batches')
         .select(
-            'id,item_id,quantity,variant,ca_number,brand_model,lot_number,expires_on,received_at,epi_items(code,name,item_kind,unit)')
+            'id,item_id,quantity,variant,ca_number,brand_model,lot_number,expires_on,received_at,epi_items(code,system_key,name,item_kind,unit)')
         .order('received_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -80,7 +80,7 @@ class EpiRepository {
     final rows = await client
         .from('epi_deliveries')
         .select(
-            'id,employee_id,team_id,item_id,stock_batch_id,delivery_group_id,quantity,delivered_at,delivery_reason,current_status,variant_snapshot,ca_snapshot,brand_model_snapshot,lot_snapshot,note,epi_employees(full_name,profession),epi_items(code,name,item_kind,unit),teams(name)')
+            'id,employee_id,team_id,item_id,stock_batch_id,delivery_group_id,quantity,delivered_at,delivery_reason,current_status,variant_snapshot,ca_snapshot,brand_model_snapshot,lot_snapshot,note,epi_employees(full_name,profession),epi_items(code,system_key,name,item_kind,unit),teams(name)')
         .order('delivered_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -91,7 +91,7 @@ class EpiRepository {
     final rows = await client
         .from('epi_requests')
         .select(
-            'id,employee_id,team_id,item_id,quantity,requested_variant,status,created_at,fulfilled_at,epi_employees(full_name,profession,shoe_size),epi_items(code,name,item_kind,unit,ca_number),teams(name)')
+            'id,employee_id,team_id,item_id,quantity,requested_variant,status,created_at,fulfilled_at,epi_employees(full_name,profession,shoe_size),epi_items(code,system_key,name,item_kind,unit,ca_number),teams(name)')
         .order('created_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -100,17 +100,15 @@ class EpiRepository {
 
   Future<void> requestEpiItem({
     required String employeeId,
-    required String teamId,
     required String itemId,
     required int quantity,
     String? requestedVariant,
   }) async {
-    await client.from('epi_requests').insert({
-      'employee_id': employeeId,
-      'team_id': teamId,
-      'item_id': itemId,
-      'quantity': quantity,
-      'requested_variant': nullableText(requestedVariant),
+    await client.rpc('request_epi_item', params: {
+      'p_employee_id': employeeId,
+      'p_item_id': itemId,
+      'p_quantity': quantity,
+      'p_requested_variant': nullableText(requestedVariant),
     });
   }
 

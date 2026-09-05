@@ -31,6 +31,7 @@ class EpiManagementShell extends StatefulWidget {
 class _EpiManagementShellState extends State<EpiManagementShell> {
   int _page = 0;
   bool _openingDelivery = false;
+  int _refreshRevision = 0;
   late Future<List<Map<String, dynamic>>> _people =
       widget.repo.fetchEpiEmployees();
 
@@ -38,6 +39,7 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
     if (!mounted) return;
     setState(() {
       _people = widget.repo.fetchEpiEmployees();
+      _refreshRevision++;
     });
   }
 
@@ -67,8 +69,11 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
           teams: widget.teams,
           role: widget.role,
           onRefresh: _refresh),
-      ItemsPage(repo: widget.repo, role: widget.role),
-      ReportsPage(repo: widget.repo),
+      ItemsPage(
+          repo: widget.repo,
+          role: widget.role,
+          refreshRevision: _refreshRevision),
+      ReportsPage(repo: widget.repo, refreshRevision: _refreshRevision),
     ];
     return Theme(
       data: Theme.of(context).copyWith(scaffoldBackgroundColor: epiBackground),

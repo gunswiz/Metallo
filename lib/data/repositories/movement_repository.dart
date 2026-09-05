@@ -4,10 +4,49 @@ import '../models/equipment_asset.dart';
 import 'dashboard_repository.dart';
 import 'repository_utils.dart';
 
+List<Map<String, dynamic>> mergeHistoryRows(
+  List<dynamic> material,
+  List<dynamic> assets,
+) {
+  final rows = <Map<String, dynamic>>[
+    for (final entry in material)
+      {...Map<String, dynamic>.from(entry as Map), '_kind': 'material'},
+    for (final entry in assets)
+      {...Map<String, dynamic>.from(entry as Map), '_kind': 'equipment'},
+  ];
+  rows.sort((a, b) {
+    final first =
+        DateTime.tryParse(a['created_at']?.toString() ?? '') ?? DateTime(1970);
+    final second =
+        DateTime.tryParse(b['created_at']?.toString() ?? '') ?? DateTime(1970);
+    return second.compareTo(first);
+  });
+  return rows;
+}
+
 class MovementRepository {
   MovementRepository(this.client, this.dashboardRepository);
   final SupabaseClient client;
   final DashboardRepository dashboardRepository;
+
+  Future<List<dynamic>> _fetchAllHistoryRows(
+    String table,
+    String columns,
+  ) async {
+    const pageSize = 500;
+    final result = <dynamic>[];
+    for (var offset = 0;; offset += pageSize) {
+      final page = await client
+          .from(table)
+          .select(columns)
+          .order('created_at', ascending: false)
+          .range(offset, offset + pageSize - 1);
+      final rows = page as List;
+      result.addAll(rows);
+      if (rows.length < pageSize) break;
+    }
+    return result;
+  }
 
   Future<void> consumeMaterial({
     required String itemId,
@@ -109,37 +148,17 @@ class MovementRepository {
   }
 
   Future<List<Map<String, dynamic>>> fetchHistory() async {
-    final material = await client
-        .from('movements')
-        .select(
-          'id,item_id,origin_team_id,destination_team_id,created_at,quantity,movement_type,note,items(name,code),origin:origin_team_id(name),destination:destination_team_id(name)',
-        )
-        .order('created_at', ascending: false)
-        .limit(60);
+    final material = await _fetchAllHistoryRows(
+      'movements',
+      'id,item_id,origin_team_id,destination_team_id,created_at,quantity,movement_type,note,items(name,code),origin:origin_team_id(name),destination:destination_team_id(name)',
+    );
 
-    final assets = await client
-        .from('asset_movements')
-        .select(
-          'id,asset_id,origin_team_id,destination_team_id,previous_status,new_status,created_at,movement_type,note,assets(asset_code,items(name,code)),origin:origin_team_id(name),destination:destination_team_id(name)',
-        )
-        .order('created_at', ascending: false)
-        .limit(60);
+    final assets = await _fetchAllHistoryRows(
+      'asset_movements',
+      'id,asset_id,origin_team_id,destination_team_id,previous_status,new_status,created_at,movement_type,note,assets(asset_code,items(name,code)),origin:origin_team_id(name),destination:destination_team_id(name)',
+    );
 
-    final rows = <Map<String, dynamic>>[];
-    for (final e in material as List) {
-      rows.add({...Map<String, dynamic>.from(e as Map), '_kind': 'material'});
-    }
-    for (final e in assets as List) {
-      rows.add({...Map<String, dynamic>.from(e as Map), '_kind': 'equipment'});
-    }
-    rows.sort((a, b) {
-      final ad = DateTime.tryParse(a['created_at']?.toString() ?? '') ??
-          DateTime(1970);
-      final bd = DateTime.tryParse(b['created_at']?.toString() ?? '') ??
-          DateTime(1970);
-      return bd.compareTo(ad);
-    });
-    return rows.take(100).toList();
+    return mergeHistoryRows(material, assets);
   }
 
   Future<void> updateMaterialHistory({

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/shared/widgets/async_action_dialog.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
@@ -29,7 +30,7 @@ Future<bool> showEmployeeForm(
           teams.firstOrNull?.id;
       bool busy = false;
       String? error;
-      final result = await showDialog<bool>(
+      final result = await showLifecycleDialog<bool>(
           context: context,
           builder: (dialogContext) => StatefulBuilder(
               builder: (context, setLocal) => AlertDialog(
@@ -110,7 +111,18 @@ Future<bool> showEmployeeForm(
                                         controller: shoe,
                                         keyboardType: TextInputType.number,
                                         decoration: const InputDecoration(
-                                            labelText: 'Calçado')))
+                                            labelText: 'Calçado',
+                                            hintText: '38 a 46'),
+                                        validator: (value) {
+                                          final size =
+                                              int.tryParse(value?.trim() ?? '');
+                                          if (size == null ||
+                                              size < 38 ||
+                                              size > 46) {
+                                            return 'Use 38 a 46.';
+                                          }
+                                          return null;
+                                        }))
                               ]),
                               if (error != null)
                                 Padding(
@@ -173,7 +185,6 @@ Future<bool> showEmployeeForm(
                           child: Text(busy ? 'Salvando...' : 'Salvar')),
                     ],
                   )));
-      await Future<void>.delayed(const Duration(milliseconds: 350));
       return result ?? false;
     } finally {
       name.dispose();
@@ -270,7 +281,7 @@ Future<bool> _employeeItemsForm(BuildContext context, EpiRepository repo,
     String query = '';
     bool busy = false;
     String? error;
-    final result = await showDialog<bool>(
+    final result = await showLifecycleDialog<bool>(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
               builder: (context, setLocal) {
@@ -488,7 +499,7 @@ Future<bool> showItemForm(BuildContext context, EpiRepository repo,
       String kind = existing?['item_kind']?.toString() ?? 'epi';
       bool busy = false;
       String? error;
-      final result = await showDialog<bool>(
+      final result = await showLifecycleDialog<bool>(
           context: context,
           builder: (dialogContext) => StatefulBuilder(
               builder: (context, setLocal) => AlertDialog(
@@ -621,7 +632,6 @@ Future<bool> showItemForm(BuildContext context, EpiRepository repo,
                           child: Text(busy ? 'Salvando...' : 'Salvar'))
                     ],
                   )));
-      await Future<void>.delayed(const Duration(milliseconds: 350));
       return result ?? false;
     } finally {
       code.dispose();
@@ -665,7 +675,7 @@ Future<void> showItemActions(BuildContext context, EpiRepository repo,
           .showSnackBar(const SnackBar(content: Text('Item atualizado.')));
     }
   } else if (action == 'delete') {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showLifecycleDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
             title: const Text('Apagar item?'),
@@ -715,9 +725,9 @@ Future<bool> showStockForm(
       bool busy = false;
       String? error;
       final isEpi = item['item_kind'] == 'epi';
-      final isBoot = item['code'] == 'EPI-BOT';
-      final isGlasses = item['code'] == 'EPI-OCU';
-      final result = await showDialog<bool>(
+      final isBoot = isBootEpiItem(item);
+      final isGlasses = isGlassesEpiItem(item);
+      final result = await showLifecycleDialog<bool>(
           context: context,
           builder: (dialogContext) => StatefulBuilder(
               builder: (context, setLocal) => AlertDialog(
@@ -842,7 +852,6 @@ Future<bool> showStockForm(
                               Text(busy ? 'Salvando...' : 'Registrar entrada'))
                     ],
                   )));
-      await Future<void>.delayed(const Duration(milliseconds: 350));
       return result ?? false;
     } finally {
       quantity.dispose();

@@ -28,6 +28,7 @@ class ConsumptionPage extends StatefulWidget {
 
 class _ConsumptionPageState extends State<ConsumptionPage> {
   String? teamId;
+  String? unit;
   String period = 'month';
 
   @override
@@ -46,7 +47,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
             if (!snap.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            final rows = snap.data!;
+            final allRows = snap.data!;
+            final units = consumptionUnits(allRows);
+            final effectiveUnit = effectiveConsumptionUnit(allRows, unit);
+            final rows = filterConsumptionUnit(allRows, effectiveUnit);
             final overview =
                 consumptionOverview(rows, teamId, period, DateTime.now());
 
@@ -71,9 +75,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => ConsumptionMaterialsPage(
-                                    rows: rows,
+                                    rows: allRows,
                                     teams: teams,
-                                    initialTeamId: teamId))),
+                                    initialTeamId: teamId,
+                                    initialUnit: effectiveUnit))),
                       ),
                       IconButton(
                         tooltip: 'Gráficos',
@@ -82,9 +87,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => ConsumptionGraphsPage(
-                                    rows: rows,
+                                    rows: allRows,
                                     teams: teams,
-                                    initialTeamId: teamId))),
+                                    initialTeamId: teamId,
+                                    initialUnit: effectiveUnit))),
                       ),
                     ],
                   ),
@@ -92,6 +98,11 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                   Column(children: [
                     teamConsumptionDropdown(
                         teams, teamId, (v) => setState(() => teamId = v)),
+                    if (units.length > 1) ...[
+                      const SizedBox(height: 10),
+                      consumptionUnitDropdown(units, effectiveUnit,
+                          (value) => setState(() => unit = value)),
+                    ],
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                       initialValue: period,
@@ -203,9 +214,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                           context,
                           MaterialPageRoute(
                               builder: (_) => ConsumptionGraphsPage(
-                                  rows: rows,
+                                  rows: allRows,
                                   teams: teams,
-                                  initialTeamId: teamId))),
+                                  initialTeamId: teamId,
+                                  initialUnit: effectiveUnit))),
                     )),
                     const SizedBox(width: 10),
                     Expanded(
@@ -216,7 +228,9 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                           context,
                           MaterialPageRoute(
                               builder: (_) => ConsumptionTeamsComparePage(
-                                  rows: rows, teams: teams))),
+                                  rows: allRows,
+                                  teams: teams,
+                                  initialUnit: effectiveUnit))),
                     )),
                   ]),
                 ],

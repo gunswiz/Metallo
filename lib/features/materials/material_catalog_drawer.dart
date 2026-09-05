@@ -19,7 +19,9 @@ class MaterialCatalogDrawer extends StatefulWidget {
 class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
   late Future<List<Map<String, dynamic>>> catalog =
       widget.repo.fetchMaterialCatalog();
-  void reload() => setState(() => catalog = widget.repo.fetchMaterialCatalog());
+  void reload() => setState(() {
+        catalog = widget.repo.fetchMaterialCatalog();
+      });
 
   Future<void> _handleCatalogAction(
     BuildContext context,

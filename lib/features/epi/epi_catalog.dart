@@ -21,6 +21,15 @@ String epiStatusLabel(String? status) => switch (status) {
       _ => 'Em uso',
     };
 
+String epiSystemKey(Map? item) =>
+    item?['system_key']?.toString().trim().toUpperCase() ??
+    item?['code']?.toString().trim().toUpperCase() ??
+    '';
+
+bool isBootEpiItem(Map? item) => epiSystemKey(item) == 'EPI-BOT';
+
+bool isGlassesEpiItem(Map? item) => epiSystemKey(item) == 'EPI-OCU';
+
 List<(String, int)> recommendedEpiCodes(String profession, String kind) {
   final common = ['EPI-CAP', 'EPI-OCU', 'EPI-AUR', 'EPI-BOT'];
   final p = profession.toLowerCase();

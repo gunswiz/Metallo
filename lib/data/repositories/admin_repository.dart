@@ -18,6 +18,13 @@ class AdminRepository {
         .maybeSingle();
   }
 
+  Stream<Map<String, dynamic>?> watchCurrentProfile() {
+    final uid = client.auth.currentUser?.id;
+    if (uid == null) return Stream.value(null);
+    return client.from('profiles').stream(primaryKey: ['id']).eq('id', uid).map(
+        (rows) => rows.isEmpty ? null : Map<String, dynamic>.from(rows.first));
+  }
+
   Future<List<Map<String, dynamic>>> fetchProfiles() async {
     final rows = await client
         .from('profiles')

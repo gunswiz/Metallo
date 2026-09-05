@@ -130,8 +130,7 @@ Future<void> showDeliveryStart(
                                         .where((e) =>
                                             e['id']?.toString() == employeeId)
                                         .firstOrNull;
-                                    final preferredBoot = item?['code'] ==
-                                            'EPI-BOT' &&
+                                    final preferredBoot = isBootEpiItem(item) &&
                                         variant != null &&
                                         variant.isNotEmpty &&
                                         variant ==
@@ -144,7 +143,7 @@ Future<void> showDeliveryStart(
                                                 item?['item_kind']?.toString()),
                                             color: epiBlue),
                                         title: Text(
-                                            '${item?['name'] ?? 'Item'}${variant == null || variant.isEmpty ? '' : item?['code'] == 'EPI-BOT' ? ' • Nº $variant' : ' • $variant'}'),
+                                            '${item?['name'] ?? 'Item'}${variant == null || variant.isEmpty ? '' : isBootEpiItem(item) ? ' • Nº $variant' : ' • $variant'}'),
                                         subtitle: Text(
                                             '${epiKindLabel(item?['item_kind']?.toString())} • $available ${item?['unit'] ?? 'un'} disponíveis${preferredBoot ? '\nTamanho cadastrado do funcionário' : ''}'),
                                         isThreeLine: preferredBoot,

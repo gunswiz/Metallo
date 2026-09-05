@@ -6,12 +6,9 @@ import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/shared/widgets/async_action_dialog.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 
-Future<void> showUserEditDialog(
-  BuildContext context,
-  AdminRepository repo,
-  List<Team> teams,
-  Map<String, dynamic> user,
-) async {
+Future<void> showUserEditDialog(BuildContext context, AdminRepository repo,
+    List<Team> teams, Map<String, dynamic> user,
+    {bool protectLastAdmin = false}) async {
   final actionLock = UiActionLock.acquire(context, 'showUserEditDialog');
   if (actionLock == null) return;
   try {
@@ -24,7 +21,7 @@ Future<void> showUserEditDialog(
       bool busy = false;
       String? error;
 
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -49,7 +46,9 @@ Future<void> showUserEditDialog(
                       DropdownMenuItem(
                           value: 'collaborator', child: Text('Colaborador')),
                     ],
-                    onChanged: busy ? null : (v) => setLocal(() => role = v!),
+                    onChanged: busy || protectLastAdmin
+                        ? null
+                        : (v) => setLocal(() => role = v!),
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
@@ -65,8 +64,15 @@ Future<void> showUserEditDialog(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Acesso liberado'),
                     value: active,
-                    onChanged: busy ? null : (v) => setLocal(() => active = v),
+                    onChanged: busy || protectLastAdmin
+                        ? null
+                        : (v) => setLocal(() => active = v),
                   ),
+                  if (protectLastAdmin)
+                    const Text(
+                      'Este é o único administrador ativo. Cadastre ou ative outro administrador antes de remover este acesso.',
+                      style: TextStyle(color: Colors.orangeAccent),
+                    ),
                   if (error != null)
                     Text(error!,
                         style: TextStyle(

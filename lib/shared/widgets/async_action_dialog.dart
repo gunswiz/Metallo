@@ -1,5 +1,29 @@
 import 'package:flutter/material.dart';
 
+Future<T?> showLifecycleDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+}) async {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final route = DialogRoute<T>(
+    context: context,
+    builder: builder,
+    themes: InheritedTheme.capture(from: context, to: navigator.context),
+    barrierDismissible: barrierDismissible,
+    barrierColor: DialogTheme.of(context).barrierColor ??
+        Theme.of(context).dialogTheme.barrierColor ??
+        Colors.black54,
+    traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
+  );
+  final result = await navigator.push<T>(route);
+  // Navigator.pop completes before the reverse transition removes the route.
+  // Callers often own TextEditingControllers used by the dialog, so they must
+  // not dispose them until the route has actually left the widget tree.
+  await route.completed;
+  return result;
+}
+
 Future<bool?> showAsyncActionDialog({
   required BuildContext context,
   required Widget title,
@@ -17,7 +41,7 @@ Future<bool?> showAsyncActionDialog({
   double? busyIndicatorSize,
   TextStyle? errorTextStyle,
 }) =>
-    showDialog<bool>(
+    showLifecycleDialog<bool>(
       context: context,
       builder: (dialogContext) => _AsyncActionDialog(
         title: title,

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metallo/core/app_update.dart';
 
@@ -36,5 +38,60 @@ void main() {
       expect(AppUpdateService.parseManifest(manifest(url), 43), isNull,
           reason: url);
     }
+  });
+
+  testWidgets('falha de rede não é informada como versão atualizada',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => AppUpdateService.showIfAvailable(
+              context,
+              showUpToDate: true,
+              checker: () => Future<AppUpdateInfo?>.error(
+                const SocketException('offline'),
+              ),
+            ),
+            child: const Text('Verificar'),
+          ),
+        ),
+      ),
+    ));
+
+    await tester.tap(find.text('Verificar'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Não foi possível verificar'), findsOneWidget);
+    expect(find.textContaining('versão mais recente'), findsNothing);
+  });
+
+  testWidgets('falha ao abrir download é exibida ao usuário', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => TextButton(
+            onPressed: () => AppUpdateService.showIfAvailable(
+              context,
+              checker: () async => AppUpdateInfo(
+                version: '0.9.3',
+                build: 44,
+                url: Uri.parse(valid),
+              ),
+              launcher: (_) async => false,
+            ),
+            child: const Text('Verificar'),
+          ),
+        ),
+      ),
+    ));
+
+    await tester.tap(find.text('Verificar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Atualizar'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Não foi possível abrir o download'),
+        findsOneWidget);
   });
 }

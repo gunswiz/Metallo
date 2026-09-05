@@ -21,17 +21,45 @@ class AppUpdateService {
       'https://raw.githubusercontent.com/gunswiz/Metallo/main/updates/latest.json';
 
   static AppUpdateInfo? parseManifest(String body, int currentBuild) {
-    final data = jsonDecode(body);
-    if (data is! Map<String, dynamic>) return null;
+    try {
+      return _parseManifest(body, currentBuild, strict: false);
+    } on FormatException {
+      return null;
+    }
+  }
+
+  static AppUpdateInfo? _parseManifest(
+    String body,
+    int currentBuild, {
+    required bool strict,
+  }) {
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(body);
+    } catch (error) {
+      if (strict) {
+        throw const FormatException('Manifesto de atualização inválido');
+      }
+      return null;
+    }
+    if (decoded is! Map<String, dynamic>) {
+      if (strict) {
+        throw const FormatException('Manifesto de atualização inválido');
+      }
+      return null;
+    }
+    final data = decoded;
     final build = data['build'];
     final version = data['version'];
     final rawUrl = data['apk_url'];
     if (build is! int ||
-        build <= currentBuild ||
         version is! String ||
         !RegExp(r'^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$').hasMatch(version) ||
         version.length > 64 ||
         rawUrl is! String) {
+      if (strict) {
+        throw const FormatException('Manifesto de atualização inválido');
+      }
       return null;
     }
     final url = Uri.tryParse(rawUrl);
@@ -44,8 +72,12 @@ class AppUpdateService {
         url.hasFragment ||
         !RegExp(r'^/gunswiz/Metallo/releases/download/v[0-9][A-Za-z0-9.+-]*/Metallo\.apk$')
             .hasMatch(url.path)) {
+      if (strict) {
+        throw const FormatException('Destino de atualização inválido');
+      }
       return null;
     }
+    if (build <= currentBuild) return null;
     return AppUpdateInfo(version: version, build: build, url: url);
   }
 
@@ -55,8 +87,14 @@ class AppUpdateService {
       final request = await client.getUrl(Uri.parse(_manifest));
       final response =
           await request.close().timeout(const Duration(seconds: 10));
-      if (response.statusCode != HttpStatus.ok) return null;
-      if (response.contentLength > _maxManifestBytes) return null;
+      if (response.statusCode != HttpStatus.ok) {
+        throw HttpException(
+          'Servidor de atualização respondeu ${response.statusCode}',
+        );
+      }
+      if (response.contentLength > _maxManifestBytes) {
+        throw const FormatException('Manifesto de atualização muito grande');
+      }
       final bytes = await response.fold<List<int>>(<int>[], (buffer, chunk) {
         if (buffer.length + chunk.length > _maxManifestBytes) {
           throw const FormatException('Update manifest too large');
@@ -66,20 +104,32 @@ class AppUpdateService {
       }).timeout(const Duration(seconds: 10));
       final installed = await PackageInfo.fromPlatform();
       final currentBuild = int.tryParse(installed.buildNumber) ?? 0;
-      return parseManifest(utf8.decode(bytes), currentBuild);
-    } catch (_) {
-      return null;
+      return _parseManifest(utf8.decode(bytes), currentBuild, strict: true);
     } finally {
       client.close(force: true);
     }
   }
 
   static Future<void> showIfAvailable(BuildContext context,
-      {bool showUpToDate = false}) async {
+      {bool showUpToDate = false,
+      Future<AppUpdateInfo?> Function()? checker,
+      Future<bool> Function(Uri url)? launcher}) async {
     final actionLock = UiActionLock.acquire(context, 'app-update-check');
     if (actionLock == null) return;
     try {
-      final update = await check();
+      AppUpdateInfo? update;
+      try {
+        update = await (checker ?? check)();
+      } catch (_) {
+        if (context.mounted && showUpToDate) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+                'Não foi possível verificar atualizações. Confira sua internet e tente novamente.'),
+          ));
+        }
+        return;
+      }
       if (!context.mounted) return;
       if (update == null) {
         if (showUpToDate) {
@@ -90,13 +140,14 @@ class AppUpdateService {
         }
         return;
       }
+      final availableUpdate = update;
       final accepted = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
           icon: Image.asset('assets/metallo_logo_outline.png', height: 54),
           title: const Text('Saiu uma nova atualização'),
           content: Text(
-              'A versão ${update.version} está disponível. Gostaria de atualizar agora?'),
+              'A versão ${availableUpdate.version} está disponível. Gostaria de atualizar agora?'),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
@@ -108,7 +159,22 @@ class AppUpdateService {
         ),
       );
       if (accepted == true) {
-        await launchUrl(update.url, mode: LaunchMode.externalApplication);
+        var launched = false;
+        try {
+          launched = launcher == null
+              ? await launchUrl(availableUpdate.url,
+                  mode: LaunchMode.externalApplication)
+              : await launcher(availableUpdate.url);
+        } catch (_) {
+          launched = false;
+        }
+        if (!launched && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+                'Não foi possível abrir o download. Tente novamente pela tela da conta.'),
+          ));
+        }
       }
     } finally {
       actionLock.release();

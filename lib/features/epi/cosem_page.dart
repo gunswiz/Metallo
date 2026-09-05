@@ -24,7 +24,9 @@ class CosemPageState extends State<CosemPage> {
         widget.repo.fetchEpiRequests(),
       ]);
 
-  void reload() => setState(() => future = _load());
+  void reload() => setState(() {
+        future = _load();
+      });
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
@@ -116,8 +118,8 @@ class CosemPageState extends State<CosemPage> {
                 leading: const CircleAvatar(
                     backgroundColor: metalloEpiIconBackground,
                     child: Icon(Icons.inventory_2_outlined, color: epiBlue)),
-                title: Text(
-                    item['code'] == 'EPI-BOT' ? 'Número ${row.key}' : row.key),
+                title:
+                    Text(isBootEpiItem(item) ? 'Número ${row.key}' : row.key),
                 trailing: Text('${row.value} ${item['unit'] ?? 'un'}',
                     style: const TextStyle(
                         color: epiBlue,
@@ -226,7 +228,6 @@ class CosemPageState extends State<CosemPage> {
       }
       final item = request['epi_items'] as Map?;
       final employee = request['epi_employees'] as Map?;
-      final code = item?['code']?.toString();
       final shoeSize = employee?['shoe_size']?.toString();
       bool batchChosen = false;
       final selected = await showModalBottomSheet<Map<String, dynamic>>(
@@ -247,11 +248,11 @@ class CosemPageState extends State<CosemPage> {
                       const Icon(Icons.inventory_2_outlined, color: epiBlue),
                   title: Text(batch['variant'] == null
                       ? 'Sem variação'
-                      : code == 'EPI-BOT'
+                      : isBootEpiItem(item)
                           ? 'Número ${batch['variant']}'
                           : batch['variant'].toString()),
                   subtitle: Text(
-                      '${batch['quantity']} ${item?['unit'] ?? 'un'} disponíveis${code == 'EPI-BOT' && batch['variant']?.toString() == shoeSize ? ' • número do funcionário' : ''}'),
+                      '${batch['quantity']} ${item?['unit'] ?? 'un'} disponíveis${isBootEpiItem(item) && batch['variant']?.toString() == shoeSize ? ' • número do funcionário' : ''}'),
                   onTap: () {
                     if (batchChosen) return;
                     batchChosen = true;

@@ -19,8 +19,9 @@ class _TeamsPageState extends State<TeamsPage> {
   late Future<DashboardSnapshot> future =
       widget.repo.dashboardRepository.fetchDashboard();
 
-  void reload() =>
-      setState(() => future = widget.repo.dashboardRepository.fetchDashboard());
+  void reload() => setState(() {
+        future = widget.repo.dashboardRepository.fetchDashboard();
+      });
 
   Future<void> _createTeam() async {
     await showTeamDialog(context, widget.repo);
@@ -34,6 +35,10 @@ class _TeamsPageState extends State<TeamsPage> {
       return;
     }
     if (action != 'delete') return;
+    if (team.isCentral) {
+      showError(context, StateError('central_team_required'));
+      return;
+    }
     final confirmed = await confirm(
       context,
       'Excluir equipe?',
@@ -102,9 +107,10 @@ class _TeamCard extends StatelessWidget {
           subtitle: team.description == null ? null : Text(team.description!),
           trailing: PopupMenuButton<String>(
             onSelected: onAction,
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'edit', child: Text('Editar')),
-              PopupMenuItem(value: 'delete', child: Text('Excluir')),
+            itemBuilder: (_) => [
+              const PopupMenuItem(value: 'edit', child: Text('Editar')),
+              if (!team.isCentral)
+                const PopupMenuItem(value: 'delete', child: Text('Excluir')),
             ],
           ),
         ),

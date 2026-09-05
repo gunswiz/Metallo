@@ -28,8 +28,9 @@ class EquipmentCatalogDrawer extends StatefulWidget {
 class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
   late Future<List<Map<String, dynamic>>> catalog =
       widget.repo.fetchEquipmentCatalog();
-  void reload() =>
-      setState(() => catalog = widget.repo.fetchEquipmentCatalog());
+  void reload() => setState(() {
+        catalog = widget.repo.fetchEquipmentCatalog();
+      });
 
   Future<void> _handleCatalogAction(
     BuildContext context,

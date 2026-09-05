@@ -5,6 +5,7 @@ import 'package:metallo/core/formatters.dart';
 import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/movement_repository.dart';
+import 'package:metallo/shared/widgets/async_action_dialog.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/history/helpers.dart';
 
@@ -129,7 +130,7 @@ Future<void> showMaterialHistoryEdit(
     bool busy = false;
 
     try {
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -257,7 +258,7 @@ Future<void> showAssetHistoryEdit(
     String? error;
 
     try {
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(

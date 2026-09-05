@@ -7,9 +7,15 @@ import 'package:metallo/features/epi/epi_catalog.dart';
 import 'package:metallo/features/epi/epi_view_data.dart';
 
 class ItemsPage extends StatefulWidget {
-  const ItemsPage({super.key, required this.repo, required this.role});
+  const ItemsPage({
+    super.key,
+    required this.repo,
+    required this.role,
+    this.refreshRevision = 0,
+  });
   final EpiRepository repo;
   final String role;
+  final int refreshRevision;
   @override
   State<ItemsPage> createState() => ItemsPageState();
 }
@@ -18,7 +24,16 @@ class ItemsPageState extends State<ItemsPage> {
   late Future<List<Map<String, dynamic>>> future = widget.repo.fetchEpiItems();
   String query = '';
   String kind = 'all';
-  void reload() => setState(() => future = widget.repo.fetchEpiItems());
+  void reload() => setState(() {
+        future = widget.repo.fetchEpiItems();
+      });
+
+  @override
+  void didUpdateWidget(covariant ItemsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshRevision != widget.refreshRevision) reload();
+  }
+
   @override
   Widget build(BuildContext context) =>
       FutureBuilder<List<Map<String, dynamic>>>(

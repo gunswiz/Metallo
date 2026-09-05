@@ -18,25 +18,33 @@ class UsersManagementPage extends StatefulWidget {
 
 class _UsersManagementPageState extends State<UsersManagementPage> {
   late Future<List<Map<String, dynamic>>> users = widget.repo.fetchProfiles();
-  void reload() => setState(() => users = widget.repo.fetchProfiles());
+  void reload() => setState(() {
+        users = widget.repo.fetchProfiles();
+      });
 
   Future<void> _editUser(
-    BuildContext context,
-    List<Team> teams,
-    Map<String, dynamic> user,
-  ) async {
-    await showUserEditDialog(context, widget.repo, teams, user);
+      BuildContext context, List<Team> teams, Map<String, dynamic> user,
+      {required bool protectLastAdmin}) async {
+    await showUserEditDialog(
+      context,
+      widget.repo,
+      teams,
+      user,
+      protectLastAdmin: protectLastAdmin,
+    );
     reload();
   }
 
-  Future<void> _handleUserAction(
-    BuildContext context,
-    String action,
-    List<Team> teams,
-    Map<String, dynamic> user,
-  ) async {
+  Future<void> _handleUserAction(BuildContext context, String action,
+      List<Team> teams, Map<String, dynamic> user,
+      {required bool protectLastAdmin}) async {
     if (action == 'edit') {
-      await _editUser(context, teams, user);
+      await _editUser(
+        context,
+        teams,
+        user,
+        protectLastAdmin: protectLastAdmin,
+      );
       return;
     }
     if (action != 'delete') return;
@@ -74,16 +82,38 @@ class _UsersManagementPageState extends State<UsersManagementPage> {
               if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
+              final activeAdmins = snap.data!
+                  .where((user) =>
+                      user['active'] == true && user['role'] == 'admin')
+                  .length;
+              final currentUserId = widget.repo.client.auth.currentUser?.id;
               return ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
                   for (final user in snap.data!)
-                    _UserCard(
-                      user: user,
-                      onTap: () => _editUser(context, teams, user),
-                      onAction: (action) =>
-                          _handleUserAction(context, action, teams, user),
-                    ),
+                    Builder(builder: (context) {
+                      final protectLastAdmin = activeAdmins == 1 &&
+                          user['active'] == true &&
+                          user['role'] == 'admin';
+                      return _UserCard(
+                        user: user,
+                        canDelete: !protectLastAdmin &&
+                            user['id']?.toString() != currentUserId,
+                        onTap: () => _editUser(
+                          context,
+                          teams,
+                          user,
+                          protectLastAdmin: protectLastAdmin,
+                        ),
+                        onAction: (action) => _handleUserAction(
+                          context,
+                          action,
+                          teams,
+                          user,
+                          protectLastAdmin: protectLastAdmin,
+                        ),
+                      );
+                    }),
                 ],
               );
             },
@@ -97,11 +127,13 @@ class _UsersManagementPageState extends State<UsersManagementPage> {
 class _UserCard extends StatelessWidget {
   const _UserCard({
     required this.user,
+    required this.canDelete,
     required this.onTap,
     required this.onAction,
   });
 
   final Map<String, dynamic> user;
+  final bool canDelete;
   final VoidCallback onTap;
   final ValueChanged<String> onAction;
 
@@ -121,9 +153,10 @@ class _UserCard extends StatelessWidget {
         ),
         trailing: PopupMenuButton<String>(
           onSelected: onAction,
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'edit', child: Text('Editar')),
-            PopupMenuItem(value: 'delete', child: Text('Excluir')),
+          itemBuilder: (_) => [
+            const PopupMenuItem(value: 'edit', child: Text('Editar')),
+            if (canDelete)
+              const PopupMenuItem(value: 'delete', child: Text('Excluir')),
           ],
         ),
         onTap: onTap,

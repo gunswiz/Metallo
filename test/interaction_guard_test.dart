@@ -33,6 +33,7 @@ class _FakeEpiRepository extends EpiRepository {
 
   int stockLoads = 0;
   int deliveries = 0;
+  int reportLoads = 0;
   final stock = Completer<List<Map<String, dynamic>>>();
   final saved = Completer<void>();
 
@@ -56,7 +57,28 @@ class _FakeEpiRepository extends EpiRepository {
   @override
   Future<List<Map<String, dynamic>>> fetchEpiItems() async => [];
   @override
-  Future<List<Map<String, dynamic>>> fetchEpiDeliveries() async => [];
+  Future<List<Map<String, dynamic>>> fetchEpiDeliveries() async {
+    reportLoads++;
+    if (deliveries == 0) return [];
+    return [
+      {
+        'id': 'delivery',
+        'delivery_group_id': 'group',
+        'quantity': 1,
+        'current_status': 'active',
+        'epi_employees': {'full_name': 'Funcionário de teste'},
+        'teams': {'name': 'Equipe de teste'},
+        'epi_items': {
+          'name': 'Capacete atualizado',
+          'code': 'EPI-CAP',
+          'system_key': 'EPI-CAP',
+          'item_kind': 'epi',
+          'unit': 'un',
+        },
+      },
+    ];
+  }
+
   @override
   Future<List<Map<String, dynamic>>> fetchEpiRequests() async => [];
 
@@ -75,12 +97,57 @@ class _FakeCatalogRepository extends CatalogRepository {
   _FakeCatalogRepository(super.client, super.dashboardRepository);
 
   int catalogLoads = 0;
+  int atomicEquipmentUpdates = 0;
+  int legacyItemUpdates = 0;
+  int legacyAssetUpdates = 0;
   final catalog = Completer<List<Map<String, dynamic>>>();
 
   @override
   Future<List<Map<String, dynamic>>> fetchMaterialCatalog() {
     catalogLoads++;
     return catalog.future;
+  }
+
+  @override
+  Future<void> updateEquipment({
+    required String itemId,
+    required String itemCode,
+    required String itemName,
+    required String assetId,
+    required String assetCode,
+    required String? serialNumber,
+    required String teamId,
+    required String status,
+    required String? notes,
+    String ownershipType = 'owned',
+    String? rentalCompany,
+    String? rentalEndDate,
+  }) async {
+    atomicEquipmentUpdates++;
+  }
+
+  @override
+  Future<void> updateEquipmentItem({
+    required String itemId,
+    required String code,
+    required String name,
+  }) async {
+    legacyItemUpdates++;
+  }
+
+  @override
+  Future<void> updateEquipmentAsset({
+    required String assetId,
+    required String assetCode,
+    required String? serialNumber,
+    required String teamId,
+    required String status,
+    required String? notes,
+    String ownershipType = 'owned',
+    String? rentalCompany,
+    String? rentalEndDate,
+  }) async {
+    legacyAssetUpdates++;
   }
 }
 
@@ -232,6 +299,10 @@ void main() {
     repo.saved.complete();
     await tester.pumpAndSettle();
     expect(find.text('Nova entrega'), findsNothing);
+    await tester.tap(find.text('Relatórios'));
+    await tester.pumpAndSettle();
+    expect(find.text('Capacete atualizado'), findsOneWidget);
+    expect(repo.reportLoads, greaterThanOrEqualTo(2));
     await tester.tap(find.text('Entrega'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
@@ -303,6 +374,56 @@ void main() {
     movementRepository.saved.complete();
     await tester.pumpAndSettle();
     expect(find.text('Abrir equipamento').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('edição do equipamento salva tipo e patrimônio atomicamente',
+      (tester) async {
+    final client = _testClient();
+    final dashboardRepository = DashboardRepository(client);
+    final repo = _FakeCatalogRepository(client, dashboardRepository);
+    addTearDown(dashboardRepository.dispose);
+    final equipment = <String, dynamic>{
+      'id': 'asset',
+      'asset_code': 'PAT-001',
+      'serial_number': 'SERIE-1',
+      'team_id': 'team',
+      'status': 'available',
+      'notes': null,
+      'items': {
+        'id': 'item',
+        'code': 'EQP-SOLDA-TRI',
+        'name': 'Máquina de solda trifásica',
+      },
+    };
+
+    await tester.pumpWidget(MaterialApp(
+      theme: appTheme(),
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () => showEditEquipmentCatalogDialog(
+              context,
+              repo,
+              const [
+                Team(id: 'team', name: 'Equipe', locationType: 'team'),
+              ],
+              equipment,
+            ),
+            child: const Text('Editar equipamento'),
+          ),
+        ),
+      ),
+    ));
+
+    await tester.tap(find.text('Editar equipamento'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Salvar'));
+    await tester.pumpAndSettle();
+
+    expect(repo.atomicEquipmentUpdates, 1);
+    expect(repo.legacyItemUpdates, 0);
+    expect(repo.legacyAssetUpdates, 0);
     expect(tester.takeException(), isNull);
   });
 

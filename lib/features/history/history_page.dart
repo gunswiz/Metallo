@@ -12,12 +12,15 @@ import 'package:metallo/features/history/dialogs.dart';
 
 const _historyFilterOptions = <(String, String, IconData)>[
   ('entry', 'Entrada de material', Icons.move_to_inbox_outlined),
+  ('exit', 'Saída de material', Icons.outbox_outlined),
   ('consumption', 'Consumo de material', Icons.construction_rounded),
   ('replenishment', 'Reposição COSEM → equipe', Icons.inventory_2_outlined),
   ('transfer', 'Transferência de equipamento', Icons.swap_horiz_rounded),
   ('adjustment', 'Ajuste de estoque', Icons.tune_rounded),
   ('maintenance', 'Manutenção', Icons.build_outlined),
   ('return', 'Retorno', Icons.keyboard_return_rounded),
+  ('assign', 'Atribuição de equipamento', Icons.person_add_alt_1_outlined),
+  ('status_change', 'Alteração de status', Icons.tune_rounded),
 ];
 
 class HistoryPage extends StatefulWidget {
@@ -39,6 +42,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final search = TextEditingController();
   final Set<String> movementFilters = {};
+  int visibleCount = 100;
   void reload() => setState(() {});
 
   List<Map<String, dynamic>> _filteredRows(List<Map<String, dynamic>> rows) {
@@ -61,6 +65,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
     if (result != null && mounted) {
       setState(() {
+        visibleCount = 100;
         movementFilters
           ..clear()
           ..addAll(result);
@@ -135,6 +140,7 @@ class _HistoryPageState extends State<HistoryPage> {
               return const Center(child: CircularProgressIndicator());
             }
             final rows = _filteredRows(snap.data!);
+            final visibleRows = rows.take(visibleCount).toList();
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -146,7 +152,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   TextField(
                     controller: search,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (_) => setState(() => visibleCount = 100),
                     decoration: InputDecoration(
                       hintText:
                           'Pesquisar histórico por nome, código ou movimentação',
@@ -157,7 +163,7 @@ class _HistoryPageState extends State<HistoryPage> {
                               tooltip: 'Limpar pesquisa',
                               onPressed: () {
                                 search.clear();
-                                setState(() {});
+                                setState(() => visibleCount = 100);
                               },
                               icon: const Icon(Icons.close),
                             ),
@@ -179,7 +185,10 @@ class _HistoryPageState extends State<HistoryPage> {
                         const SizedBox(width: 8),
                         IconButton(
                           tooltip: 'Limpar filtros',
-                          onPressed: () => setState(movementFilters.clear),
+                          onPressed: () => setState(() {
+                            movementFilters.clear();
+                            visibleCount = 100;
+                          }),
                           icon: const Icon(Icons.filter_alt_off_outlined),
                         ),
                       ],
@@ -207,7 +216,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       ),
                     )
                   else
-                    for (final row in rows)
+                    for (final row in visibleRows)
                       _HistoryEntryCard(
                         row: row,
                         data: HistoryEntryViewData.fromRow(row),
@@ -215,6 +224,16 @@ class _HistoryPageState extends State<HistoryPage> {
                         onAction: (action) =>
                             _handleEntryAction(context, action, row, teams),
                       ),
+                  if (visibleRows.length < rows.length)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: OutlinedButton.icon(
+                        onPressed: () => setState(() => visibleCount += 100),
+                        icon: const Icon(Icons.expand_more_rounded),
+                        label: Text(
+                            'Carregar mais (${rows.length - visibleRows.length} restantes)'),
+                      ),
+                    ),
                 ],
               ),
             );

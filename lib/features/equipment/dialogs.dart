@@ -52,7 +52,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
         text: equipmentTypeDisplayName(item?['name']?.toString() ?? ''));
 
     try {
-      return await showDialog<bool>(
+      return await showLifecycleDialog<bool>(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -163,8 +163,12 @@ Future<bool?> showEditEquipmentCatalogDialog(
                     ? null
                     : () async {
                         if (busy) return;
-                        final validation =
-                            requiredText(assetCode.text, 'Código/patrimônio');
+                        final validation = item == null
+                            ? 'Equipamento não encontrado.'
+                            : requiredText(
+                                    typeName.text, 'Tipo do equipamento') ??
+                                requiredText(
+                                    assetCode.text, 'Código/patrimônio');
                         if (validation != null) {
                           setLocal(() => error = validation);
                           return;
@@ -184,16 +188,13 @@ Future<bool?> showEditEquipmentCatalogDialog(
                           error = null;
                         });
                         try {
-                          if (item != null &&
-                              typeName.text.trim() !=
-                                  item['name']?.toString()) {
-                            await repo.updateEquipmentItem(
-                              itemId: item['id'].toString(),
-                              code: item['code']?.toString() ?? '',
-                              name: typeName.text,
-                            );
+                          if (item == null) {
+                            throw StateError('item_not_found');
                           }
-                          await repo.updateEquipmentAsset(
+                          await repo.updateEquipment(
+                            itemId: item['id'].toString(),
+                            itemCode: item['code']?.toString() ?? '',
+                            itemName: typeName.text,
                             assetId: equipment['id'].toString(),
                             assetCode: assetCode.text,
                             serialNumber: serialNumber.text,
@@ -260,7 +261,7 @@ Future<void> showEquipmentDialog(
     String? error;
 
     try {
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -783,7 +784,7 @@ Future<void> showRentalReturnDialog(BuildContext context,
     var busy = false;
     String? error;
     try {
-      await showDialog<void>(
+      await showLifecycleDialog<void>(
           context: context,
           builder: (dialogContext) => StatefulBuilder(
               builder: (context, setLocal) => AlertDialog(
@@ -1026,7 +1027,7 @@ Future<void> showEquipmentMaintenanceReturnDialog(
     bool busy = false;
     String? error;
     try {
-      await showDialog<void>(
+      await showLifecycleDialog<void>(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -1123,7 +1124,7 @@ Future<void> showEquipmentTransferDialog(
     bool busy = false;
     String? error;
 
-    await showDialog(
+    await showLifecycleDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(

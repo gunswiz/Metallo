@@ -34,22 +34,22 @@ class ProfileGate extends StatefulWidget {
 }
 
 class _ProfileGateState extends State<ProfileGate> {
-  late Future<Map<String, dynamic>?> profile;
+  late Stream<Map<String, dynamic>?> profile;
 
   @override
   void initState() {
     super.initState();
-    profile = widget.adminRepository.currentProfile();
+    profile = widget.adminRepository.watchCurrentProfile();
   }
 
   void _reloadProfile() {
-    setState(() => profile = widget.adminRepository.currentProfile());
+    setState(() => profile = widget.adminRepository.watchCurrentProfile());
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: profile,
+    return StreamBuilder<Map<String, dynamic>?>(
+      stream: profile,
       builder: (context, snap) {
         if (snap.hasError) {
           return ErrorPage(
@@ -57,12 +57,12 @@ class _ProfileGateState extends State<ProfileGate> {
             onRetry: _reloadProfile,
           );
         }
-        if (!snap.hasData) {
+        if (snap.connectionState == ConnectionState.waiting) {
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
         }
-        final p = snap.data!;
-        if (p['active'] != true) {
+        final p = snap.data;
+        if (p == null || p['active'] != true) {
           return PendingAccessPage(
             authRepository: widget.authRepository,
             onRetry: _reloadProfile,

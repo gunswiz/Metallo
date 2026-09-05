@@ -61,6 +61,40 @@ class CatalogRepository {
     await dashboardRepository.refreshDashboard();
   }
 
+  Future<void> updateEquipment({
+    required String itemId,
+    required String itemCode,
+    required String itemName,
+    required String assetId,
+    required String assetCode,
+    required String? serialNumber,
+    required String teamId,
+    required String status,
+    required String? notes,
+    String ownershipType = 'owned',
+    String? rentalCompany,
+    String? rentalEndDate,
+  }) async {
+    await client.rpc('update_equipment_admin', params: {
+      'p_item_id': itemId,
+      'p_item_code': itemCode.trim(),
+      'p_item_name': itemName.trim(),
+      'p_asset_id': assetId,
+      'p_asset_code': assetCode.trim(),
+      'p_serial_number': nullableText(serialNumber),
+      'p_team_id': teamId,
+      'p_status': status,
+      'p_notes': buildEquipmentNotes(
+        ownershipType: ownershipType,
+        rentalCompany: rentalCompany,
+        rentalEndDate: rentalEndDate,
+        notes: notes,
+      ),
+      'p_active': true,
+    });
+    await dashboardRepository.refreshDashboard();
+  }
+
   Future<void> updateEquipmentAsset({
     required String assetId,
     required String assetCode,

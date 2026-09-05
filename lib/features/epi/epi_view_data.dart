@@ -1,17 +1,31 @@
+import 'package:metallo/core/formatters.dart';
+
+String _normalizeEpiSearch(Object? value) => removePortugueseAccents(
+      value?.toString().trim().toLowerCase() ?? '',
+    );
+
 List<Map<String, dynamic>> filterActiveEpiEmployees(
   List<Map<String, dynamic>> employees,
   String query,
 ) {
-  final normalizedQuery = query.toLowerCase();
-  return employees
-      .where((employee) =>
-          employee['active'] == true &&
-          (employee['full_name']
-                  ?.toString()
-                  .toLowerCase()
-                  .contains(normalizedQuery) ??
-              false))
-      .toList();
+  final normalizedQuery = _normalizeEpiSearch(query);
+  return employees.where((employee) {
+    final team = employee['teams'] as Map?;
+    final searchableText = _normalizeEpiSearch([
+      employee['full_name'],
+      employee['profession'],
+      employee['registration_code'],
+      team?['name'],
+    ].whereType<Object>().join(' '));
+    return employee['active'] == true &&
+        searchableText.contains(normalizedQuery);
+  }).toList();
+}
+
+String? validEmployeeShoeSize(Map<String, dynamic> employee) {
+  final raw = employee['shoe_size']?.toString().trim();
+  final size = int.tryParse(raw ?? '');
+  return size != null && size >= 38 && size <= 46 ? size.toString() : null;
 }
 
 List<Map<String, dynamic>> filterEpiCatalogItems(

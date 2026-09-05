@@ -179,7 +179,7 @@ Future<void> showMaterialDialog(
     String? error;
 
     try {
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(
@@ -556,7 +556,7 @@ Future<void> showMaterialQuantityDialog(
     String? error;
 
     try {
-      await showDialog(
+      await showLifecycleDialog(
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setLocal) => AlertDialog(

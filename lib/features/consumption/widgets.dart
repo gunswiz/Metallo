@@ -18,6 +18,23 @@ Widget teamConsumptionDropdown(
       onChanged: onChanged,
     );
 
+Widget consumptionUnitDropdown(
+  List<String> units,
+  String? value,
+  ValueChanged<String?> onChanged,
+) =>
+    DropdownButtonFormField<String>(
+      initialValue: value,
+      decoration: const InputDecoration(
+        labelText: 'Unidade',
+        prefixIcon: Icon(Icons.straighten_outlined),
+      ),
+      items: units
+          .map((unit) => DropdownMenuItem(value: unit, child: Text(unit)))
+          .toList(),
+      onChanged: onChanged,
+    );
+
 class ConsumptionMetricCard extends StatelessWidget {
   const ConsumptionMetricCard(
       {super.key,
