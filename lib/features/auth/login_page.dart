@@ -4,6 +4,7 @@ import 'package:metallo/core/errors.dart';
 import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
+import 'package:metallo/features/auth/auth_validation.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.authRepository});
@@ -23,6 +24,22 @@ class _LoginPageState extends State<LoginPage> {
   String? error;
   String? message;
 
+  void _selectMode(bool shouldCreateAccount) {
+    setState(() {
+      createMode = shouldCreateAccount;
+      error = null;
+      message = null;
+    });
+  }
+
+  void _startLoading() {
+    setState(() {
+      loading = true;
+      error = null;
+      message = null;
+    });
+  }
+
   @override
   void dispose() {
     name.dispose();
@@ -33,17 +50,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> submit() async {
     if (loading) return;
-    setState(() {
-      loading = true;
-      error = null;
-      message = null;
-    });
+    _startLoading();
     try {
       if (createMode) {
-        if (name.text.trim().isEmpty) throw Exception('Informe seu nome.');
-        if (password.text.length < 4) {
-          throw Exception('A senha precisa ter pelo menos 4 caracteres.');
-        }
+        final validationError =
+            accountCreationValidation(name.text, password.text);
+        if (validationError != null) throw Exception(validationError);
         await widget.authRepository.signUp(
           email: email.text.trim(),
           password: password.text,
@@ -72,15 +84,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> forgotPassword() async {
     final address = email.text.trim();
-    if (address.isEmpty || !address.contains('@')) {
-      setState(() => error = 'Informe seu e-mail para recuperar a senha.');
+    final validationError = recoveryEmailValidation(address);
+    if (validationError != null) {
+      setState(() => error = validationError);
       return;
     }
-    setState(() {
-      loading = true;
-      error = null;
-      message = null;
-    });
+    _startLoading();
     try {
       await widget.authRepository.resetPasswordForEmail(
         address,
@@ -131,11 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                     selected: {createMode},
                     onSelectionChanged: loading
                         ? null
-                        : (s) => setState(() {
-                              createMode = s.first;
-                              error = null;
-                              message = null;
-                            }),
+                        : (selection) => _selectMode(selection.first),
                   ),
                   const SizedBox(height: 18),
                   if (createMode) ...[

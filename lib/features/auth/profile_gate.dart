@@ -42,6 +42,10 @@ class _ProfileGateState extends State<ProfileGate> {
     profile = widget.adminRepository.currentProfile();
   }
 
+  void _reloadProfile() {
+    setState(() => profile = widget.adminRepository.currentProfile());
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
@@ -50,8 +54,7 @@ class _ProfileGateState extends State<ProfileGate> {
         if (snap.hasError) {
           return ErrorPage(
             message: friendlyError(snap.error),
-            onRetry: () => setState(
-                () => profile = widget.adminRepository.currentProfile()),
+            onRetry: _reloadProfile,
           );
         }
         if (!snap.hasData) {
@@ -62,8 +65,7 @@ class _ProfileGateState extends State<ProfileGate> {
         if (p['active'] != true) {
           return PendingAccessPage(
             authRepository: widget.authRepository,
-            onRetry: () => setState(
-                () => profile = widget.adminRepository.currentProfile()),
+            onRetry: _reloadProfile,
           );
         }
         return MainShell(

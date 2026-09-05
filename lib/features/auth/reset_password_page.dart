@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
+import 'package:metallo/features/auth/auth_validation.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key, required this.authRepository});
@@ -27,13 +28,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   Future<void> save() async {
-    if (password.text.length < 4) {
-      setState(
-          () => error = 'A nova senha precisa ter pelo menos 4 caracteres.');
-      return;
-    }
-    if (password.text != confirmPassword.text) {
-      setState(() => error = 'As senhas não são iguais.');
+    final validationError =
+        passwordResetValidation(password.text, confirmPassword.text);
+    if (validationError != null) {
+      setState(() => error = validationError);
       return;
     }
     setState(() {
