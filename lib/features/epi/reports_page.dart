@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
@@ -49,7 +50,7 @@ class ReportsPageState extends State<ReportsPage> {
                 color: epiCardColor,
                 child: ListTile(
                   leading: const CircleAvatar(
-                      backgroundColor: Color(0xFF0C355C),
+                      backgroundColor: metalloEpiIconBackground,
                       child: Icon(Icons.assignment_turned_in_outlined,
                           color: epiBlue)),
                   title: Text(

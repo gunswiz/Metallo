@@ -53,7 +53,7 @@ Future<void> showHistoryDetails(
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: const Color(0xFF0A0F16),
+    backgroundColor: metalloDrawerBackground,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
@@ -81,7 +81,7 @@ Future<void> showHistoryDetails(
             ),
             Text(movement,
                 style: const TextStyle(
-                    color: Color(0xFF8CC8FF), fontWeight: FontWeight.w800)),
+                    color: metalloCatalogCode, fontWeight: FontWeight.w800)),
             const SizedBox(height: 10),
             const Divider(),
             line(Icons.calendar_month_outlined, 'Data e horário',

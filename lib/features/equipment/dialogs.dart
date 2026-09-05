@@ -692,7 +692,7 @@ Future<void> showEquipmentActionsSheet(
               if (equipment.ownershipType == 'rented' && role == 'admin')
                 ListTile(
                   leading: const Icon(Icons.assignment_return_outlined,
-                      color: Color(0xFFFFB74D)),
+                      color: metalloWarning),
                   title: const Text('Devolver à locadora'),
                   subtitle: const Text(
                       'Devolver somente este patrimônio e manter os demais na equipe'),
@@ -710,7 +710,7 @@ Future<void> showEquipmentActionsSheet(
               if (equipment.ownershipType == 'rented' && role == 'admin')
                 ListTile(
                   leading: const Icon(Icons.change_circle_outlined,
-                      color: Color(0xFFF5B942)),
+                      color: metalloEquipmentWarning),
                   title: const Text('Substituir equipamento alugado'),
                   subtitle: const Text(
                       'Trocar o patrimônio recebido sem criar outro cadastro'),
@@ -727,8 +727,8 @@ Future<void> showEquipmentActionsSheet(
                 ),
               if (!isMaintenance && equipment.ownershipType != 'rented')
                 ListTile(
-                  leading:
-                      const Icon(Icons.build_rounded, color: Color(0xFFF5B942)),
+                  leading: const Icon(Icons.build_rounded,
+                      color: metalloEquipmentWarning),
                   title: const Text('Enviar para manutenção'),
                   subtitle: const Text(
                       'Mantém o patrimônio rastreado e altera o status para Em manutenção'),
@@ -907,128 +907,73 @@ Future<void> showRentedEquipmentReplacementDialog(
     final assetCode = TextEditingController();
     final serialNumber = TextEditingController();
     final reason = TextEditingController();
-    bool busy = false;
-    String? error;
     try {
-      await showDialog<void>(
+      await showAsyncActionDialog(
         context: context,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setLocal) => AlertDialog(
-            title: const Text('Substituir alugado'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      '${equipment.name} • patrimônio atual ${equipment.assetCode}',
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 8),
-                  const Text(
-                      'A máquina continua na mesma equipe. O patrimônio anterior ficará registrado nas observações para rastreabilidade.',
-                      style: TextStyle(color: Colors.white70)),
-                  const SizedBox(height: 12),
-                  TextField(
-                      controller: assetCode,
-                      decoration: const InputDecoration(
-                          labelText: 'Novo patrimônio *')),
-                  const SizedBox(height: 10),
-                  TextField(
-                      controller: serialNumber,
-                      decoration: const InputDecoration(
-                          labelText: 'Novo número de série (opcional)')),
-                  const SizedBox(height: 10),
-                  TextField(
-                      controller: reason,
-                      maxLines: 2,
-                      decoration: const InputDecoration(
-                          labelText: 'Motivo / observação',
-                          hintText: 'Ex.: troca realizada pela locadora')),
-                  if (error != null) ...[
-                    const SizedBox(height: 10),
-                    Text(error!,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.error)),
-                  ],
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: busy ? null : () => Navigator.pop(dialogContext),
-                  child: const Text('Cancelar')),
-              FilledButton.icon(
-                onPressed: busy
-                    ? null
-                    : () async {
-                        if (busy) return;
-                        final validation =
-                            requiredText(assetCode.text, 'Novo patrimônio');
-                        if (validation != null) {
-                          setLocal(() => error = validation);
-                          return;
-                        }
-                        if (assetCode.text.trim().toLowerCase() ==
-                            equipment.assetCode.trim().toLowerCase()) {
-                          setLocal(() => error =
-                              'Informe um patrimônio diferente do atual.');
-                          return;
-                        }
-                        setLocal(() {
-                          busy = true;
-                          error = null;
-                        });
-                        try {
-                          final now = DateTime.now();
-                          final date =
-                              '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
-                          final detail = reason.text.trim().isEmpty
-                              ? ''
-                              : ' • ${reason.text.trim()}';
-                          final replacementLog =
-                              'Substituição em $date: patrimônio ${equipment.assetCode} → ${assetCode.text.trim()}$detail';
-                          final notes = [
-                            equipment.notes?.trim(),
-                            replacementLog
-                          ]
-                              .whereType<String>()
-                              .where((value) => value.isNotEmpty)
-                              .join('\n');
-                          await repo.updateEquipmentAsset(
-                            assetId: equipment.id,
-                            assetCode: assetCode.text,
-                            serialNumber: serialNumber.text,
-                            teamId: equipment.teamId,
-                            status: 'available',
-                            notes: notes,
-                            ownershipType: 'rented',
-                            rentalCompany: equipment.rentalCompany,
-                            rentalEndDate: equipment.rentalEndDate,
-                          );
-                          if (dialogContext.mounted) {
-                            Navigator.pop(dialogContext);
-                          }
-                        } catch (e) {
-                          if (dialogContext.mounted) {
-                            setLocal(() => error = friendlyError(e));
-                          }
-                        } finally {
-                          if (dialogContext.mounted) {
-                            setLocal(() => busy = false);
-                          }
-                        }
-                      },
-                icon: const Icon(Icons.change_circle_outlined),
-                label: busy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Confirmar troca'),
-              ),
-            ],
+        title: const Text('Substituir alugado'),
+        contentCrossAxisAlignment: CrossAxisAlignment.start,
+        content: [
+          Text(
+            '${equipment.name} • patrimônio atual ${equipment.assetCode}',
+            style: const TextStyle(fontWeight: FontWeight.w800),
           ),
+          const SizedBox(height: 8),
+          const Text(
+            'A máquina continua na mesma equipe. O patrimônio anterior ficará registrado nas observações para rastreabilidade.',
+            style: TextStyle(color: Colors.white70),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: assetCode,
+            decoration: const InputDecoration(labelText: 'Novo patrimônio *'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: serialNumber,
+            decoration: const InputDecoration(
+                labelText: 'Novo número de série (opcional)'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: reason,
+            maxLines: 2,
+            decoration: const InputDecoration(
+              labelText: 'Motivo / observação',
+              hintText: 'Ex.: troca realizada pela locadora',
+            ),
+          ),
+        ],
+        actionLabel: 'Confirmar troca',
+        actionIcon: Icons.change_circle_outlined,
+        validate: () {
+          final validation = requiredText(assetCode.text, 'Novo patrimônio');
+          if (validation != null) return validation;
+          if (assetCode.text.trim().toLowerCase() ==
+              equipment.assetCode.trim().toLowerCase()) {
+            return 'Informe um patrimônio diferente do atual.';
+          }
+          return null;
+        },
+        onAction: () => repo.updateEquipmentAsset(
+          assetId: equipment.id,
+          assetCode: assetCode.text,
+          serialNumber: serialNumber.text,
+          teamId: equipment.teamId,
+          status: 'available',
+          notes: _rentedReplacementNotes(
+            equipment,
+            assetCode.text,
+            reason.text,
+            DateTime.now(),
+          ),
+          ownershipType: 'rented',
+          rentalCompany: equipment.rentalCompany,
+          rentalEndDate: equipment.rentalEndDate,
         ),
+        errorText: friendlyError,
+        scrollContent: true,
+        showBusyIndicator: true,
+        busyIndicatorSize: 18,
       );
     } finally {
       assetCode.dispose();
@@ -1038,6 +983,23 @@ Future<void> showRentedEquipmentReplacementDialog(
   } finally {
     actionLock.release();
   }
+}
+
+String _rentedReplacementNotes(
+  EquipmentAsset equipment,
+  String newAssetCode,
+  String reason,
+  DateTime replacementDate,
+) {
+  final date =
+      '${replacementDate.day.toString().padLeft(2, '0')}/${replacementDate.month.toString().padLeft(2, '0')}/${replacementDate.year}';
+  final detail = reason.trim().isEmpty ? '' : ' • ${reason.trim()}';
+  final replacementLog =
+      'Substituição em $date: patrimônio ${equipment.assetCode} → ${newAssetCode.trim()}$detail';
+  return [equipment.notes?.trim(), replacementLog]
+      .whereType<String>()
+      .where((value) => value.isNotEmpty)
+      .join('\n');
 }
 
 Future<void> showEquipmentMaintenanceReturnDialog(

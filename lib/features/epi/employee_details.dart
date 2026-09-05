@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
@@ -52,11 +53,11 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
               decoration: BoxDecoration(
                   color: epiCardColor,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFF17324B))),
+                  border: Border.all(color: metalloEpiBorder)),
               child: Row(children: [
                 const CircleAvatar(
                     radius: 32,
-                    backgroundColor: Color(0xFF0C355C),
+                    backgroundColor: metalloEpiIconBackground,
                     child:
                         Icon(Icons.person_outline, color: epiBlue, size: 35)),
                 const SizedBox(width: 14),

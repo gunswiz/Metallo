@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/features/consumption/calculations.dart';
 
@@ -61,8 +62,8 @@ class ConsumptionMetricCard extends StatelessWidget {
                       '${change! >= 0 ? '↑' : '↓'} ${change!.abs().toStringAsFixed(1)}%',
                       style: TextStyle(
                           color: change! > 0
-                              ? const Color(0xFFFF5A52)
-                              : const Color(0xFF73D84E),
+                              ? metalloConsumptionDecrease
+                              : metalloConsumptionIncrease,
                           fontWeight: FontWeight.w900,
                           fontSize: 18)),
                   Text(comparisonText,
@@ -197,8 +198,8 @@ class ConsumptionTableRow extends StatelessWidget {
                       color: c == null
                           ? Colors.white54
                           : c > 0
-                              ? const Color(0xFFFF5A52)
-                              : const Color(0xFF73D84E))))
+                              ? metalloConsumptionDecrease
+                              : metalloConsumptionIncrease)))
         ]));
   }
 }

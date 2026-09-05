@@ -11,6 +11,22 @@ const metalloInputFill = Color(0xFF121820);
 const metalloBorder = Color(0xFF2B394B);
 const metalloNavigationBackground = Color(0xFF090D13);
 const metalloNavigationIndicator = Color(0xFF123A65);
+const metalloDrawerBackground = Color(0xFF0A0F16);
+const metalloIconBackground = Color(0xFF0E3157);
+const metalloEpiIconBackground = Color(0xFF0C355C);
+const metalloEpiRaisedSurface = Color(0xFF142234);
+const metalloEpiBorder = Color(0xFF17324B);
+const metalloGuideExample = Color(0xFF65B5FF);
+const metalloGuideInstructions = Color(0xFF9A8CFF);
+const metalloWarning = Color(0xFFFFB74D);
+const metalloChartPrimary = Color(0xFF2B8CFF);
+const metalloChartLine = Color(0xFF258CFF);
+const metalloChartComparison = Color(0xFF687584);
+const metalloConsumptionDecrease = Color(0xFFFF5A52);
+const metalloConsumptionIncrease = Color(0xFF73D84E);
+const metalloCatalogCode = Color(0xFF8CC8FF);
+const metalloLightBlue = Color(0xFF89CFF0);
+const metalloEquipmentWarning = Color(0xFFF5B942);
 
 ThemeData metalloTheme() {
   final scheme = ColorScheme.fromSeed(

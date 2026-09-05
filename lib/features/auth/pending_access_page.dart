@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 
@@ -24,7 +25,7 @@ class PendingAccessPage extends StatelessWidget {
               const BrandLogo(height: 92),
               const SizedBox(height: 24),
               const Icon(Icons.hourglass_top_rounded,
-                  size: 60, color: Color(0xFF1687FF)),
+                  size: 60, color: metalloPrimary),
               const SizedBox(height: 16),
               const Text(
                 'Acesso aguardando liberação',

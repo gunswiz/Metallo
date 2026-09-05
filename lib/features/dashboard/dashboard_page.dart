@@ -229,7 +229,7 @@ class TeamOverviewCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(children: [
             CircleAvatar(
-                backgroundColor: const Color(0xFF0E3157),
+                backgroundColor: metalloIconBackground,
                 child: Icon(
                     team.isCentral
                         ? Icons.warehouse_outlined

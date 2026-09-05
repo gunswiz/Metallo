@@ -233,7 +233,7 @@ class _HelpTopicCard extends StatelessWidget {
               icon: Icons.lightbulb_outline,
               title: 'Exemplo real',
               text: topic.example,
-              color: const Color(0xFF65B5FF),
+              color: metalloGuideExample,
             ),
             TutorialInfo(
               icon: Icons.format_list_numbered,
@@ -243,7 +243,7 @@ class _HelpTopicCard extends StatelessWidget {
                   .entries
                   .map((step) => '${step.key + 1}. ${step.value}')
                   .join('\n'),
-              color: const Color(0xFF9A8CFF),
+              color: metalloGuideInstructions,
             ),
             TutorialInfo(
               icon: Icons.check_circle_outline,
@@ -256,7 +256,7 @@ class _HelpTopicCard extends StatelessWidget {
                 icon: Icons.warning_amber_rounded,
                 title: 'Atenção',
                 text: topic.warning!,
-                color: const Color(0xFFFFB74D),
+                color: metalloWarning,
               ),
             const SizedBox(height: 10),
             OutlinedButton.icon(

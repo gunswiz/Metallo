@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:metallo/core/formatters.dart';
 import 'package:metallo/core/theme.dart';
+import 'package:metallo/core/formatters.dart';
 
 class HistoryEntryViewData {
   const HistoryEntryViewData({
@@ -56,7 +56,7 @@ Color historyAccentColor(bool isMaterial, String type) {
   if (!isMaterial) return Colors.blueGrey.shade300;
   switch (type) {
     case 'entry':
-      return const Color(0xFF89CFF0); // azul bebê
+      return metalloLightBlue; // azul bebê
     case 'replenishment':
       return const Color(0xFF38BDF8); // azul celeste
     case 'consumption':

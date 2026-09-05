@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/core/errors.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/catalog_repository.dart';
 import 'package:metallo/shared/widgets/error_state.dart';
 import 'package:metallo/features/materials/dialogs.dart';
@@ -50,7 +51,7 @@ class _MaterialCatalogDrawerState extends State<MaterialCatalogDrawer> {
   @override
   Widget build(BuildContext context) => Drawer(
         width: MediaQuery.sizeOf(context).width * .90,
-        backgroundColor: const Color(0xFF0A0F16),
+        backgroundColor: metalloDrawerBackground,
         child: SafeArea(
           child: Column(
             children: [
@@ -134,7 +135,7 @@ class _MaterialCatalogRow extends StatelessWidget {
             material['code']?.toString() ?? '-',
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Color(0xFF8CC8FF),
+              color: metalloCatalogCode,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -149,7 +150,7 @@ class _MaterialCatalogRow extends StatelessWidget {
             Text(
               'Total: ${(material['total_quantity'] as num?)?.toInt() ?? 0} ${material['unit'] ?? 'un'}',
               style: const TextStyle(
-                color: Color(0xFF89CFF0),
+                color: metalloLightBlue,
                 fontWeight: FontWeight.w900,
               ),
             ),

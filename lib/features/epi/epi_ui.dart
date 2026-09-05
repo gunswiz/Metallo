@@ -31,7 +31,7 @@ void showEpiMessage(BuildContext context, String text) {
     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     duration: const Duration(seconds: 3),
     elevation: 8,
-    backgroundColor: const Color(0xFF142234),
+    backgroundColor: metalloEpiRaisedSurface,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
       side: BorderSide(color: color.withValues(alpha: .5)),

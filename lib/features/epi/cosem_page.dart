@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
@@ -113,7 +114,7 @@ class CosemPageState extends State<CosemPage> {
             for (final row in rows)
               ListTile(
                 leading: const CircleAvatar(
-                    backgroundColor: Color(0xFF0C355C),
+                    backgroundColor: metalloEpiIconBackground,
                     child: Icon(Icons.inventory_2_outlined, color: epiBlue)),
                 title: Text(
                     item['code'] == 'EPI-BOT' ? 'Número ${row.key}' : row.key),

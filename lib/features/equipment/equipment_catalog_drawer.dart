@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/core/formatters.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/equipment_ownership.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/catalog_repository.dart';
@@ -64,7 +65,7 @@ class _EquipmentCatalogDrawerState extends State<EquipmentCatalogDrawer> {
   @override
   Widget build(BuildContext context) => Drawer(
         width: MediaQuery.sizeOf(context).width * .90,
-        backgroundColor: const Color(0xFF0A0F16),
+        backgroundColor: metalloDrawerBackground,
         child: SafeArea(
           child: Column(
             children: [

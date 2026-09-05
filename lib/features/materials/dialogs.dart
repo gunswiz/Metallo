@@ -9,6 +9,7 @@ import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/catalog_repository.dart';
 import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
+import 'package:metallo/shared/widgets/async_action_dialog.dart';
 
 Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
     CatalogRepository repo, Map<String, dynamic> material) async {
@@ -26,92 +27,54 @@ Future<bool?> showEditMaterialCatalogDialog(BuildContext context,
         TextEditingController(text: material['category']?.toString() ?? '');
     final description =
         TextEditingController(text: material['description']?.toString() ?? '');
-    bool busy = false;
-    String? error;
     try {
-      return await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => StatefulBuilder(
-                builder: (context, setLocal) => AlertDialog(
-                  title: const Text('Editar material'),
-                  content: SingleChildScrollView(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    TextField(
-                        controller: code,
-                        decoration:
-                            const InputDecoration(labelText: 'Código global')),
-                    const SizedBox(height: 10),
-                    TextField(
-                        controller: name,
-                        decoration: const InputDecoration(labelText: 'Nome')),
-                    const SizedBox(height: 10),
-                    TextField(
-                        controller: unit,
-                        decoration:
-                            const InputDecoration(labelText: 'Unidade')),
-                    const SizedBox(height: 10),
-                    TextField(
-                        controller: category,
-                        decoration: const InputDecoration(
-                            labelText: 'Categoria (opcional)')),
-                    const SizedBox(height: 10),
-                    TextField(
-                        controller: description,
-                        decoration: const InputDecoration(
-                            labelText: 'Descrição (opcional)')),
-                    if (error != null) ...[
-                      const SizedBox(height: 10),
-                      Text(error!,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.error))
-                    ],
-                  ])),
-                  actions: [
-                    TextButton(
-                        onPressed: busy
-                            ? null
-                            : () => Navigator.pop(dialogContext, false),
-                        child: const Text('Cancelar')),
-                    FilledButton(
-                        onPressed: busy
-                            ? null
-                            : () async {
-                                if (busy) return;
-                                final v = requiredText(code.text, 'Código') ??
-                                    requiredText(name.text, 'Nome');
-                                if (v != null) {
-                                  setLocal(() => error = v);
-                                  return;
-                                }
-                                setLocal(() {
-                                  busy = true;
-                                  error = null;
-                                });
-                                try {
-                                  await repo.updateMaterialItem(
-                                      itemId: material['id'].toString(),
-                                      code: code.text,
-                                      name: name.text,
-                                      unit: unit.text,
-                                      category: category.text,
-                                      description: description.text);
-                                  if (dialogContext.mounted) {
-                                    Navigator.pop(dialogContext, true);
-                                  }
-                                } catch (e) {
-                                  setLocal(() => error = friendlyError(e));
-                                } finally {
-                                  if (dialogContext.mounted) {
-                                    setLocal(() => busy = false);
-                                  }
-                                }
-                              },
-                        child: busy
-                            ? const CircularProgressIndicator(strokeWidth: 2)
-                            : const Text('Salvar')),
-                  ],
-                ),
-              ));
+      return await showAsyncActionDialog(
+        context: context,
+        title: const Text('Editar material'),
+        content: [
+          TextField(
+            controller: code,
+            decoration: const InputDecoration(labelText: 'Código global'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: name,
+            decoration: const InputDecoration(labelText: 'Nome'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: unit,
+            decoration: const InputDecoration(labelText: 'Unidade'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: category,
+            decoration:
+                const InputDecoration(labelText: 'Categoria (opcional)'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: description,
+            decoration:
+                const InputDecoration(labelText: 'Descrição (opcional)'),
+          ),
+        ],
+        actionLabel: 'Salvar',
+        validate: () =>
+            requiredText(code.text, 'Código') ??
+            requiredText(name.text, 'Nome'),
+        onAction: () => repo.updateMaterialItem(
+          itemId: material['id'].toString(),
+          code: code.text,
+          name: name.text,
+          unit: unit.text,
+          category: category.text,
+          description: description.text,
+        ),
+        errorText: friendlyError,
+        scrollContent: true,
+        showBusyIndicator: true,
+      );
     } finally {
       code.dispose();
       name.dispose();

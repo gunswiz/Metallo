@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionDonutChart extends StatelessWidget {
@@ -129,21 +130,20 @@ class _LinePainter extends CustomPainter {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xFF258CFF).withValues(alpha: .35),
-                const Color(0xFF258CFF).withValues(alpha: .02)
+                metalloChartLine.withValues(alpha: .35),
+                metalloChartLine.withValues(alpha: .02)
               ]).createShader(Rect.fromLTWH(left, top, w, h)));
     canvas.drawPath(
         path,
         Paint()
-          ..color = const Color(0xFF258CFF)
+          ..color = metalloChartLine
           ..strokeWidth = 2.2
           ..style = PaintingStyle.stroke);
     for (int i = 0; i < data.length; i++) {
       final x = left + (data.length == 1 ? 0.0 : w * i / (data.length - 1));
       final y =
           top + h - (max == 0 ? 0.0 : (data[i]['qty'] as double) / max * h);
-      canvas.drawCircle(
-          Offset(x, y), 4, Paint()..color = const Color(0xFF258CFF));
+      canvas.drawCircle(Offset(x, y), 4, Paint()..color = metalloChartLine);
       canvas.drawCircle(Offset(x, y), 2, Paint()..color = Colors.white);
     }
   }
@@ -188,12 +188,12 @@ class _GroupedBarPainter extends CustomPainter {
           RRect.fromRectAndRadius(
               Rect.fromLTWH(x, base - bhA, groupW * .22, bhA),
               const Radius.circular(4)),
-          Paint()..color = const Color(0xFF2B8CFF));
+          Paint()..color = metalloChartPrimary);
       canvas.drawRRect(
           RRect.fromRectAndRadius(
               Rect.fromLTWH(x + groupW * .27, base - bhB, groupW * .22, bhB),
               const Radius.circular(4)),
-          Paint()..color = const Color(0xFF687584));
+          Paint()..color = metalloChartComparison);
       final tp = TextPainter(
           text: TextSpan(
               text: current[i]['label'].toString(),
@@ -238,9 +238,9 @@ class ConsumptionHorizontalBars extends StatelessWidget {
                                       max,
                               decoration: BoxDecoration(
                                   color: i == 1
-                                      ? const Color(0xFF2B8CFF)
+                                      ? metalloChartPrimary
                                       : i == 0
-                                          ? const Color(0xFF687584)
+                                          ? metalloChartComparison
                                           : consumptionColors[
                                               i % consumptionColors.length],
                                   borderRadius: BorderRadius.circular(3)))))),

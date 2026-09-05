@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/team.dart';
 
 DateTime consumptionPeriodStart(DateTime now, String period) {
@@ -195,7 +196,7 @@ List<Map<String, dynamic>> monthlyConsumptionTrend(
 }
 
 const consumptionColors = [
-  Color(0xFF2B8CFF),
+  metalloChartPrimary,
   Color(0xFF59B85B),
   Color(0xFFFFA726),
   Color(0xFF8E63E7),

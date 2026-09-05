@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
@@ -139,7 +140,7 @@ class _TeamEmployeeCard extends StatelessWidget {
         color: epiCardColor,
         child: ListTile(
           leading: const CircleAvatar(
-            backgroundColor: Color(0xFF0C355C),
+            backgroundColor: metalloEpiIconBackground,
             child: Icon(Icons.person_outline, color: epiBlue),
           ),
           title: Text(
@@ -173,7 +174,7 @@ class _EmployeeCard extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           leading: const CircleAvatar(
-            backgroundColor: Color(0xFF0C355C),
+            backgroundColor: metalloEpiIconBackground,
             child: Icon(Icons.person_outline, color: epiBlue),
           ),
           title: Text(

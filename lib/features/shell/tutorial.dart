@@ -193,7 +193,7 @@ Future<void> showMetalloTutorial(
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0E3157),
+                          color: metalloIconBackground,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Icon(step.icon, color: metalloAccent, size: 29),
@@ -238,7 +238,7 @@ Future<void> showMetalloTutorial(
                                 icon: Icons.lightbulb_outline,
                                 title: 'Exemplo',
                                 text: step.example!,
-                                color: const Color(0xFF65B5FF)),
+                                color: metalloGuideExample),
                           if (step.howTo != null)
                             TutorialInfo(
                                 icon: Icons.format_list_numbered,
@@ -248,7 +248,7 @@ Future<void> showMetalloTutorial(
                                     .entries
                                     .map((e) => '${e.key + 1}. ${e.value}')
                                     .join('\n'),
-                                color: const Color(0xFF9A8CFF)),
+                                color: metalloGuideInstructions),
                           if (step.result != null)
                             TutorialInfo(
                                 icon: Icons.check_circle_outline,
@@ -260,7 +260,7 @@ Future<void> showMetalloTutorial(
                                 icon: Icons.warning_amber_rounded,
                                 title: 'Atenção',
                                 text: step.warning!,
-                                color: const Color(0xFFFFB74D)),
+                                color: metalloWarning),
                         ],
                       ),
                     ),

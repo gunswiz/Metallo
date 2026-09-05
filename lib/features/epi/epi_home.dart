@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/models/team.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
@@ -60,7 +61,7 @@ class EpiHome extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: epiCardColor,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFF17324B)),
+                  border: Border.all(color: metalloEpiBorder),
                 ),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +155,7 @@ class _Metric extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(13),
         decoration: BoxDecoration(
-            color: const Color(0xFF142234),
+            color: metalloEpiRaisedSurface,
             borderRadius: BorderRadius.circular(13)),
         child: Row(children: [
           Icon(icon, color: epiBlue, size: 25),
@@ -194,7 +195,7 @@ class _TeamEpiCard extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
           leading: CircleAvatar(
-            backgroundColor: const Color(0xFF0C355C),
+            backgroundColor: metalloEpiIconBackground,
             child: Icon(
                 central ? Icons.warehouse_outlined : Icons.groups_2_outlined,
                 color: epiBlue),

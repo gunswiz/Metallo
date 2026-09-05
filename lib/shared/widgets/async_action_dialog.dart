@@ -12,104 +12,150 @@ Future<bool?> showAsyncActionDialog({
   String cancelLabel = 'Cancelar',
   String? busyActionLabel,
   CrossAxisAlignment contentCrossAxisAlignment = CrossAxisAlignment.center,
-}) {
-  var busy = false;
-  String? error;
-  return showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setLocal) => AlertDialog(
+  bool scrollContent = false,
+  bool showBusyIndicator = false,
+  double? busyIndicatorSize,
+  TextStyle? errorTextStyle,
+}) =>
+    showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => _AsyncActionDialog(
         title: title,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: contentCrossAxisAlignment,
-          children: [
-            ...content,
-            if (error != null) ...[
-              const SizedBox(height: 10),
-              Text(
-                error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ],
-          ],
-        ),
+        content: content,
+        actionLabel: actionLabel,
+        onAction: onAction,
+        errorText: errorText,
+        validate: validate,
+        actionIcon: actionIcon,
+        cancelLabel: cancelLabel,
+        busyActionLabel: busyActionLabel,
+        contentCrossAxisAlignment: contentCrossAxisAlignment,
+        scrollContent: scrollContent,
+        showBusyIndicator: showBusyIndicator,
+        busyIndicatorSize: busyIndicatorSize,
+        errorTextStyle: errorTextStyle,
+      ),
+    );
+
+class _AsyncActionDialog extends StatefulWidget {
+  const _AsyncActionDialog({
+    required this.title,
+    required this.content,
+    required this.actionLabel,
+    required this.onAction,
+    required this.errorText,
+    required this.validate,
+    required this.actionIcon,
+    required this.cancelLabel,
+    required this.busyActionLabel,
+    required this.contentCrossAxisAlignment,
+    required this.scrollContent,
+    required this.showBusyIndicator,
+    required this.busyIndicatorSize,
+    required this.errorTextStyle,
+  });
+
+  final Widget title;
+  final List<Widget> content;
+  final String actionLabel;
+  final Future<void> Function() onAction;
+  final String Function(Object error) errorText;
+  final String? Function()? validate;
+  final IconData? actionIcon;
+  final String cancelLabel;
+  final String? busyActionLabel;
+  final CrossAxisAlignment contentCrossAxisAlignment;
+  final bool scrollContent;
+  final bool showBusyIndicator;
+  final double? busyIndicatorSize;
+  final TextStyle? errorTextStyle;
+
+  @override
+  State<_AsyncActionDialog> createState() => _AsyncActionDialogState();
+}
+
+class _AsyncActionDialogState extends State<_AsyncActionDialog> {
+  bool busy = false;
+  String? error;
+
+  Future<void> _submit() async {
+    if (busy) return;
+    final validationError = widget.validate?.call();
+    if (validationError != null) {
+      setState(() => error = validationError);
+      return;
+    }
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await widget.onAction();
+      if (mounted) Navigator.pop(context, true);
+    } catch (exception) {
+      if (mounted) setState(() => error = widget.errorText(exception));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Widget _content(BuildContext context) {
+    final column = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: widget.contentCrossAxisAlignment,
+      children: [
+        ...widget.content,
+        if (error != null) ...[
+          const SizedBox(height: 10),
+          Text(
+            error!,
+            style: widget.errorTextStyle ??
+                TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ],
+      ],
+    );
+    return widget.scrollContent ? SingleChildScrollView(child: column) : column;
+  }
+
+  Widget _actionChild() {
+    if (busy && widget.showBusyIndicator) {
+      if (widget.busyIndicatorSize == null) {
+        return const CircularProgressIndicator(strokeWidth: 2);
+      }
+      return SizedBox(
+        width: widget.busyIndicatorSize,
+        height: widget.busyIndicatorSize,
+        child: const CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    return Text(
+      widget.busyActionLabel != null && busy
+          ? widget.busyActionLabel!
+          : widget.actionLabel,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+        title: widget.title,
+        content: _content(context),
         actions: [
           TextButton(
-            onPressed: busy ? null : () => Navigator.pop(dialogContext, false),
-            child: Text(cancelLabel),
+            onPressed: busy ? null : () => Navigator.pop(context, false),
+            child: Text(widget.cancelLabel),
           ),
-          if (actionIcon == null)
+          if (widget.actionIcon == null)
             FilledButton(
-              onPressed: busy
-                  ? null
-                  : () async {
-                      if (busy) return;
-                      final validationError = validate?.call();
-                      if (validationError != null) {
-                        setLocal(() => error = validationError);
-                        return;
-                      }
-                      setLocal(() {
-                        busy = true;
-                        error = null;
-                      });
-                      try {
-                        await onAction();
-                        if (dialogContext.mounted) {
-                          Navigator.pop(dialogContext, true);
-                        }
-                      } catch (exception) {
-                        if (dialogContext.mounted) {
-                          setLocal(() => error = errorText(exception));
-                        }
-                      } finally {
-                        if (dialogContext.mounted) {
-                          setLocal(() => busy = false);
-                        }
-                      }
-                    },
-              child: Text(busyActionLabel != null && busy
-                  ? busyActionLabel
-                  : actionLabel),
+              onPressed: busy ? null : _submit,
+              child: _actionChild(),
             )
           else
             FilledButton.icon(
-              onPressed: busy
-                  ? null
-                  : () async {
-                      if (busy) return;
-                      final validationError = validate?.call();
-                      if (validationError != null) {
-                        setLocal(() => error = validationError);
-                        return;
-                      }
-                      setLocal(() {
-                        busy = true;
-                        error = null;
-                      });
-                      try {
-                        await onAction();
-                        if (dialogContext.mounted) {
-                          Navigator.pop(dialogContext, true);
-                        }
-                      } catch (exception) {
-                        if (dialogContext.mounted) {
-                          setLocal(() => error = errorText(exception));
-                        }
-                      } finally {
-                        if (dialogContext.mounted) {
-                          setLocal(() => busy = false);
-                        }
-                      }
-                    },
-              icon: Icon(actionIcon),
-              label: Text(busyActionLabel != null && busy
-                  ? busyActionLabel
-                  : actionLabel),
+              onPressed: busy ? null : _submit,
+              icon: Icon(widget.actionIcon),
+              label: _actionChild(),
             ),
         ],
-      ),
-    ),
-  );
+      );
 }
