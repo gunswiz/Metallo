@@ -1,10 +1,31 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
+import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 import 'package:metallo/features/auth/auth_gate.dart';
 
 class StartupSplash extends StatefulWidget {
-  const StartupSplash({super.key});
+  const StartupSplash({
+    super.key,
+    required this.authRepository,
+    required this.dashboardRepository,
+    required this.catalogRepository,
+    required this.epiRepository,
+    required this.adminRepository,
+    required this.movementRepository,
+  });
+
+  final AuthRepository authRepository;
+  final DashboardRepository dashboardRepository;
+  final CatalogRepository catalogRepository;
+  final EpiRepository epiRepository;
+  final AdminRepository adminRepository;
+  final MovementRepository movementRepository;
 
   @override
   State<StartupSplash> createState() => _StartupSplashState();
@@ -49,7 +70,16 @@ class _StartupSplashState extends State<StartupSplash> {
 
   @override
   Widget build(BuildContext context) {
-    if (_finished) return const AuthGate();
+    if (_finished) {
+      return AuthGate(
+        authRepository: widget.authRepository,
+        dashboardRepository: widget.dashboardRepository,
+        catalogRepository: widget.catalogRepository,
+        epiRepository: widget.epiRepository,
+        adminRepository: widget.adminRepository,
+        movementRepository: widget.movementRepository,
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,

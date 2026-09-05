@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'core/theme.dart';
+import 'data/repositories/admin_repository.dart';
+import 'data/repositories/auth_repository.dart';
+import 'data/repositories/catalog_repository.dart';
+import 'data/repositories/dashboard_repository.dart';
+import 'data/repositories/epi_repository.dart';
+import 'data/repositories/movement_repository.dart';
 import 'features/auth/startup_splash.dart';
 
 class MetalloApp extends StatelessWidget {
-  const MetalloApp({super.key});
+  MetalloApp({super.key, SupabaseClient? client}) {
+    final supabaseClient = client ?? Supabase.instance.client;
+    authRepository = AuthRepository(supabaseClient);
+    dashboardRepository = DashboardRepository(supabaseClient);
+    catalogRepository = CatalogRepository(supabaseClient, dashboardRepository);
+    epiRepository = EpiRepository(supabaseClient, dashboardRepository);
+    adminRepository = AdminRepository(supabaseClient, dashboardRepository);
+    movementRepository =
+        MovementRepository(supabaseClient, dashboardRepository);
+  }
+
+  late final AuthRepository authRepository;
+  late final DashboardRepository dashboardRepository;
+  late final CatalogRepository catalogRepository;
+  late final EpiRepository epiRepository;
+  late final AdminRepository adminRepository;
+  late final MovementRepository movementRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +64,14 @@ class MetalloApp extends StatelessWidget {
           ],
         );
       },
-      home: const StartupSplash(),
+      home: StartupSplash(
+        authRepository: authRepository,
+        dashboardRepository: dashboardRepository,
+        catalogRepository: catalogRepository,
+        epiRepository: epiRepository,
+        adminRepository: adminRepository,
+        movementRepository: movementRepository,
+      ),
     );
   }
 }

@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:metallo/core/app_update.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/core/theme.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 import 'package:metallo/features/shell/guide.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage(
       {super.key,
+      required this.authRepository,
       required this.role,
       required this.onReplayTutorial,
       this.onStartGuidedPractice});
+  final AuthRepository authRepository;
   final String role;
   final Future<void> Function() onReplayTutorial;
   final Future<void> Function(HelpTopic)? onStartGuidedPractice;
@@ -23,7 +25,7 @@ class AccountSettingsPage extends StatefulWidget {
 
 class _AccountSettingsPageState extends State<AccountSettingsPage> {
   late final TextEditingController email = TextEditingController(
-    text: Supabase.instance.client.auth.currentUser?.email ?? '',
+    text: widget.authRepository.currentUserEmail ?? '',
   );
   final password = TextEditingController();
   final password2 = TextEditingController();
@@ -43,8 +45,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       message = null;
     });
     try {
-      await Supabase.instance.client.auth
-          .updateUser(UserAttributes(email: value));
+      await widget.authRepository.updateEmail(value);
       if (mounted) {
         setState(() => message =
             'Solicitação enviada. Confirme a alteração pelos e-mails de segurança enviados pelo Supabase.');
@@ -72,8 +73,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       message = null;
     });
     try {
-      await Supabase.instance.client.auth
-          .updateUser(UserAttributes(password: password.text));
+      await widget.authRepository.updatePassword(password.text);
       password.clear();
       password2.clear();
       if (mounted) setState(() => message = 'Senha alterada com sucesso.');

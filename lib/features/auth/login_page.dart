@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/core/theme.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.authRepository});
+
+  final AuthRepository authRepository;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -42,12 +44,12 @@ class _LoginPageState extends State<LoginPage> {
         if (password.text.length < 4) {
           throw Exception('A senha precisa ter pelo menos 4 caracteres.');
         }
-        await Supabase.instance.client.auth.signUp(
+        await widget.authRepository.signUp(
           email: email.text.trim(),
           password: password.text,
-          data: {'full_name': name.text.trim()},
+          fullName: name.text.trim(),
         );
-        await Supabase.instance.client.auth.signOut();
+        await widget.authRepository.signOut();
         if (mounted) {
           setState(() {
             createMode = false;
@@ -56,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
           });
         }
       } else {
-        await Supabase.instance.client.auth.signInWithPassword(
+        await widget.authRepository.signInWithPassword(
           email: email.text.trim(),
           password: password.text,
         );
@@ -80,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
       message = null;
     });
     try {
-      await Supabase.instance.client.auth.resetPasswordForEmail(
+      await widget.authRepository.resetPasswordForEmail(
         address,
         redirectTo: 'com.gunswiz.metallo://auth-callback/',
       );

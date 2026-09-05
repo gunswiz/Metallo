@@ -1,31 +1,45 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
+import 'package:metallo/data/repositories/catalog_repository.dart';
 import 'package:metallo/data/repositories/dashboard_repository.dart';
+import 'package:metallo/data/repositories/epi_repository.dart';
+import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/shared/widgets/error_page.dart';
 import 'package:metallo/features/shell/main_shell.dart';
 import 'package:metallo/features/auth/pending_access_page.dart';
 
 class ProfileGate extends StatefulWidget {
-  const ProfileGate({super.key});
+  const ProfileGate({
+    super.key,
+    required this.authRepository,
+    required this.dashboardRepository,
+    required this.catalogRepository,
+    required this.epiRepository,
+    required this.adminRepository,
+    required this.movementRepository,
+  });
+
+  final AuthRepository authRepository;
+  final DashboardRepository dashboardRepository;
+  final CatalogRepository catalogRepository;
+  final EpiRepository epiRepository;
+  final AdminRepository adminRepository;
+  final MovementRepository movementRepository;
 
   @override
   State<ProfileGate> createState() => _ProfileGateState();
 }
 
 class _ProfileGateState extends State<ProfileGate> {
-  late final DashboardRepository dashboardRepository =
-      DashboardRepository(Supabase.instance.client);
-  late final AdminRepository adminRepository =
-      AdminRepository(Supabase.instance.client, dashboardRepository);
-  late Future<Map<String, dynamic>?> profile = adminRepository.currentProfile();
+  late Future<Map<String, dynamic>?> profile;
 
   @override
-  void dispose() {
-    dashboardRepository.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    profile = widget.adminRepository.currentProfile();
   }
 
   @override
@@ -36,8 +50,8 @@ class _ProfileGateState extends State<ProfileGate> {
         if (snap.hasError) {
           return ErrorPage(
             message: friendlyError(snap.error),
-            onRetry: () =>
-                setState(() => profile = adminRepository.currentProfile()),
+            onRetry: () => setState(
+                () => profile = widget.adminRepository.currentProfile()),
           );
         }
         if (!snap.hasData) {
@@ -47,11 +61,20 @@ class _ProfileGateState extends State<ProfileGate> {
         final p = snap.data!;
         if (p['active'] != true) {
           return PendingAccessPage(
-            onRetry: () =>
-                setState(() => profile = adminRepository.currentProfile()),
+            authRepository: widget.authRepository,
+            onRetry: () => setState(
+                () => profile = widget.adminRepository.currentProfile()),
           );
         }
-        return MainShell(profile: p);
+        return MainShell(
+          profile: p,
+          authRepository: widget.authRepository,
+          dashboardRepository: widget.dashboardRepository,
+          catalogRepository: widget.catalogRepository,
+          epiRepository: widget.epiRepository,
+          adminRepository: widget.adminRepository,
+          movementRepository: widget.movementRepository,
+        );
       },
     );
   }

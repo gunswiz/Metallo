@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 
 class PendingAccessPage extends StatelessWidget {
-  const PendingAccessPage({super.key, required this.onRetry});
+  const PendingAccessPage({
+    super.key,
+    required this.authRepository,
+    required this.onRetry,
+  });
+
+  final AuthRepository authRepository;
   final VoidCallback onRetry;
 
   @override
@@ -38,7 +44,7 @@ class PendingAccessPage extends StatelessWidget {
                 label: const Text('Verificar novamente'),
               ),
               TextButton(
-                onPressed: () => Supabase.instance.client.auth.signOut(),
+                onPressed: authRepository.signOut,
                 child: const Text('Sair'),
               ),
             ],

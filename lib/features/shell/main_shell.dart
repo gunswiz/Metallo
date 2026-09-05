@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:metallo/core/app_update.dart';
 import 'package:metallo/core/formatters.dart';
 import 'package:metallo/data/models/dashboard_snapshot.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/data/repositories/catalog_repository.dart';
 import 'package:metallo/data/repositories/dashboard_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
@@ -24,8 +24,24 @@ import 'package:metallo/features/account/account_settings_page.dart';
 import 'package:metallo/features/dashboard/dashboard_page.dart';
 
 class MainShell extends StatefulWidget {
-  const MainShell({super.key, required this.profile});
+  const MainShell({
+    super.key,
+    required this.profile,
+    required this.authRepository,
+    required this.dashboardRepository,
+    required this.catalogRepository,
+    required this.epiRepository,
+    required this.adminRepository,
+    required this.movementRepository,
+  });
+
   final Map<String, dynamic> profile;
+  final AuthRepository authRepository;
+  final DashboardRepository dashboardRepository;
+  final CatalogRepository catalogRepository;
+  final EpiRepository epiRepository;
+  final AdminRepository adminRepository;
+  final MovementRepository movementRepository;
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -34,18 +50,14 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int index = 2;
   OverlayEntry? _guideOverlay;
-  late final DashboardRepository dashboardRepository =
-      DashboardRepository(Supabase.instance.client);
-  late final CatalogRepository catalogRepository =
-      CatalogRepository(Supabase.instance.client, dashboardRepository);
-  late final EpiRepository epiRepository =
-      EpiRepository(Supabase.instance.client, dashboardRepository);
-  late final AdminRepository adminRepository =
-      AdminRepository(Supabase.instance.client, dashboardRepository);
-  late final MovementRepository movementRepository =
-      MovementRepository(Supabase.instance.client, dashboardRepository);
-  late final Stream<DashboardSnapshot> dashboard =
-      dashboardRepository.watchDashboard();
+  late final Stream<DashboardSnapshot> dashboard;
+
+  AuthRepository get authRepository => widget.authRepository;
+  DashboardRepository get dashboardRepository => widget.dashboardRepository;
+  CatalogRepository get catalogRepository => widget.catalogRepository;
+  EpiRepository get epiRepository => widget.epiRepository;
+  AdminRepository get adminRepository => widget.adminRepository;
+  MovementRepository get movementRepository => widget.movementRepository;
 
   String get role => widget.profile['role']?.toString() ?? 'collaborator';
   String? get userTeamId => widget.profile['team_id']?.toString();
@@ -54,11 +66,12 @@ class _MainShellState extends State<MainShell> {
       role == 'admin' || role == 'engineer' || role == 'leader';
 
   String get _tutorialKey =>
-      'metallo_tutorial_v1_${Supabase.instance.client.auth.currentUser?.id ?? 'local'}_$role';
+      'metallo_tutorial_v1_${authRepository.currentUserId ?? 'local'}_$role';
 
   @override
   void initState() {
     super.initState();
+    dashboard = dashboardRepository.watchDashboard();
     WidgetsBinding.instance.addPostFrameCallback((_) => _startupChecks());
   }
 
@@ -129,7 +142,6 @@ class _MainShellState extends State<MainShell> {
   @override
   void dispose() {
     _guideOverlay?.remove();
-    dashboardRepository.dispose();
     super.dispose();
   }
 
@@ -204,6 +216,7 @@ class _MainShellState extends State<MainShell> {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                   builder: (_) => AccountSettingsPage(
+                      authRepository: authRepository,
                       role: role,
                       onReplayTutorial: _replayTutorial,
                       onStartGuidedPractice: _startGuidedPractice)),
@@ -217,7 +230,7 @@ class _MainShellState extends State<MainShell> {
           ),
           IconButton(
             tooltip: 'Sair',
-            onPressed: () => Supabase.instance.client.auth.signOut(),
+            onPressed: authRepository.signOut,
             icon: const Icon(Icons.logout),
           ),
         ],

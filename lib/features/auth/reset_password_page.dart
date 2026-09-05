@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:metallo/core/errors.dart';
+import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  const ResetPasswordPage({super.key});
+  const ResetPasswordPage({super.key, required this.authRepository});
+
+  final AuthRepository authRepository;
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -39,14 +41,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       error = null;
     });
     try {
-      await Supabase.instance.client.auth.updateUser(
-        UserAttributes(password: password.text),
-      );
+      await widget.authRepository.updatePassword(password.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Senha alterada com sucesso.')),
         );
-        await Supabase.instance.client.auth.signOut();
+        await widget.authRepository.signOut();
       }
     } catch (e) {
       if (mounted) setState(() => error = friendlyError(e));

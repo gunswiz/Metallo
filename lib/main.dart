@@ -10,5 +10,5 @@ Future<void> main() async {
     url: AppConfig.supabaseUrl,
     publishableKey: AppConfig.supabasePublishableKey,
   );
-  runApp(const MetalloApp());
+  runApp(MetalloApp());
 }
