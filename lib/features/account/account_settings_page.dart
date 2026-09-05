@@ -6,6 +6,7 @@ import 'package:metallo/core/theme.dart';
 import 'package:metallo/data/repositories/auth_repository.dart';
 import 'package:metallo/shared/widgets/brand_logo.dart';
 import 'package:metallo/features/shell/guide.dart';
+import 'package:metallo/features/auth/auth_validation.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage(
@@ -33,17 +34,21 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   String? message;
   String? error;
 
+  void _startAction() {
+    setState(() {
+      busy = true;
+      error = null;
+      message = null;
+    });
+  }
+
   Future<void> changeEmail() async {
     final value = email.text.trim();
     if (value.isEmpty || !value.contains('@')) {
       setState(() => error = 'Informe um e-mail válido.');
       return;
     }
-    setState(() {
-      busy = true;
-      error = null;
-      message = null;
-    });
+    _startAction();
     try {
       await widget.authRepository.updateEmail(value);
       if (mounted) {
@@ -58,20 +63,13 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   }
 
   Future<void> changePassword() async {
-    if (password.text.length < 4) {
-      setState(
-          () => error = 'A nova senha precisa ter pelo menos 4 caracteres.');
+    final validationError =
+        passwordResetValidation(password.text, password2.text);
+    if (validationError != null) {
+      setState(() => error = validationError);
       return;
     }
-    if (password.text != password2.text) {
-      setState(() => error = 'As senhas não são iguais.');
-      return;
-    }
-    setState(() {
-      busy = true;
-      error = null;
-      message = null;
-    });
+    _startAction();
     try {
       await widget.authRepository.updatePassword(password.text);
       password.clear();
@@ -82,6 +80,24 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     } finally {
       if (mounted) setState(() => busy = false);
     }
+  }
+
+  void _openGuide() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => HelpGuidePage(
+        role: widget.role,
+        onStartGuidedPractice: widget.onStartGuidedPractice,
+      ),
+    ));
+  }
+
+  Future<void> _replayTutorial() async {
+    Navigator.of(context).pop();
+    await widget.onReplayTutorial();
+  }
+
+  void _checkForUpdate() {
+    AppUpdateService.showIfAvailable(context, showUpToDate: true);
   }
 
   @override
@@ -100,74 +116,24 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           children: [
             const BrandLogo(height: 62),
             const SizedBox(height: 20),
-            const Text('Alterar e-mail',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
-            TextField(
-                controller: email,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                    labelText: 'Novo e-mail',
-                    prefixIcon: Icon(Icons.email_outlined))),
-            const SizedBox(height: 10),
-            FilledButton.icon(
-                onPressed: busy ? null : changeEmail,
-                icon: const Icon(Icons.mark_email_read_outlined),
-                label: const Text('Solicitar alteração de e-mail')),
-            const SizedBox(height: 26),
-            const Text('Alterar senha',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
-            TextField(
-                controller: password,
-                obscureText: true,
-                decoration:
-                    const InputDecoration(labelText: 'Nova senha (4+)')),
-            const SizedBox(height: 10),
-            TextField(
-                controller: password2,
-                obscureText: true,
-                decoration:
-                    const InputDecoration(labelText: 'Confirmar nova senha')),
-            const SizedBox(height: 10),
-            FilledButton.icon(
-                onPressed: busy ? null : changePassword,
-                icon: const Icon(Icons.lock_reset),
-                label: const Text('Alterar senha')),
-            const SizedBox(height: 26),
-            const Text('Ajuda',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
-            FilledButton.icon(
-              onPressed: busy
-                  ? null
-                  : () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => HelpGuidePage(
-                          role: widget.role,
-                          onStartGuidedPractice:
-                              widget.onStartGuidedPractice))),
-              icon: const Icon(Icons.menu_book_outlined),
-              label: const Text('Abrir guia prático'),
+            _AccountEmailSection(
+              controller: email,
+              enabled: !busy,
+              onChangeEmail: changeEmail,
             ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: busy
-                  ? null
-                  : () async {
-                      Navigator.of(context).pop();
-                      await widget.onReplayTutorial();
-                    },
-              icon: const Icon(Icons.school_outlined),
-              label: const Text('Ver tutorial do aplicativo novamente'),
+            const SizedBox(height: 26),
+            _AccountPasswordSection(
+              passwordController: password,
+              confirmationController: password2,
+              enabled: !busy,
+              onChangePassword: changePassword,
             ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: busy
-                  ? null
-                  : () => AppUpdateService.showIfAvailable(context,
-                      showUpToDate: true),
-              icon: const Icon(Icons.system_update_alt_rounded),
-              label: const Text('Verificar atualização'),
+            const SizedBox(height: 26),
+            _AccountHelpSection(
+              enabled: !busy,
+              onOpenGuide: _openGuide,
+              onReplayTutorial: _replayTutorial,
+              onCheckForUpdate: _checkForUpdate,
             ),
             if (message != null) ...[
               const SizedBox(height: 14),
@@ -180,5 +146,130 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             ],
           ],
         ),
+      );
+}
+
+class _AccountEmailSection extends StatelessWidget {
+  const _AccountEmailSection({
+    required this.controller,
+    required this.enabled,
+    required this.onChangeEmail,
+  });
+
+  final TextEditingController controller;
+  final bool enabled;
+  final VoidCallback onChangeEmail;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Alterar e-mail',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Novo e-mail',
+              prefixIcon: Icon(Icons.email_outlined),
+            ),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: enabled ? onChangeEmail : null,
+            icon: const Icon(Icons.mark_email_read_outlined),
+            label: const Text('Solicitar alteração de e-mail'),
+          ),
+        ],
+      );
+}
+
+class _AccountPasswordSection extends StatelessWidget {
+  const _AccountPasswordSection({
+    required this.passwordController,
+    required this.confirmationController,
+    required this.enabled,
+    required this.onChangePassword,
+  });
+
+  final TextEditingController passwordController;
+  final TextEditingController confirmationController;
+  final bool enabled;
+  final VoidCallback onChangePassword;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Alterar senha',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: passwordController,
+            obscureText: true,
+            decoration: const InputDecoration(labelText: 'Nova senha (4+)'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: confirmationController,
+            obscureText: true,
+            decoration:
+                const InputDecoration(labelText: 'Confirmar nova senha'),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: enabled ? onChangePassword : null,
+            icon: const Icon(Icons.lock_reset),
+            label: const Text('Alterar senha'),
+          ),
+        ],
+      );
+}
+
+class _AccountHelpSection extends StatelessWidget {
+  const _AccountHelpSection({
+    required this.enabled,
+    required this.onOpenGuide,
+    required this.onReplayTutorial,
+    required this.onCheckForUpdate,
+  });
+
+  final bool enabled;
+  final VoidCallback onOpenGuide;
+  final VoidCallback onReplayTutorial;
+  final VoidCallback onCheckForUpdate;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Ajuda',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 10),
+          FilledButton.icon(
+            onPressed: enabled ? onOpenGuide : null,
+            icon: const Icon(Icons.menu_book_outlined),
+            label: const Text('Abrir guia prático'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: enabled ? onReplayTutorial : null,
+            icon: const Icon(Icons.school_outlined),
+            label: const Text('Ver tutorial do aplicativo novamente'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: enabled ? onCheckForUpdate : null,
+            icon: const Icon(Icons.system_update_alt_rounded),
+            label: const Text('Verificar atualização'),
+          ),
+        ],
       );
 }
