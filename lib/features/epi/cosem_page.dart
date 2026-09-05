@@ -4,6 +4,7 @@ import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
+import 'package:metallo/features/epi/epi_view_data.dart';
 
 class CosemPage extends StatefulWidget {
   const CosemPage({super.key, required this.repo});
@@ -55,28 +56,8 @@ class CosemPageState extends State<CosemPage> {
       );
 
   Widget _stockTab(List<Map<String, dynamic>> batches) {
-    final totals = <String, Map<String, dynamic>>{};
-    for (final batch in batches) {
-      final item = Map<String, dynamic>.from(batch['epi_items'] as Map);
-      final id = batch['item_id'].toString();
-      final row = totals.putIfAbsent(
-          id, () => {...item, 'quantity': 0, 'variants': <String, int>{}});
-      row['quantity'] = (row['quantity'] as int) +
-          ((batch['quantity'] as num?)?.toInt() ?? 0);
-      final variant = batch['variant']?.toString().trim();
-      if (variant != null && variant.isNotEmpty) {
-        final variants = row['variants'] as Map<String, int>;
-        variants[variant] = (variants[variant] ?? 0) +
-            ((batch['quantity'] as num?)?.toInt() ?? 0);
-      }
-    }
-    final items = totals.values.where((item) {
-      final text = '${item['name']} ${item['code']} ${item['ca_number'] ?? ''}'
-          .toLowerCase();
-      return (kind == 'all' || item['item_kind'] == kind) &&
-          text.contains(query.trim().toLowerCase());
-    }).toList()
-      ..sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
+    final stockSummaries = summarizeEpiStock(batches);
+    final items = filterEpiStockSummaries(stockSummaries, kind, query);
     return ListView(padding: const EdgeInsets.all(16), children: [
       TextField(
         onChanged: (value) => setState(() => query = value),
@@ -100,24 +81,9 @@ class CosemPageState extends State<CosemPage> {
       ),
       const SizedBox(height: 12),
       for (final item in items)
-        Card(
-          color: epiCardColor,
-          child: ListTile(
-            onLongPress: (item['variants'] as Map).isEmpty
-                ? null
-                : () => _showVariantStock(item),
-            leading: Icon(epiKindIcon(item['item_kind']?.toString()),
-                color: epiBlue),
-            title: Text(item['name']?.toString() ?? 'Item',
-                style: const TextStyle(fontWeight: FontWeight.w800)),
-            subtitle: Text((item['variants'] as Map).isEmpty
-                ? '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}'
-                : '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}\nPressione para ver cada variação'),
-            isThreeLine: (item['variants'] as Map).isNotEmpty,
-            trailing: Text('${item['quantity']} ${item['unit'] ?? 'un'}',
-                style: const TextStyle(
-                    color: epiBlue, fontSize: 16, fontWeight: FontWeight.w900)),
-          ),
+        _CosemStockCard(
+          item: item,
+          onShowVariants: () => _showVariantStock(item),
         ),
       if (items.isEmpty)
         const Padding(
@@ -165,7 +131,7 @@ class CosemPageState extends State<CosemPage> {
 
   Widget _pendingTab(
       List<Map<String, dynamic>> requests, List<Map<String, dynamic>> batches) {
-    final pending = requests.where((r) => r['status'] == 'pending').toList();
+    final pending = pendingEpiRequests(requests);
     if (pending.isEmpty) {
       return Center(
         child: Padding(
@@ -251,15 +217,7 @@ class CosemPageState extends State<CosemPage> {
     final actionLock = UiActionLock.acquire(context, '_fulfill');
     if (actionLock == null) return;
     try {
-      final available = batches
-          .where((b) =>
-              b['item_id'].toString() == request['item_id'].toString() &&
-              (request['requested_variant'] == null ||
-                  b['variant']?.toString() ==
-                      request['requested_variant']?.toString()) &&
-              ((b['quantity'] as num?)?.toInt() ?? 0) >=
-                  ((request['quantity'] as num?)?.toInt() ?? 1))
-          .toList();
+      final available = stockBatchesForEpiRequest(request, batches);
       if (available.isEmpty) {
         showEpiMessage(
             context, 'Não há estoque suficiente para esta pendência.');
@@ -320,5 +278,44 @@ class CosemPageState extends State<CosemPage> {
     } finally {
       actionLock.release();
     }
+  }
+}
+
+class _CosemStockCard extends StatelessWidget {
+  const _CosemStockCard({
+    required this.item,
+    required this.onShowVariants,
+  });
+
+  final Map<String, dynamic> item;
+  final VoidCallback onShowVariants;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasVariants = (item['variants'] as Map).isNotEmpty;
+    final itemKind = item['item_kind']?.toString();
+    return Card(
+      color: epiCardColor,
+      child: ListTile(
+        onLongPress: hasVariants ? onShowVariants : null,
+        leading: Icon(epiKindIcon(itemKind), color: epiBlue),
+        title: Text(
+          item['name']?.toString() ?? 'Item',
+          style: const TextStyle(fontWeight: FontWeight.w800),
+        ),
+        subtitle: Text(hasVariants
+            ? '${epiKindLabel(itemKind)} • ${item['code']}\nPressione para ver cada variação'
+            : '${epiKindLabel(itemKind)} • ${item['code']}'),
+        isThreeLine: hasVariants,
+        trailing: Text(
+          '${item['quantity']} ${item['unit'] ?? 'un'}',
+          style: const TextStyle(
+            color: epiBlue,
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    );
   }
 }

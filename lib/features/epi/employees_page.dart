@@ -6,6 +6,7 @@ import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/features/epi/forms.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/employee_details.dart';
+import 'package:metallo/features/epi/epi_view_data.dart';
 
 class TeamPeoplePage extends StatelessWidget {
   const TeamPeoplePage(
@@ -28,20 +29,11 @@ class TeamPeoplePage extends StatelessWidget {
                 itemCount: people.length,
                 itemBuilder: (_, i) {
                   final p = people[i];
-                  return Card(
-                      color: epiCardColor,
-                      child: ListTile(
-                        leading: const CircleAvatar(
-                            backgroundColor: Color(0xFF0C355C),
-                            child: Icon(Icons.person_outline, color: epiBlue)),
-                        title: Text(p['full_name']?.toString() ?? 'Funcionário',
-                            style:
-                                const TextStyle(fontWeight: FontWeight.w800)),
-                        subtitle: Text(p['profession']?.toString() ?? ''),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => openEmployeeDetails(
-                            context, repo, adminRepository, p),
-                      ));
+                  return _TeamEmployeeCard(
+                    person: p,
+                    onTap: () =>
+                        openEmployeeDetails(context, repo, adminRepository, p),
+                  );
                 },
               ),
       );
@@ -77,15 +69,7 @@ class EmployeesPageState extends State<EmployeesPage> {
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final rows = snap.data!
-              .where((p) =>
-                  p['active'] == true &&
-                  (p['full_name']
-                          ?.toString()
-                          .toLowerCase()
-                          .contains(query.toLowerCase()) ??
-                      false))
-              .toList();
+          final rows = filterActiveEpiEmployees(snap.data!, query);
           return Column(children: [
             Padding(
               padding: const EdgeInsets.all(16),
@@ -123,38 +107,85 @@ class EmployeesPageState extends State<EmployeesPage> {
                           final teamName =
                               (person['teams'] as Map?)?['name']?.toString() ??
                                   'Sem equipe';
-                          return Card(
-                            color: epiCardColor,
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              leading: const CircleAvatar(
-                                  backgroundColor: Color(0xFF0C355C),
-                                  child: Icon(Icons.person_outline,
-                                      color: epiBlue)),
-                              title: Text(
-                                  person['full_name']?.toString() ??
-                                      'Funcionário',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w800)),
-                              subtitle: Text(
-                                  '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${asoStatusLabel(person)}'),
-                              trailing: const Icon(Icons.chevron_right_rounded),
-                              onTap: () => openEmployeeDetails(context,
-                                  widget.repo, widget.adminRepository, person),
-                              onLongPress: widget.role == 'admin'
-                                  ? () => showEmployeeActions(
-                                      context,
-                                      widget.repo,
-                                      widget.teams,
-                                      person,
-                                      widget.onRefresh)
-                                  : null,
-                            ),
+                          return _EmployeeCard(
+                            person: person,
+                            teamName: teamName,
+                            onTap: () => openEmployeeDetails(context,
+                                widget.repo, widget.adminRepository, person),
+                            onLongPress: widget.role == 'admin'
+                                ? () => showEmployeeActions(
+                                    context,
+                                    widget.repo,
+                                    widget.teams,
+                                    person,
+                                    widget.onRefresh)
+                                : null,
                           );
                         },
                       )),
           ]);
         },
+      );
+}
+
+class _TeamEmployeeCard extends StatelessWidget {
+  const _TeamEmployeeCard({required this.person, required this.onTap});
+
+  final Map<String, dynamic> person;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        color: epiCardColor,
+        child: ListTile(
+          leading: const CircleAvatar(
+            backgroundColor: Color(0xFF0C355C),
+            child: Icon(Icons.person_outline, color: epiBlue),
+          ),
+          title: Text(
+            person['full_name']?.toString() ?? 'Funcionário',
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
+          subtitle: Text(person['profession']?.toString() ?? ''),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onTap,
+        ),
+      );
+}
+
+class _EmployeeCard extends StatelessWidget {
+  const _EmployeeCard({
+    required this.person,
+    required this.teamName,
+    required this.onTap,
+    required this.onLongPress,
+  });
+
+  final Map<String, dynamic> person;
+  final String teamName;
+  final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        color: epiCardColor,
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: const CircleAvatar(
+            backgroundColor: Color(0xFF0C355C),
+            child: Icon(Icons.person_outline, color: epiBlue),
+          ),
+          title: Text(
+            person['full_name']?.toString() ?? 'Funcionário',
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
+          subtitle: Text(
+            '${person['profession'] ?? 'Profissão não informada'} • $teamName\n${asoStatusLabel(person)}',
+          ),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: onTap,
+          onLongPress: onLongPress,
+        ),
       );
 }

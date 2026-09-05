@@ -4,6 +4,7 @@ import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/features/epi/forms.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
+import 'package:metallo/features/epi/epi_view_data.dart';
 
 class ItemsPage extends StatefulWidget {
   const ItemsPage({super.key, required this.repo, required this.role});
@@ -27,17 +28,7 @@ class ItemsPageState extends State<ItemsPage> {
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final normalizedQuery = query.trim().toLowerCase();
-          final items = snap.data!.where((item) {
-            final matchesKind = kind == 'all' || item['item_kind'] == kind;
-            final searchable = [
-              item['name'],
-              item['code'],
-              item['ca_number'],
-              item['brand_model']
-            ].whereType<Object>().join(' ').toLowerCase();
-            return matchesKind && searchable.contains(normalizedQuery);
-          }).toList();
+          final items = filterEpiCatalogItems(snap.data!, kind, query);
           return ListView(padding: const EdgeInsets.all(16), children: [
             const Text('Itens da COSEM',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900)),
@@ -86,38 +77,61 @@ class ItemsPageState extends State<ItemsPage> {
                       padding: EdgeInsets.all(30),
                       child: Text('Nenhum item encontrado.'))),
             for (final item in items)
-              Card(
-                color: epiCardColor,
-                child: ListTile(
-                  leading: Icon(epiKindIcon(item['item_kind']?.toString()),
-                      color: epiBlue),
-                  title: Text(item['name']?.toString() ?? 'Item',
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  subtitle: Text(
-                      '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}${item['ca_number'] == null ? '' : ' • CA ${item['ca_number']}'}'),
-                  trailing: widget.role == 'admin'
-                      ? IconButton(
-                          tooltip: 'Registrar entrada',
-                          icon: const Icon(Icons.add_box_outlined),
-                          onPressed: () async {
-                            final registered =
-                                await showStockForm(context, widget.repo, item);
-                            if (!mounted) return;
-                            if (registered) {
-                              ScaffoldMessenger.of(this.context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Entrada registrada na COSEM.')));
-                            }
-                          })
-                      : null,
-                  onLongPress: widget.role == 'admin'
-                      ? () =>
-                          showItemActions(context, widget.repo, item, reload)
-                      : null,
-                ),
+              _CatalogItemCard(
+                item: item,
+                onRegisterStock:
+                    widget.role == 'admin' ? () => _registerStock(item) : null,
+                onLongPress: widget.role == 'admin'
+                    ? () => showItemActions(context, widget.repo, item, reload)
+                    : null,
               ),
           ]);
         },
+      );
+
+  Future<void> _registerStock(Map<String, dynamic> item) async {
+    final registered = await showStockForm(context, widget.repo, item);
+    if (!mounted || !registered) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Entrada registrada na COSEM.')),
+    );
+  }
+}
+
+class _CatalogItemCard extends StatelessWidget {
+  const _CatalogItemCard({
+    required this.item,
+    required this.onRegisterStock,
+    required this.onLongPress,
+  });
+
+  final Map<String, dynamic> item;
+  final VoidCallback? onRegisterStock;
+  final VoidCallback? onLongPress;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        color: epiCardColor,
+        child: ListTile(
+          leading: Icon(
+            epiKindIcon(item['item_kind']?.toString()),
+            color: epiBlue,
+          ),
+          title: Text(
+            item['name']?.toString() ?? 'Item',
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
+          subtitle: Text(
+            '${epiKindLabel(item['item_kind']?.toString())} • ${item['code']}${item['ca_number'] == null ? '' : ' • CA ${item['ca_number']}'}',
+          ),
+          trailing: onRegisterStock == null
+              ? null
+              : IconButton(
+                  tooltip: 'Registrar entrada',
+                  icon: const Icon(Icons.add_box_outlined),
+                  onPressed: onRegisterStock,
+                ),
+          onLongPress: onLongPress,
+        ),
       );
 }

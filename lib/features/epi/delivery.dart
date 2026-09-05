@@ -4,6 +4,7 @@ import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/shared/widgets/ui_action_lock.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
+import 'package:metallo/features/epi/epi_view_data.dart';
 
 Future<void> showDeliveryStart(
     BuildContext context, EpiRepository repo, VoidCallback onSaved) async {
@@ -16,9 +17,7 @@ Future<void> showDeliveryStart(
       final values =
           await Future.wait([repo.fetchEpiEmployees(), repo.fetchEpiStock()]);
       employees = values[0];
-      stock = values[1]
-          .where((s) => ((s['quantity'] as num?)?.toInt() ?? 0) > 0)
-          .toList();
+      stock = availableEpiStockBatches(values[1]);
     } catch (e) {
       if (context.mounted) {
         showEpiMessage(context, 'Não foi possível carregar a entrega.');
@@ -116,16 +115,8 @@ Future<void> showDeliveryStart(
                             child: ListView(
                               shrinkWrap: true,
                               children: [
-                                for (final batch in stock.where((s) {
-                                  final item = s['epi_items'] as Map?;
-                                  final matchesCategory = category == 'all' ||
-                                      item?['item_kind'] == category;
-                                  final label =
-                                      '${item?['name']} ${item?['code']} ${s['variant'] ?? ''}'
-                                          .toLowerCase();
-                                  return matchesCategory &&
-                                      label.contains(search.trim());
-                                }))
+                                for (final batch in filterEpiStockBatches(
+                                    stock, category, search))
                                   Builder(builder: (context) {
                                     final item = batch['epi_items'] as Map?;
                                     final id = batch['id'].toString();
@@ -233,15 +224,8 @@ Future<void> showDeliveryStart(
                                     error = null;
                                   });
                                   try {
-                                    final lines = selected.entries.map((entry) {
-                                      final batch = stock.firstWhere((s) =>
-                                          s['id'].toString() == entry.key);
-                                      return <String, dynamic>{
-                                        'stock_batch_id': entry.key,
-                                        'item_id': batch['item_id'].toString(),
-                                        'quantity': entry.value,
-                                      };
-                                    }).toList();
+                                    final lines =
+                                        buildEpiDeliveryLines(selected, stock);
                                     await repo.registerEpiDeliveryBatch(
                                         employeeId: employeeId!,
                                         lines: lines,
