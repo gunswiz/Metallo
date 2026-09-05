@@ -2,6 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:metallo/core/formatters.dart';
 import 'package:metallo/core/theme.dart';
 
+class HistoryEntryViewData {
+  const HistoryEntryViewData({
+    required this.isMaterial,
+    required this.title,
+    required this.code,
+    required this.assetCode,
+    required this.origin,
+    required this.destination,
+    required this.movementType,
+    required this.accent,
+    required this.mainAction,
+  });
+
+  factory HistoryEntryViewData.fromRow(Map<String, dynamic> row) {
+    final isMaterial = row['_kind'] == 'material';
+    final asset = row['assets'] as Map?;
+    final item = isMaterial ? row['items'] as Map? : asset?['items'] as Map?;
+    final origin = (row['origin'] as Map?)?['name']?.toString();
+    final destination = (row['destination'] as Map?)?['name']?.toString();
+    final movementType = row['movement_type']?.toString() ?? '';
+
+    return HistoryEntryViewData(
+      isMaterial: isMaterial,
+      title: item?['name']?.toString() ??
+          (isMaterial ? 'Material' : 'Equipamento'),
+      code: item?['code']?.toString() ?? '',
+      assetCode: asset?['asset_code']?.toString() ?? '',
+      origin: origin,
+      destination: destination,
+      movementType: movementType,
+      accent: historyAccentColor(isMaterial, movementType),
+      mainAction: [
+        movementLabel(movementType),
+        if (origin != null) origin,
+        if (destination != null) destination,
+      ].join(' → '),
+    );
+  }
+
+  final bool isMaterial;
+  final String title;
+  final String code;
+  final String assetCode;
+  final String? origin;
+  final String? destination;
+  final String movementType;
+  final Color accent;
+  final String mainAction;
+}
+
 Color historyAccentColor(bool isMaterial, String type) {
   if (!isMaterial) return Colors.blueGrey.shade300;
   switch (type) {
