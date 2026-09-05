@@ -17,6 +17,7 @@ import 'package:metallo/shared/widgets/status_badge.dart';
 import 'package:metallo/shared/widgets/summary_tile.dart';
 import 'package:metallo/features/materials/dialogs.dart';
 import 'package:metallo/features/epi/epi_shell.dart';
+import 'package:metallo/features/dashboard/dashboard_view_data.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
@@ -77,8 +78,7 @@ class DashboardPage extends StatelessWidget {
                         Expanded(
                           child: SummaryTile(
                             icon: Icons.groups_2_outlined,
-                            value:
-                                '${data.teams.where((t) => !t.isCentral).length}',
+                            value: '${dashboardTeamCount(data.teams)}',
                             label: 'Equipes',
                           ),
                         ),
@@ -86,8 +86,7 @@ class DashboardPage extends StatelessWidget {
                         Expanded(
                           child: SummaryTile(
                             icon: Icons.inventory_2_outlined,
-                            value:
-                                '${data.materials.map((m) => m.itemId).toSet().length}',
+                            value: '${dashboardMaterialCount(data.materials)}',
                             label: 'Materiais',
                           ),
                         ),
@@ -175,10 +174,8 @@ class DashboardPage extends StatelessWidget {
                   adminRepository: adminRepository,
                   movementRepository: movementRepository,
                   team: team,
-                  materials:
-                      data.materials.where((m) => m.teamId == team.id).toList(),
-                  equipment:
-                      data.equipment.where((e) => e.teamId == team.id).toList(),
+                  materials: dashboardTeamMaterials(data.materials, team.id),
+                  equipment: dashboardTeamEquipment(data.equipment, team.id),
                   role: role,
                   userTeamId: userTeamId,
                 ),
@@ -331,22 +328,27 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     final updated = await widget.dashboardRepository.fetchDashboard();
     if (mounted) {
       setState(() => materials =
-          updated.materials.where((m) => m.teamId == widget.team.id).toList());
+          dashboardTeamMaterials(updated.materials, widget.team.id));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final q = query.trim().toLowerCase();
-    final mats = materials
-        .where(
-            (m) => q.isEmpty || '${m.code} ${m.name}'.toLowerCase().contains(q))
-        .toList();
-    final eqs = widget.equipment
-        .where((e) =>
-            q.isEmpty ||
-            '${e.code} ${e.name} ${e.assetCode}'.toLowerCase().contains(q))
-        .toList();
+    final filteredMaterials = filterDashboardMaterials(materials, query);
+    final filteredEquipment = filterDashboardEquipment(widget.equipment, query);
+    final tabContent = switch (tab) {
+      0 => _TeamMaterialsList(
+          materials: filteredMaterials,
+          canConsume: canConsume,
+          onConsume: registerConsumption,
+        ),
+      1 => _TeamEquipmentList(equipment: filteredEquipment),
+      _ => _TeamPeopleList(
+          people: people,
+          teamId: widget.team.id,
+          query: query,
+        ),
+    };
     return Scaffold(
         appBar: AppBar(title: Text(widget.team.name)),
         body: Column(children: [
@@ -374,97 +376,131 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                   onChanged: (v) => setState(() => query = v),
                   decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.search),
-                      hintText: tab == 0
-                          ? 'Pesquisar material por nome ou código'
-                          : tab == 1
-                              ? 'Pesquisar equipamento, código ou patrimônio'
-                              : 'Pesquisar integrante'))),
-          Expanded(
-              child: tab == 0
-                  ? ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: mats.length,
-                      itemBuilder: (_, i) {
-                        final m = mats[i];
-                        return Card(
-                            child: ListTile(
-                                title: Text(m.name),
-                                subtitle: Text(
-                                    '${m.code} • ${m.quantity} ${m.unit} disponíveis'),
-                                trailing: canConsume
-                                    ? IconButton(
-                                        tooltip: 'Registrar consumo',
-                                        icon: const Icon(
-                                            Icons.remove_circle_outline,
-                                            color: metalloAccent),
-                                        onPressed: m.quantity > 0
-                                            ? () => registerConsumption(m)
-                                            : null)
-                                    : Text('${m.quantity} ${m.unit}',
-                                        style: const TextStyle(
-                                            color: metalloAccent,
-                                            fontWeight: FontWeight.w900)),
-                                onTap: canConsume && m.quantity > 0
-                                    ? () => registerConsumption(m)
-                                    : null));
-                      })
-                  : tab == 1
-                      ? ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: eqs.length,
-                          itemBuilder: (_, i) {
-                            final e = eqs[i];
-                            return Card(
-                                child: ListTile(
-                                    title: Text(e.name),
-                                    subtitle: Text(
-                                        '${e.code} • Patrimônio ${e.assetCode}'),
-                                    trailing: StatusBadge(status: e.status)));
-                          })
-                      : FutureBuilder<List<Map<String, dynamic>>>(
-                          future: people,
-                          builder: (context, snap) {
-                            if (!snap.hasData) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            final rows = snap.data!
-                                .where((u) =>
-                                    u['team_id']?.toString() ==
-                                        widget.team.id &&
-                                    (q.isEmpty ||
-                                        (u['full_name']
-                                                ?.toString()
-                                                .toLowerCase()
-                                                .contains(q) ??
-                                            false)))
-                                .toList();
-                            if (rows.isEmpty) {
-                              return const EmptyState(
-                                  icon: Icons.people_outline,
-                                  title: 'Nenhum integrante',
-                                  subtitle:
-                                      'Nenhum usuário está atribuído a este local.');
-                            }
-                            return ListView.builder(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: rows.length,
-                                itemBuilder: (_, i) {
-                                  final u = rows[i];
-                                  return Card(
-                                      child: ListTile(
-                                          leading: const CircleAvatar(
-                                              child:
-                                                  Icon(Icons.person_outline)),
-                                          title: Text(
-                                              u['full_name']?.toString() ??
-                                                  'Usuário'),
-                                          subtitle: Text(roleLabel(
-                                              u['role']?.toString() ??
-                                                  'collaborator'))));
-                                });
-                          })),
+                      hintText: teamDetailSearchHint(tab)))),
+          Expanded(child: tabContent),
         ]));
   }
+}
+
+class _TeamMaterialsList extends StatelessWidget {
+  const _TeamMaterialsList({
+    required this.materials,
+    required this.canConsume,
+    required this.onConsume,
+  });
+
+  final List<MaterialStock> materials;
+  final bool canConsume;
+  final ValueChanged<MaterialStock> onConsume;
+
+  @override
+  Widget build(BuildContext context) => ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: materials.length,
+        itemBuilder: (_, index) {
+          final material = materials[index];
+          return Card(
+            child: ListTile(
+              title: Text(material.name),
+              subtitle: Text(
+                '${material.code} • ${material.quantity} ${material.unit} disponíveis',
+              ),
+              trailing: canConsume
+                  ? IconButton(
+                      tooltip: 'Registrar consumo',
+                      icon: const Icon(
+                        Icons.remove_circle_outline,
+                        color: metalloAccent,
+                      ),
+                      onPressed: material.quantity > 0
+                          ? () => onConsume(material)
+                          : null,
+                    )
+                  : Text(
+                      '${material.quantity} ${material.unit}',
+                      style: const TextStyle(
+                        color: metalloAccent,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+              onTap: canConsume && material.quantity > 0
+                  ? () => onConsume(material)
+                  : null,
+            ),
+          );
+        },
+      );
+}
+
+class _TeamEquipmentList extends StatelessWidget {
+  const _TeamEquipmentList({required this.equipment});
+
+  final List<EquipmentAsset> equipment;
+
+  @override
+  Widget build(BuildContext context) => ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: equipment.length,
+        itemBuilder: (_, index) {
+          final asset = equipment[index];
+          return Card(
+            child: ListTile(
+              title: Text(asset.name),
+              subtitle: Text('${asset.code} • Patrimônio ${asset.assetCode}'),
+              trailing: StatusBadge(status: asset.status),
+            ),
+          );
+        },
+      );
+}
+
+class _TeamPeopleList extends StatelessWidget {
+  const _TeamPeopleList({
+    required this.people,
+    required this.teamId,
+    required this.query,
+  });
+
+  final Future<List<Map<String, dynamic>>> people;
+  final String teamId;
+  final String query;
+
+  @override
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<Map<String, dynamic>>>(
+        future: people,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final filteredPeople =
+              filterDashboardTeamPeople(snapshot.data!, teamId, query);
+          if (filteredPeople.isEmpty) {
+            return const EmptyState(
+              icon: Icons.people_outline,
+              title: 'Nenhum integrante',
+              subtitle: 'Nenhum usuário está atribuído a este local.',
+            );
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: filteredPeople.length,
+            itemBuilder: (_, index) {
+              final person = filteredPeople[index];
+              return Card(
+                child: ListTile(
+                  leading:
+                      const CircleAvatar(child: Icon(Icons.person_outline)),
+                  title: Text(
+                    person['full_name']?.toString() ?? 'Usuário',
+                  ),
+                  subtitle: Text(
+                    roleLabel(person['role']?.toString() ?? 'collaborator'),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      );
 }
