@@ -1,8 +1,36 @@
 # Metallo
 
-Aplicativo Flutter para gestão de materiais e equipamentos por equipes.
+Plataforma de gestão operacional da Metallo. O aplicativo Flutter de campo e o
+portal Web administrativo usam o mesmo projeto Supabase, as mesmas regras de
+negócio e o mesmo histórico auditável.
 
-## Desenvolvimento local
+## Estrutura
+
+```text
+apps/web/              Portal Web em Next.js
+packages/core/         RBAC e regras compartilháveis
+packages/types/        Tipos gerados do banco Supabase
+packages/validation/   Contratos de entrada com Zod
+lib/, android/, test/  Aplicativo Flutter existente
+supabase/migrations/   Migrações incrementais e não destrutivas
+docs/                  Arquitetura e operação do portal
+```
+
+## Portal Web
+
+Requisitos: Node.js 24 e pnpm 11.
+
+```powershell
+Copy-Item apps/web/.env.example apps/web/.env.local
+pnpm install --frozen-lockfile
+pnpm dev:web
+pnpm check:web
+```
+
+Preencha `.env.local` somente com a URL e a chave **publicável** do Supabase.
+Nunca use `service_role` no frontend.
+
+## Aplicativo Flutter
 
 Requisitos: Flutter estável e Android SDK configurado.
 
@@ -13,17 +41,19 @@ flutter test
 flutter run
 ```
 
-O código-fonte fica diretamente em `lib/`, `assets/`, `test/` e `android/`.
-O antigo `metallo_source.zip` não faz mais parte do fluxo de desenvolvimento.
+O antigo `metallo_source.zip` não faz parte do desenvolvimento. O projeto
+Flutter permanece na raiz para preservar os fluxos de build e atualização já
+usados no aplicativo instalado.
 
 ## Assinatura Android
 
-A chave de assinatura nunca deve ser adicionada ao Git. O build de release no
-GitHub Actions recria `android/app/metallo-release.jks` usando os secrets:
+A chave de assinatura nunca deve ser adicionada ao Git. O GitHub Actions recria
+`android/app/metallo-release.jks` somente no runner, usando:
 
 - `ANDROID_KEYSTORE_BASE64`
 - `ANDROID_KEYSTORE_PASSWORD`
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-O workflow também confere o certificado permanente antes de publicar o APK.
+Mais detalhes em [docs/architecture.md](docs/architecture.md),
+[docs/web.md](docs/web.md) e [docs/database.md](docs/database.md).

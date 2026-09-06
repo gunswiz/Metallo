@@ -1,0 +1,17 @@
+{
+  "name": "metallo-platform",
+  "version": "0.9.6",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @metallo/web dev",
+    "lint:web": "pnpm --filter @metallo/web lint",
+    "typecheck:web": "pnpm --filter @metallo/web typecheck",
+    "test:web": "pnpm --filter @metallo/web test",
+    "build:web": "pnpm --filter @metallo/web build",
+    "check:web": "pnpm lint:web && pnpm typecheck:web && pnpm test:web && pnpm build:web"
+  }
+}

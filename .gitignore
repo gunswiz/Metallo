@@ -5,6 +5,12 @@
 .packages
 build/
 coverage/
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.turbo/
+.vercel/
 
 # Android local and signing material
 android/local.properties
