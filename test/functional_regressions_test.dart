@@ -169,6 +169,77 @@ void main() {
             'revoke execute on functions from public, anon, authenticated'));
   });
 
+  test('serviço de autenticação pode executar o gatilho de perfil', () {
+    final sql = File(
+      'supabase/migrations/20260907183000_restore_auth_profile_trigger_execution.sql',
+    ).readAsStringSync();
+
+    expect(
+      sql,
+      contains(
+        'grant execute on function public.handle_new_user()\n  to supabase_auth_admin',
+      ),
+    );
+    expect(
+      sql,
+      contains(
+        'revoke all on function public.handle_new_user()\n  from public, anon, authenticated',
+      ),
+    );
+  });
+
+  test('cadastro administrativo usa autorização temporária de uso único', () {
+    final sql = File(
+      'supabase/migrations/20260907184500_secure_admin_user_provisioning.sql',
+    ).readAsStringSync();
+    final edgeFunction = File(
+      'supabase/functions/create-employee/index.ts',
+    ).readAsStringSync();
+
+    expect(sql, contains('private.user_provisioning_tickets'));
+    expect(sql, contains("interval '2 minutes'"));
+    expect(sql, contains('if not found then'));
+    expect(sql, contains("- 'metallo_provisioning_token'"));
+    expect(
+      sql,
+      contains(
+        'grant execute on function public.issue_user_provisioning_ticket(text, text)\n  to service_role',
+      ),
+    );
+    expect(
+      edgeFunction,
+      contains('"issue_user_provisioning_ticket"'),
+    );
+    expect(
+      edgeFunction,
+      contains('metallo_provisioning_token: provisioningToken'),
+    );
+    expect(
+      edgeFunction,
+      contains('"revoke_user_provisioning_ticket"'),
+    );
+    expect(edgeFunction, contains('updateUserById('));
+    expect(
+      edgeFunction,
+      contains('{ user_metadata: { full_name: fullName } }'),
+    );
+
+    final cleanupSql = File(
+      'supabase/migrations/20260907190000_strip_user_provisioning_token.sql',
+    ).readAsStringSync();
+    expect(cleanupSql, contains('before update of raw_user_meta_data'));
+    expect(
+      cleanupSql,
+      contains("- 'metallo_provisioning_token'"),
+    );
+    expect(
+      cleanupSql,
+      contains(
+        'grant execute on function private.strip_metallo_provisioning_token()\n  to supabase_auth_admin',
+      ),
+    );
+  });
+
   test('encerramento parcial de entrega é atômico no banco e usado no mobile',
       () {
     final sql = File(

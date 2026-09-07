@@ -64,15 +64,32 @@ Deno.serve(async (req: Request) => {
       throw new Error("team_required");
     }
 
+    const provisioningToken = crypto.randomUUID();
+    const { error: ticketErr } = await admin.rpc(
+      "issue_user_provisioning_ticket",
+      {
+        p_email: email,
+        p_token: provisioningToken,
+      },
+    );
+    if (ticketErr) throw ticketErr;
+
     const { data: created, error: createErr } = await admin.auth.admin
       .createUser({
         email,
         password,
         email_confirm: true,
-        user_metadata: { full_name: fullName },
+        user_metadata: {
+          full_name: fullName,
+          metallo_provisioning_token: provisioningToken,
+        },
         app_metadata: { metallo_provisioned: true },
       });
     if (createErr) {
+      await admin.rpc("revoke_user_provisioning_ticket", {
+        p_email: email,
+        p_token: provisioningToken,
+      });
       if (
         createErr.code === "email_exists" ||
         createErr.message.toLowerCase().includes("already")
@@ -82,7 +99,20 @@ Deno.serve(async (req: Request) => {
       throw new Error("employee_creation_failed");
     }
     if (!created.user) {
+      await admin.rpc("revoke_user_provisioning_ticket", {
+        p_email: email,
+        p_token: provisioningToken,
+      });
       throw new Error("employee_creation_failed");
+    }
+
+    const { error: metadataErr } = await admin.auth.admin.updateUserById(
+      created.user.id,
+      { user_metadata: { full_name: fullName } },
+    );
+    if (metadataErr) {
+      await admin.auth.admin.deleteUser(created.user.id);
+      throw metadataErr;
     }
 
     const { error: updateErr } = await admin
