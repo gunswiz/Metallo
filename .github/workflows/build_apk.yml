@@ -128,5 +128,6 @@ jobs:
           cp "release/app-release.apk" "Metallo.apk"
           gh release create "$GITHUB_REF_NAME" \
             "Metallo.apk" \
+            --repo "$GITHUB_REPOSITORY" \
             --title "Metallo $GITHUB_REF_NAME" \
             --notes "Versão para testes no Android. APK assinado com o certificado permanente do Metallo."
