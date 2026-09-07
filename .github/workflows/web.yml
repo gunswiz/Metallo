@@ -87,7 +87,27 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Validate deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY NEXT_SERVER_ACTIONS_ENCRYPTION_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "Missing GitHub Actions secret: $name"
+              exit 1
+            fi
+          done
       - name: Build for Cloudflare Workers
         run: pnpm --filter @metallo/web build:vinext
+      - name: Synchronize Worker secrets
+        shell: bash
+        run: |
+          node --input-type=module -e '
+            process.stdout.write(JSON.stringify({
+              NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+              NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+              NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY,
+            }));
+          ' | pnpm --filter @metallo/web exec wrangler secret bulk --config wrangler.jsonc
       - name: Deploy production Worker
         run: pnpm --filter @metallo/web exec wrangler deploy --config dist/server/wrangler.json

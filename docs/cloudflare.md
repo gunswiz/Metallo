@@ -60,7 +60,9 @@ passam e quando a variável de repositório `CLOUDFLARE_DEPLOY_ENABLED` vale
 - `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`
 
 O token Cloudflare precisa somente de permissão para editar Workers Scripts na
-conta escolhida. Não reutilize a chave administrativa do Supabase.
+conta escolhida. Não reutilize a chave administrativa do Supabase. O workflow
+sincroniza os três segredos do Worker imediatamente antes de publicar a versão
+que foi compilada com a mesma chave de Server Actions.
 
 ## Logs e diagnóstico
 
