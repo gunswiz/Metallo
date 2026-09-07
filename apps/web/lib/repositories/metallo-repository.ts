@@ -40,10 +40,30 @@ export type ConsumptionRow = Pick<Tables<"movements">, "id" | "item_id" | "origi
   items: Pick<Tables<"items">, "id" | "name" | "code" | "unit" | "category"> | null;
   origin: Pick<Tables<"teams">, "id" | "name"> | null;
 };
-export type EpiDeliveryReportRow = Pick<Tables<"epi_deliveries">, "id" | "quantity" | "delivered_at" | "current_status" | "delivery_reason" | "variant_snapshot"> & {
+export type EpiDeliveryReportRow = Pick<Tables<"epi_deliveries">,
+  | "id"
+  | "quantity"
+  | "delivered_at"
+  | "delivered_by"
+  | "closed_at"
+  | "closed_by"
+  | "current_status"
+  | "delivery_reason"
+  | "variant_snapshot"
+  | "ca_snapshot"
+  | "brand_model_snapshot"
+  | "lot_snapshot"
+  | "note"
+> & {
   epi_items: Pick<Tables<"epi_items">, "name" | "code" | "item_kind" | "unit"> | null;
-  epi_employees: Pick<Tables<"epi_employees">, "full_name"> | null;
+  epi_employees: Pick<Tables<"epi_employees">, "id" | "full_name" | "registration_code" | "profession"> | null;
   teams: Pick<Tables<"teams">, "id" | "name"> | null;
+};
+export type EpiReportFilter = { from: string; to: string; teamId?: string; employeeId?: string };
+export type EpiReportData = {
+  deliveries: EpiDeliveryReportRow[];
+  actorNames: Record<string, string>;
+  truncated: boolean;
 };
 
 function range({ page, pageSize }: PageInput) {
@@ -324,6 +344,43 @@ export class MetalloRepository {
       deliveries: (deliveries.data ?? []) as unknown as EpiDeliveryReportRow[],
       assets: (assets.data ?? []) as unknown as AssetWithRelations[],
     };
+  }
+
+  async epiReportData(filter: EpiReportFilter): Promise<EpiReportData> {
+    const pageSize = 500;
+    const maximumRows = 3000;
+    const deliveries: EpiDeliveryReportRow[] = [];
+
+    while (deliveries.length <= maximumRows) {
+      let query = this.client
+        .from("epi_deliveries")
+        .select("id,quantity,delivered_at,delivered_by,closed_at,closed_by,current_status,delivery_reason,variant_snapshot,ca_snapshot,brand_model_snapshot,lot_snapshot,note,epi_items(name,code,item_kind,unit),epi_employees(id,full_name,registration_code,profession),teams(id,name)")
+        .gte("delivered_at", filter.from)
+        .lt("delivered_at", filter.to)
+        .order("delivered_at", { ascending: false })
+        .range(deliveries.length, deliveries.length + pageSize - 1);
+      if (filter.teamId) query = query.eq("team_id", filter.teamId);
+      if (filter.employeeId) query = query.eq("employee_id", filter.employeeId);
+
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      const batch = (data ?? []) as unknown as EpiDeliveryReportRow[];
+      deliveries.push(...batch);
+      if (batch.length < pageSize) break;
+    }
+
+    const truncated = deliveries.length > maximumRows;
+    const reportDeliveries = deliveries.slice(0, maximumRows);
+
+    const actorIds = [...new Set(reportDeliveries.flatMap((row) => [row.delivered_by, row.closed_by]).filter((id): id is string => Boolean(id)))];
+    const actorNames: Record<string, string> = {};
+    if (actorIds.length > 0) {
+      const { data, error } = await this.client.from("profiles").select("id,full_name").in("id", actorIds);
+      if (error) throw new Error(error.message);
+      for (const actor of data ?? []) actorNames[actor.id] = actor.full_name;
+    }
+
+    return { deliveries: reportDeliveries, actorNames, truncated };
   }
 
   async listProfiles(): Promise<ProfileWithTeam[]> {

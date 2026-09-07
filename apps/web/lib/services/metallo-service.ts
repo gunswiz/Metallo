@@ -33,6 +33,7 @@ export const getMetalloService = cache(async () => {
     listMovements: (input: { page: number; pageSize: number; q: string }) => safe(() => repository.listMovements(input), "Não foi possível carregar as movimentações."),
     consumptionRows: (filter: { from: string; to: string; teamId?: string; itemId?: string }) => safe(() => repository.consumptionRows(filter), "Não foi possível carregar o consumo."),
     reportData: (filter: { from: string; to: string; teamId?: string; itemId?: string }, includeEpi: boolean) => safe(() => repository.reportData(filter, includeEpi), "Não foi possível carregar os relatórios."),
+    epiReportData: (filter: { from: string; to: string; teamId?: string; employeeId?: string }) => safe(() => repository.epiReportData(filter), "Não foi possível gerar o relatório de EPI."),
     listProfiles: () => safe(() => repository.listProfiles(), "Não foi possível carregar os usuários."),
   };
 });
