@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <div className="auth-card">
       <p className="eyebrow">BEM-VINDO</p>
-      <h2>Acesse o Metallo</h2>
+      <h1>Acesse o Metallo</h1>
       <p className="muted">Use as mesmas credenciais do aplicativo móvel.</p>
       {error && <div className="alert error" role="alert">{messages[error] ?? "Não foi possível entrar."}</div>}
       <form action={signIn} className="form-stack">

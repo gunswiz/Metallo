@@ -7,15 +7,15 @@ export default async function RecoverPage({ searchParams }: { searchParams: Prom
   return (
     <div className="auth-card">
       <p className="eyebrow">RECUPERAÇÃO</p>
-      <h2>Redefinir senha</h2>
+      <h1>Redefinir senha</h1>
       <p className="muted">Enviaremos um link seguro para o e-mail cadastrado.</p>
-      {query.sent === "1" && <div className="alert success">Se o e-mail existir, o link foi enviado.</div>}
-      {query.error && <div className="alert error">Informe um e-mail válido.</div>}
+      {query.sent === "1" && <div className="alert success" role="status">Se o e-mail existir, o link foi enviado.</div>}
+      {query.error && <div className="alert error" role="alert">Informe um e-mail válido.</div>}
       <form action={requestPasswordReset} className="form-stack">
         <label>E-mail<input name="email" type="email" autoComplete="email" required /></label>
         <SubmitButton pendingLabel="Enviando…">Enviar link</SubmitButton>
       </form>
-      <Link className="text-link" href="/login">Voltar para o login</Link>
+      <Link className="text-link" href="/login">Voltar para entrar</Link>
     </div>
   );
 }

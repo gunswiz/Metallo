@@ -21,7 +21,7 @@ const entries: Array<{
   icon: typeof Gauge;
   capability: Capability;
 }> = [
-  { href: "/dashboard", label: "Dashboard", icon: Gauge, capability: "dashboard:read" },
+  { href: "/dashboard", label: "Visão geral", icon: Gauge, capability: "dashboard:read" },
   { href: "/almoxarifado", label: "Almoxarifado", icon: Building2, capability: "inventory:read" },
   { href: "/equipes", label: "Equipes", icon: Users, capability: "inventory:read" },
   { href: "/funcionarios", label: "Funcionários", icon: ShieldCheck, capability: "epi:read" },

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PackageCheck, Plus } from "lucide-react";
-import { can, formatDateTime } from "@metallo/core";
+import { can, formatDateTime, itemKindLabel } from "@metallo/core";
 import { closeEpiDelivery, updateEmployee } from "@/app/actions/operations";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -10,20 +10,18 @@ import { getMetalloService } from "@/lib/services/metallo-service";
 
 const uniformSizes = ["M", "G", "GG", "XG", "XXG"];
 const shoeSizes = Array.from({ length: 9 }, (_, index) => String(index + 38));
-const kindLabels: Record<string, string> = { epi: "EPI", uniform: "Fardamento", personal_tool: "Item pessoal" };
-
 function dateLabel(value: string | null) {
   return value ? new Date(`${value}T12:00:00`).toLocaleDateString("pt-BR") : "Não informada";
 }
 
 function AsoNotice({ expiry }: { expiry: string | null }) {
-  if (!expiry) return <div className="alert warn"><strong>ASO sem validade informada.</strong> Edite o funcionário para programar a renovação.</div>;
+  if (!expiry) return <div className="alert warn" role="status"><strong>ASO sem validade informada.</strong> Edite o funcionário para programar a renovação.</div>;
   const today = new Date();
   const end = new Date(`${expiry}T23:59:59`);
   const days = Math.ceil((end.getTime() - today.getTime()) / 86_400_000);
-  if (days < 0) return <div className="alert error"><strong>ASO vencido em {dateLabel(expiry)}.</strong> Registre o novo exame e sua validade.</div>;
-  if (days <= 30) return <div className="alert warn"><strong>ASO vence em {days} dia{days === 1 ? "" : "s"}.</strong> A renovação já pode ser preparada.</div>;
-  return <div className="alert success"><strong>ASO em dia.</strong> Validade até {dateLabel(expiry)}.</div>;
+  if (days < 0) return <div className="alert error" role="alert"><strong>ASO vencido em {dateLabel(expiry)}.</strong> Registre o novo exame e sua validade.</div>;
+  if (days <= 30) return <div className="alert warn" role="status"><strong>ASO vence em {days} dia{days === 1 ? "" : "s"}.</strong> A renovação já pode ser preparada.</div>;
+  return <div className="alert success" role="status"><strong>ASO em dia.</strong> Validade até {dateLabel(expiry)}.</div>;
 }
 
 export default async function EmployeeDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; updated?: string; delivered?: string; closed?: string }> }) {
@@ -42,10 +40,10 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
       <Link className="button primary" href={`/epis/entrega?employee=${employee.id}&kind=personal_tool`}><PackageCheck size={16} />Adicionar item pessoal</Link>
       {canAdmin && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Cadastrar novo item</Link>}
     </> : undefined} />
-    {query.updated && <div className="alert success">Funcionário e datas do ASO atualizados.</div>}
-    {query.delivered && <div className="alert success">Entrega registrada e vinculada ao funcionário.</div>}
-    {query.closed && <div className="alert success">Situação do item atualizada no histórico.</div>}
-    {query.error && <div className="alert error">Não foi possível salvar. Confira os campos e as datas informadas.</div>}
+    {query.updated && <div className="alert success" role="status">Funcionário e datas do ASO atualizados.</div>}
+    {query.delivered && <div className="alert success" role="status">Entrega registrada e vinculada ao funcionário.</div>}
+    {query.closed && <div className="alert success" role="status">Situação do item atualizada no histórico.</div>}
+    {query.error && <div className="alert error" role="alert">Não foi possível salvar. Confira os campos e as datas informadas.</div>}
     <AsoNotice expiry={employee.aso_expiry_date} />
     <section className="detail-hero"><dl className="definition-grid">
       <div className="definition-item"><dt>Matrícula</dt><dd>{employee.registration_code ?? "Não informada"}</dd></div>
@@ -53,18 +51,18 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
       <div className="definition-item"><dt>Bota</dt><dd>{employee.shoe_size ?? "—"}</dd></div>
       <div className="definition-item"><dt>Data do exame</dt><dd>{dateLabel(employee.aso_exam_date)}</dd></div>
       <div className="definition-item"><dt>Validade do ASO</dt><dd>{dateLabel(employee.aso_expiry_date)}</dd></div>
-      <div className="definition-item"><dt>Status</dt><dd><StatusBadge value={employee.active ? "active" : "retired"} /></dd></div>
+      <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={employee.active ? "active" : "retired"} /></dd></div>
     </dl></section>
 
     <section className="panel"><header className="panel-header"><div><h2>Itens atualmente atribuídos</h2><p>EPIs, fardamento e itens pessoais permanecem separados por tipo</p></div></header>
       {activeDeliveries.length === 0 ? <div className="panel-body"><p className="muted">Nenhum item ativo para este funcionário.</p></div> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Tipo</th><th>Item</th><th>Entrega</th><th>Quantidade</th><th>Variante / C.A.</th><th>Situação</th>{canWrite && <th>Ação</th>}</tr></thead><tbody>{activeDeliveries.map((delivery) => <tr key={delivery.id}>
-        <td>{kindLabels[delivery.epi_items?.item_kind ?? ""] ?? "Item"}</td><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{delivery.epi_items?.code}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"} · {delivery.ca_snapshot ?? "sem C.A."}</td><td><StatusBadge value={delivery.current_status} /></td>
-        {canWrite && <td><form action={closeEpiDelivery} className="inline-action"><input type="hidden" name="deliveryId" value={delivery.id} /><input type="hidden" name="employeeId" value={employee.id} /><select name="status" aria-label={`Situação de ${delivery.epi_items?.name}`} defaultValue="returned"><option value="returned">Devolvido</option><option value="replaced">Substituído</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="consumed">Consumido</option></select><SubmitButton pendingLabel="Salvando…">Registrar</SubmitButton></form></td>}
+        <td>{itemKindLabel(delivery.epi_items?.item_kind)}</td><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{delivery.epi_items?.code}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"} · {delivery.ca_snapshot ?? "sem C.A."}</td><td><StatusBadge value={delivery.current_status} /></td>
+        {canWrite && <td><form action={closeEpiDelivery} className="inline-action"><input type="hidden" name="deliveryId" value={delivery.id} /><input type="hidden" name="employeeId" value={employee.id} /><label className="quantity-field">Qtd.<input name="quantity" type="number" min="1" max={delivery.quantity} defaultValue="1" required aria-label={`Quantidade de ${delivery.epi_items?.name} a atualizar, de ${delivery.quantity}`} title={`Escolha de 1 a ${delivery.quantity} ${delivery.epi_items?.unit}`} /></label><select name="status" aria-label={`Situação de ${delivery.epi_items?.name}`} defaultValue="returned"><option value="returned">Devolvido</option><option value="replaced">Substituído</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="consumed">Consumido</option></select><SubmitButton pendingLabel="Salvando…">Registrar</SubmitButton></form></td>}
       </tr>)}</tbody></table></div>}
     </section>
 
     <section className="content-grid">
-      <div className="panel"><header className="panel-header"><div><h2>Histórico de itens</h2><p>Devoluções, substituições, perdas, danos e consumos</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Entrega</th><th>Quantidade</th><th>Variante</th><th>Status</th></tr></thead><tbody>{history.map((delivery) => <tr key={delivery.id}><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{kindLabels[delivery.epi_items?.item_kind ?? ""]}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></div>
+      <div className="panel"><header className="panel-header"><div><h2>Histórico de itens</h2><p>Devoluções, substituições, perdas, danos e consumos</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Entrega</th><th>Quantidade</th><th>Variante</th><th>Situação</th></tr></thead><tbody>{history.map((delivery) => <tr key={delivery.id}><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{itemKindLabel(delivery.epi_items?.item_kind)}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></div>
       <div className="panel"><header className="panel-header"><div><h2>Pendências</h2><p>Solicitações vinculadas à COSEM</p></div></header><div className="panel-body list">{requests.length === 0 ? <p className="muted">Sem pendências.</p> : requests.map((request) => <div className="list-row" key={request.id}><span className="list-row-main"><strong>{request.epi_items?.name}</strong><span>{request.requested_variant ?? "Sem variante"} · {formatDateTime(request.created_at)}</span></span><StatusBadge value={request.status} /></div>)}</div></div>
     </section>
 

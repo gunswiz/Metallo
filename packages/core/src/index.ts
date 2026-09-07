@@ -48,7 +48,7 @@ export const roleLabels: Record<UserRole, string> = {
   collaborator: "Colaborador",
 };
 
-const movementLabels: Record<string, string> = {
+export const movementLabels: Readonly<Record<string, string>> = {
   entry: "Entrada",
   exit: "Saída",
   transfer: "Transferência",
@@ -64,7 +64,50 @@ const movementLabels: Record<string, string> = {
 };
 
 export function movementLabel(value: string): string {
-  return movementLabels[value] ?? value.replaceAll("_", " ");
+  return movementLabels[value] ?? "Operação não identificada";
+}
+
+export const statusLabels: Readonly<Record<string, string>> = {
+  active: "Ativo",
+  available: "Disponível",
+  in_use: "Em uso",
+  pending: "Pendente",
+  fulfilled: "Atendida",
+  cancelled: "Cancelada",
+  maintenance: "Manutenção",
+  damaged: "Danificado",
+  lost: "Perdido",
+  retired: "Baixado",
+  returned: "Devolvido",
+  replaced: "Substituído",
+  consumed: "Consumido",
+};
+
+export function statusLabel(value: string): string {
+  return statusLabels[value] ?? "Situação não identificada";
+}
+
+export const itemKindLabels: Readonly<Record<string, string>> = {
+  epi: "EPI",
+  uniform: "Fardamento",
+  personal_tool: "Item pessoal",
+};
+
+export function itemKindLabel(value: string | null | undefined): string {
+  if (!value) return "—";
+  return itemKindLabels[value] ?? "Tipo não identificado";
+}
+
+export const returnPolicyLabels: Readonly<Record<string, string>> = {
+  returnable: "Devolução obrigatória",
+  personal: "Uso pessoal",
+  uniform: "Fardamento",
+  consumable: "Consumível",
+};
+
+export function returnPolicyLabel(value: string | null | undefined): string {
+  if (!value) return "Não informada";
+  return returnPolicyLabels[value] ?? "Política não identificada";
 }
 
 export function formatDateTime(value: string | null | undefined): string {

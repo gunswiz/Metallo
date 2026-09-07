@@ -48,7 +48,7 @@ export function EquipmentForm({
       {mode === "create" && <label>Categoria<input name="category" defaultValue={defaults.category ?? ""} maxLength={80} /></label>}
       <label>Equipe/local<select name="teamId" required defaultValue={defaults.teamId ?? ""}><option value="" disabled>Selecione</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
       <label>Tipo de propriedade<select name="ownershipType" value={ownershipType} onChange={(event) => setOwnershipType(event.target.value)}><option value="owned">Próprio</option><option value="rented">Alugado</option></select></label>
-      {mode === "edit" && <label>Status<select name="status" defaultValue={defaults.status ?? "available"}><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>}
+      {mode === "edit" && <label>Situação<select name="status" defaultValue={defaults.status ?? "available"}><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>}
       {rented && <>
         <label>Empresa/fornecedor<input name="rentalCompany" defaultValue={defaults.rentalCompany ?? ""} maxLength={160} required /></label>
         <label>Início da locação<input name="rentalStartDate" type="date" lang="pt-BR" defaultValue={defaults.rentalStartDate ?? ""} /></label>

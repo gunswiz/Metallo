@@ -1020,6 +1020,14 @@ export type Database = {
       asset_legacy_encode: { Args: { p_value: string }; Returns: string }
       asset_visible_notes: { Args: { p_notes: string }; Returns: string }
       claim_initial_admin: { Args: never; Returns: boolean }
+      close_epi_delivery_quantity: {
+        Args: {
+          p_delivery_id: string
+          p_quantity: number
+          p_status: string
+        }
+        Returns: string
+      }
       consume_material: {
         Args: {
           p_item_id: string

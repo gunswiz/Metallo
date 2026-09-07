@@ -78,9 +78,10 @@ function trend(rows: ConsumptionRow[], range: ConsumptionRange) {
 
 export function analyzeConsumption(rows: ConsumptionRow[], range: ConsumptionRange, selectedUnit?: string, selectedCategory?: string) {
   const units = [...new Set(rows.map((row) => row.items?.unit?.trim() || "un"))].sort();
-  const unit = units.includes(selectedUnit ?? "") ? selectedUnit! : units[0] ?? "un";
+  const hasSelectedUnit = units.includes(selectedUnit ?? "");
+  const unit = hasSelectedUnit ? selectedUnit! : units.join("/") || "un";
   const categories = [...new Set(rows.map(consumptionCategory))].sort();
-  const scoped = rows.filter((row) => (row.items?.unit?.trim() || "un") === unit && (!selectedCategory || consumptionCategory(row) === selectedCategory));
+  const scoped = rows.filter((row) => (!hasSelectedUnit || (row.items?.unit?.trim() || "un") === unit) && (!selectedCategory || consumptionCategory(row) === selectedCategory));
   const current = scoped.filter((row) => { const date = new Date(row.created_at); return date >= range.currentStart && date < range.currentEnd; });
   const previous = scoped.filter((row) => { const date = new Date(row.created_at); return date >= range.previousStart && date < range.currentStart; });
   const total = sum(current);

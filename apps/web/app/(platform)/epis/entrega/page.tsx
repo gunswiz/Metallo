@@ -15,7 +15,7 @@ export default async function EpiDeliveryPage({ searchParams }: { searchParams: 
   ]);
   const batches = items.data.flatMap((item) => item.epi_stock_batches.filter((batch) => batch.quantity > 0).map((batch) => ({ ...batch, item })));
   return <><PageHeader eyebrow="SAÍDA DA COSEM" title="Registrar entrega" description="A RPC confere o lote, baixa o estoque e grava o histórico em uma única operação." />
-    <section className="panel"><div className="panel-body">{query.error && <div className="alert error">Não foi possível entregar. Confira funcionário, lote e quantidade disponível.</div>}<EpiDeliveryForm
+    <section className="panel"><div className="panel-body">{query.error && <div className="alert error" role="alert">Não foi possível entregar. Confira funcionário, lote e quantidade disponível.</div>}<EpiDeliveryForm
       action={registerEpiDelivery}
       initialEmployee={query.employee}
       initialItem={query.item}

@@ -6,7 +6,7 @@ export default function NotFound() {
       <span className="state-code">404</span>
       <h1>Página não encontrada</h1>
       <p>O endereço pode ter mudado ou o registro não está disponível.</p>
-      <Link className="button secondary" href="/dashboard">Ir ao dashboard</Link>
+      <Link className="button secondary" href="/dashboard">Ir para a visão geral</Link>
     </main>
   );
 }

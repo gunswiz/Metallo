@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  epiDeliveryCloseSchema,
   materialMovementSchema,
   paginationSchema,
   profileUpdateSchema,
@@ -44,5 +45,17 @@ describe("validação operacional", () => {
       password: "SenhaSegura#2026",
       confirmation: "SenhaSegura#2026",
     }).success).toBe(true);
+  });
+
+  it("aceita encerramento parcial e rejeita quantidade fora do limite", () => {
+    const base = {
+      deliveryId: "731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4",
+      employeeId: "2f7c6ac4-e1f1-4b7c-9e62-1b816ac9857e",
+      status: "damaged",
+    };
+
+    expect(epiDeliveryCloseSchema.parse({ ...base, quantity: "1" }).quantity).toBe(1);
+    expect(epiDeliveryCloseSchema.safeParse({ ...base, quantity: "0" }).success).toBe(false);
+    expect(epiDeliveryCloseSchema.safeParse({ ...base, quantity: "1001" }).success).toBe(false);
   });
 });

@@ -13,7 +13,7 @@ export default async function NewEquipmentPage({ searchParams }: { searchParams:
     <>
       <PageHeader eyebrow="PATRIMÔNIO" title="Novo equipamento" description="O patrimônio individual é ligado a um tipo de equipamento e uma equipe inicial." />
       <section className="panel"><div className="panel-body">
-        {error && <div className="alert error">Revise os dados. Patrimônio, código, nome e equipe são obrigatórios.</div>}
+        {error && <div className="alert error" role="alert">Revise os dados. Patrimônio, código, nome e equipe são obrigatórios.</div>}
         <EquipmentForm action={createEquipment} teams={teams} mode="create" />
       </div></section>
     </>

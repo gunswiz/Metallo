@@ -28,7 +28,6 @@ class ConsumptionPage extends StatefulWidget {
 
 class _ConsumptionPageState extends State<ConsumptionPage> {
   String? teamId;
-  String? unit;
   String period = 'month';
 
   @override
@@ -48,11 +47,8 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
               return const Center(child: CircularProgressIndicator());
             }
             final allRows = snap.data!;
-            final units = consumptionUnits(allRows);
-            final effectiveUnit = effectiveConsumptionUnit(allRows, unit);
-            final rows = filterConsumptionUnit(allRows, effectiveUnit);
             final overview =
-                consumptionOverview(rows, teamId, period, DateTime.now());
+                consumptionOverview(allRows, teamId, period, DateTime.now());
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -77,8 +73,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                 builder: (_) => ConsumptionMaterialsPage(
                                     rows: allRows,
                                     teams: teams,
-                                    initialTeamId: teamId,
-                                    initialUnit: effectiveUnit))),
+                                    initialTeamId: teamId))),
                       ),
                       IconButton(
                         tooltip: 'Gráficos',
@@ -89,8 +84,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                 builder: (_) => ConsumptionGraphsPage(
                                     rows: allRows,
                                     teams: teams,
-                                    initialTeamId: teamId,
-                                    initialUnit: effectiveUnit))),
+                                    initialTeamId: teamId))),
                       ),
                     ],
                   ),
@@ -98,11 +92,6 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                   Column(children: [
                     teamConsumptionDropdown(
                         teams, teamId, (v) => setState(() => teamId = v)),
-                    if (units.length > 1) ...[
-                      const SizedBox(height: 10),
-                      consumptionUnitDropdown(units, effectiveUnit,
-                          (value) => setState(() => unit = value)),
-                    ],
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
                       initialValue: period,
@@ -194,7 +183,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                                           MaterialPageRoute(
                                               builder: (_) =>
                                                   ConsumptionMaterialDetailPage(
-                                                      rows: rows,
+                                                      rows: allRows,
                                                       teams: teams,
                                                       itemId: overview
                                                           .ranking[i]['id']
@@ -216,8 +205,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                               builder: (_) => ConsumptionGraphsPage(
                                   rows: allRows,
                                   teams: teams,
-                                  initialTeamId: teamId,
-                                  initialUnit: effectiveUnit))),
+                                  initialTeamId: teamId))),
                     )),
                     const SizedBox(width: 10),
                     Expanded(
@@ -228,9 +216,7 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
                           context,
                           MaterialPageRoute(
                               builder: (_) => ConsumptionTeamsComparePage(
-                                  rows: allRows,
-                                  teams: teams,
-                                  initialUnit: effectiveUnit))),
+                                  rows: allRows, teams: teams))),
                     )),
                   ]),
                 ],

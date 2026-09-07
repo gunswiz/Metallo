@@ -26,7 +26,7 @@ export default async function NewMovementPage({ searchParams }: { searchParams: 
   return (
     <>
       <PageHeader eyebrow="OPERAÇÃO ATÔMICA" title="Nova movimentação" description="As alterações de origem, destino e histórico são concluídas juntas no banco." />
-      {query.error && <div className="alert error">{errors[query.error] ?? errors.falha}</div>}
+      {query.error && <div className="alert error" role="alert">{errors[query.error] ?? errors.falha}</div>}
       <section className="content-grid">
         <div className="panel"><header className="panel-header"><div><h2>Material</h2><p>Entrada, saída, transferência, consumo ou reposição</p></div></header><div className="panel-body">
           <form action={registerMaterialMovement} className="form-grid">
@@ -39,11 +39,11 @@ export default async function NewMovementPage({ searchParams }: { searchParams: 
             <div className="form-actions"><SubmitButton pendingLabel="Registrando…">Confirmar movimentação</SubmitButton></div>
           </form>
         </div></div>
-        <div className="panel"><header className="panel-header"><div><h2>Equipamento</h2><p>Transferência e mudança individual de status</p></div></header><div className="panel-body">
+        <div className="panel"><header className="panel-header"><div><h2>Equipamento</h2><p>Transferência e mudança individual de situação</p></div></header><div className="panel-body">
           <form action={registerAssetMovement} className="form-grid">
             <label className="full">Patrimônio<select name="assetId" required defaultValue={query.asset ?? ""}><option value="" disabled>Selecione</option>{assets.data.map((asset) => <option key={asset.id} value={asset.id}>{asset.items?.name} · {asset.asset_code} · {asset.ownership_type === "rented" ? "Alugado" : "Próprio"}</option>)}</select></label>
             <label>Operação<select name="movementType" defaultValue="transfer"><option value="assign">Atribuir</option><option value="transfer">Transferir</option><option value="return">Devolver</option><option value="maintenance">Manutenção</option><option value="status_change">Alterar condição</option></select></label>
-            <label>Novo status<select name="newStatus" defaultValue="available"><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>
+            <label>Nova situação<select name="newStatus" defaultValue="available"><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>
             <label className="full">Destino<select name="destinationTeamId" defaultValue=""><option value="">Sem equipe / devolução externa</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
             <label className="full">Observação<textarea name="note" maxLength={500} /></label>
             <div className="form-actions"><Link className="button ghost" href="/movimentacoes">Cancelar</Link><SubmitButton pendingLabel="Transferindo…">Confirmar transferência</SubmitButton></div>

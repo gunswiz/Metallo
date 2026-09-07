@@ -19,7 +19,7 @@ export function LineChart({ points }: { points: Point[] }) {
     y: height - padding - (point.value / maximum) * (height - padding * 2),
   }));
   const line = coordinates.map((point) => `${point.x},${point.y}`).join(" ");
-  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Consumo ao longo do tempo" preserveAspectRatio="none"><polyline points={line} fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />{coordinates.map((point) => <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="5"><title>{point.label}: {formatNumber(point.value)}</title></circle>)}</svg><div className="line-labels">{points.map((point) => <span key={point.label}>{point.label}</span>)}</div></div>;
+  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Consumo ao longo do tempo" preserveAspectRatio="none"><polyline points={line} fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />{coordinates.map((point) => <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="5"><title>{`${point.label}: ${formatNumber(point.value)}`}</title></circle>)}</svg><div className="line-labels">{points.map((point) => <span key={point.label}>{point.label}</span>)}</div></div>;
 }
 
 export function formatNumber(value: number) {

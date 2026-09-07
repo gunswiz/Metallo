@@ -11,7 +11,7 @@ export default async function NewEpiItemPage({ searchParams }: { searchParams: P
   const kind = query.kind === "uniform" || query.kind === "personal_tool" ? query.kind : "epi";
   return <>
     <PageHeader eyebrow="CATÁLOGO DA COSEM" title={titles[kind]} description="Primeiro cadastre o tipo. Entradas futuras e entregas continuam como operações separadas e rastreáveis." />
-    {query.error && <div className="alert error">Não foi possível cadastrar. Confira o código, os campos obrigatórios e os valores de estoque.</div>}
+    {query.error && <div className="alert error" role="alert">Não foi possível cadastrar. Confira o código, os campos obrigatórios e os valores de estoque.</div>}
     <section className="panel"><div className="panel-body"><EpiItemForm action={createEpiItem} initialKind={kind} /></div></section>
   </>;
 }

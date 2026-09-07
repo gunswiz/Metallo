@@ -5,15 +5,10 @@ import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionMaterialsPage extends StatefulWidget {
   const ConsumptionMaterialsPage(
-      {super.key,
-      required this.rows,
-      required this.teams,
-      this.initialTeamId,
-      this.initialUnit});
+      {super.key, required this.rows, required this.teams, this.initialTeamId});
   final List<Map<String, dynamic>> rows;
   final List<Team> teams;
   final String? initialTeamId;
-  final String? initialUnit;
   @override
   State<ConsumptionMaterialsPage> createState() =>
       _ConsumptionMaterialsPageState();
@@ -21,15 +16,11 @@ class ConsumptionMaterialsPage extends StatefulWidget {
 
 class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
   late String? teamId = widget.initialTeamId;
-  late String? unit = widget.initialUnit;
   DateTime anchor = DateTime.now();
   int periodDays = 7;
   @override
   Widget build(BuildContext context) {
-    final units = consumptionUnits(widget.rows);
-    final effectiveUnit = effectiveConsumptionUnit(widget.rows, unit);
-    final scopedRows = filterConsumptionUnit(widget.rows, effectiveUnit);
-    final range = consumptionRange(scopedRows, teamId, anchor, periodDays);
+    final range = consumptionRange(widget.rows, teamId, anchor, periodDays);
     final periodLabel = consumptionPeriodLabel(periodDays);
     return Scaffold(
       appBar: AppBar(title: const Text('Consumo de materiais')),
@@ -59,11 +50,6 @@ class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
                 }),
               )),
             ]),
-            if (units.length > 1) ...[
-              const SizedBox(height: 10),
-              consumptionUnitDropdown(units, effectiveUnit,
-                  (value) => setState(() => unit = value)),
-            ],
             const SizedBox(height: 14),
             Row(children: [
               IconButton.filledTonal(

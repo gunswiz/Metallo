@@ -298,11 +298,12 @@ class EpiRepository {
     });
   }
 
-  Future<void> closeEpiDelivery(String id, String status) async {
-    await client.from('epi_deliveries').update({
-      'current_status': status,
-      'closed_at': DateTime.now().toUtc().toIso8601String(),
-      'closed_by': client.auth.currentUser?.id,
-    }).eq('id', id);
+  Future<void> closeEpiDelivery(String id, String status,
+      {int quantity = 1}) async {
+    await client.rpc('close_epi_delivery_quantity', params: {
+      'p_delivery_id': id,
+      'p_quantity': quantity,
+      'p_status': status,
+    });
   }
 }

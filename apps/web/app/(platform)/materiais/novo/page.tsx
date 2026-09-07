@@ -14,7 +14,7 @@ export default async function NewMaterialPage({ searchParams }: { searchParams: 
     <>
       <PageHeader eyebrow="CADASTRO" title="Novo material" description="Cria ou reutiliza o catálogo e registra a entrada de estoque com histórico." />
       <section className="panel"><div className="panel-body">
-        {error && <div className="alert error">Revise os campos. Código, nome, equipe e quantidade são obrigatórios.</div>}
+        {error && <div className="alert error" role="alert">Revise os campos. Código, nome, equipe e quantidade são obrigatórios.</div>}
         <form action={createMaterial} className="form-grid">
           <label>Código<input name="code" maxLength={40} required /></label><label>Nome<input name="name" maxLength={120} required /></label>
           <label>Categoria<input name="category" maxLength={80} /></label><label>Unidade<input name="unit" defaultValue="un" maxLength={20} required /></label>

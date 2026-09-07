@@ -200,5 +200,6 @@ export const epiDeliverySchema = z.object({
 export const epiDeliveryCloseSchema = z.object({
   deliveryId: z.uuid(),
   employeeId: z.uuid(),
+  quantity: z.coerce.number().int().positive().max(1000),
   status: z.enum(["returned", "replaced", "lost", "damaged", "consumed"]),
 });

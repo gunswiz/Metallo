@@ -1,12 +1,10 @@
-import { can, formatDateTime } from "@metallo/core";
+import { can, formatDateTime, itemKindLabel } from "@metallo/core";
 import { addEpiStock, updateEpiItem } from "@/app/actions/operations";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { SubmitButton } from "@/components/submit-button";
 import { requireCapability, requireProfile } from "@/lib/auth/session";
 import { getMetalloService } from "@/lib/services/metallo-service";
-
-const kindLabels: Record<string, string> = { epi: "EPI", uniform: "Fardamento", personal_tool: "Item pessoal" };
 
 export default async function EpiItemDetailPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
@@ -23,11 +21,11 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
 
   return (
     <>
-      <PageHeader eyebrow={kindLabels[item.item_kind] ?? "ITEM DA COSEM"} title={item.name} description={`Código ${item.code} · ${stock} ${item.unit} disponíveis`} />
-      {(query.updated || query.stock || query.created) && <div className="alert success">{query.stock ? "Entrada adicionada ao estoque." : query.created ? "Item cadastrado. Agora você pode fazer novas entradas ou registrar uma entrega." : "Cadastro atualizado com sucesso."}</div>}
-      {query.error && <div className="alert error">Não foi possível concluir. Revise os dados e a variante informada.</div>}
+      <PageHeader eyebrow={itemKindLabel(item.item_kind).toUpperCase()} title={item.name} description={`Código ${item.code} · ${stock} ${item.unit} disponíveis`} />
+      {(query.updated || query.stock || query.created) && <div className="alert success" role="status">{query.stock ? "Entrada adicionada ao estoque." : query.created ? "Item cadastrado. Agora você pode fazer novas entradas ou registrar uma entrega." : "Cadastro atualizado com sucesso."}</div>}
+      {query.error && <div className="alert error" role="alert">Não foi possível concluir. Revise os dados e a variante informada.</div>}
       <section className="detail-hero"><dl className="definition-grid">
-        <div className="definition-item"><dt>Tipo</dt><dd>{kindLabels[item.item_kind] ?? item.item_kind}</dd></div>
+        <div className="definition-item"><dt>Tipo</dt><dd>{itemKindLabel(item.item_kind)}</dd></div>
         <div className="definition-item"><dt>C.A.</dt><dd>{item.ca_number ?? "Não informado"}</dd></div>
         <div className="definition-item"><dt>Marca / modelo</dt><dd>{item.brand_model ?? "Não informado"}</dd></div>
         <div className="definition-item"><dt>Mínimo</dt><dd>{item.minimum_stock} {item.unit}</dd></div>
@@ -59,7 +57,7 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
         <label>Estoque mínimo<input name="minimumStock" type="number" min="0" defaultValue={item.minimum_stock} required /></label>
         <div className="form-actions"><SubmitButton pendingLabel="Salvando…">Salvar alterações</SubmitButton></div>
       </form></div></section>}
-      <section className="panel"><header className="panel-header"><div><h2>Entregas recentes</h2><p>Responsável, equipe e condição atual</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Funcionário</th><th>Equipe</th><th>Data</th><th>Variante</th><th>Quantidade</th><th>Status</th></tr></thead><tbody>{deliveries.map((delivery) => <tr key={delivery.id}><td>{delivery.epi_employees?.full_name ?? "Funcionário removido"}</td><td>{delivery.teams?.name ?? "—"}</td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.variant_snapshot ?? "—"}</td><td>{delivery.quantity} {item.unit}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></section>
+      <section className="panel"><header className="panel-header"><div><h2>Entregas recentes</h2><p>Responsável, equipe e condição atual</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Funcionário</th><th>Equipe</th><th>Data</th><th>Variante</th><th>Quantidade</th><th>Situação</th></tr></thead><tbody>{deliveries.map((delivery) => <tr key={delivery.id}><td>{delivery.epi_employees?.full_name ?? "Funcionário removido"}</td><td>{delivery.teams?.name ?? "—"}</td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.variant_snapshot ?? "—"}</td><td>{delivery.quantity} {item.unit}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></section>
     </>
   );
 }

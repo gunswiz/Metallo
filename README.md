@@ -57,5 +57,6 @@ A chave de assinatura nunca deve ser adicionada ao Git. O GitHub Actions recria
 
 Mais detalhes em [docs/architecture.md](docs/architecture.md),
 [docs/web.md](docs/web.md), [docs/database.md](docs/database.md) e
-[docs/web-mobile-parity.md](docs/web-mobile-parity.md). As decisões e os testes
+[docs/web-mobile-parity.md](docs/web-mobile-parity.md). A publicação do portal
+está documentada em [docs/cloudflare.md](docs/cloudflare.md). As decisões e os testes
 de segurança ficam registrados em [docs/security.md](docs/security.md).

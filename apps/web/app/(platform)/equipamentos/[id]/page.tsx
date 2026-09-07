@@ -23,14 +23,14 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
   return (
     <>
       <PageHeader eyebrow="DETALHES DO PATRIMÔNIO" title={asset.items?.name ?? "Equipamento"} description={`Código individual ${asset.asset_code}`} actions={can(profile.role, "operations:write") ? <Link className="button primary" href={`/movimentacoes/nova?asset=${asset.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined} />
-      {query.updated && <div className="alert success">Equipamento atualizado com sucesso.</div>}
-      {query.error && <div className="alert error">Não foi possível salvar. Revise os dados informados.</div>}
+      {query.updated && <div className="alert success" role="status">Equipamento atualizado com sucesso.</div>}
+      {query.error && <div className="alert error" role="alert">Não foi possível salvar. Revise os dados informados.</div>}
       <section className="detail-hero">
         <dl className="definition-grid">
           <div className="definition-item"><dt>Patrimônio</dt><dd>{asset.asset_code}</dd></div>
           <div className="definition-item"><dt>Equipe atual</dt><dd>{asset.teams?.name ?? "Sem equipe"}</dd></div>
           <div className="definition-item"><dt>Propriedade</dt><dd><OwnershipBadge type={asset.ownership_type} /></dd></div>
-          <div className="definition-item"><dt>Status</dt><dd><StatusBadge value={asset.status} /></dd></div>
+          <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={asset.status} /></dd></div>
           <div className="definition-item"><dt>Código do catálogo</dt><dd>{asset.items?.code}</dd></div>
           <div className="definition-item"><dt>Série</dt><dd>{asset.serial_number ?? "Não informado"}</dd></div>
           <div className="definition-item"><dt>Categoria</dt><dd>{asset.items?.category ?? "Sem categoria"}</dd></div>
@@ -46,7 +46,7 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
       <section className="panel">
         <header className="panel-header"><div><h2>Histórico rastreável</h2><p>Alterações preservadas sem substituir silenciosamente o estado anterior</p></div></header>
         <div className="data-table-wrap"><table className="data-table">
-          <thead><tr><th>Data</th><th>Operação</th><th>Origem</th><th>Destino</th><th>Status</th><th>Responsável</th></tr></thead>
+          <thead><tr><th>Data</th><th>Operação</th><th>Origem</th><th>Destino</th><th>Situação</th><th>Responsável</th></tr></thead>
           <tbody>{movements.map((movement) => <tr key={movement.id}><td>{formatDateTime(movement.created_at)}</td><td>{movementLabel(movement.movement_type)}</td><td>{movement.origin?.name ?? "—"}</td><td>{movement.destination?.name ?? "—"}</td><td><StatusBadge value={movement.new_status} /></td><td>{movement.profiles?.full_name ?? "—"}</td></tr>)}</tbody>
         </table></div>
       </section>

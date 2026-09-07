@@ -24,4 +24,16 @@ describe("consumption analytics", () => {
     expect(result.previousTotal).toBe(2);
     expect(result.percentChange).toBe(100);
   });
+
+  it("includes every unit when no unit filter is selected", () => {
+    const range = resolveConsumptionRange("7", undefined, undefined, new Date("2026-09-06T12:00:00-03:00"));
+    const result = analyzeConsumption([
+      row("2026-09-05T12:00:00-03:00", 4),
+      row("2026-09-05T12:00:00-03:00", 2, "Eletrodo", "caixa"),
+    ], range);
+
+    expect(result.total).toBe(6);
+    expect(result.unit).toBe("caixa/un");
+    expect(result.rows).toHaveLength(2);
+  });
 });

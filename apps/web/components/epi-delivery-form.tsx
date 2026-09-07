@@ -16,7 +16,7 @@ export function EpiDeliveryForm({ action, employees, batches, initialEmployee, i
       <label className="full">Funcionário<select name="employeeId" defaultValue={initialEmployee ?? ""} required><option value="" disabled>Selecione</option>{employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.name} · {employee.team}</option>)}</select></label>
       <label className="full">Item, variante e lote disponível<select name="stockBatchId" value={batchId} onChange={(event) => setBatchId(event.target.value)} required><option value="" disabled>Selecione</option>{batches.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.itemName} · {candidate.variant ?? "sem variante"} · {candidate.quantity} {candidate.unit} disponíveis</option>)}</select></label>
       <input name="itemId" type="hidden" value={batch?.itemId ?? ""} />
-      {batch && <div className="alert success full">Selecionado: {batch.itemName} ({batch.itemCode}) · disponível {batch.quantity} {batch.unit}</div>}
+      {batch && <div className="alert success full" role="status" aria-live="polite">Selecionado: {batch.itemName} ({batch.itemCode}) · disponível {batch.quantity} {batch.unit}</div>}
       <label>Quantidade<input name="quantity" type="number" min="1" max={batch?.quantity ?? 1} defaultValue="1" required /></label>
       <label>Motivo<select name="reason" defaultValue="initial"><option value="initial">Primeira entrega</option><option value="replacement">Substituição</option><option value="additional">Adicional</option></select></label>
       <label className="full">Observação<textarea name="note" maxLength={500} /></label>

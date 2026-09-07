@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, resetPasswordSchema, updatePasswordSchema } from "@metallo/validation";
+import { resolveApplicationOrigin } from "@/lib/auth/application-origin";
 import { createClient } from "@/lib/supabase/server";
 
 function value(formData: FormData, key: string) {
@@ -28,7 +29,12 @@ export async function requestPasswordReset(formData: FormData) {
   const parsed = resetPasswordSchema.safeParse({ email: value(formData, "email") });
   if (!parsed.success) redirect("/recuperar-senha?error=email-invalido");
   const requestHeaders = await headers();
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? requestHeaders.get("origin") ?? "http://localhost:3000";
+  const origin = resolveApplicationOrigin({
+    origin: requestHeaders.get("origin"),
+    forwardedHost: requestHeaders.get("x-forwarded-host"),
+    forwardedProto: requestHeaders.get("x-forwarded-proto"),
+    host: requestHeaders.get("host"),
+  });
   const supabase = await createClient();
   await supabase.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: `${origin}/auth/callback?next=/atualizar-senha`,

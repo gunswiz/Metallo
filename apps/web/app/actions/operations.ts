@@ -29,7 +29,7 @@ const nullable = (data: FormData, name: string) => text(data, name) || null;
 
 function operationError(destination: string, error: { message: string } | null) {
   if (!error) return;
-  const known = ["insufficient_stock", "forbidden_role", "forbidden_team", "same_team_transfer", "invalid_quantity"];
+  const known = ["insufficient_stock", "forbidden_role", "forbidden_team", "same_team_transfer", "invalid_quantity", "delivery_not_active", "invalid_delivery_status"];
   const code = known.find((item) => error.message.includes(item)) ?? "falha";
   redirect(`${destination}?error=${code}`);
 }
@@ -331,18 +331,19 @@ export async function registerEpiDelivery(formData: FormData) {
 }
 
 export async function closeEpiDelivery(formData: FormData) {
-  const profile = await requireCapability("epi:write");
+  await requireCapability("epi:write");
   const parsed = epiDeliveryCloseSchema.safeParse({
-    deliveryId: text(formData, "deliveryId"), employeeId: text(formData, "employeeId"), status: text(formData, "status"),
+    deliveryId: text(formData, "deliveryId"), employeeId: text(formData, "employeeId"),
+    quantity: text(formData, "quantity"), status: text(formData, "status"),
   });
   const fallbackEmployee = text(formData, "employeeId");
   if (!parsed.success) redirect(`/funcionarios/${fallbackEmployee}?error=dados-invalidos`);
   const supabase = await createClient();
-  const { data: closed, error } = await supabase.from("epi_deliveries").update({
-    current_status: parsed.data.status,
-    closed_at: new Date().toISOString(),
-    closed_by: profile.id,
-  }).eq("id", parsed.data.deliveryId).eq("employee_id", parsed.data.employeeId).eq("current_status", "active").select("id").maybeSingle();
+  const { data: closed, error } = await supabase.rpc("close_epi_delivery_quantity", {
+    p_delivery_id: parsed.data.deliveryId,
+    p_quantity: parsed.data.quantity,
+    p_status: parsed.data.status,
+  });
   operationError(`/funcionarios/${parsed.data.employeeId}`, error);
   if (!closed) redirect(`/funcionarios/${parsed.data.employeeId}?error=entrega-ja-encerrada`);
   revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath("/relatorios"); revalidatePath(`/funcionarios/${parsed.data.employeeId}`);

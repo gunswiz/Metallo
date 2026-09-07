@@ -12,12 +12,18 @@ function href(page: number, q: string, extra: Record<string, string>) {
 
 export function Pagination({ page, pageSize, count, q, extra = {} }: { page: number; pageSize: number; count: number; q: string; extra?: Record<string, string> }) {
   const pages = Math.max(1, Math.ceil(count / pageSize));
+  const previousDisabled = page <= 1;
+  const nextDisabled = page >= pages;
   return (
-    <footer className="pagination">
+    <footer className="pagination" aria-label="Paginação">
       <span>{count} registro{count === 1 ? "" : "s"} · página {Math.min(page, pages)} de {pages}</span>
       <div>
-        <Link href={href(Math.max(1, page - 1), q, extra)} aria-disabled={page <= 1}>Anterior</Link>
-        <Link href={href(Math.min(pages, page + 1), q, extra)} aria-disabled={page >= pages}>Próxima</Link>
+        {previousDisabled
+          ? <span className="pagination-disabled" aria-disabled="true">Anterior</span>
+          : <Link href={href(page - 1, q, extra)} aria-label={`Ir para a página ${page - 1}`}>Anterior</Link>}
+        {nextDisabled
+          ? <span className="pagination-disabled" aria-disabled="true">Próxima</span>
+          : <Link href={href(page + 1, q, extra)} aria-label={`Ir para a página ${page + 1}`}>Próxima</Link>}
       </div>
     </footer>
   );

@@ -27,8 +27,8 @@ export default async function MaterialDetailPage({ params, searchParams }: {
         description={`Código ${item.code} · ${total} ${item.unit} no estoque distribuído`}
         actions={can(profile.role, "operations:write") ? <Link className="button primary" href={`/movimentacoes/nova?item=${item.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined}
       />
-      {query.updated && <div className="alert success">Material atualizado com sucesso.</div>}
-      {query.error && <div className="alert error">Não foi possível salvar. Revise os dados e tente novamente.</div>}
+      {query.updated && <div className="alert success" role="status">Material atualizado com sucesso.</div>}
+      {query.error && <div className="alert error" role="alert">Não foi possível salvar. Revise os dados e tente novamente.</div>}
       <section className="detail-hero">
         <dl className="definition-grid">
           <div className="definition-item"><dt>Categoria</dt><dd>{item.category ?? "Sem categoria"}</dd></div>
@@ -41,7 +41,7 @@ export default async function MaterialDetailPage({ params, searchParams }: {
       <section className="content-grid">
         <div className="panel">
           <header className="panel-header"><div><h2>Distribuição</h2><p>Saldo por equipe ou localização</p></div></header>
-          <div className="panel-body list">{item.inventory.length === 0 ? <p className="muted">Sem estoque registrado.</p> : item.inventory.map((row) => <div className="list-row" key={row.id}><span className="list-row-main"><strong>{row.teams?.name ?? "Local removido"}</strong><span>{row.status}</span></span><span className="list-row-value">{row.quantity} {item.unit}</span></div>)}</div>
+          <div className="panel-body list">{item.inventory.length === 0 ? <p className="muted">Sem estoque registrado.</p> : item.inventory.map((row) => <div className="list-row" key={row.id}><span className="list-row-main"><strong>{row.teams?.name ?? "Local removido"}</strong><span><StatusBadge value={row.status} /></span></span><span className="list-row-value">{row.quantity} {item.unit}</span></div>)}</div>
         </div>
         {can(profile.role, "admin:manage") && <div className="panel">
           <header className="panel-header"><div><h2>Editar cadastro</h2><p>O histórico de movimentações não é alterado</p></div></header>

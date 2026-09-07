@@ -6,10 +6,9 @@ import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionTeamsComparePage extends StatefulWidget {
   const ConsumptionTeamsComparePage(
-      {super.key, required this.rows, required this.teams, this.initialUnit});
+      {super.key, required this.rows, required this.teams});
   final List<Map<String, dynamic>> rows;
   final List<Team> teams;
-  final String? initialUnit;
   @override
   State<ConsumptionTeamsComparePage> createState() =>
       _ConsumptionTeamsComparePageState();
@@ -18,16 +17,12 @@ class ConsumptionTeamsComparePage extends StatefulWidget {
 class _ConsumptionTeamsComparePageState
     extends State<ConsumptionTeamsComparePage> {
   String period = 'month';
-  late String? unit = widget.initialUnit;
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final start = consumptionPeriodStart(now, period),
         end = consumptionPeriodEnd(now, period);
-    final units = consumptionUnits(widget.rows);
-    final effectiveUnit = effectiveConsumptionUnit(widget.rows, unit);
-    final scopedRows = filterConsumptionUnit(widget.rows, effectiveUnit);
-    final current = filterConsumption(scopedRows, null, start, end);
+    final current = filterConsumption(widget.rows, null, start, end);
     final teamTotals = consumptionTotalsByTeam(current, widget.teams);
     final ranking = groupConsumedMaterials(current, const []);
     return Scaffold(
@@ -45,11 +40,6 @@ class _ConsumptionTeamsComparePageState
                   DropdownMenuItem(value: 'month', child: Text('Este mês'))
                 ],
                 onChanged: (v) => setState(() => period = v ?? 'month')),
-            if (units.length > 1) ...[
-              const SizedBox(height: 10),
-              consumptionUnitDropdown(units, effectiveUnit,
-                  (value) => setState(() => unit = value)),
-            ],
             const SizedBox(height: 14),
             Row(children: [
               Expanded(

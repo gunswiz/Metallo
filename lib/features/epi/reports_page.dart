@@ -5,6 +5,7 @@ import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/features/epi/epi_ui.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
 import 'package:metallo/features/epi/employee_details.dart';
+import 'package:metallo/shared/widgets/ui_action_lock.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({
@@ -86,6 +87,91 @@ class ReportsPageState extends State<ReportsPage> {
       );
 }
 
+Future<({int quantity, String status})?> _showDeliveryCloseSheet(
+    BuildContext context, Map<String, dynamic> row) {
+  final maximum = int.tryParse(row['quantity']?.toString() ?? '') ?? 1;
+  var quantity = 1;
+  final itemName = (row['epi_items'] as Map?)?['name']?.toString() ?? 'Item';
+  final unit = (row['epi_items'] as Map?)?['unit']?.toString() ?? 'un';
+
+  return showModalBottomSheet<({int quantity, String status})>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (actionContext) => StatefulBuilder(
+      builder: (context, setSheetState) => SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(itemName,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w900)),
+              ),
+              const SizedBox(height: 4),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Quantidade a atualizar',
+                    style: TextStyle(color: Colors.white60)),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: epiCardColor,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(children: [
+                  IconButton(
+                    tooltip: 'Diminuir quantidade',
+                    onPressed: quantity > 1
+                        ? () => setSheetState(() => quantity--)
+                        : null,
+                    icon: const Icon(Icons.remove_circle_outline_rounded),
+                  ),
+                  Expanded(
+                    child: Text('$quantity de $maximum $unit',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w800)),
+                  ),
+                  IconButton(
+                    tooltip: 'Aumentar quantidade',
+                    onPressed: quantity < maximum
+                        ? () => setSheetState(() => quantity++)
+                        : null,
+                    icon: const Icon(Icons.add_circle_outline_rounded),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 10),
+              ListTile(
+                leading: const Icon(Icons.keyboard_return, color: epiBlue),
+                title: const Text('Devolvido'),
+                onTap: () => Navigator.pop(
+                    actionContext, (quantity: quantity, status: 'returned')),
+              ),
+              ListTile(
+                leading: const Icon(Icons.build_outlined, color: epiBlue),
+                title: const Text('Danificado'),
+                onTap: () => Navigator.pop(
+                    actionContext, (quantity: quantity, status: 'damaged')),
+              ),
+              ListTile(
+                leading: const Icon(Icons.help_outline, color: epiBlue),
+                title: const Text('Perdido'),
+                onTap: () => Navigator.pop(
+                    actionContext, (quantity: quantity, status: 'lost')),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
     List<Map<String, dynamic>> rows, VoidCallback onChanged) {
   showModalBottomSheet<void>(
@@ -140,52 +226,37 @@ void _deliveryGroupDetails(BuildContext context, EpiRepository repo,
                                     : null,
                                 onTap: row['current_status'] == 'active'
                                     ? () async {
-                                        final status =
-                                            await showModalBottomSheet<String>(
-                                                context: sheetContext,
-                                                builder: (actionContext) =>
-                                                    SafeArea(
-                                                      child: Wrap(children: [
-                                                        ListTile(
-                                                            leading: const Icon(
-                                                                Icons
-                                                                    .keyboard_return),
-                                                            title: const Text(
-                                                                'Devolvido'),
-                                                            onTap: () =>
-                                                                Navigator.pop(
-                                                                    actionContext,
-                                                                    'returned')),
-                                                        ListTile(
-                                                            leading: const Icon(
-                                                                Icons
-                                                                    .build_outlined),
-                                                            title: const Text(
-                                                                'Danificado'),
-                                                            onTap: () =>
-                                                                Navigator.pop(
-                                                                    actionContext,
-                                                                    'damaged')),
-                                                        ListTile(
-                                                            leading: const Icon(
-                                                                Icons
-                                                                    .help_outline),
-                                                            title: const Text(
-                                                                'Perdido'),
-                                                            onTap: () =>
-                                                                Navigator.pop(
-                                                                    actionContext,
-                                                                    'lost')),
-                                                      ]),
-                                                    ));
-                                        if (status == null) return;
-                                        await repo.closeEpiDelivery(
-                                            row['id'].toString(), status);
-                                        if (sheetContext.mounted) {
-                                          Navigator.pop(sheetContext);
-                                          onChanged();
-                                          showEpiMessage(context,
-                                              'Situação do item atualizada.');
+                                        final choice =
+                                            await _showDeliveryCloseSheet(
+                                                sheetContext, row);
+                                        if (choice == null ||
+                                            !sheetContext.mounted) {
+                                          return;
+                                        }
+                                        final actionLock = UiActionLock.acquire(
+                                            sheetContext,
+                                            'close-epi-delivery-${row['id']}');
+                                        if (actionLock == null) return;
+                                        try {
+                                          await repo.closeEpiDelivery(
+                                              row['id'].toString(),
+                                              choice.status,
+                                              quantity: choice.quantity);
+                                          if (sheetContext.mounted) {
+                                            Navigator.pop(sheetContext);
+                                            onChanged();
+                                          }
+                                          if (context.mounted) {
+                                            showEpiMessage(context,
+                                                '${choice.quantity} ${(row['epi_items'] as Map?)?['unit'] ?? 'un'} atualizado(s) no histórico.');
+                                          }
+                                        } catch (_) {
+                                          if (context.mounted) {
+                                            showEpiMessage(context,
+                                                'Não foi possível atualizar a situação do item.');
+                                          }
+                                        } finally {
+                                          actionLock.release();
                                         }
                                       }
                                     : null,

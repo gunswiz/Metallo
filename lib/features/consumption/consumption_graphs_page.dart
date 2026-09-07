@@ -6,32 +6,23 @@ import 'package:metallo/features/consumption/calculations.dart';
 
 class ConsumptionGraphsPage extends StatefulWidget {
   const ConsumptionGraphsPage(
-      {super.key,
-      required this.rows,
-      required this.teams,
-      this.initialTeamId,
-      this.initialUnit});
+      {super.key, required this.rows, required this.teams, this.initialTeamId});
   final List<Map<String, dynamic>> rows;
   final List<Team> teams;
   final String? initialTeamId;
-  final String? initialUnit;
   @override
   State<ConsumptionGraphsPage> createState() => _ConsumptionGraphsPageState();
 }
 
 class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
   late String? teamId = widget.initialTeamId;
-  late String? unit = widget.initialUnit;
   int tab = 0;
   int periodDays = 180;
   String? materialId;
   @override
   Widget build(BuildContext context) {
-    final units = consumptionUnits(widget.rows);
-    final effectiveUnit = effectiveConsumptionUnit(widget.rows, unit);
-    final scopedRows = filterConsumptionUnit(widget.rows, effectiveUnit);
     final graph = consumptionGraphData(
-      scopedRows,
+      widget.rows,
       teamId,
       periodDays,
       materialId,
@@ -64,15 +55,6 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
                 onChanged: (v) => setState(() => periodDays = v ?? 180),
               )),
             ]),
-            if (units.length > 1) ...[
-              const SizedBox(height: 10),
-              consumptionUnitDropdown(units, effectiveUnit, (value) {
-                setState(() {
-                  unit = value;
-                  materialId = null;
-                });
-              }),
-            ],
             const SizedBox(height: 14),
             SegmentedButton<int>(segments: const [
               ButtonSegment(value: 0, label: Text('Evolução')),

@@ -7,7 +7,7 @@ import { requireCapability } from "@/lib/auth/session";
 import { analyzeConsumption, resolveConsumptionRange } from "@/lib/consumption";
 import { getMetalloService } from "@/lib/services/metallo-service";
 
-type Query = { period?: string; from?: string; to?: string; team?: string; item?: string; unit?: string; category?: string };
+type Query = { period?: string; from?: string; to?: string; team?: string; item?: string; category?: string };
 
 function inputDate(date: Date) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Fortaleza", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
@@ -23,18 +23,17 @@ export default async function ConsumptionPage({ searchParams }: { searchParams: 
   const itemId = materials.data.some((item) => item.id === query.item) ? query.item : undefined;
   const rows = await service.consumptionRows({ from: range.previousStart.toISOString(), to: range.currentEnd.toISOString(), teamId, itemId });
   const category = query.category?.slice(0, 80);
-  const analysis = analyzeConsumption(rows, range, query.unit?.slice(0, 20), category);
+  const analysis = analyzeConsumption(rows, range, undefined, category);
   const change = analysis.percentChange === null ? "Sem base anterior" : `${analysis.percentChange >= 0 ? "+" : ""}${formatNumber(analysis.percentChange)}%`;
 
   return <>
-    <PageHeader eyebrow="ANÁLISE VISUAL" title="Consumo" description="Gráficos calculados a partir das movimentações reais do tipo consumo, com unidades separadas." actions={<Link className="button primary" href="/movimentacoes/nova?type=consumption"><ArrowLeftRight size={16} />Registrar consumo</Link>} />
+    <PageHeader eyebrow="ANÁLISE VISUAL" title="Consumo" description="Gráficos calculados a partir das movimentações reais do tipo consumo, considerando todas as unidades." actions={<Link className="button primary" href="/movimentacoes/nova?type=consumption"><ArrowLeftRight size={16} />Registrar consumo</Link>} />
     <section className="panel analytics-filter"><form className="panel-body toolbar">
       <select className="filter-select" name="period" defaultValue={query.period ?? "30"} aria-label="Período"><option value="today">Hoje</option><option value="7">7 dias</option><option value="30">30 dias</option><option value="month">Mês atual</option><option value="custom">Personalizado</option></select>
       <label className="compact-field">De<input name="from" type="date" lang="pt-BR" defaultValue={query.from ?? inputDate(range.currentStart)} /></label>
       <label className="compact-field">Até<input name="to" type="date" lang="pt-BR" defaultValue={query.to ?? inputDate(new Date(range.currentEnd.getTime() - 86_400_000))} /></label>
       <select className="filter-select" name="team" defaultValue={teamId ?? ""} aria-label="Equipe"><option value="">Todas as equipes</option>{teams.filter((team) => team.location_type === "field").map((team) => <option value={team.id} key={team.id}>{team.name}</option>)}</select>
       <select className="filter-select" name="item" defaultValue={itemId ?? ""} aria-label="Material"><option value="">Todos os materiais</option>{materials.data.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select>
-      {analysis.units.length > 1 && <select className="filter-select" name="unit" defaultValue={analysis.unit} aria-label="Unidade">{analysis.units.map((unit) => <option key={unit}>{unit}</option>)}</select>}
       <select className="filter-select" name="category" defaultValue={category ?? ""} aria-label="Categoria"><option value="">Todas as categorias</option>{analysis.categories.map((name) => <option key={name}>{name}</option>)}</select>
       <button className="button secondary" type="submit">Aplicar filtros</button>
     </form></section>
@@ -46,7 +45,7 @@ export default async function ConsumptionPage({ searchParams }: { searchParams: 
     </section>
     <section className="analytics-grid">
       <article className="panel"><header className="panel-header"><div><h2>Consumo ao longo do tempo</h2><p>{range.label} · unidade {analysis.unit}</p></div></header><div className="panel-body"><LineChart points={analysis.trend} /></div></article>
-      <article className="panel"><header className="panel-header"><div><h2>Por categoria</h2><p>Classificação cadastrada ou regra equivalente ao Mobile</p></div></header><div className="panel-body"><BarChart points={analysis.categoryTotals} suffix={analysis.unit} /></div></article>
+      <article className="panel"><header className="panel-header"><div><h2>Por categoria</h2><p>Classificação cadastrada ou regra equivalente ao aplicativo móvel</p></div></header><div className="panel-body"><BarChart points={analysis.categoryTotals} suffix={analysis.unit} /></div></article>
       <article className="panel"><header className="panel-header"><div><h2>Materiais mais consumidos</h2><p>Ranking no período selecionado</p></div></header><div className="panel-body"><BarChart points={analysis.materials.slice(0, 10)} suffix={analysis.unit} /></div></article>
       <article className="panel"><header className="panel-header"><div><h2>Consumo por equipe</h2><p>Origem da baixa registrada</p></div></header><div className="panel-body"><BarChart points={analysis.teams} suffix={analysis.unit} /></div></article>
     </section>

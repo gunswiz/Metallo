@@ -29,7 +29,7 @@ class _PendingAdminRepository extends AdminRepository {
 }
 
 void main() {
-  test('consumo nunca soma unidades diferentes no mesmo indicador', () {
+  test('consulta total de consumo mantém a identificação das unidades', () {
     final rows = <Map<String, dynamic>>[
       {
         'quantity': 16,
@@ -42,9 +42,8 @@ void main() {
     ];
 
     expect(consumptionUnits(rows), ['caixa', 'un']);
-    final units = filterConsumptionUnit(rows, 'un');
-    expect(sumConsumption(units), 16);
-    expect(hasMixedConsumptionUnits(units), 'un');
+    expect(sumConsumption(rows), 18);
+    expect(hasMixedConsumptionUnits(rows), 'caixa/un');
   });
 
   test('busca de funcionário inclui profissão, matrícula e equipe', () {
@@ -168,5 +167,27 @@ void main() {
         sql,
         contains(
             'revoke execute on functions from public, anon, authenticated'));
+  });
+
+  test('encerramento parcial de entrega é atômico no banco e usado no mobile',
+      () {
+    final sql = File(
+      'supabase/migrations/20260907060320_close_partial_epi_delivery.sql',
+    ).readAsStringSync();
+    final repository =
+        File('lib/data/repositories/epi_repository.dart').readAsStringSync();
+    final reports =
+        File('lib/features/epi/reports_page.dart').readAsStringSync();
+
+    expect(sql, contains('function public.close_epi_delivery_quantity'));
+    expect(sql, contains('for update'));
+    expect(sql, contains("new.current_status <> 'active'"));
+    expect(
+        sql,
+        contains(
+            'grant execute on function public.close_epi_delivery_quantity'));
+    expect(repository, contains("client.rpc('close_epi_delivery_quantity'"));
+    expect(repository, contains("'p_quantity': quantity"));
+    expect(reports, contains('Quantidade a atualizar'));
   });
 }
