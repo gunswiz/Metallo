@@ -34,7 +34,7 @@ export async function GET(request: Request) {
   return new Response(body, {
     headers: {
       "Cache-Control": "private, no-store, max-age=0",
-      "Content-Disposition": `attachment; filename="${epiReportFilename(range.currentStart, toInclusive)}"`,
+      "Content-Disposition": `inline; filename="${epiReportFilename(range.currentStart, toInclusive)}"`,
       "Content-Type": "application/pdf",
       "X-Content-Type-Options": "nosniff",
     },
