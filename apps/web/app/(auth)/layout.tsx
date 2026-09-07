@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: Readonly<{ children: React.Reac
         <Brand />
         <div>
           <p className="eyebrow">OPERAÇÃO CONECTADA</p>
-          <h1>Controle industrial com rastreabilidade real.</h1>
+          <h1>Controle industrial com rastreio real.</h1>
           <p>O mesmo estoque, equipes e histórico usados pelo aplicativo Metallo em campo.</p>
         </div>
         <small>Metallo Web · Centro administrativo</small>
