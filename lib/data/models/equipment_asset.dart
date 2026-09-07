@@ -11,6 +11,7 @@ class EquipmentAsset {
   final String status;
   final String ownershipType;
   final String? rentalCompany;
+  final String? rentalStartDate;
   final String? rentalEndDate;
   final String? notes;
 
@@ -25,13 +26,14 @@ class EquipmentAsset {
     required this.status,
     this.ownershipType = 'owned',
     this.rentalCompany,
+    this.rentalStartDate,
     this.rentalEndDate,
     this.notes,
   });
 
   factory EquipmentAsset.fromMap(Map<String, dynamic> m) {
     final item = Map<String, dynamic>.from(m['items'] as Map);
-    final ownership = parseEquipmentOwnership(m['notes'] as String?);
+    final ownership = equipmentOwnershipFromMap(m);
     return EquipmentAsset(
       id: m['id'] as String,
       itemId: m['item_id'] as String,
@@ -43,6 +45,7 @@ class EquipmentAsset {
       status: (m['status'] as String?) ?? 'available',
       ownershipType: ownership.type,
       rentalCompany: ownership.rentalCompany,
+      rentalStartDate: ownership.rentalStartDate,
       rentalEndDate: ownership.rentalEndDate,
       notes: ownership.notes,
     );

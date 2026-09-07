@@ -145,7 +145,7 @@ class _EquipmentCatalogRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = equipment['items'] as Map?;
     final team = equipment['teams'] as Map?;
-    final ownership = parseEquipmentOwnership(equipment['notes'] as String?);
+    final ownership = equipmentOwnershipFromMap(equipment);
     return ListTile(
       leading: Container(
         constraints: const BoxConstraints(minWidth: 62),

@@ -9,7 +9,7 @@ import { getMetalloService } from "@/lib/services/metallo-service";
 import { can } from "@metallo/core";
 import { requireProfile } from "@/lib/auth/session";
 import Link from "next/link";
-import { PackageCheck } from "lucide-react";
+import { PackageCheck, Plus } from "lucide-react";
 
 export default async function EpisPage({ searchParams }: { searchParams: SearchParams }) {
   await requireCapability("epi:read");
@@ -22,9 +22,13 @@ export default async function EpisPage({ searchParams }: { searchParams: SearchP
   const result = await service.listEpiItems(input, kind);
   return (
     <>
-      <PageHeader eyebrow={kind === "uniform" ? "FARDAMENTO" : "PROTEÇÃO INDIVIDUAL"} title={kind === "uniform" ? "Fardamento" : "EPIs"} description={kind === "uniform" ? "Camisas e calças por cor e tamanho disponíveis na COSEM." : "Controle por condição, C.A., variante e estoque disponível na COSEM."} actions={can(profile.role, "epi:write") ? <Link className="button primary" href="/epis/entrega"><PackageCheck size={16} />Registrar entrega</Link> : undefined} />
+      <PageHeader eyebrow={kind === "uniform" ? "FARDAMENTO" : "PROTEÇÃO INDIVIDUAL"} title={kind === "uniform" ? "Fardamento" : "EPIs"} description={kind === "uniform" ? "Camisas e calças por cor e tamanho disponíveis na COSEM." : "Catálogo, C.A., variantes e estoque disponível na COSEM."} actions={<>
+        {can(profile.role, "admin:manage") && <Link className="button secondary" href={`/epis/novo?kind=${kind}`}><Plus size={16} />{kind === "uniform" ? "Novo fardamento" : "Novo EPI"}</Link>}
+        {can(profile.role, "epi:write") && <Link className="button primary" href={`/epis/entrega?kind=${kind}`}><PackageCheck size={16} />Registrar entrega</Link>}
+      </>} />
+      <div className="operation-guide"><strong>Fluxo correto:</strong><span>Cadastro cria o tipo</span><span>Entrada soma unidades à COSEM</span><span>Entrega baixa o lote e vincula ao funcionário</span></div>
       <section className="panel">
-        <div className="panel-body"><SearchToolbar placeholder="Nome, código ou C.A." q={input.q}>{kind === "uniform" && <input type="hidden" name="kind" value="uniform" />}</SearchToolbar></div>
+        <div className="panel-body"><div className="module-tabs"><Link className={kind === "epi" ? "active" : undefined} href="/epis">EPIs</Link><Link className={kind === "uniform" ? "active" : undefined} href="/epis?kind=uniform">Fardamento</Link></div><SearchToolbar placeholder="Nome, código ou C.A." q={input.q}>{kind === "uniform" && <input type="hidden" name="kind" value="uniform" />}</SearchToolbar></div>
         {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table">
           <thead><tr><th>EPI</th><th>C.A.</th><th>Variantes</th><th>Estoque COSEM</th><th>Mínimo</th><th>Situação</th></tr></thead>
           <tbody>{result.data.map((item) => {

@@ -3,6 +3,7 @@ import type { Database, PageResult, Tables } from "@metallo/types";
 
 type Client = SupabaseClient<Database>;
 type PageInput = { page: number; pageSize: number; q: string };
+export type AnalyticsFilter = { from: string; to: string; teamId?: string; itemId?: string };
 
 export type ItemWithInventory = Tables<"items"> & {
   inventory: Array<Tables<"inventory"> & { teams: Pick<Tables<"teams">, "id" | "name"> | null }>;
@@ -33,6 +34,15 @@ export type EmployeeWithTeam = Tables<"epi_employees"> & {
   teams: Pick<Tables<"teams">, "id" | "name"> | null;
 };
 export type ProfileWithTeam = Tables<"profiles"> & {
+  teams: Pick<Tables<"teams">, "id" | "name"> | null;
+};
+export type ConsumptionRow = Pick<Tables<"movements">, "id" | "item_id" | "origin_team_id" | "quantity" | "created_at" | "note"> & {
+  items: Pick<Tables<"items">, "id" | "name" | "code" | "unit" | "category"> | null;
+  origin: Pick<Tables<"teams">, "id" | "name"> | null;
+};
+export type EpiDeliveryReportRow = Pick<Tables<"epi_deliveries">, "id" | "quantity" | "delivered_at" | "current_status" | "delivery_reason" | "variant_snapshot"> & {
+  epi_items: Pick<Tables<"epi_items">, "name" | "code" | "item_kind" | "unit"> | null;
+  epi_employees: Pick<Tables<"epi_employees">, "full_name"> | null;
   teams: Pick<Tables<"teams">, "id" | "name"> | null;
 };
 
@@ -120,7 +130,7 @@ export class MetalloRepository {
     };
   }
 
-  async listAssets(input: PageInput): Promise<PageResult<AssetWithRelations>> {
+  async listAssets(input: PageInput & { ownership?: string }): Promise<PageResult<AssetWithRelations>> {
     const { from, to } = range(input);
     let query = this.client
       .from("assets")
@@ -129,8 +139,15 @@ export class MetalloRepository {
       .eq("items.item_type", "equipment")
       .order("created_at", { ascending: false })
       .range(from, to);
+    if (input.ownership === "owned" || input.ownership === "rented") query = query.eq("ownership_type", input.ownership);
     const term = safeTerm(input.q);
-    if (term) query = query.or(`asset_code.ilike.%${term}%,serial_number.ilike.%${term}%`);
+    if (term) {
+      const itemMatches = await this.client.from("items").select("id").eq("item_type", "equipment").eq("active", true).or(`name.ilike.%${term}%,code.ilike.%${term}%,category.ilike.%${term}%`).limit(100);
+      if (itemMatches.error) throw new Error(itemMatches.error.message);
+      const itemIds = (itemMatches.data ?? []).map((item) => item.id);
+      const itemFilter = itemIds.length > 0 ? `,item_id.in.(${itemIds.join(",")})` : "";
+      query = query.or(`asset_code.ilike.%${term}%,serial_number.ilike.%${term}%,rental_company.ilike.%${term}%${itemFilter}`);
+    }
     const { data, count, error } = await query;
     return { data: unwrap(data, error) as unknown as AssetWithRelations[], count: count ?? 0, ...input };
   }
@@ -250,6 +267,63 @@ export class MetalloRepository {
     if (term) query = query.ilike("note", `%${term}%`);
     const { data, count, error } = await query;
     return { data: unwrap(data, error) as unknown as MovementWithRelations[], count: count ?? 0, ...input };
+  }
+
+  async consumptionRows(filter: AnalyticsFilter): Promise<ConsumptionRow[]> {
+    let query = this.client
+      .from("movements")
+      .select("id,item_id,origin_team_id,quantity,created_at,note,items!inner(id,name,code,unit,category),origin:teams!movements_origin_team_id_fkey(id,name)")
+      .eq("movement_type", "consumption")
+      .gte("created_at", filter.from)
+      .lt("created_at", filter.to)
+      .order("created_at", { ascending: true })
+      .limit(5000);
+    if (filter.teamId) query = query.eq("origin_team_id", filter.teamId);
+    if (filter.itemId) query = query.eq("item_id", filter.itemId);
+    const { data, error } = await query;
+    return unwrap(data, error) as unknown as ConsumptionRow[];
+  }
+
+  async reportData(filter: AnalyticsFilter, includeEpi: boolean) {
+    let materialQuery = this.client
+      .from("movements")
+      .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)")
+      .gte("created_at", filter.from).lt("created_at", filter.to)
+      .order("created_at", { ascending: false }).limit(300);
+    let assetQuery = this.client
+      .from("asset_movements")
+      .select("*,assets(asset_code,ownership_type,rental_company,items(name,code)),origin:teams!asset_movements_origin_team_id_fkey(id,name),destination:teams!asset_movements_destination_team_id_fkey(id,name),profiles(full_name)")
+      .gte("created_at", filter.from).lt("created_at", filter.to)
+      .order("created_at", { ascending: false }).limit(300);
+    let deliveryQuery = this.client
+      .from("epi_deliveries")
+      .select("id,quantity,delivered_at,current_status,delivery_reason,variant_snapshot,epi_items(name,code,item_kind,unit),epi_employees(full_name),teams(id,name)")
+      .gte("delivered_at", filter.from).lt("delivered_at", filter.to)
+      .order("delivered_at", { ascending: false }).limit(300);
+    let currentAssetsQuery = this.client
+      .from("assets")
+      .select("*,items!inner(id,name,code,category),teams(id,name)")
+      .eq("active", true).eq("items.item_type", "equipment")
+      .order("created_at", { ascending: false }).limit(1000);
+    if (filter.teamId) {
+      materialQuery = materialQuery.or(`origin_team_id.eq.${filter.teamId},destination_team_id.eq.${filter.teamId}`);
+      assetQuery = assetQuery.or(`origin_team_id.eq.${filter.teamId},destination_team_id.eq.${filter.teamId}`);
+      deliveryQuery = deliveryQuery.eq("team_id", filter.teamId);
+      currentAssetsQuery = currentAssetsQuery.eq("team_id", filter.teamId);
+    }
+    const [materials, assetMovements, deliveries, assets] = await Promise.all([
+      materialQuery,
+      assetQuery,
+      includeEpi ? deliveryQuery : Promise.resolve({ data: [], error: null }),
+      currentAssetsQuery,
+    ]);
+    for (const result of [materials, assetMovements, deliveries, assets]) if (result.error) throw new Error(result.error.message);
+    return {
+      materialMovements: (materials.data ?? []) as unknown as MovementWithRelations[],
+      assetMovements: (assetMovements.data ?? []) as unknown as Array<AssetMovementWithRelations & { assets: AssetMovementWithRelations["assets"] & { ownership_type: string; rental_company: string | null } }>,
+      deliveries: (deliveries.data ?? []) as unknown as EpiDeliveryReportRow[],
+      assets: (assets.data ?? []) as unknown as AssetWithRelations[],
+    };
   }
 
   async listProfiles(): Promise<ProfileWithTeam[]> {

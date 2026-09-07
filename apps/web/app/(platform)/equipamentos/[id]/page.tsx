@@ -1,12 +1,18 @@
 import Link from "next/link";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, Undo2 } from "lucide-react";
 import { can, formatDateTime, movementLabel } from "@metallo/core";
-import { updateEquipment } from "@/app/actions/operations";
+import { returnRentedEquipment, updateEquipment } from "@/app/actions/operations";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { SubmitButton } from "@/components/submit-button";
 import { getMetalloService } from "@/lib/services/metallo-service";
 import { requireProfile } from "@/lib/auth/session";
+import { OwnershipBadge } from "@/components/ownership-badge";
+import { EquipmentForm } from "@/components/equipment-form";
+
+function dateLabel(value: string | null) {
+  return value ? new Date(`${value}T12:00:00`).toLocaleDateString("pt-BR") : "Não informado";
+}
 
 export default async function EquipmentDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; updated?: string }> }) {
   const { id } = await params;
@@ -23,25 +29,19 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
         <dl className="definition-grid">
           <div className="definition-item"><dt>Patrimônio</dt><dd>{asset.asset_code}</dd></div>
           <div className="definition-item"><dt>Equipe atual</dt><dd>{asset.teams?.name ?? "Sem equipe"}</dd></div>
+          <div className="definition-item"><dt>Propriedade</dt><dd><OwnershipBadge type={asset.ownership_type} /></dd></div>
           <div className="definition-item"><dt>Status</dt><dd><StatusBadge value={asset.status} /></dd></div>
           <div className="definition-item"><dt>Código do catálogo</dt><dd>{asset.items?.code}</dd></div>
           <div className="definition-item"><dt>Série</dt><dd>{asset.serial_number ?? "Não informado"}</dd></div>
           <div className="definition-item"><dt>Categoria</dt><dd>{asset.items?.category ?? "Sem categoria"}</dd></div>
+          {asset.ownership_type === "rented" && <><div className="definition-item"><dt>Empresa/fornecedor</dt><dd>{asset.rental_company ?? "Não informado"}</dd></div><div className="definition-item"><dt>Início da locação</dt><dd>{dateLabel(asset.rental_start_date)}</dd></div><div className="definition-item"><dt>Fim previsto</dt><dd>{dateLabel(asset.rental_end_date)}</dd></div></>}
+          <div className="definition-item"><dt>Observação</dt><dd>{asset.user_notes ?? "Sem observações"}</dd></div>
         </dl>
       </section>
+      {asset.ownership_type === "rented" && can(profile.role, "admin:manage") && <section className="panel" style={{ marginBottom: 16 }}><header className="panel-header"><div><h2>Devolver à locadora</h2><p>Encerra somente este patrimônio e preserva o histórico</p></div></header><div className="panel-body"><form action={returnRentedEquipment} className="inline-action"><input type="hidden" name="assetId" value={asset.id} /><input name="note" maxLength={500} placeholder="Motivo ou protocolo (opcional)" /><SubmitButton pendingLabel="Devolvendo…"><Undo2 size={16} />Registrar devolução</SubmitButton></form></div></section>}
       {can(profile.role, "admin:manage") && <section className="panel">
         <header className="panel-header"><div><h2>Editar equipamento</h2><p>Tipo e patrimônio são atualizados na mesma transação</p></div></header>
-        <div className="panel-body"><form action={updateEquipment} className="form-grid">
-          <input type="hidden" name="itemId" value={asset.items.id} /><input type="hidden" name="assetId" value={asset.id} />
-          <label>Código do tipo<input name="code" defaultValue={asset.items.code} maxLength={40} required /></label>
-          <label>Nome<input name="name" defaultValue={asset.items.name} maxLength={120} required /></label>
-          <label>Patrimônio<input name="assetCode" defaultValue={asset.asset_code} maxLength={80} required /></label>
-          <label>Número de série<input name="serialNumber" defaultValue={asset.serial_number ?? ""} maxLength={120} /></label>
-          <label>Equipe<select name="teamId" defaultValue={asset.team_id ?? ""} required><option value="" disabled>Selecione</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue={asset.status}><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>
-          <label className="full">Observações<textarea name="notes" defaultValue={asset.notes ?? ""} maxLength={500} /></label>
-          <div className="form-actions"><SubmitButton pendingLabel="Salvando…">Salvar alterações</SubmitButton></div>
-        </form></div>
+        <div className="panel-body"><EquipmentForm action={updateEquipment} teams={teams} mode="edit" defaults={{ itemId: asset.items.id, assetId: asset.id, code: asset.items.code, name: asset.items.name, assetCode: asset.asset_code, serialNumber: asset.serial_number, teamId: asset.team_id, status: asset.status, notes: asset.user_notes, ownershipType: asset.ownership_type, rentalCompany: asset.rental_company, rentalStartDate: asset.rental_start_date, rentalEndDate: asset.rental_end_date }} /></div>
       </section>}
       <section className="panel">
         <header className="panel-header"><div><h2>Histórico rastreável</h2><p>Alterações preservadas sem substituir silenciosamente o estado anterior</p></div></header>

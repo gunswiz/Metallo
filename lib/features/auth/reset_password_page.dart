@@ -74,8 +74,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   TextField(
                       controller: password,
                       obscureText: true,
-                      decoration:
-                          const InputDecoration(labelText: 'Nova senha (4+)')),
+                      decoration: const InputDecoration(
+                        labelText: 'Nova senha segura (12+)',
+                        helperText:
+                            'Use maiúscula, minúscula, número e símbolo.',
+                      )),
                   const SizedBox(height: 12),
                   TextField(
                       controller: confirmPassword,

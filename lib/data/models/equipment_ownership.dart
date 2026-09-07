@@ -3,11 +3,13 @@ import '../../core/formatters.dart';
 class EquipmentOwnershipInfo {
   final String type;
   final String? rentalCompany;
+  final String? rentalStartDate;
   final String? rentalEndDate;
   final String? notes;
   const EquipmentOwnershipInfo(
       {this.type = 'owned',
       this.rentalCompany,
+      this.rentalStartDate,
       this.rentalEndDate,
       this.notes});
   bool get isRented => type == 'rented';
@@ -16,6 +18,7 @@ class EquipmentOwnershipInfo {
 EquipmentOwnershipInfo parseEquipmentOwnership(String? rawNotes) {
   var type = 'owned';
   String? company;
+  String? startDate;
   String? endDate;
   final visible = <String>[];
   for (final line in (rawNotes ?? '').split('\n')) {
@@ -29,6 +32,9 @@ EquipmentOwnershipInfo parseEquipmentOwnership(String? rawNotes) {
     } else if (line.startsWith('#metallo:rental_end=')) {
       final value = line.substring('#metallo:rental_end='.length).trim();
       if (value.isNotEmpty) endDate = value;
+    } else if (line.startsWith('#metallo:rental_start=')) {
+      final value = line.substring('#metallo:rental_start='.length).trim();
+      if (value.isNotEmpty) startDate = value;
     } else if (line.trim().isNotEmpty) {
       visible.add(line);
     }
@@ -36,13 +42,27 @@ EquipmentOwnershipInfo parseEquipmentOwnership(String? rawNotes) {
   return EquipmentOwnershipInfo(
       type: type,
       rentalCompany: company,
+      rentalStartDate: startDate,
       rentalEndDate: endDate,
       notes: visible.isEmpty ? null : visible.join('\n'));
+}
+
+EquipmentOwnershipInfo equipmentOwnershipFromMap(Map<String, dynamic> map) {
+  final legacy = parseEquipmentOwnership(map['notes'] as String?);
+  return EquipmentOwnershipInfo(
+    type: map['ownership_type']?.toString() ?? legacy.type,
+    rentalCompany: map['rental_company']?.toString() ?? legacy.rentalCompany,
+    rentalStartDate:
+        map['rental_start_date']?.toString() ?? legacy.rentalStartDate,
+    rentalEndDate: map['rental_end_date']?.toString() ?? legacy.rentalEndDate,
+    notes: map['user_notes']?.toString() ?? legacy.notes,
+  );
 }
 
 String? buildEquipmentNotes(
     {required String ownershipType,
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
     String? notes}) {
   final lines = <String>[
@@ -52,6 +72,10 @@ String? buildEquipmentNotes(
       (rentalCompany?.trim().isNotEmpty ?? false)) {
     lines.add(
         '#metallo:rental_company=${Uri.encodeComponent(rentalCompany!.trim())}');
+  }
+  if (ownershipType == 'rented' &&
+      (rentalStartDate?.trim().isNotEmpty ?? false)) {
+    lines.add('#metallo:rental_start=${rentalStartDate!.trim()}');
   }
   if (ownershipType == 'rented' &&
       (rentalEndDate?.trim().isNotEmpty ?? false)) {

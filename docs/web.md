@@ -24,6 +24,13 @@ pnpm build:web
 O workflow `web.yml` repete essas verificações quando arquivos do portal,
 pacotes compartilhados ou migrações são alterados.
 
+## Navegação e responsabilidades
+
+O menu principal não repete os módulos internos do Almoxarifado. A área
+`Consumo` oferece gráficos operacionais; `Relatórios` mantém consulta detalhada
+e histórica. Cadastro de EPI, entrada de estoque e entrega são fluxos separados.
+Consulte [web-mobile-parity.md](web-mobile-parity.md) para a matriz completa.
+
 ## Preparação para deploy
 
 O portal está preparado para uma hospedagem Next.js como a Vercel. Configure o

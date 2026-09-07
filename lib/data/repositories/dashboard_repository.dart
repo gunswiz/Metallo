@@ -37,7 +37,7 @@ class DashboardRepository {
     final assetsRaw = await client
         .from('assets')
         .select(
-          'id,item_id,asset_code,serial_number,team_id,status,notes,items!inner(id,code,name,item_type,active)',
+          'id,item_id,asset_code,serial_number,team_id,status,notes,user_notes,ownership_type,rental_company,rental_start_date,rental_end_date,items!inner(id,code,name,item_type,active)',
         )
         .eq('active', true)
         .eq('items.item_type', 'equipment')

@@ -31,6 +31,15 @@ String friendlyError(Object? error) {
   if (t.contains('weak_password')) {
     return 'A senha não atende aos requisitos configurados no servidor.';
   }
+  if (t.contains('invalid_employee_data')) {
+    return 'Revise nome, e-mail e a senha temporária segura do funcionário.';
+  }
+  if (t.contains('employee_creation_failed')) {
+    return 'Não foi possível criar o funcionário. Tente novamente e, se persistir, verifique o serviço.';
+  }
+  if (t.contains('authentication_required')) {
+    return 'Sua sessão expirou. Entre novamente para continuar.';
+  }
   if (t.contains('admin_required')) {
     return 'Apenas o administrador pode fazer isso.';
   }

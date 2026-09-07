@@ -1,18 +1,14 @@
 "use client";
 
 import {
-  Boxes,
   Building2,
   ChartNoAxesCombined,
   ClipboardList,
   Gauge,
-  HardHat,
-  PackageOpen,
   Settings,
   ShieldCheck,
   Users,
   UserRoundCog,
-  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -27,13 +23,11 @@ const entries: Array<{
 }> = [
   { href: "/dashboard", label: "Dashboard", icon: Gauge, capability: "dashboard:read" },
   { href: "/almoxarifado", label: "Almoxarifado", icon: Building2, capability: "inventory:read" },
-  { href: "/materiais", label: "Materiais", icon: PackageOpen, capability: "inventory:read" },
-  { href: "/equipamentos", label: "Equipamentos", icon: Wrench, capability: "inventory:read" },
-  { href: "/ferramentas", label: "Ferramentas", icon: Boxes, capability: "epi:read" },
-  { href: "/epis", label: "EPIs", icon: HardHat, capability: "epi:read" },
   { href: "/equipes", label: "Equipes", icon: Users, capability: "inventory:read" },
   { href: "/funcionarios", label: "Funcionários", icon: ShieldCheck, capability: "epi:read" },
   { href: "/movimentacoes", label: "Movimentações", icon: ClipboardList, capability: "inventory:read" },
+  { href: "/consumo", label: "Consumo", icon: ChartNoAxesCombined, capability: "inventory:read" },
+  { href: "/relatorios", label: "Relatórios", icon: ChartNoAxesCombined, capability: "inventory:read" },
   { href: "/usuarios", label: "Usuários", icon: UserRoundCog, capability: "admin:manage" },
   { href: "/configuracoes", label: "Configurações", icon: Settings, capability: "admin:manage" },
 ];
@@ -52,11 +46,6 @@ export function SidebarNav({ role }: { role: UserRole }) {
           </Link>
         );
       })}
-      <div className="sidebar-section-label">Análises</div>
-      <Link href="/relatorios" className={pathname.startsWith("/relatorios") ? "active" : undefined}>
-        <ChartNoAxesCombined size={19} aria-hidden />
-        <span>Relatórios</span>
-      </Link>
     </nav>
   );
 }

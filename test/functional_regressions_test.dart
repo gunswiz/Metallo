@@ -9,6 +9,7 @@ import 'package:metallo/data/repositories/dashboard_repository.dart';
 import 'package:metallo/data/repositories/epi_repository.dart';
 import 'package:metallo/data/repositories/movement_repository.dart';
 import 'package:metallo/features/auth/profile_gate.dart';
+import 'package:metallo/features/auth/auth_validation.dart';
 import 'package:metallo/features/consumption/calculations.dart';
 import 'package:metallo/features/epi/epi_catalog.dart';
 import 'package:metallo/features/epi/epi_view_data.dart';
@@ -138,5 +139,34 @@ void main() {
     expect(sql, contains('function public.request_epi_item'));
     expect(sql, contains('function public.update_equipment_admin'));
     expect(sql, contains('system_key'));
+  });
+
+  test('cadastro público está removido e senhas novas são fortes', () {
+    final loginSource =
+        File('lib/features/auth/login_page.dart').readAsStringSync();
+    final authRepository =
+        File('lib/data/repositories/auth_repository.dart').readAsStringSync();
+
+    expect(loginSource, isNot(contains('Criar conta')));
+    expect(authRepository, isNot(contains('signUp(')));
+    expect(strongPasswordValidation('senha-fraca'), isNotNull);
+    expect(strongPasswordValidation('SenhaSegura#2026'), isNull);
+  });
+
+  test('migração fecha bootstrap e cadastro público no banco', () {
+    final sql = File(
+      'supabase/migrations/20260906221331_harden_rpc_and_close_public_signup.sql',
+    ).readAsStringSync();
+
+    expect(sql,
+        contains('alter function public.is_active_admin() security invoker'));
+    expect(
+        sql, contains('revoke all on function public.claim_initial_admin()'));
+    expect(sql, contains('public_signup_disabled'));
+    expect(sql, contains('metallo_provisioned'));
+    expect(
+        sql,
+        contains(
+            'revoke execute on functions from public, anon, authenticated'));
   });
 }

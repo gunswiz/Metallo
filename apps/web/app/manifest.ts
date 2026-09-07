@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "any",
     lang: "pt-BR",
     icons: [
-      { src: "/metallo-mark.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
-      { src: "/metallo-maskable.svg", sizes: "any", type: "image/svg+xml", purpose: "maskable" },
+      { src: "/metallo-app-icon.png", sizes: "1024x1024", type: "image/png", purpose: "any" },
+      { src: "/metallo-app-icon.png", sizes: "1024x1024", type: "image/png", purpose: "maskable" },
     ],
   };
 }

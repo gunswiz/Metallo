@@ -14,7 +14,7 @@ const errors: Record<string, string> = {
   falha: "Não foi possível concluir. Os dados não foram alterados.",
 };
 
-export default async function NewMovementPage({ searchParams }: { searchParams: Promise<{ error?: string; asset?: string; item?: string }> }) {
+export default async function NewMovementPage({ searchParams }: { searchParams: Promise<{ error?: string; asset?: string; item?: string; type?: string }> }) {
   await requireCapability("operations:write");
   const query = await searchParams;
   const service = await getMetalloService();
@@ -31,7 +31,7 @@ export default async function NewMovementPage({ searchParams }: { searchParams: 
         <div className="panel"><header className="panel-header"><div><h2>Material</h2><p>Entrada, saída, transferência, consumo ou reposição</p></div></header><div className="panel-body">
           <form action={registerMaterialMovement} className="form-grid">
             <label className="full">Material<select name="itemId" required defaultValue={query.item ?? ""}><option value="" disabled>Selecione</option>{materials.data.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.code}</option>)}</select></label>
-            <label>Operação<select name="movementType" defaultValue="transfer"><option value="entry">Entrada</option><option value="exit">Saída</option><option value="transfer">Transferência</option><option value="return">Devolução</option><option value="consumption">Consumo</option><option value="replenishment">Reposição</option></select></label>
+            <label>Operação<select name="movementType" defaultValue={query.type === "consumption" ? "consumption" : "transfer"}><option value="entry">Entrada</option><option value="exit">Saída</option><option value="transfer">Transferência</option><option value="return">Devolução</option><option value="consumption">Consumo</option><option value="replenishment">Reposição</option></select></label>
             <label>Quantidade<input name="quantity" type="number" min="1" defaultValue="1" required /></label>
             <label>Origem<select name="originTeamId" defaultValue=""><option value="">Externa / não se aplica</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
             <label>Destino<select name="destinationTeamId" defaultValue=""><option value="">Baixa / não se aplica</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
@@ -41,7 +41,7 @@ export default async function NewMovementPage({ searchParams }: { searchParams: 
         </div></div>
         <div className="panel"><header className="panel-header"><div><h2>Equipamento</h2><p>Transferência e mudança individual de status</p></div></header><div className="panel-body">
           <form action={registerAssetMovement} className="form-grid">
-            <label className="full">Patrimônio<select name="assetId" required defaultValue={query.asset ?? ""}><option value="" disabled>Selecione</option>{assets.data.map((asset) => <option key={asset.id} value={asset.id}>{asset.items?.name} · {asset.asset_code}</option>)}</select></label>
+            <label className="full">Patrimônio<select name="assetId" required defaultValue={query.asset ?? ""}><option value="" disabled>Selecione</option>{assets.data.map((asset) => <option key={asset.id} value={asset.id}>{asset.items?.name} · {asset.asset_code} · {asset.ownership_type === "rented" ? "Alugado" : "Próprio"}</option>)}</select></label>
             <label>Operação<select name="movementType" defaultValue="transfer"><option value="assign">Atribuir</option><option value="transfer">Transferir</option><option value="return">Devolver</option><option value="maintenance">Manutenção</option><option value="status_change">Alterar condição</option></select></label>
             <label>Novo status<select name="newStatus" defaultValue="available"><option value="available">Disponível</option><option value="in_use">Em uso</option><option value="maintenance">Manutenção</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="retired">Baixado</option></select></label>
             <label className="full">Destino<select name="destinationTeamId" defaultValue=""><option value="">Sem equipe / devolução externa</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>

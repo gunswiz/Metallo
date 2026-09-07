@@ -90,10 +90,15 @@ export type Database = {
           id: string
           item_id: string
           notes: string | null
+          ownership_type: string
+          rental_company: string | null
+          rental_end_date: string | null
+          rental_start_date: string | null
           serial_number: string | null
           status: string
           team_id: string | null
           updated_at: string
+          user_notes: string | null
         }
         Insert: {
           active?: boolean
@@ -102,10 +107,15 @@ export type Database = {
           id?: string
           item_id: string
           notes?: string | null
+          ownership_type?: string
+          rental_company?: string | null
+          rental_end_date?: string | null
+          rental_start_date?: string | null
           serial_number?: string | null
           status?: string
           team_id?: string | null
           updated_at?: string
+          user_notes?: string | null
         }
         Update: {
           active?: boolean
@@ -114,10 +124,15 @@ export type Database = {
           id?: string
           item_id?: string
           notes?: string | null
+          ownership_type?: string
+          rental_company?: string | null
+          rental_end_date?: string | null
+          rental_start_date?: string | null
           serial_number?: string | null
           status?: string
           team_id?: string | null
           updated_at?: string
+          user_notes?: string | null
         }
         Relationships: [
           {
@@ -953,6 +968,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+        add_epi_stock_batch: {
+          Args: {
+            p_brand_model?: string
+            p_ca_number?: string
+            p_item_id: string
+            p_lot_number?: string
+            p_quantity: number
+            p_variant?: string
+          }
+          Returns: string
+        }
       admin_delete_asset_movement: {
         Args: { p_movement_id: string }
         Returns: undefined
@@ -990,6 +1016,9 @@ export type Database = {
         }
         Returns: undefined
       }
+      asset_legacy_decode: { Args: { p_value: string }; Returns: string }
+      asset_legacy_encode: { Args: { p_value: string }; Returns: string }
+      asset_visible_notes: { Args: { p_notes: string }; Returns: string }
       claim_initial_admin: { Args: never; Returns: boolean }
       consume_material: {
         Args: {
@@ -1010,6 +1039,39 @@ export type Database = {
           p_notes?: string
           p_serial_number?: string
           p_team_id?: string
+        }
+        Returns: string
+      }
+      create_epi_item_with_stock: {
+        Args: {
+          p_brand_model?: string
+          p_ca_number?: string
+          p_code: string
+          p_initial_quantity?: number
+          p_item_kind: string
+          p_lot_number?: string
+          p_minimum_stock?: number
+          p_name: string
+          p_return_policy?: string
+          p_unit: string
+          p_variant?: string
+        }
+        Returns: string
+      }
+      create_equipment_for_team_v2: {
+        Args: {
+          p_asset_code: string
+          p_category?: string
+          p_code: string
+          p_description?: string
+          p_name: string
+          p_ownership_type?: string
+          p_rental_company?: string
+          p_rental_end_date?: string
+          p_rental_start_date?: string
+          p_serial_number?: string
+          p_team_id?: string
+          p_user_notes?: string
         }
         Returns: string
       }
@@ -1139,6 +1201,25 @@ export type Database = {
           p_serial_number: string
           p_status: string
           p_team_id: string
+        }
+        Returns: undefined
+      }
+      update_equipment_admin_v2: {
+        Args: {
+          p_active?: boolean
+          p_asset_code: string
+          p_asset_id: string
+          p_item_code: string
+          p_item_id: string
+          p_item_name: string
+          p_ownership_type: string
+          p_rental_company?: string
+          p_rental_end_date?: string
+          p_rental_start_date?: string
+          p_serial_number: string
+          p_status: string
+          p_team_id: string
+          p_user_notes: string
         }
         Returns: undefined
       }

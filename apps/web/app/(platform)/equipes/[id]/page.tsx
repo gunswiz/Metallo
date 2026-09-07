@@ -3,6 +3,7 @@ import { formatDateTime } from "@metallo/core";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { getMetalloService } from "@/lib/services/metallo-service";
+import { OwnershipBadge } from "@/components/ownership-badge";
 
 export default async function TeamDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,9 +19,9 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ id:
         <div className="metric-card"><strong>{data.movements.length}</strong><span>movimentações recentes</span></div>
       </section>
       <section className="content-grid">
-        <div className="panel"><header className="panel-header"><h2>Estoque e equipamentos</h2></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Tipo</th><th>Quantidade / patrimônio</th><th>Status</th></tr></thead><tbody>
-          {data.inventory.map((row) => <tr key={row.id}><td><span className="primary-cell">{row.items?.name}</span><span className="secondary-cell">{row.items?.code}</span></td><td>Material</td><td>{row.quantity} {row.items?.unit}</td><td><StatusBadge value={row.status} /></td></tr>)}
-          {data.assets.map((asset) => <tr key={asset.id}><td><Link className="primary-cell" href={`/equipamentos/${asset.id}`}>{asset.items?.name}</Link><span className="secondary-cell">{asset.items?.code}</span></td><td>Equipamento</td><td>{asset.asset_code}</td><td><StatusBadge value={asset.status} /></td></tr>)}
+        <div className="panel"><header className="panel-header"><h2>Estoque e equipamentos</h2></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Tipo</th><th>Quantidade / patrimônio</th><th>Propriedade</th><th>Status</th></tr></thead><tbody>
+          {data.inventory.map((row) => <tr key={row.id}><td><span className="primary-cell">{row.items?.name}</span><span className="secondary-cell">{row.items?.code}</span></td><td>Material</td><td>{row.quantity} {row.items?.unit}</td><td>—</td><td><StatusBadge value={row.status} /></td></tr>)}
+          {data.assets.map((asset) => <tr key={asset.id}><td><Link className="primary-cell" href={`/equipamentos/${asset.id}`}>{asset.items?.name}</Link><span className="secondary-cell">{asset.items?.code}</span></td><td>Equipamento</td><td>{asset.asset_code}</td><td><OwnershipBadge type={asset.ownership_type} /></td><td><StatusBadge value={asset.status} /></td></tr>)}
         </tbody></table></div></div>
         <div className="panel"><header className="panel-header"><h2>Funcionários</h2></header><div className="panel-body list">{data.employees.map((employee) => <Link className="list-row" href={`/funcionarios/${employee.id}`} key={employee.id}><span className="list-row-main"><strong>{employee.full_name}</strong><span>{employee.profession}</span></span></Link>)}</div></div>
       </section>

@@ -12,6 +12,17 @@ migração `20260906021925_web_platform_hardening.sql` adiciona apenas índices 
 chaves estrangeiras e consultas paginadas; não remove colunas, políticas ou
 dados.
 
+A migration `20260906075309_web_mobile_parity.sql` normaliza propriedade e
+locação de equipamentos, preserva observações humanas em `assets.user_notes`,
+mantém compatibilidade temporária com clientes Mobile antigos e adiciona RPCs
+autorizadas para cadastro atômico de equipamento e item da COSEM. Nenhuma
+tabela ou linha histórica é removida.
+
+A migration `20260906082523_allow_epi_stock_entries_for_operators.sql` mantém o
+catálogo restrito ao administrador, mas permite que administrador e engenheiro
+registrem entradas de estoque pela RPC `add_epi_stock_batch`. A função valida
+papel ativo, item, quantidade e variantes configuradas antes de criar o lote.
+
 O histórico local antigo não representa integralmente todas as migrações já
 aplicadas no projeto remoto. Portanto, não use reset, diff destrutivo ou replay
 cego no banco de produção. Crie sempre uma nova migração e revise o SQL antes de

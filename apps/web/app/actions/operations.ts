@@ -10,12 +10,15 @@ import {
   materialUpdateSchema,
   materialMovementSchema,
   equipmentUpdateSchema,
+  epiItemCreateSchema,
   epiItemUpdateSchema,
   epiStockCreateSchema,
   profileUpdateSchema,
   teamCreateSchema,
   employeeCreateSchema,
+  employeeUpdateSchema,
   epiDeliverySchema,
+  epiDeliveryCloseSchema,
 } from "@metallo/validation";
 import { requireCapability } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -56,16 +59,20 @@ export async function createEquipment(formData: FormData) {
     code: text(formData, "code"), name: text(formData, "name"), assetCode: text(formData, "assetCode"),
     serialNumber: optional(formData, "serialNumber"), description: optional(formData, "description"),
     category: optional(formData, "category"), teamId: text(formData, "teamId"), notes: optional(formData, "notes"),
+    ownershipType: text(formData, "ownershipType"), rentalCompany: optional(formData, "rentalCompany"),
+    rentalStartDate: nullable(formData, "rentalStartDate"), rentalEndDate: nullable(formData, "rentalEndDate"),
   });
   if (!parsed.success) redirect("/equipamentos/novo?error=dados-invalidos");
   const supabase = await createClient();
-  const { error } = await supabase.rpc("create_equipment_for_team", {
+  const { error } = await supabase.rpc("create_equipment_for_team_v2", {
     p_code: parsed.data.code, p_name: parsed.data.name, p_asset_code: parsed.data.assetCode,
     p_serial_number: parsed.data.serialNumber, p_description: parsed.data.description,
-    p_category: parsed.data.category, p_team_id: parsed.data.teamId, p_notes: parsed.data.notes,
+    p_category: parsed.data.category, p_team_id: parsed.data.teamId, p_user_notes: parsed.data.notes,
+    p_ownership_type: parsed.data.ownershipType, p_rental_company: parsed.data.rentalCompany,
+    p_rental_start_date: parsed.data.rentalStartDate ?? undefined, p_rental_end_date: parsed.data.rentalEndDate ?? undefined,
   });
   operationError("/equipamentos/novo", error);
-  revalidatePath("/equipamentos"); revalidatePath("/dashboard");
+  revalidatePath("/equipamentos"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect("/equipamentos?created=1");
 }
 
@@ -94,19 +101,61 @@ export async function updateEquipment(formData: FormData) {
     itemId: text(formData, "itemId"), assetId: text(formData, "assetId"), code: text(formData, "code"),
     name: text(formData, "name"), assetCode: text(formData, "assetCode"), serialNumber: optional(formData, "serialNumber"),
     teamId: text(formData, "teamId"), status: text(formData, "status"), notes: optional(formData, "notes"),
+    ownershipType: text(formData, "ownershipType"), rentalCompany: optional(formData, "rentalCompany"),
+    rentalStartDate: nullable(formData, "rentalStartDate"), rentalEndDate: nullable(formData, "rentalEndDate"),
   });
   const fallbackId = text(formData, "assetId");
   if (!parsed.success) redirect(`/equipamentos/${fallbackId}?error=dados-invalidos`);
   const supabase = await createClient();
-  const { error } = await supabase.rpc("update_equipment_admin", {
+  const { error } = await supabase.rpc("update_equipment_admin_v2", {
     p_item_id: parsed.data.itemId, p_item_code: parsed.data.code, p_item_name: parsed.data.name,
     p_asset_id: parsed.data.assetId, p_asset_code: parsed.data.assetCode,
     p_serial_number: parsed.data.serialNumber ?? "", p_team_id: parsed.data.teamId,
-    p_status: parsed.data.status, p_notes: parsed.data.notes ?? "", p_active: true,
+    p_status: parsed.data.status, p_user_notes: parsed.data.notes ?? "", p_active: true,
+    p_ownership_type: parsed.data.ownershipType, p_rental_company: parsed.data.rentalCompany ?? "",
+    p_rental_start_date: parsed.data.rentalStartDate ?? undefined, p_rental_end_date: parsed.data.rentalEndDate ?? undefined,
   });
   operationError(`/equipamentos/${parsed.data.assetId}`, error);
-  revalidatePath("/equipamentos"); revalidatePath(`/equipamentos/${parsed.data.assetId}`); revalidatePath("/dashboard");
+  revalidatePath("/equipamentos"); revalidatePath(`/equipamentos/${parsed.data.assetId}`); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/equipamentos/${parsed.data.assetId}?updated=1`);
+}
+
+export async function returnRentedEquipment(formData: FormData) {
+  await requireCapability("admin:manage");
+  const assetId = text(formData, "assetId");
+  if (!assetId) redirect("/equipamentos?error=dados-invalidos");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("return_rented_equipment", {
+    p_asset_id: assetId,
+    p_note: optional(formData, "note"),
+  });
+  operationError(`/equipamentos/${assetId}`, error);
+  revalidatePath("/equipamentos"); revalidatePath("/movimentacoes"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
+  redirect("/equipamentos?returned=1");
+}
+
+export async function createEpiItem(formData: FormData) {
+  await requireCapability("admin:manage");
+  const parsed = epiItemCreateSchema.safeParse({
+    code: text(formData, "code"), name: text(formData, "name"), kind: text(formData, "kind"),
+    unit: text(formData, "unit"), caNumber: optional(formData, "caNumber"),
+    brandModel: optional(formData, "brandModel"), minimumStock: text(formData, "minimumStock"),
+    initialQuantity: text(formData, "initialQuantity"), variant: optional(formData, "variant"),
+    lotNumber: optional(formData, "lotNumber"),
+  });
+  const kind = text(formData, "kind");
+  if (!parsed.success) redirect(`/epis/novo?kind=${kind || "epi"}&error=dados-invalidos`);
+  const returnPolicy = parsed.data.kind === "personal_tool" ? "personal" : parsed.data.kind === "uniform" ? "uniform" : "returnable";
+  const supabase = await createClient();
+  const { data: itemId, error } = await supabase.rpc("create_epi_item_with_stock", {
+    p_code: parsed.data.code, p_name: parsed.data.name, p_item_kind: parsed.data.kind,
+    p_unit: parsed.data.unit, p_ca_number: parsed.data.caNumber, p_brand_model: parsed.data.brandModel,
+    p_minimum_stock: parsed.data.minimumStock, p_return_policy: returnPolicy,
+    p_initial_quantity: parsed.data.initialQuantity, p_variant: parsed.data.variant, p_lot_number: parsed.data.lotNumber,
+  });
+  operationError(`/epis/novo?kind=${parsed.data.kind}`, error);
+  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath("/almoxarifado"); revalidatePath("/dashboard");
+  redirect(`/epis/${itemId}?created=1`);
 }
 
 export async function updateEpiItem(formData: FormData) {
@@ -123,9 +172,10 @@ export async function updateEpiItem(formData: FormData) {
     code: parsed.data.code, name: parsed.data.name, item_kind: parsed.data.kind, unit: parsed.data.unit,
     ca_number: parsed.data.kind === "epi" ? parsed.data.caNumber ?? null : null,
     brand_model: parsed.data.brandModel ?? null, minimum_stock: parsed.data.minimumStock,
+    return_policy: parsed.data.kind === "personal_tool" ? "personal" : parsed.data.kind === "uniform" ? "uniform" : "returnable",
   }).eq("id", parsed.data.itemId);
   operationError(`/epis/${parsed.data.itemId}`, error);
-  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath(`/epis/${parsed.data.itemId}`); revalidatePath("/dashboard");
+  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath(`/epis/${parsed.data.itemId}`); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/epis/${parsed.data.itemId}?updated=1`);
 }
 
@@ -138,13 +188,13 @@ export async function addEpiStock(formData: FormData) {
   const fallbackId = text(formData, "itemId");
   if (!parsed.success) redirect(`/epis/${fallbackId}?error=estoque-invalido`);
   const supabase = await createClient();
-  const { error } = await supabase.from("epi_stock_batches").insert({
-    item_id: parsed.data.itemId, quantity: parsed.data.quantity, variant: parsed.data.variant ?? null,
-    ca_number: parsed.data.caNumber ?? null, brand_model: parsed.data.brandModel ?? null,
-    lot_number: parsed.data.lotNumber ?? null,
+  const { error } = await supabase.rpc("add_epi_stock_batch", {
+    p_item_id: parsed.data.itemId, p_quantity: parsed.data.quantity,
+    p_variant: parsed.data.variant, p_ca_number: parsed.data.caNumber,
+    p_brand_model: parsed.data.brandModel, p_lot_number: parsed.data.lotNumber,
   });
   operationError(`/epis/${parsed.data.itemId}`, error);
-  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath(`/epis/${parsed.data.itemId}`); revalidatePath("/dashboard");
+  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath(`/epis/${parsed.data.itemId}`); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/epis/${parsed.data.itemId}?stock=added`);
 }
 
@@ -163,7 +213,7 @@ export async function registerMaterialMovement(formData: FormData) {
     p_movement_type: parsed.data.movementType, p_note: parsed.data.note,
   });
   operationError("/movimentacoes/nova", error);
-  revalidatePath("/movimentacoes"); revalidatePath("/materiais"); revalidatePath("/dashboard");
+  revalidatePath("/movimentacoes"); revalidatePath("/materiais"); revalidatePath("/consumo"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect("/movimentacoes?created=1");
 }
 
@@ -182,7 +232,7 @@ export async function registerAssetMovement(formData: FormData) {
   if (parsed.data.destinationTeamId) params.p_destination_team_id = parsed.data.destinationTeamId;
   const { error } = await supabase.rpc("register_asset_movement", params);
   operationError("/movimentacoes/nova", error);
-  revalidatePath("/movimentacoes"); revalidatePath("/equipamentos"); revalidatePath("/dashboard");
+  revalidatePath("/movimentacoes"); revalidatePath("/equipamentos"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/equipamentos/${parsed.data.assetId}?moved=1`);
 }
 
@@ -238,6 +288,31 @@ export async function createEmployee(formData: FormData) {
   redirect("/funcionarios?created=1");
 }
 
+export async function updateEmployee(formData: FormData) {
+  await requireCapability("admin:manage");
+  const parsed = employeeUpdateSchema.safeParse({
+    employeeId: text(formData, "employeeId"), fullName: text(formData, "fullName"),
+    registrationCode: optional(formData, "registrationCode"), profession: text(formData, "profession"),
+    teamId: text(formData, "teamId"), shirtSize: nullable(formData, "shirtSize"), pantsSize: nullable(formData, "pantsSize"),
+    shoeSize: nullable(formData, "shoeSize"), asoExamDate: nullable(formData, "asoExamDate"),
+    asoExpiryDate: nullable(formData, "asoExpiryDate"), active: formData.get("active") === "on",
+  });
+  const fallbackId = text(formData, "employeeId");
+  if (!parsed.success) redirect(`/funcionarios/${fallbackId}?error=dados-invalidos`);
+  const supabase = await createClient();
+  const { data: updated, error } = await supabase.from("epi_employees").update({
+    full_name: parsed.data.fullName, registration_code: parsed.data.registrationCode ?? null,
+    profession: parsed.data.profession, team_id: parsed.data.teamId, shirt_size: parsed.data.shirtSize,
+    pants_size: parsed.data.pantsSize, shoe_size: parsed.data.shoeSize,
+    aso_exam_date: parsed.data.asoExamDate, aso_expiry_date: parsed.data.asoExpiryDate,
+    active: parsed.data.active,
+  }).eq("id", parsed.data.employeeId).select("id").maybeSingle();
+  operationError(`/funcionarios/${parsed.data.employeeId}`, error);
+  if (!updated) redirect(`/funcionarios/${parsed.data.employeeId}?error=nao-encontrado`);
+  revalidatePath("/funcionarios"); revalidatePath(`/funcionarios/${parsed.data.employeeId}`); revalidatePath("/relatorios"); revalidatePath("/dashboard");
+  redirect(`/funcionarios/${parsed.data.employeeId}?updated=1`);
+}
+
 export async function registerEpiDelivery(formData: FormData) {
   await requireCapability("epi:write");
   const parsed = epiDeliverySchema.safeParse({
@@ -251,6 +326,25 @@ export async function registerEpiDelivery(formData: FormData) {
     p_quantity: parsed.data.quantity, p_delivery_reason: parsed.data.reason, p_note: parsed.data.note,
   });
   operationError("/epis/entrega", error);
-  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath("/funcionarios"); revalidatePath("/dashboard");
+  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath("/funcionarios"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/funcionarios/${parsed.data.employeeId}?delivered=1`);
+}
+
+export async function closeEpiDelivery(formData: FormData) {
+  const profile = await requireCapability("epi:write");
+  const parsed = epiDeliveryCloseSchema.safeParse({
+    deliveryId: text(formData, "deliveryId"), employeeId: text(formData, "employeeId"), status: text(formData, "status"),
+  });
+  const fallbackEmployee = text(formData, "employeeId");
+  if (!parsed.success) redirect(`/funcionarios/${fallbackEmployee}?error=dados-invalidos`);
+  const supabase = await createClient();
+  const { data: closed, error } = await supabase.from("epi_deliveries").update({
+    current_status: parsed.data.status,
+    closed_at: new Date().toISOString(),
+    closed_by: profile.id,
+  }).eq("id", parsed.data.deliveryId).eq("employee_id", parsed.data.employeeId).eq("current_status", "active").select("id").maybeSingle();
+  operationError(`/funcionarios/${parsed.data.employeeId}`, error);
+  if (!closed) redirect(`/funcionarios/${parsed.data.employeeId}?error=entrega-ja-encerrada`);
+  revalidatePath("/epis"); revalidatePath("/ferramentas"); revalidatePath("/relatorios"); revalidatePath(`/funcionarios/${parsed.data.employeeId}`);
+  redirect(`/funcionarios/${parsed.data.employeeId}?closed=1`);
 }

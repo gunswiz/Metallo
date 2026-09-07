@@ -121,6 +121,7 @@ class _FakeCatalogRepository extends CatalogRepository {
     required String? notes,
     String ownershipType = 'owned',
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
   }) async {
     atomicEquipmentUpdates++;
@@ -145,6 +146,7 @@ class _FakeCatalogRepository extends CatalogRepository {
     required String? notes,
     String ownershipType = 'owned',
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
   }) async {
     legacyAssetUpdates++;

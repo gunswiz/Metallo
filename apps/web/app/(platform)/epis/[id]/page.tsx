@@ -10,7 +10,7 @@ const kindLabels: Record<string, string> = { epi: "EPI", uniform: "Fardamento", 
 
 export default async function EpiItemDetailPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; updated?: string; stock?: string }>;
+  searchParams: Promise<{ error?: string; updated?: string; stock?: string; created?: string }>;
 }) {
   await requireCapability("epi:read");
   const { id } = await params;
@@ -19,11 +19,12 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
   const service = await getMetalloService();
   const { item, deliveries } = await service.getEpiItem(id);
   const stock = item.epi_stock_batches.reduce((sum, batch) => sum + batch.quantity, 0);
+  const variants = [...item.epi_item_variants].sort((left, right) => left.sort_order - right.sort_order || left.label.localeCompare(right.label, "pt-BR"));
 
   return (
     <>
       <PageHeader eyebrow={kindLabels[item.item_kind] ?? "ITEM DA COSEM"} title={item.name} description={`Código ${item.code} · ${stock} ${item.unit} disponíveis`} />
-      {(query.updated || query.stock) && <div className="alert success">{query.stock ? "Entrada adicionada ao estoque." : "Cadastro atualizado com sucesso."}</div>}
+      {(query.updated || query.stock || query.created) && <div className="alert success">{query.stock ? "Entrada adicionada ao estoque." : query.created ? "Item cadastrado. Agora você pode fazer novas entradas ou registrar uma entrega." : "Cadastro atualizado com sucesso."}</div>}
       {query.error && <div className="alert error">Não foi possível concluir. Revise os dados e a variante informada.</div>}
       <section className="detail-hero"><dl className="definition-grid">
         <div className="definition-item"><dt>Tipo</dt><dd>{kindLabels[item.item_kind] ?? item.item_kind}</dd></div>
@@ -37,7 +38,10 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
         {can(profile.role, "epi:write") && <div className="panel"><header className="panel-header"><div><h2>Entrada de estoque</h2><p>Cria um lote rastreável sem alterar entregas anteriores</p></div></header><div className="panel-body"><form action={addEpiStock} className="form-grid">
           <input type="hidden" name="itemId" value={item.id} />
           <label>Quantidade<input name="quantity" type="number" min="1" required /></label>
-          <label>Variante<input name="variant" placeholder="Ex.: 42, Claro ou M" maxLength={80} /></label>
+          <label>Variante{variants.length > 0
+            ? <select name="variant" required defaultValue=""><option value="" disabled>Selecione</option>{variants.map((variant) => <option key={variant.value} value={variant.value}>{variant.label}</option>)}</select>
+            : <input name="variant" placeholder="Ex.: tamanho ou modelo" maxLength={80} />}
+          </label>
           <label>C.A.<input name="caNumber" defaultValue={item.ca_number ?? ""} maxLength={60} /></label>
           <label>Marca / modelo<input name="brandModel" defaultValue={item.brand_model ?? ""} maxLength={140} /></label>
           <label className="full">Lote<input name="lotNumber" maxLength={100} /></label>

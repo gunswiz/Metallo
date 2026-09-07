@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:metallo/core/errors.dart';
 import 'package:metallo/data/models/dashboard_snapshot.dart';
 import 'package:metallo/data/repositories/admin_repository.dart';
+import 'package:metallo/features/auth/auth_validation.dart';
 
 class CreateEmployeePage extends StatefulWidget {
   const CreateEmployeePage({super.key, required this.repo});
@@ -26,9 +27,11 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
     if (name.text.trim().isEmpty || email.text.trim().isEmpty) {
       return 'Preencha nome e e-mail.';
     }
-    if (password.text.length < 4) {
-      return 'A senha temporária precisa ter 4 ou mais caracteres.';
-    }
+    final passwordError = strongPasswordValidation(
+      password.text,
+      subject: 'A senha temporária',
+    );
+    if (passwordError != null) return passwordError;
     return null;
   }
 
@@ -107,8 +110,10 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
               TextField(
                 controller: password,
                 obscureText: true,
-                decoration:
-                    const InputDecoration(labelText: 'Senha temporária (4+)'),
+                decoration: const InputDecoration(
+                  labelText: 'Senha temporária segura (12+)',
+                  helperText: 'Use maiúscula, minúscula, número e símbolo.',
+                ),
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(

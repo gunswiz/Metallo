@@ -16,21 +16,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final name = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
-  bool createMode = false;
   bool loading = false;
   String? error;
   String? message;
-
-  void _selectMode(bool shouldCreateAccount) {
-    setState(() {
-      createMode = shouldCreateAccount;
-      error = null;
-      message = null;
-    });
-  }
 
   void _startLoading() {
     setState(() {
@@ -42,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    name.dispose();
     email.dispose();
     password.dispose();
     super.dispose();
@@ -52,29 +41,10 @@ class _LoginPageState extends State<LoginPage> {
     if (loading) return;
     _startLoading();
     try {
-      if (createMode) {
-        final validationError =
-            accountCreationValidation(name.text, password.text);
-        if (validationError != null) throw Exception(validationError);
-        await widget.authRepository.signUp(
-          email: email.text.trim(),
-          password: password.text,
-          fullName: name.text.trim(),
-        );
-        await widget.authRepository.signOut();
-        if (mounted) {
-          setState(() {
-            createMode = false;
-            message =
-                'Conta criada. Aguarde o administrador liberar seu acesso e definir equipe/cargo.';
-          });
-        }
-      } else {
-        await widget.authRepository.signInWithPassword(
-          email: email.text.trim(),
-          password: password.text,
-        );
-      }
+      await widget.authRepository.signInWithPassword(
+        email: email.text.trim(),
+        password: password.text,
+      );
     } catch (e) {
       if (mounted) setState(() => error = friendlyError(e));
     } finally {
@@ -121,9 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   const BrandLogo(height: 105),
                   const SizedBox(height: 10),
                   Text(
-                    createMode
-                        ? 'Criar nova conta'
-                        : 'Gestão de materiais e equipamentos',
+                    'Gestão de materiais e equipamentos',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 18,
@@ -132,27 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 28),
-                  SegmentedButton<bool>(
-                    segments: const [
-                      ButtonSegment(value: false, label: Text('Entrar')),
-                      ButtonSegment(value: true, label: Text('Criar conta')),
-                    ],
-                    selected: {createMode},
-                    onSelectionChanged: loading
-                        ? null
-                        : (selection) => _selectMode(selection.first),
-                  ),
                   const SizedBox(height: 18),
-                  if (createMode) ...[
-                    TextField(
-                      controller: name,
-                      decoration: const InputDecoration(
-                        labelText: 'Nome',
-                        prefixIcon: Icon(Icons.person_outline),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
                   TextField(
                     controller: email,
                     keyboardType: TextInputType.emailAddress,
@@ -166,19 +114,18 @@ class _LoginPageState extends State<LoginPage> {
                     controller: password,
                     obscureText: true,
                     onSubmitted: (_) => submit(),
-                    decoration: InputDecoration(
-                      labelText: createMode ? 'Senha (4+)' : 'Senha',
-                      prefixIcon: const Icon(Icons.lock_outline),
+                    decoration: const InputDecoration(
+                      labelText: 'Senha',
+                      prefixIcon: Icon(Icons.lock_outline),
                     ),
                   ),
-                  if (!createMode)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: loading ? null : forgotPassword,
-                        child: const Text('Esqueci minha senha'),
-                      ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: loading ? null : forgotPassword,
+                      child: const Text('Esqueci minha senha'),
                     ),
+                  ),
                   if (message != null) ...[
                     const SizedBox(height: 14),
                     Text(
@@ -204,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 22,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text(createMode ? 'Criar conta' : 'Entrar'),
+                        : const Text('Entrar'),
                   ),
                 ],
               ),

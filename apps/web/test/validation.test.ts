@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { materialMovementSchema, paginationSchema, profileUpdateSchema } from "@metallo/validation";
+import {
+  materialMovementSchema,
+  paginationSchema,
+  profileUpdateSchema,
+  updatePasswordSchema,
+} from "@metallo/validation";
 
 describe("validação operacional", () => {
   it("impede transferência para a mesma equipe", () => {
@@ -27,5 +32,17 @@ describe("validação operacional", () => {
       active: true,
     });
     expect(result.success).toBe(false);
+  });
+
+  it("exige senha forte ao alterar a credencial", () => {
+    expect(updatePasswordSchema.safeParse({
+      password: "senha-fraca",
+      confirmation: "senha-fraca",
+    }).success).toBe(false);
+
+    expect(updatePasswordSchema.safeParse({
+      password: "SenhaSegura#2026",
+      confirmation: "SenhaSegura#2026",
+    }).success).toBe(true);
   });
 });

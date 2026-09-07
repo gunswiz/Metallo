@@ -212,7 +212,10 @@ class _AccountPasswordSection extends StatelessWidget {
           TextField(
             controller: passwordController,
             obscureText: true,
-            decoration: const InputDecoration(labelText: 'Nova senha (4+)'),
+            decoration: const InputDecoration(
+              labelText: 'Nova senha segura (12+)',
+              helperText: 'Use maiúscula, minúscula, número e símbolo.',
+            ),
           ),
           const SizedBox(height: 10),
           TextField(

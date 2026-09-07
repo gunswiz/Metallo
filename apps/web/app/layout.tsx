@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: "Centro administrativo e operacional Metallo.",
   applicationName: "Metallo",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/metallo-app-icon.png",
+    apple: "/metallo-app-icon.png",
+  },
 };
 
 export const viewport: Viewport = {

@@ -15,9 +15,17 @@ export const resetPasswordSchema = z.object({
   email: z.email("Informe um e-mail válido."),
 });
 
+export const strongPasswordSchema = z
+  .string()
+  .min(12, "Use pelo menos 12 caracteres.")
+  .regex(/[A-Z]/, "Inclua uma letra maiúscula.")
+  .regex(/[a-z]/, "Inclua uma letra minúscula.")
+  .regex(/[0-9]/, "Inclua um número.")
+  .regex(/[^A-Za-z0-9]/, "Inclua um símbolo.");
+
 export const updatePasswordSchema = z
   .object({
-    password: z.string().min(8, "Use pelo menos 8 caracteres."),
+    password: strongPasswordSchema,
     confirmation: z.string(),
   })
   .refine((value) => value.password === value.confirmation, {
@@ -80,6 +88,14 @@ export const equipmentCreateSchema = z.object({
   category: z.string().trim().max(80).optional(),
   teamId: z.uuid(),
   notes: z.string().trim().max(500).optional(),
+  ownershipType: z.enum(["owned", "rented"]),
+  rentalCompany: z.string().trim().max(160).optional(),
+  rentalStartDate: z.iso.date().nullable(),
+  rentalEndDate: z.iso.date().nullable(),
+}).refine((value) => value.ownershipType !== "rented" || Boolean(value.rentalCompany), {
+  message: "Informe a empresa locadora.", path: ["rentalCompany"],
+}).refine((value) => !value.rentalStartDate || !value.rentalEndDate || value.rentalEndDate >= value.rentalStartDate, {
+  message: "O fim previsto deve ser posterior ao início.", path: ["rentalEndDate"],
 });
 
 export const equipmentUpdateSchema = z.object({
@@ -92,6 +108,27 @@ export const equipmentUpdateSchema = z.object({
   teamId: z.uuid(),
   status: z.enum(["available", "in_use", "maintenance", "damaged", "lost", "retired"]),
   notes: z.string().trim().max(500).optional(),
+  ownershipType: z.enum(["owned", "rented"]),
+  rentalCompany: z.string().trim().max(160).optional(),
+  rentalStartDate: z.iso.date().nullable(),
+  rentalEndDate: z.iso.date().nullable(),
+}).refine((value) => value.ownershipType !== "rented" || Boolean(value.rentalCompany), {
+  message: "Informe a empresa locadora.", path: ["rentalCompany"],
+}).refine((value) => !value.rentalStartDate || !value.rentalEndDate || value.rentalEndDate >= value.rentalStartDate, {
+  message: "O fim previsto deve ser posterior ao início.", path: ["rentalEndDate"],
+});
+
+export const epiItemCreateSchema = z.object({
+  code: z.string().trim().min(1).max(50),
+  name: z.string().trim().min(2).max(140),
+  kind: z.enum(["epi", "uniform", "personal_tool"]),
+  unit: z.string().trim().min(1).max(20),
+  caNumber: z.string().trim().max(60).optional(),
+  brandModel: z.string().trim().max(140).optional(),
+  minimumStock: z.coerce.number().int().min(0).max(1_000_000),
+  initialQuantity: z.coerce.number().int().min(0).max(1_000_000),
+  variant: z.string().trim().max(80).optional(),
+  lotNumber: z.string().trim().max(100).optional(),
 });
 
 export const epiItemUpdateSchema = z.object({
@@ -146,6 +183,11 @@ export const employeeCreateSchema = z.object({
   path: ["asoExpiryDate"],
 });
 
+export const employeeUpdateSchema = employeeCreateSchema.safeExtend({
+  employeeId: z.uuid(),
+  active: z.boolean(),
+});
+
 export const epiDeliverySchema = z.object({
   employeeId: z.uuid(),
   itemId: z.uuid(),
@@ -153,4 +195,10 @@ export const epiDeliverySchema = z.object({
   quantity: z.coerce.number().int().positive().max(1000),
   reason: z.enum(["initial", "replacement", "additional"]),
   note: z.string().trim().max(500).optional(),
+});
+
+export const epiDeliveryCloseSchema = z.object({
+  deliveryId: z.uuid(),
+  employeeId: z.uuid(),
+  status: z.enum(["returned", "replaced", "lost", "damaged", "consumed"]),
 });

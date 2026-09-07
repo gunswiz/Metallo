@@ -35,7 +35,7 @@ class CatalogRepository {
     final rows = await client
         .from('assets')
         .select(
-            'id,asset_code,serial_number,status,team_id,notes,items!inner(id,code,name,item_type,active),teams(name)')
+            'id,asset_code,serial_number,status,team_id,notes,user_notes,ownership_type,rental_company,rental_start_date,rental_end_date,items!inner(id,code,name,item_type,active),teams(name)')
         .eq('active', true)
         .eq('items.item_type', 'equipment')
         .eq('items.active', true)
@@ -73,9 +73,10 @@ class CatalogRepository {
     required String? notes,
     String ownershipType = 'owned',
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
   }) async {
-    await client.rpc('update_equipment_admin', params: {
+    await client.rpc('update_equipment_admin_v2', params: {
       'p_item_id': itemId,
       'p_item_code': itemCode.trim(),
       'p_item_name': itemName.trim(),
@@ -84,12 +85,11 @@ class CatalogRepository {
       'p_serial_number': nullableText(serialNumber),
       'p_team_id': teamId,
       'p_status': status,
-      'p_notes': buildEquipmentNotes(
-        ownershipType: ownershipType,
-        rentalCompany: rentalCompany,
-        rentalEndDate: rentalEndDate,
-        notes: notes,
-      ),
+      'p_user_notes': nullableText(notes),
+      'p_ownership_type': ownershipType,
+      'p_rental_company': nullableText(rentalCompany),
+      'p_rental_start_date': nullableText(rentalStartDate),
+      'p_rental_end_date': nullableText(rentalEndDate),
       'p_active': true,
     });
     await dashboardRepository.refreshDashboard();
@@ -104,6 +104,7 @@ class CatalogRepository {
     required String? notes,
     String ownershipType = 'owned',
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
   }) async {
     await client.rpc('update_asset_admin', params: {
@@ -115,6 +116,7 @@ class CatalogRepository {
       'p_notes': buildEquipmentNotes(
           ownershipType: ownershipType,
           rentalCompany: rentalCompany,
+          rentalStartDate: rentalStartDate,
           rentalEndDate: rentalEndDate,
           notes: notes),
       'p_active': true,
@@ -181,10 +183,11 @@ class CatalogRepository {
     String? serialNumber,
     String ownershipType = 'owned',
     String? rentalCompany,
+    String? rentalStartDate,
     String? rentalEndDate,
     String? notes,
   }) async {
-    await client.rpc('create_equipment_for_team', params: {
+    await client.rpc('create_equipment_for_team_v2', params: {
       'p_code': code.trim(),
       'p_name': name.trim(),
       'p_asset_code': assetCode.trim(),
@@ -192,11 +195,11 @@ class CatalogRepository {
       'p_description': null,
       'p_category': null,
       'p_team_id': teamId,
-      'p_notes': buildEquipmentNotes(
-          ownershipType: ownershipType,
-          rentalCompany: rentalCompany,
-          rentalEndDate: rentalEndDate,
-          notes: notes),
+      'p_user_notes': nullableText(notes),
+      'p_ownership_type': ownershipType,
+      'p_rental_company': nullableText(rentalCompany),
+      'p_rental_start_date': nullableText(rentalStartDate),
+      'p_rental_end_date': nullableText(rentalEndDate),
     });
     await dashboardRepository.refreshDashboard();
   }

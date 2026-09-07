@@ -56,4 +56,6 @@ A chave de assinatura nunca deve ser adicionada ao Git. O GitHub Actions recria
 - `ANDROID_KEY_PASSWORD`
 
 Mais detalhes em [docs/architecture.md](docs/architecture.md),
-[docs/web.md](docs/web.md) e [docs/database.md](docs/database.md).
+[docs/web.md](docs/web.md), [docs/database.md](docs/database.md) e
+[docs/web-mobile-parity.md](docs/web-mobile-parity.md). As decisões e os testes
+de segurança ficam registrados em [docs/security.md](docs/security.md).

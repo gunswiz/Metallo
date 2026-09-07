@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Boxes, HardHat, PackageOpen, Shirt, Wrench } from "lucide-react";
+import { Boxes, HardHat, PackageOpen, Wrench } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { requireProfile } from "@/lib/auth/session";
 import { can } from "@metallo/core";
@@ -8,8 +8,7 @@ const modules = [
   { href: "/materiais", title: "Materiais", description: "Estoque consumível por equipe", icon: PackageOpen, capability: "inventory:read" as const },
   { href: "/equipamentos", title: "Equipamentos", description: "Patrimônios e posse atual", icon: Wrench, capability: "inventory:read" as const },
   { href: "/ferramentas", title: "Ferramentas", description: "Itens pessoais distribuídos", icon: Boxes, capability: "epi:read" as const },
-  { href: "/epis", title: "EPIs", description: "Estoque, C.A. e variantes", icon: HardHat, capability: "epi:read" as const },
-  { href: "/epis?kind=uniform", title: "Fardamento", description: "Camisas e calças por tamanho", icon: Shirt, capability: "epi:read" as const },
+  { href: "/epis", title: "EPIs", description: "Proteção, fardamento, C.A. e variantes", icon: HardHat, capability: "epi:read" as const },
 ];
 
 export default async function WarehousePage() {

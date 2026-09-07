@@ -7,8 +7,9 @@ import { SubmitButton } from "@/components/submit-button";
 type Employee = { id: string; name: string; team: string };
 type Batch = { id: string; itemId: string; itemName: string; itemCode: string; variant: string | null; quantity: number; unit: string };
 
-export function EpiDeliveryForm({ action, employees, batches, initialEmployee }: { action: (formData: FormData) => Promise<void>; employees: Employee[]; batches: Batch[]; initialEmployee?: string }) {
-  const [batchId, setBatchId] = useState("");
+export function EpiDeliveryForm({ action, employees, batches, initialEmployee, initialItem }: { action: (formData: FormData) => Promise<void>; employees: Employee[]; batches: Batch[]; initialEmployee?: string; initialItem?: string }) {
+  const initialBatch = batches.find((candidate) => candidate.itemId === initialItem)?.id ?? "";
+  const [batchId, setBatchId] = useState(initialBatch);
   const batch = useMemo(() => batches.find((candidate) => candidate.id === batchId), [batchId, batches]);
   return (
     <form action={action} className="form-grid">

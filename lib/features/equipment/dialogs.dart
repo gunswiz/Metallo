@@ -28,10 +28,12 @@ Future<bool?> showEditEquipmentCatalogDialog(
         TextEditingController(text: equipment['asset_code']?.toString() ?? '');
     final serialNumber = TextEditingController(
         text: equipment['serial_number']?.toString() ?? '');
-    final ownership = parseEquipmentOwnership(equipment['notes'] as String?);
+    final ownership = equipmentOwnershipFromMap(equipment);
     final notes = TextEditingController(text: ownership.notes ?? '');
     final rentalCompany =
         TextEditingController(text: ownership.rentalCompany ?? '');
+    final rentalStartDate = TextEditingController(
+        text: ownership.rentalStartDate ?? '');
     final rentalEndDate =
         TextEditingController(text: ownership.rentalEndDate ?? '');
     String ownershipType = ownership.type;
@@ -104,6 +106,12 @@ Future<bool?> showEditEquipmentCatalogDialog(
                         controller: rentalCompany,
                         decoration: const InputDecoration(
                             labelText: 'Empresa locadora')),
+                    const SizedBox(height: 10),
+                    TextField(
+                        controller: rentalStartDate,
+                        decoration: const InputDecoration(
+                            labelText: 'Início da locação',
+                            hintText: 'AAAA-MM-DD')),
                     const SizedBox(height: 10),
                     TextField(
                         controller: rentalEndDate,
@@ -203,6 +211,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
                             notes: notes.text,
                             ownershipType: ownershipType,
                             rentalCompany: rentalCompany.text,
+                            rentalStartDate: rentalStartDate.text,
                             rentalEndDate: rentalEndDate.text,
                           );
                           if (dialogContext.mounted) {
@@ -229,6 +238,7 @@ Future<bool?> showEditEquipmentCatalogDialog(
       serialNumber.dispose();
       notes.dispose();
       rentalCompany.dispose();
+      rentalStartDate.dispose();
       rentalEndDate.dispose();
       typeName.dispose();
     }
@@ -251,6 +261,7 @@ Future<void> showEquipmentDialog(
     final assetCode = TextEditingController();
     final serial = TextEditingController();
     final rentalCompany = TextEditingController();
+    final rentalStartDate = TextEditingController();
     final rentalEndDate = TextEditingController();
     final notes = TextEditingController();
     String? suggestedType;
@@ -337,6 +348,12 @@ Future<void> showEquipmentDialog(
                             labelText: 'Empresa locadora')),
                     const SizedBox(height: 10),
                     TextField(
+                        controller: rentalStartDate,
+                        decoration: const InputDecoration(
+                            labelText: 'Início da locação',
+                            hintText: 'AAAA-MM-DD')),
+                    const SizedBox(height: 10),
+                    TextField(
                         controller: rentalEndDate,
                         decoration: const InputDecoration(
                             labelText: 'Fim da locação',
@@ -407,6 +424,7 @@ Future<void> showEquipmentDialog(
                             teamId: teamId!,
                             ownershipType: ownershipType,
                             rentalCompany: rentalCompany.text,
+                            rentalStartDate: rentalStartDate.text,
                             rentalEndDate: rentalEndDate.text,
                             notes: notes.text,
                           );
@@ -439,6 +457,7 @@ Future<void> showEquipmentDialog(
       assetCode.dispose();
       serial.dispose();
       rentalCompany.dispose();
+      rentalStartDate.dispose();
       rentalEndDate.dispose();
       notes.dispose();
     }
@@ -969,6 +988,7 @@ Future<void> showRentedEquipmentReplacementDialog(
           ),
           ownershipType: 'rented',
           rentalCompany: equipment.rentalCompany,
+          rentalStartDate: equipment.rentalStartDate,
           rentalEndDate: equipment.rentalEndDate,
         ),
         errorText: friendlyError,

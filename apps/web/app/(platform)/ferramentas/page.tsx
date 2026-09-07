@@ -7,15 +7,22 @@ import { requireCapability } from "@/lib/auth/session";
 import { parsePage, type SearchParams } from "@/lib/query";
 import { getMetalloService } from "@/lib/services/metallo-service";
 import Link from "next/link";
+import { PackageCheck, Plus } from "lucide-react";
+import { requireProfile } from "@/lib/auth/session";
+import { can } from "@metallo/core";
 
 export default async function ToolsPage({ searchParams }: { searchParams: SearchParams }) {
   await requireCapability("epi:read");
+  const profile = await requireProfile();
   const input = await parsePage(searchParams);
   const service = await getMetalloService();
   const result = await service.listEpiItems(input, "personal_tool");
   return (
     <>
-      <PageHeader eyebrow="ITENS PESSOAIS" title="Ferramentas" description="Ferramentas manuais atribuídas a funcionários e controladas pela COSEM." />
+      <PageHeader eyebrow="ITENS PESSOAIS" title="Ferramentas" description="Ferramentas manuais atribuídas a funcionários e controladas pela COSEM." actions={<>
+        {can(profile.role, "admin:manage") && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Novo item pessoal</Link>}
+        {can(profile.role, "epi:write") && <Link className="button primary" href="/epis/entrega?kind=personal_tool"><PackageCheck size={16} />Entregar item</Link>}
+      </>} />
       <section className="panel">
         <div className="panel-body"><SearchToolbar placeholder="Nome ou código da ferramenta" q={input.q} /></div>
         {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table">
