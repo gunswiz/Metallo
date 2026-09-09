@@ -1,6 +1,6 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - "01_WEB"
+  - "03_COMPARTILHADO/*"
 
 allowBuilds:
   esbuild: true

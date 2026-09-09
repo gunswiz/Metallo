@@ -6,14 +6,17 @@ on:
     branches: [main]
     tags: ['v*']
     paths:
-      - 'lib/**'
-      - 'assets/**'
-      - 'test/**'
-      - 'android/**'
-      - 'pubspec.yaml'
-      - 'pubspec.lock'
-      - 'analysis_options.yaml'
+      - '02_MOBILE/lib/**'
+      - '02_MOBILE/assets/**'
+      - '02_MOBILE/test/**'
+      - '02_MOBILE/android/**'
+      - '02_MOBILE/pubspec.yaml'
+      - '02_MOBILE/pubspec.lock'
+      - '02_MOBILE/analysis_options.yaml'
       - 'updates/**'
+      - '07_CONFIGURACOES_DO_PROJETO/*.mjs'
+      - '06_TESTES_E_QUALIDADE/*.test.mjs'
+      - '04_BANCO_E_SUPABASE/supabase/**'
       - '.github/workflows/build_apk.yml'
 
 permissions:
@@ -23,6 +26,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: 02_MOBILE
 
     steps:
       - name: Checkout
@@ -36,6 +42,12 @@ jobs:
 
       - name: Show Flutter version
         run: flutter --version
+
+      - name: Validate release versions and publication guards
+        working-directory: .
+        run: |
+          node 07_CONFIGURACOES_DO_PROJETO/validar-versao.mjs
+          node --test 06_TESTES_E_QUALIDADE/*.test.mjs
 
       - name: Configure permanent Android signing
         env:
@@ -99,12 +111,26 @@ jobs:
           fi
 
           echo "APK signature verified with permanent Metallo certificate."
-          
+
+      - name: Prepare verified release artifacts
+        run: |
+          set -euo pipefail
+          VERSION="$(python3 -c 'import json; print(json.load(open("../updates/proxima-versao.json"))["version"])')"
+          cp ../updates/proxima-versao.json build/app/outputs/flutter-apk/latest.json
+          cp "../05_DOCUMENTACAO/RELEASE_${VERSION}.md" build/app/outputs/flutter-apk/RELEASE_NOTES.md
+          cd build/app/outputs/flutter-apk
+          cp app-release.apk Metallo.apk
+          sha256sum Metallo.apk > Metallo.apk.sha256
+
       - name: Upload APK
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: metallo-android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: |
+            02_MOBILE/build/app/outputs/flutter-apk/Metallo.apk
+            02_MOBILE/build/app/outputs/flutter-apk/Metallo.apk.sha256
+            02_MOBILE/build/app/outputs/flutter-apk/latest.json
+            02_MOBILE/build/app/outputs/flutter-apk/RELEASE_NOTES.md
           if-no-files-found: error
           retention-days: 14
 
@@ -115,7 +141,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    concurrency:
+      group: metallo-android-publication
+      cancel-in-progress: false
     steps:
+      - name: Checkout publication scripts
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Download verified APK
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
@@ -125,9 +156,28 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp "release/app-release.apk" "Metallo.apk"
+          set -euo pipefail
+          cd release
+          sha256sum --check Metallo.apk.sha256
           gh release create "$GITHUB_REF_NAME" \
-            "Metallo.apk" \
+            "Metallo.apk" "Metallo.apk.sha256" "latest.json" \
             --repo "$GITHUB_REPOSITORY" \
+            --verify-tag --draft \
             --title "Metallo $GITHUB_REF_NAME" \
-            --notes "Versão para testes no Android. APK assinado com o certificado permanente do Metallo."
+            --notes-file RELEASE_NOTES.md
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
+
+      - name: Verify public download before announcing update
+        run: |
+          set -euo pipefail
+          mkdir public-check
+          cd public-check
+          curl --fail --location --retry 3 --output Metallo.apk \
+            "https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME/Metallo.apk"
+          cp ../release/Metallo.apk.sha256 .
+          sha256sum --check Metallo.apk.sha256
+
+      - name: Activate update for installed applications
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node 07_CONFIGURACOES_DO_PROJETO/ativar-atualizacao.mjs --publicar release/latest.json

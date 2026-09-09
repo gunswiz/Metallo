@@ -1,0 +1,264 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/admin_repository.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/auth_repository.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/catalog_repository.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/dashboard_repository.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/epi_repository.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/movement_repository.dart';
+import 'package:metallo/01_TELAS/01_LOGIN/profile_gate.dart';
+import 'package:metallo/01_TELAS/01_LOGIN/auth_validation.dart';
+import 'package:metallo/01_TELAS/07_CONSUMO/calcular_consumo.dart';
+import 'package:metallo/01_TELAS/04_EPIS_E_FUNCIONARIOS/epi_catalog.dart';
+import 'package:metallo/01_TELAS/04_EPIS_E_FUNCIONARIOS/epi_view_data.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+SupabaseClient _testClient() => SupabaseClient(
+      'https://example.invalid',
+      'test',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+    );
+
+class _PendingAdminRepository extends AdminRepository {
+  _PendingAdminRepository(super.client, super.dashboardRepository);
+
+  @override
+  Stream<Map<String, dynamic>?> watchCurrentProfile() => Stream.value(null);
+}
+
+void main() {
+  test('consulta total de consumo mantém a identificação das unidades', () {
+    final rows = <Map<String, dynamic>>[
+      {
+        'quantity': 16,
+        'items': {'unit': 'un'}
+      },
+      {
+        'quantity': 2,
+        'items': {'unit': 'caixa'}
+      },
+    ];
+
+    expect(consumptionUnits(rows), ['caixa', 'un']);
+    expect(sumConsumption(rows), 18);
+    expect(hasMixedConsumptionUnits(rows), 'caixa/un');
+  });
+
+  test('busca de funcionário inclui profissão, matrícula e equipe', () {
+    final employees = <Map<String, dynamic>>[
+      {
+        'active': true,
+        'full_name': 'Wellington Silva',
+        'profession': 'Operador de Munck',
+        'registration_code': 'MAT-42',
+        'teams': {'name': 'Equipe São José'},
+      },
+    ];
+
+    expect(filterActiveEpiEmployees(employees, 'munck'), hasLength(1));
+    expect(filterActiveEpiEmployees(employees, 'mat-42'), hasLength(1));
+    expect(filterActiveEpiEmployees(employees, 'sao jose'), hasLength(1));
+  });
+
+  test('tipo interno de EPI não muda quando código visível é editado', () {
+    final boot = {'code': 'CODIGO-NOVO', 'system_key': 'EPI-BOT'};
+    final glasses = {'code': 'OCULOS-2026', 'system_key': 'EPI-OCU'};
+
+    expect(isBootEpiItem(boot), isTrue);
+    expect(isGlassesEpiItem(glasses), isTrue);
+    expect(validEmployeeShoeSize({'shoe_size': '38'}), '38');
+    expect(validEmployeeShoeSize({'shoe_size': '46'}), '46');
+    expect(validEmployeeShoeSize({'shoe_size': '37'}), isNull);
+    expect(validEmployeeShoeSize({'shoe_size': '47'}), isNull);
+  });
+
+  test('histórico preserva mais de cem registros e mantém ordem', () {
+    final material = List<dynamic>.generate(
+      120,
+      (index) => {
+        'id': 'm$index',
+        'created_at': DateTime(2026, 1, 1)
+            .add(Duration(minutes: index))
+            .toIso8601String(),
+      },
+    );
+    final assets = List<dynamic>.generate(
+      40,
+      (index) => {
+        'id': 'a$index',
+        'created_at': DateTime(2026, 2, 1)
+            .add(Duration(minutes: index))
+            .toIso8601String(),
+      },
+    );
+
+    final merged = mergeHistoryRows(material, assets);
+    expect(merged, hasLength(160));
+    expect(merged.first['id'], 'a39');
+    expect(merged.last['id'], 'm0');
+  });
+
+  testWidgets('perfil ausente conclui em acesso pendente, não em spinner',
+      (tester) async {
+    final client = _testClient();
+    final dashboard = DashboardRepository(client);
+    addTearDown(dashboard.dispose);
+    final admin = _PendingAdminRepository(client, dashboard);
+
+    await tester.pumpWidget(MaterialApp(
+      home: ProfileGate(
+        authRepository: AuthRepository(client),
+        dashboardRepository: dashboard,
+        catalogRepository: CatalogRepository(client, dashboard),
+        epiRepository: EpiRepository(client, dashboard),
+        adminRepository: admin,
+        movementRepository: MovementRepository(client, dashboard),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Acesso aguardando liberação'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  test('migração contém as proteções funcionais confirmadas', () {
+    final sql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260905185609_fix_confirmed_functional_bugs.sql',
+    ).readAsStringSync();
+
+    expect(sql, contains("raise exception 'last_admin_required'"));
+    expect(sql, contains("raise exception 'central_team_required'"));
+    expect(sql, contains('team_has_epi_employees'));
+    expect(sql, contains('id = (select auth.uid())'));
+    expect(sql, contains('alter publication supabase_realtime add table'));
+    expect(sql, contains('e.team_id = epi_requests.team_id'));
+    expect(sql, isNot(contains('e.team_id = e.team_id')));
+    expect(sql, contains('function public.request_epi_item'));
+    expect(sql, contains('function public.update_equipment_admin'));
+    expect(sql, contains('system_key'));
+  });
+
+  test('cadastro público está removido e senhas novas são fortes', () {
+    final loginSource =
+        File('lib/01_TELAS/01_LOGIN/login_page.dart').readAsStringSync();
+    final authRepository =
+        File('lib/06_ACESSO_A_DADOS/auth_repository.dart').readAsStringSync();
+
+    expect(loginSource, isNot(contains('Criar conta')));
+    expect(authRepository, isNot(contains('signUp(')));
+    expect(strongPasswordValidation('senha-fraca'), isNotNull);
+    expect(strongPasswordValidation('SenhaSegura#2026'), isNull);
+  });
+
+  test('migração fecha bootstrap e cadastro público no banco', () {
+    final sql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260906221331_harden_rpc_and_close_public_signup.sql',
+    ).readAsStringSync();
+
+    expect(sql,
+        contains('alter function public.is_active_admin() security invoker'));
+    expect(
+        sql, contains('revoke all on function public.claim_initial_admin()'));
+    expect(sql, contains('public_signup_disabled'));
+    expect(sql, contains('metallo_provisioned'));
+    expect(
+        sql,
+        contains(
+            'revoke execute on functions from public, anon, authenticated'));
+  });
+
+  test('serviço de autenticação pode executar o gatilho de perfil', () {
+    final sql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260907183000_restore_auth_profile_trigger_execution.sql',
+    ).readAsStringSync();
+
+    expect(
+      sql,
+      contains(
+        'grant execute on function public.handle_new_user()\n  to supabase_auth_admin',
+      ),
+    );
+    expect(
+      sql,
+      contains(
+        'revoke all on function public.handle_new_user()\n  from public, anon, authenticated',
+      ),
+    );
+  });
+
+  test('cadastro administrativo usa autorização temporária de uso único', () {
+    final sql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260907184500_secure_admin_user_provisioning.sql',
+    ).readAsStringSync();
+    final edgeFunction = File(
+      '../04_BANCO_E_SUPABASE/supabase/functions/create-employee/index.ts',
+    ).readAsStringSync();
+
+    expect(sql, contains('private.user_provisioning_tickets'));
+    expect(sql, contains("interval '2 minutes'"));
+    expect(sql, contains('if not found then'));
+    expect(sql, contains("- 'metallo_provisioning_token'"));
+    expect(
+      sql,
+      contains(
+        'grant execute on function public.issue_user_provisioning_ticket(text, text)\n  to service_role',
+      ),
+    );
+    expect(
+      edgeFunction,
+      contains('"issue_user_provisioning_ticket"'),
+    );
+    expect(
+      edgeFunction,
+      contains('metallo_provisioning_token: provisioningToken'),
+    );
+    expect(
+      edgeFunction,
+      contains('"revoke_user_provisioning_ticket"'),
+    );
+    expect(edgeFunction, contains('updateUserById('));
+    expect(
+      edgeFunction,
+      contains('{ user_metadata: { full_name: fullName } }'),
+    );
+
+    final cleanupSql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260907190000_strip_user_provisioning_token.sql',
+    ).readAsStringSync();
+    expect(cleanupSql, contains('before update of raw_user_meta_data'));
+    expect(
+      cleanupSql,
+      contains("- 'metallo_provisioning_token'"),
+    );
+    expect(
+      cleanupSql,
+      contains(
+        'grant execute on function private.strip_metallo_provisioning_token()\n  to supabase_auth_admin',
+      ),
+    );
+  });
+
+  test('encerramento parcial de entrega é atômico no banco e usado no mobile',
+      () {
+    final sql = File(
+      '../04_BANCO_E_SUPABASE/supabase/migrations/20260907060320_close_partial_epi_delivery.sql',
+    ).readAsStringSync();
+    final repository =
+        File('lib/06_ACESSO_A_DADOS/epi_repository.dart').readAsStringSync();
+    final reports =
+        File('lib/01_TELAS/04_EPIS_E_FUNCIONARIOS/reports_page.dart').readAsStringSync();
+
+    expect(sql, contains('function public.close_epi_delivery_quantity'));
+    expect(sql, contains('for update'));
+    expect(sql, contains("new.current_status <> 'active'"));
+    expect(
+        sql,
+        contains(
+            'grant execute on function public.close_epi_delivery_quantity'));
+    expect(repository, contains("client.rpc('close_epi_delivery_quantity'"));
+    expect(repository, contains("'p_quantity': quantity"));
+    expect(reports, contains('Quantidade a atualizar'));
+  });
+}

@@ -8,17 +8,17 @@ importers:
 
   .: {}
 
-  apps/web:
+  01_WEB:
     dependencies:
       '@metallo/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../03_COMPARTILHADO/03_REGRAS_E_PERMISSOES
       '@metallo/types':
         specifier: workspace:*
-        version: link:../../packages/types
+        version: link:../03_COMPARTILHADO/01_TIPOS
       '@metallo/validation':
         specifier: workspace:*
-        version: link:../../packages/validation
+        version: link:../03_COMPARTILHADO/02_VALIDACOES
       '@supabase/ssr':
         specifier: 0.12.6
         version: 0.12.6(@supabase/supabase-js@2.115.0)
@@ -99,19 +99,19 @@ importers:
         specifier: 4.129.0
         version: 4.129.0
 
-  packages/core:
-    dependencies:
-      '@metallo/types':
-        specifier: workspace:*
-        version: link:../types
+  03_COMPARTILHADO/01_TIPOS: {}
 
-  packages/types: {}
-
-  packages/validation:
+  03_COMPARTILHADO/02_VALIDACOES:
     dependencies:
       zod:
         specifier: 4.5.4
         version: 4.5.4
+
+  03_COMPARTILHADO/03_REGRAS_E_PERMISSOES:
+    dependencies:
+      '@metallo/types':
+        specifier: workspace:*
+        version: link:../01_TIPOS
 
 packages:
 

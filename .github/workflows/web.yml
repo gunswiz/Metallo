@@ -3,24 +3,28 @@ name: Web quality
 on:
   pull_request:
     paths:
-      - "apps/web/**"
-      - "packages/**"
-      - "supabase/migrations/**"
+      - "01_WEB/**"
+      - "03_COMPARTILHADO/**"
+      - "04_BANCO_E_SUPABASE/supabase/migrations/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      - "tsconfig.base.json"
+      - "07_CONFIGURACOES_DO_PROJETO/tsconfig.base.json"
+      - "07_CONFIGURACOES_DO_PROJETO/*.mjs"
+      - "06_TESTES_E_QUALIDADE/*.test.mjs"
       - ".github/workflows/web.yml"
   push:
     branches: [main]
     paths:
-      - "apps/web/**"
-      - "packages/**"
-      - "supabase/migrations/**"
+      - "01_WEB/**"
+      - "03_COMPARTILHADO/**"
+      - "04_BANCO_E_SUPABASE/supabase/migrations/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      - "tsconfig.base.json"
+      - "07_CONFIGURACOES_DO_PROJETO/tsconfig.base.json"
+      - "07_CONFIGURACOES_DO_PROJETO/*.mjs"
+      - "06_TESTES_E_QUALIDADE/*.test.mjs"
       - ".github/workflows/web.yml"
 
 permissions:
@@ -49,6 +53,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Check publication guards
+        run: node --test 06_TESTES_E_QUALIDADE/*.test.mjs
       - name: Lint
         run: pnpm lint:web
       - name: Typecheck

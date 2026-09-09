@@ -1,0 +1,109 @@
+import 'package:flutter/material.dart';
+import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
+import 'package:metallo/01_TELAS/07_CONSUMO/componentes_consumo.dart';
+import 'package:metallo/01_TELAS/07_CONSUMO/graficos_consumo.dart';
+import 'package:metallo/01_TELAS/07_CONSUMO/calcular_consumo.dart';
+
+class ConsumptionMaterialDetailPage extends StatefulWidget {
+  const ConsumptionMaterialDetailPage(
+      {super.key,
+      required this.rows,
+      required this.teams,
+      required this.itemId,
+      this.initialTeamId});
+  final List<Map<String, dynamic>> rows;
+  final List<Team> teams;
+  final String itemId;
+  final String? initialTeamId;
+  @override
+  State<ConsumptionMaterialDetailPage> createState() =>
+      _ConsumptionMaterialDetailPageState();
+}
+
+class _ConsumptionMaterialDetailPageState
+    extends State<ConsumptionMaterialDetailPage> {
+  late String? teamId = widget.initialTeamId;
+  @override
+  Widget build(BuildContext context) {
+    final details =
+        consumptionMaterialDetail(widget.rows, widget.itemId, teamId);
+    final item = details.item;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Detalhes do material')),
+      body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
+          children: [
+            Row(children: [
+              Container(
+                  width: 66,
+                  height: 66,
+                  decoration: BoxDecoration(
+                      color: const Color(0xFF0C3766),
+                      borderRadius: BorderRadius.circular(14)),
+                  child: const Icon(Icons.blur_linear_rounded,
+                      size: 38, color: Color(0xFF248BFF))),
+              const SizedBox(width: 14),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(item?['name']?.toString() ?? 'Material',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w900, fontSize: 20)),
+                    Text('Código: ${item?['code'] ?? ''}',
+                        style: const TextStyle(color: Colors.white54)),
+                    const SizedBox(height: 5),
+                    if ((item?['category']?.toString() ?? '').isNotEmpty)
+                      Chip(
+                          label: Text(item!['category'].toString()),
+                          visualDensity: VisualDensity.compact)
+                  ])),
+            ]),
+            const SizedBox(height: 14),
+            teamConsumptionDropdown(
+                widget.teams, teamId, (v) => setState(() => teamId = v)),
+            const SizedBox(height: 14),
+            Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              'Consumo de ${item?['name'] ?? 'material'} (${item?['unit'] ?? 'un'})',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w900, fontSize: 16)),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                              height: 250,
+                              child: ConsumptionGroupedBarChart(
+                                  current: details.currentTrend,
+                                  previous: details.previousTrend)),
+                        ]))),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(
+                  child: ConsumptionSmallMetric(
+                      title: 'Total no período atual',
+                      value: formatConsumptionQuantity(details.currentTotal),
+                      suffix: item?['unit']?.toString() ?? 'un')),
+              const SizedBox(width: 10),
+              Expanded(
+                  child: ConsumptionSmallMetric(
+                      title: 'Total no período anterior',
+                      value: formatConsumptionQuantity(details.previousTotal),
+                      suffix: item?['unit']?.toString() ?? 'un'))
+            ]),
+            const SizedBox(height: 10),
+            ConsumptionMetricCard(
+                eyebrow: 'VARIAÇÃO NO PERÍODO',
+                title: '',
+                value:
+                    '${details.percentChange?.abs().toStringAsFixed(1) ?? '0.0'}%',
+                suffix: '',
+                change: details.percentChange,
+                comparisonText: 'comparado aos 3 meses anteriores'),
+          ]),
+    );
+  }
+}

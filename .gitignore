@@ -13,10 +13,10 @@ out/
 .vercel/
 
 # Android local and signing material
-android/local.properties
-android/key.properties
-android/app/*.jks
-android/app/*.keystore
+02_MOBILE/android/local.properties
+02_MOBILE/android/key.properties
+02_MOBILE/android/app/*.jks
+02_MOBILE/android/app/*.keystore
 
 # IDE
 .idea/
