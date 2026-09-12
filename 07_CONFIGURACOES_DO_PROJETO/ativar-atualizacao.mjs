@@ -32,14 +32,17 @@ export async function activateUpdate({ candidate, tag, repository, token, reques
     if (current.version !== candidate.version || current.apk_url !== candidate.apk_url) throw new Error("Build já utilizado por outra versão.");
     return "Atualização já ativa.";
   }
-  await api(path, {
+  const saved = await api(path, {
     message: `release: activate Metallo ${candidate.version} build ${candidate.build}`,
     content: Buffer.from(`${JSON.stringify(candidate, null, 2)}\n`).toString("base64"),
     sha: file.sha, branch: "main",
   });
-  const confirmed = await api(`${path}?ref=main`);
+  // The main ref can briefly return a cached response immediately after a write.
+  // Verify the immutable commit returned by the write, without issuing another PUT.
+  if (!/^[a-f0-9]{40}$/i.test(saved.commit?.sha ?? "")) throw new Error("GitHub não informou o commit da ativação; confira o manifesto antes de repetir.");
+  const confirmed = await api(`${path}?ref=${saved.commit.sha}`);
   const manifest = JSON.parse(Buffer.from(confirmed.content, "base64").toString("utf8"));
-  if (manifest.build !== candidate.build || manifest.apk_url !== candidate.apk_url) throw new Error("Não foi possível confirmar a ativação; confira o manifesto antes de repetir.");
+  if (manifest.version !== candidate.version || manifest.build !== candidate.build || manifest.apk_url !== candidate.apk_url) throw new Error("Não foi possível confirmar a ativação; confira o manifesto antes de repetir.");
   return `Atualização ${candidate.version} ativada para os aplicativos instalados.`;
 }
 
