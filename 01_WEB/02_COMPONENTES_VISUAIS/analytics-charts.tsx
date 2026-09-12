@@ -7,7 +7,7 @@ export function BarChart({ points, suffix = "" }: { points: Point[]; suffix?: st
   return <div className="bar-chart" role="img" aria-label="Gráfico de barras">{points.map((point, index) => <div className="bar-row" key={point.label}><span title={point.label}>{point.label}</span><div><i style={{ background: colors[index % colors.length], width: `${Math.max(2, (point.value / maximum) * 100)}%` }} /></div><strong>{formatNumber(point.value)} {suffix}</strong></div>)}</div>;
 }
 
-export function LineChart({ points }: { points: Point[] }) {
+export function LineChart({ points, suffix = "" }: { points: Point[]; suffix?: string }) {
   if (points.length === 0) return <p className="muted">Sem consumo no período selecionado.</p>;
   const width = 720;
   const height = 220;
@@ -20,7 +20,7 @@ export function LineChart({ points }: { points: Point[] }) {
     y: height - padding - (point.value / maximum) * (height - padding * 2),
   }));
   const line = coordinates.map((point) => `${point.x},${point.y}`).join(" ");
-  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Consumo ao longo do tempo" preserveAspectRatio="none"><polyline points={line} fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />{coordinates.map((point) => <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="5"><title>{`${point.label}: ${formatNumber(point.value)}`}</title></circle>)}</svg><div className="line-labels">{points.map((point) => <span key={point.label}>{point.label}</span>)}</div></div>;
+  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Consumo ao longo do tempo${suffix ? ` em ${suffix}` : ""}`} preserveAspectRatio="none"><polyline points={line} fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />{coordinates.map((point) => <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="5"><title>{`${point.label}: ${formatNumber(point.value)} ${suffix}`.trim()}</title></circle>)}</svg><div className="line-labels">{points.map((point) => <span key={point.label}>{point.label}</span>)}</div></div>;
 }
 
 export function formatNumber(value: number) {

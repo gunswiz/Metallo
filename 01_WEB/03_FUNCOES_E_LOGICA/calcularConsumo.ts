@@ -1,4 +1,5 @@
 import type { ConsumptionRow } from "@/05_ACESSO_A_DADOS/Repositorios/metallo-repository";
+import { consumptionUnit } from "./unidadesConsumo";
 
 export type ConsumptionRange = {
   currentStart: Date;
@@ -77,11 +78,12 @@ function trend(rows: ConsumptionRow[], range: ConsumptionRange) {
 }
 
 export function analyzeConsumption(rows: ConsumptionRow[], range: ConsumptionRange, selectedUnit?: string, selectedCategory?: string) {
-  const units = [...new Set(rows.map((row) => row.items?.unit?.trim() || "un"))].sort();
-  const hasSelectedUnit = units.includes(selectedUnit ?? "");
-  const unit = hasSelectedUnit ? selectedUnit! : units.join("/") || "un";
+  const units = [...new Set(rows.map((row) => consumptionUnit(row.items?.unit)))].sort();
+  const normalizedSelection = selectedUnit ? consumptionUnit(selectedUnit) : undefined;
+  const hasSelectedUnit = units.includes(normalizedSelection ?? "");
+  const unit = hasSelectedUnit ? normalizedSelection! : units.join("/") || "un";
   const categories = [...new Set(rows.map(consumptionCategory))].sort();
-  const scoped = rows.filter((row) => (!hasSelectedUnit || (row.items?.unit?.trim() || "un") === unit) && (!selectedCategory || consumptionCategory(row) === selectedCategory));
+  const scoped = rows.filter((row) => (!hasSelectedUnit || consumptionUnit(row.items?.unit) === unit) && (!selectedCategory || consumptionCategory(row) === selectedCategory));
   const current = scoped.filter((row) => { const date = new Date(row.created_at); return date >= range.currentStart && date < range.currentEnd; });
   const previous = scoped.filter((row) => { const date = new Date(row.created_at); return date >= range.previousStart && date < range.currentStart; });
   const total = sum(current);
@@ -100,3 +102,29 @@ export function analyzeConsumption(rows: ConsumptionRow[], range: ConsumptionRan
     rows: current,
   };
 }
+
+export function analyzeConsumptionByUnit(rows: ConsumptionRow[], range: ConsumptionRange, selectedCategory?: string) {
+  const scoped = rows.filter((row) => {
+    const date = new Date(row.created_at);
+    return date >= range.previousStart && date < range.currentEnd &&
+      (!selectedCategory || consumptionCategory(row) === selectedCategory);
+  });
+  const units = [...new Set(scoped.map((row) => consumptionUnit(row.items?.unit)))].sort();
+  return units.map((unit) => {
+    const analysis = analyzeConsumption(scoped, range, unit);
+    const materials = new Map<string, { id: string; label: string; code: string; value: number }>();
+    for (const row of analysis.rows) {
+      const material = materials.get(row.item_id) ?? {
+        id: row.item_id,
+        label: row.items?.name ?? "Material removido",
+        code: row.items?.code ?? "",
+        value: 0,
+      };
+      material.value += Number(row.quantity || 0);
+      materials.set(row.item_id, material);
+    }
+    return { ...analysis, materials: [...materials.values()].sort((a, b) => b.value - a.value) };
+  });
+}
+
+export type ConsumptionUnitReport = ReturnType<typeof analyzeConsumptionByUnit>[number];

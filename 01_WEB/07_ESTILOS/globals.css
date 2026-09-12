@@ -416,3 +416,57 @@ body:has(.user-edit-dialog[open]) { overflow: hidden; }
 .sidebar-nav a[href="/equipamentos"] svg { color: #c6a0ff; }
 .sidebar-nav a[href="/consumo"] svg { color: #ffac6b; }
 .sidebar-nav a[href="/epis"] svg { color: #e0d26d; }
+
+/* Consumption is always presented within a single unit of measure. */
+.consumption-section-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 18px; margin: 0 0 14px; }
+.consumption-section-heading h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+.consumption-section-heading p { margin: 0; color: var(--muted); font-size: var(--font-small); }
+.consumption-unit-section { margin: 24px 0 28px; }
+.consumption-unit-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; }
+.consumption-unit-card { display: grid; gap: 8px; min-width: 0; padding: 20px; text-align: left; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; cursor: pointer; }
+.consumption-unit-card[aria-pressed=true] { border-color: #ffac6b; background: linear-gradient(130deg, rgba(255,172,107,.12), var(--panel)); box-shadow: inset 4px 0 #ffac6b; }
+.consumption-unit-card:hover { border-color: #ffac6b; }
+.consumption-unit-name { color: #d5e3ec; font-size: var(--font-small); text-transform: capitalize; font-weight: 700; }
+.consumption-unit-card > strong { font-size: 32px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.consumption-unit-card > strong small { font-size: 16px; font-weight: 500; color: #c1d0da; }
+.consumption-unit-card > span:not(.consumption-unit-name) { color: var(--muted); font-size: var(--font-caption); }
+.consumption-unit-card > b { margin-top: 4px; font-size: var(--font-caption); font-weight: 600; color: #ffbe8b; }
+.consumption-unit-note { margin: 12px 0 0; color: var(--muted); font-size: var(--font-caption); line-height: 1.6; }
+.consumption-active-heading { align-items: center; }
+.consumption-unit-badge { padding: 6px 12px; color: #ffbe8b; background: rgba(255,172,107,.09); border: 1px solid rgba(255,172,107,.25); border-radius: 999px; font-size: var(--font-small); font-weight: 700; }
+.consumption-context-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 18px; }
+.consumption-context-metrics .metric-card { min-height: 125px; }
+.consumption-context-metrics .metric-card > strong { font-size: 22px; }
+.consumption-share-panel, .consumption-material-panel { margin-bottom: 18px; }
+.consumption-donut-layout { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(260px, 1fr); align-items: center; gap: clamp(20px, 4vw, 64px); max-width: 1050px; margin: auto; padding: 8px 0; }
+.consumption-donut-visual { position: relative; width: min(100%, 320px); margin: 0 auto; }
+.consumption-donut { display: block; width: 100%; height: auto; }
+.consumption-donut-center { position: absolute; inset: 28%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; pointer-events: none; }
+.consumption-donut-center span { color: var(--muted); font-size: var(--font-caption); }
+.consumption-donut-center strong { font-size: clamp(24px, 3vw, 36px); line-height: 1.3; color: var(--text); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.consumption-donut-legend { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.consumption-donut-legend li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line-soft); }
+.consumption-donut-legend li:last-child { border-bottom: 0; }
+.consumption-donut-legend i { width: 10px; height: 10px; border-radius: 3px; }
+.consumption-donut-legend li > div { display: grid; gap: 2px; }
+.consumption-donut-legend strong { font-size: var(--font-small); line-height: 1.4; overflow-wrap: anywhere; }
+.consumption-donut-legend small { color: var(--muted); font-size: 12px; }
+.consumption-donut-legend span { color: #bfced8; font-size: var(--font-small); }
+.consumption-donut-legend b { color: var(--text); font-size: 20px; font-variant-numeric: tabular-nums; }
+.consumption-chart-empty { display: grid; place-items: center; min-height: 220px; padding: 24px; text-align: center; }
+.consumption-chart-empty p { color: var(--muted); }
+.consumption-material-table { width: 100%; }
+.consumption-material-table tfoot { border-top: 1px solid var(--line); background: var(--panel-2); }
+.consumption-material-table tfoot td { padding: 16px 15px; font-weight: 750; }
+.consumption-quantity { color: #ffd0ac !important; font-weight: 750; white-space: nowrap; }
+.consumption-history-details > summary { padding: 18px 20px; cursor: pointer; color: #c4d5e1; font-weight: 700; font-size: var(--font-small); }
+.consumption-preview { max-width: 1250px; margin: auto; padding: 32px 24px 60px; --module-accent: #ffac6b; }
+.consumption-preview-notice { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; margin-bottom: 24px; border: 1px solid rgba(255,172,107,.25); border-radius: 10px; color: #ffd0ac; background: rgba(255,172,107,.06); font-size: var(--font-small); }
+.consumption-preview-notice a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 700px) {
+  .consumption-donut-layout { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .consumption-donut-visual { width: min(100%, 270px); }
+  .consumption-context-metrics { grid-template-columns: minmax(0, 1fr); }
+  .consumption-context-metrics .metric-card { min-height: 0; }
+  .consumption-preview { padding: 20px 14px 40px; }
+}
