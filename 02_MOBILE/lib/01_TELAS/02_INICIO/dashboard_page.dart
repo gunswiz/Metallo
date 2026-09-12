@@ -1,3 +1,4 @@
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/formatters.dart';
@@ -38,9 +39,6 @@ class DashboardPage extends StatelessWidget {
   final Stream<DashboardSnapshot> stream;
   final String role;
   final String? userTeamId;
-
-  bool get canOperate =>
-      role == 'admin' || role == 'engineer' || role == 'leader';
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +102,7 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              if (role == 'admin' || role == 'engineer') ...[
+              if (UserAccessScope.of(context).can('epi:write')) ...[
                 Card(
                   margin: const EdgeInsets.only(bottom: 20),
                   clipBehavior: Clip.antiAlias,
@@ -131,7 +129,7 @@ class DashboardPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: const Icon(Icons.health_and_safety_outlined,
-                                color: Color(0xFF2694FF), size: 30),
+                                color: Color(0xFFE0D26D), size: 30),
                           ),
                           const SizedBox(width: 14),
                           const Expanded(
@@ -310,9 +308,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   }
 
   bool get canConsume =>
-      widget.role == 'admin' ||
-      widget.role == 'engineer' ||
-      widget.team.id == widget.userTeamId;
+      UserAccessScope.of(context).canAt('consumption:write', widget.team.id);
   Future<void> registerConsumption(MaterialStock material) async {
     await showMaterialQuantityDialog(context,
         title: 'Consumo de ${material.name}',

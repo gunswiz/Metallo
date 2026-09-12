@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { UserPermissions } from "@/02_COMPONENTES_VISUAIS/permissoes-usuario";
+import type { UserRole } from "@metallo/types";
 import { roleLabels } from "@metallo/core";
 import { updateProfile } from "@/app/actions/operations";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
@@ -25,6 +27,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
             <label>Papel<select name="role" defaultValue={profile.role}><option value="admin">Administrador</option><option value="engineer">Engenheiro</option><option value="leader">Líder</option><option value="collaborator">Colaborador</option></select></label>
             <label>Equipe<select name="teamId" defaultValue={profile.team_id ?? ""}><option value="">Acesso geral</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
             <label className="full" style={{ display: "flex", gridTemplateColumns: "auto 1fr", alignItems: "center" }}><input name="active" type="checkbox" defaultChecked={profile.active} style={{ minHeight: 20, width: 20 }} /> Perfil ativo</label>
+            <UserPermissions teams={teams} role={profile.role as UserRole} permissions={profile.operation_permissions} teamIds={profile.operation_team_ids} />
             <div className="form-actions"><SubmitButton pendingLabel="Salvando…">Salvar perfil</SubmitButton></div>
           </form></details>
         </td></tr>)}

@@ -17,6 +17,7 @@ export type Database = {
       asset_movements: {
         Row: {
           asset_id: string
+          occurred_at: string
           created_at: string
           destination_team_id: string | null
           id: string
@@ -29,6 +30,7 @@ export type Database = {
         }
         Insert: {
           asset_id: string
+          occurred_at?: string
           created_at?: string
           destination_team_id?: string | null
           id?: string
@@ -41,6 +43,7 @@ export type Database = {
         }
         Update: {
           asset_id?: string
+          occurred_at?: string
           created_at?: string
           destination_team_id?: string | null
           id?: string
@@ -766,6 +769,9 @@ export type Database = {
       }
       movements: {
         Row: {
+          origin_stock_team_id: string | null
+          destination_stock_team_id: string | null
+          occurred_at: string
           created_at: string
           destination_team_id: string | null
           id: string
@@ -777,6 +783,9 @@ export type Database = {
           quantity: number
         }
         Insert: {
+          origin_stock_team_id?: string | null
+          destination_stock_team_id?: string | null
+          occurred_at?: string
           created_at?: string
           destination_team_id?: string | null
           id?: string
@@ -788,6 +797,9 @@ export type Database = {
           quantity: number
         }
         Update: {
+          origin_stock_team_id?: string | null
+          destination_stock_team_id?: string | null
+          occurred_at?: string
           created_at?: string
           destination_team_id?: string | null
           id?: string
@@ -864,6 +876,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          operation_permissions: string[] | null
+          operation_team_ids: string[] | null
           active: boolean
           created_at: string
           full_name: string
@@ -873,6 +887,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          operation_permissions?: string[] | null
+          operation_team_ids?: string[] | null
           active?: boolean
           created_at?: string
           full_name: string
@@ -882,6 +898,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          operation_permissions?: string[] | null
+          operation_team_ids?: string[] | null
           active?: boolean
           created_at?: string
           full_name?: string
@@ -1004,6 +1022,13 @@ export type Database = {
           p_origin_team_id: string
           p_quantity: number
         }
+        Returns: undefined
+      }
+      can_operate: { Args: { p_permission: string; p_team_id?: string | null }; Returns: boolean }
+      site_dashboard: { Args: never; Returns: Json }
+      run_site_operation: { Args: { p_command: string; p_data: Json; p_operation_id: string; p_occurred_at: string }; Returns: Json }
+      admin_update_profile_access: {
+        Args: { p_user_id: string; p_full_name: string; p_role: string; p_team_id: string | null; p_active: boolean; p_operation_permissions: string[] | null; p_operation_team_ids: string[] | null }
         Returns: undefined
       }
       admin_update_profile: {

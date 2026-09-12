@@ -10,6 +10,7 @@ import '06_ACESSO_A_DADOS/dashboard_repository.dart';
 import '06_ACESSO_A_DADOS/epi_repository.dart';
 import '06_ACESSO_A_DADOS/movement_repository.dart';
 import '01_TELAS/01_LOGIN/startup_splash.dart';
+import '02_COMPONENTES/user_access_scope.dart';
 
 class MetalloApp extends StatelessWidget {
   MetalloApp({super.key, SupabaseClient? client}) {
@@ -43,7 +44,10 @@ class MetalloApp extends StatelessWidget {
         final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
         return Stack(
           children: [
-            Positioned.fill(child: child ?? const SizedBox.shrink()),
+            Positioned.fill(
+                child: UserAccessHost(
+                    repo: adminRepository,
+                    child: child ?? const SizedBox.shrink())),
             if (!keyboardOpen)
               const Positioned(
                 right: 7,

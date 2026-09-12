@@ -409,9 +409,11 @@ class _HistoryEntryDetails extends StatelessWidget {
           Row(children: [
             const Icon(Icons.schedule, size: 15, color: Colors.white54),
             const SizedBox(width: 5),
-            Text(formatHistoryDateTime(row['created_at']),
+            Text(formatHistoryDateTime(row['occurred_at'] ?? row['created_at']),
                 style: const TextStyle(color: Colors.white60, fontSize: 12)),
           ]),
+          Text('Registrado: ${formatHistoryDateTime(row['created_at'])}',
+              style: const TextStyle(color: Colors.white54, fontSize: 11)),
           if (row['note'] != null &&
               row['note'].toString().trim().isNotEmpty) ...[
             const SizedBox(height: 5),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:metallo/02_COMPONENTES/user_permissions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/errors.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
@@ -18,6 +19,10 @@ Future<void> showUserEditDialog(BuildContext context, AdminRepository repo,
       String role = user['role']?.toString() ?? 'collaborator';
       String? teamId = user['team_id']?.toString();
       bool active = user['active'] == true;
+      List<String>? operationPermissions =
+          (user['operation_permissions'] as List?)?.cast<String>();
+      List<String>? operationTeamIds =
+          (user['operation_team_ids'] as List?)?.cast<String>();
       bool busy = false;
       String? error;
 
@@ -68,6 +73,16 @@ Future<void> showUserEditDialog(BuildContext context, AdminRepository repo,
                         ? null
                         : (v) => setLocal(() => active = v),
                   ),
+                  UserPermissionsEditor(
+                      role: role,
+                      teams: teams,
+                      permissions: operationPermissions,
+                      teamIds: operationTeamIds,
+                      enabled: !busy,
+                      onPermissionsChanged: (value) =>
+                          setLocal(() => operationPermissions = value),
+                      onTeamsChanged: (value) =>
+                          setLocal(() => operationTeamIds = value)),
                   if (protectLastAdmin)
                     const Text(
                       'Este é o único administrador ativo. Cadastre ou ative outro administrador antes de remover este acesso.',
@@ -105,6 +120,8 @@ Future<void> showUserEditDialog(BuildContext context, AdminRepository repo,
                             role: role,
                             teamId: role == 'admin' ? teamId : teamId,
                             active: active,
+                            operationPermissions: operationPermissions,
+                            operationTeamIds: operationTeamIds,
                           );
                           if (dialogContext.mounted) {
                             Navigator.pop(dialogContext);

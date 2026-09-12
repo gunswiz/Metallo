@@ -11,7 +11,7 @@ on:
       - "pnpm-workspace.yaml"
       - "07_CONFIGURACOES_DO_PROJETO/tsconfig.base.json"
       - "07_CONFIGURACOES_DO_PROJETO/*.mjs"
-      - "06_TESTES_E_QUALIDADE/*.test.mjs"
+      - "06_TESTES_E_QUALIDADE/**"
       - ".github/workflows/web.yml"
   push:
     branches: [main]
@@ -24,7 +24,7 @@ on:
       - "pnpm-workspace.yaml"
       - "07_CONFIGURACOES_DO_PROJETO/tsconfig.base.json"
       - "07_CONFIGURACOES_DO_PROJETO/*.mjs"
-      - "06_TESTES_E_QUALIDADE/*.test.mjs"
+      - "06_TESTES_E_QUALIDADE/**"
       - ".github/workflows/web.yml"
 
 permissions:
@@ -53,7 +53,7 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Check publication guards
+      - name: Check database operations and publication guards
         run: node --test 06_TESTES_E_QUALIDADE/*.test.mjs
       - name: Lint
         run: pnpm lint:web

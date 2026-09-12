@@ -96,10 +96,6 @@ class _EpiManagementShellState extends State<EpiManagementShell> {
                 tooltip: 'Atualizar',
                 onPressed: _refresh,
                 icon: const Icon(Icons.refresh)),
-            const Padding(
-              padding: EdgeInsets.only(right: 12),
-              child: Icon(Icons.notifications_none_rounded),
-            ),
           ],
         ),
         body: IndexedStack(index: _page, children: pages),

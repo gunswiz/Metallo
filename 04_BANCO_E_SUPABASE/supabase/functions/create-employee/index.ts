@@ -6,6 +6,8 @@ const cors = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+import { validateAccess } from './permissions.ts';
+
 const isStrongPassword = (password: string) =>
   password.length >= 12 &&
   /[A-Z]/.test(password) &&
@@ -20,6 +22,8 @@ const publicErrors = new Set([
   "invalid_role",
   "team_required",
   "user_already_exists",
+  "invalid_permissions",
+  "invalid_team",
 ]);
 
 Deno.serve(async (req: Request) => {
@@ -53,6 +57,7 @@ Deno.serve(async (req: Request) => {
     const password = String(body.password ?? "");
     const role = String(body.role ?? "collaborator");
     const teamId = body.team_id ? String(body.team_id) : null;
+    const access = validateAccess(body);
 
     if (!fullName || !email.includes("@") || !isStrongPassword(password)) {
       throw new Error("invalid_employee_data");
@@ -62,6 +67,12 @@ Deno.serve(async (req: Request) => {
     }
     if (["leader", "collaborator"].includes(role) && !teamId) {
       throw new Error("team_required");
+    }
+
+    const teamIds = [...new Set([...(access.operation_team_ids ?? []), ...(teamId ? [teamId] : [])])];
+    if (teamIds.length) {
+      const { data: teams, error: teamsError } = await admin.from('teams').select('id').in('id', teamIds).eq('active', true);
+      if (teamsError || teams?.length !== teamIds.length) throw new Error('invalid_team');
     }
 
     const provisioningToken = crypto.randomUUID();
@@ -122,6 +133,7 @@ Deno.serve(async (req: Request) => {
         role,
         team_id: teamId,
         active: true,
+        ...access,
         updated_at: new Date().toISOString(),
       })
       .eq("id", created.user.id);

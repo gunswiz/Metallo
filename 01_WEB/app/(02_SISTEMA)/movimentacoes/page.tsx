@@ -13,11 +13,11 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 export default async function MovementsPage({ searchParams }: { searchParams: SearchParams }) {
   const input = await parsePage(searchParams);
   const profile = await requireProfile();
-  const canOperate = can(profile.role, "operations:write");
+  const canOperate = can(profile, "operations:write");
   const service = await getMetalloService();
   const raw = await searchParams;
   const kind = raw.kind === "equipment" ? "equipment" : "material";
-  const canAdmin = can(profile.role, "admin:manage");
+  const canAdmin = can(profile, "admin:manage");
   const result = kind === "equipment" ? await listEquipmentHistory(input) : await service.listMovements(input);
   const rows = result.data.map((movement) => ({ ...movement,
     displayItem: "assets" in movement ? movement.assets?.items : movement.items,
@@ -41,7 +41,7 @@ export default async function MovementsPage({ searchParams }: { searchParams: Se
               <thead><tr><th>Data</th><th>Item</th><th>Tipo</th><th>Origem</th><th>Destino</th><th>{kind === "equipment" ? "Patrimônio" : "Quantidade"}</th><th>Responsável</th>{canAdmin && <th>Gerenciar</th>}</tr></thead>
               <tbody>{rows.map((movement) => (
                 <tr key={movement.id}>
-                  <td>{formatDateTime(movement.created_at)}</td>
+                  <td>{formatDateTime(movement.occurred_at ?? movement.created_at)}<span className="secondary-cell">Registrado: {formatDateTime(movement.created_at)}</span></td>
                   <td><span className="primary-cell">{movement.displayItem?.name ?? "Item removido"}</span><span className="secondary-cell">{movement.displayItem?.code}</span></td>
                   <td>{movementLabel(movement.movement_type)}</td>
                   <td>{movement.origin?.name ?? "Externo"}</td>

@@ -41,7 +41,8 @@ class EpiHome extends StatelessWidget {
             .fold(0, (sum, d) => sum + ((d['quantity'] as num?)?.toInt() ?? 0));
         final replacements = deliveries.where((d) {
           final date = DateTime.tryParse(d['delivered_at']?.toString() ?? '');
-          return d['delivery_reason'] == 'replacement' &&
+          return ['replacement', 'wear', 'lost', 'damaged']
+                  .contains(d['delivery_reason']) &&
               date != null &&
               !date.isBefore(monthStart);
         }).length;
@@ -51,7 +52,7 @@ class EpiHome extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
             children: [
-              const Text('Olá, Administrador',
+              const Text('EPI e pessoas',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
               const Text('Gestão de EPI e itens de trabalho',
                   style: TextStyle(color: Colors.white60)),
@@ -106,7 +107,8 @@ class EpiHome extends StatelessWidget {
               const Text('Equipes',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
               const SizedBox(height: 4),
-              const Text('A COSEM permanece como centro de todas as entregas.',
+              const Text(
+                  'Entregas individuais, estoque da COSEM e estoque das obras.',
                   style: TextStyle(color: Colors.white60)),
               const SizedBox(height: 12),
               _TeamEpiCard(

@@ -1,3 +1,4 @@
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/errors.dart';
@@ -32,8 +33,8 @@ Future<bool?> showEditEquipmentCatalogDialog(
     final notes = TextEditingController(text: ownership.notes ?? '');
     final rentalCompany =
         TextEditingController(text: ownership.rentalCompany ?? '');
-    final rentalStartDate = TextEditingController(
-        text: ownership.rentalStartDate ?? '');
+    final rentalStartDate =
+        TextEditingController(text: ownership.rentalStartDate ?? '');
     final rentalEndDate =
         TextEditingController(text: ownership.rentalEndDate ?? '');
     String ownershipType = ownership.type;
@@ -606,10 +607,8 @@ Future<void> showEquipmentGroupSheet(
                     const Divider(height: 1, indent: 20, endIndent: 20),
                 itemBuilder: (context, index) {
                   final asset = sorted[index];
-                  final allowed = canOperate &&
-                      (role == 'admin' ||
-                          role == 'engineer' ||
-                          asset.teamId == userTeamId);
+                  final allowed = UserAccessScope.of(context)
+                      .canAt('equipment:write', asset.teamId);
                   return ListTile(
                     leading: Container(
                       constraints: const BoxConstraints(minWidth: 76),
@@ -774,9 +773,7 @@ Future<void> showEquipmentActionsSheet(
                     if (actionChosen) return;
                     actionChosen = true;
                     Navigator.pop(sheetContext);
-                    final destinations = role == 'leader'
-                        ? teams.where((t) => t.id == userTeamId).toList()
-                        : teams;
+                    final destinations = teams;
                     await Future<void>.delayed(
                         const Duration(milliseconds: 250));
                     if (!pageContext.mounted) return;

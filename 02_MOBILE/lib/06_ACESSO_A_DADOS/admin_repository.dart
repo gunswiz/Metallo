@@ -1,4 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dashboard_repository.dart';
 import 'normalizar_texto_opcional.dart';
@@ -13,22 +15,55 @@ class AdminRepository {
     if (uid == null) return null;
     return await client
         .from('profiles')
-        .select('id,full_name,role,active,team_id,teams(name)')
+        .select(
+            'id,full_name,role,active,team_id,operation_permissions,operation_team_ids,teams(name)')
         .eq('id', uid)
         .maybeSingle();
   }
 
-  Stream<Map<String, dynamic>?> watchCurrentProfile() {
+  Stream<Map<String, dynamic>?> watchCurrentProfile() async* {
     final uid = client.auth.currentUser?.id;
-    if (uid == null) return Stream.value(null);
-    return client.from('profiles').stream(primaryKey: ['id']).eq('id', uid).map(
-        (rows) => rows.isEmpty ? null : Map<String, dynamic>.from(rows.first));
+    if (uid == null) {
+      yield null;
+      return;
+    }
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'metallo_profile_cache_$uid';
+    Map<String, dynamic>? cached;
+    try {
+      final raw = prefs.getString(key);
+      if (raw != null) {
+        cached = Map<String, dynamic>.from(jsonDecode(raw) as Map);
+      }
+    } catch (_) {
+      cached = null;
+    }
+    if (cached?['id'] == uid) yield cached;
+    try {
+      await for (final rows
+          in client.from('profiles').stream(primaryKey: ['id']).eq('id', uid)) {
+        if (client.auth.currentUser?.id != uid) return;
+        final profile =
+            rows.isEmpty ? null : Map<String, dynamic>.from(rows.first);
+        if (profile == null) {
+          await prefs.remove(key);
+        } else {
+          await prefs.setString(key, jsonEncode(profile));
+        }
+        cached = profile;
+        yield profile;
+      }
+    } catch (_) {
+      if (cached == null) rethrow;
+      yield cached;
+    }
   }
 
   Future<List<Map<String, dynamic>>> fetchProfiles() async {
     final rows = await client
         .from('profiles')
-        .select('id,full_name,role,team_id,active,created_at,teams(name)')
+        .select(
+            'id,full_name,role,team_id,active,created_at,operation_permissions,operation_team_ids,teams(name)')
         .order('full_name');
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -64,6 +99,8 @@ class AdminRepository {
     required String password,
     required String role,
     required String teamId,
+    List<String>? operationPermissions,
+    List<String>? operationTeamIds,
   }) async {
     final response = await client.functions.invoke(
       'create-employee',
@@ -73,6 +110,8 @@ class AdminRepository {
         'password': password,
         'role': role,
         'team_id': teamId,
+        'operation_permissions': operationPermissions,
+        'operation_team_ids': operationTeamIds,
       },
     );
     final data = response.data;
@@ -92,13 +131,17 @@ class AdminRepository {
     required String role,
     required String? teamId,
     required bool active,
+    required List<String>? operationPermissions,
+    required List<String>? operationTeamIds,
   }) async {
-    await client.rpc('admin_update_profile', params: {
+    await client.rpc('admin_update_profile_access', params: {
       'p_user_id': userId,
       'p_full_name': fullName.trim(),
       'p_role': role,
       'p_team_id': teamId,
       'p_active': active,
+      'p_operation_permissions': operationPermissions,
+      'p_operation_team_ids': operationTeamIds,
     });
   }
 

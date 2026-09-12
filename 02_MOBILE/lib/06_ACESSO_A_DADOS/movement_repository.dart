@@ -138,10 +138,10 @@ class MovementRepository {
     final rows = await client
         .from('movements')
         .select(
-          'id,item_id,origin_team_id,destination_team_id,created_at,quantity,movement_type,note,items(name,code,unit,category),origin:origin_team_id(name),destination:destination_team_id(name)',
+          'id,item_id,origin_team_id,destination_team_id,created_at:occurred_at,quantity,movement_type,note,items(name,code,unit,category),origin:origin_team_id(name),destination:destination_team_id(name)',
         )
         .eq('movement_type', 'consumption')
-        .order('created_at', ascending: false);
+        .order('occurred_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
         .toList();
@@ -150,12 +150,12 @@ class MovementRepository {
   Future<List<Map<String, dynamic>>> fetchHistory() async {
     final material = await _fetchAllHistoryRows(
       'movements',
-      'id,item_id,origin_team_id,destination_team_id,created_at,quantity,movement_type,note,items(name,code),origin:origin_team_id(name),destination:destination_team_id(name)',
+      'id,item_id,origin_team_id,destination_team_id,created_at,occurred_at,quantity,movement_type,note,items(name,code),origin:origin_team_id(name),destination:destination_team_id(name)',
     );
 
     final assets = await _fetchAllHistoryRows(
       'asset_movements',
-      'id,asset_id,origin_team_id,destination_team_id,previous_status,new_status,created_at,movement_type,note,assets(asset_code,items(name,code)),origin:origin_team_id(name),destination:destination_team_id(name)',
+      'id,asset_id,origin_team_id,destination_team_id,previous_status,new_status,created_at,occurred_at,movement_type,note,assets(asset_code,items(name,code)),origin:origin_team_id(name),destination:destination_team_id(name)',
     );
 
     return mergeHistoryRows(material, assets);

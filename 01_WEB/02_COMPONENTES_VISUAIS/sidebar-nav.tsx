@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { can, type Capability } from "@metallo/core";
-import type { UserRole } from "@metallo/types";
+import type { SessionProfile } from "@metallo/types";
 
 const entries: Array<{
   href: string;
@@ -22,6 +22,7 @@ const entries: Array<{
   capability: Capability;
 }> = [
   { href: "/dashboard", label: "Visão geral", icon: Gauge, capability: "dashboard:read" },
+  { href: "/obras", label: "Obras e pedidos", icon: Building2, capability: "inventory:read" },
   { href: "/almoxarifado", label: "Almoxarifado", icon: Building2, capability: "inventory:read" },
   { href: "/equipes", label: "Equipes", icon: Users, capability: "inventory:read" },
   { href: "/funcionarios", label: "Funcionários", icon: ShieldCheck, capability: "epi:read" },
@@ -34,11 +35,11 @@ const entries: Array<{
   { href: "/configuracoes", label: "Configurações", icon: Settings, capability: "admin:manage" },
 ];
 
-export function SidebarNav({ role }: { role: UserRole }) {
+export function SidebarNav({ profile }: { profile: SessionProfile }) {
   const pathname = usePathname();
   return (
     <nav className="sidebar-nav" aria-label="Navegação principal">
-      {entries.filter((entry) => can(role, entry.capability)).map((entry) => {
+      {entries.filter((entry) => can(profile, entry.capability)).map((entry) => {
         const active = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
         const Icon = entry.icon;
         return (

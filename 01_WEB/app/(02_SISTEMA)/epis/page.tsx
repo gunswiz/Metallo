@@ -24,9 +24,9 @@ export default async function EpisPage({ searchParams }: { searchParams: SearchP
     <>
       <PageHeader eyebrow={kind === "uniform" ? "FARDAMENTO" : "PROTEÇÃO INDIVIDUAL"} title={kind === "uniform" ? "Fardamento" : "EPIs"} description={kind === "uniform" ? "Camisas e calças por cor e tamanho disponíveis na COSEM." : "Catálogo, C.A., variantes e estoque disponível na COSEM."} actions={<>
         <Link className="button secondary" href="/epis/solicitacoes">Solicitações</Link>
-        {can(profile.role, "epi:write") && <Link className="button secondary" href="/epis/entrega-em-lote">Entrega em lote</Link>}
-        {can(profile.role, "admin:manage") && <Link className="button secondary" href={`/epis/novo?kind=${kind}`}><Plus size={16} />{kind === "uniform" ? "Novo fardamento" : "Novo EPI"}</Link>}
-        {can(profile.role, "epi:write") && <Link className="button primary" href={`/epis/entrega?kind=${kind}`}><PackageCheck size={16} />Registrar entrega</Link>}
+        {can(profile, "epi:write") && <Link className="button secondary" href="/epis/entrega-em-lote">Entrega em lote</Link>}
+        {can(profile, "admin:manage") && <Link className="button secondary" href={`/epis/novo?kind=${kind}`}><Plus size={16} />{kind === "uniform" ? "Novo fardamento" : "Novo EPI"}</Link>}
+        {can(profile, "epi:write") && <Link className="button primary" href={`/epis/entrega?kind=${kind}`}><PackageCheck size={16} />Registrar entrega</Link>}
       </>} />
       <div className="operation-guide"><strong>Fluxo correto:</strong><span>Cadastro cria o tipo</span><span>Entrada soma unidades à COSEM</span><span>Entrega baixa o lote e vincula ao funcionário</span></div>
       <section className="panel">

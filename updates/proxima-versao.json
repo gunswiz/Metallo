@@ -1,5 +1,5 @@
 {
-  "version": "0.9.8",
-  "build": 49,
-  "apk_url": "https://github.com/gunswiz/Metallo/releases/download/v0.9.8/Metallo.apk"
+  "apk_url": "https://github.com/gunswiz/Metallo/releases/download/v0.10.0/Metallo.apk",
+  "version": "0.10.0",
+  "build": 50
 }

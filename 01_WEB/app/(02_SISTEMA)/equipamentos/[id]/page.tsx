@@ -26,7 +26,7 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
   const [{ asset, movements }, teams] = await Promise.all([service.getAsset(id), service.listTeams()]);
   return (
     <>
-      <PageHeader eyebrow="DETALHES DO PATRIMÔNIO" title={asset.items?.name ?? "Equipamento"} description={`Código individual ${asset.asset_code}`} actions={can(profile.role, "operations:write") ? <Link className="button primary" href={`/movimentacoes/nova?asset=${asset.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined} />
+      <PageHeader eyebrow="DETALHES DO PATRIMÔNIO" title={asset.items?.name ?? "Equipamento"} description={`Código individual ${asset.asset_code}`} actions={can(profile, "equipment:write") ? <Link className="button primary" href={`/movimentacoes/nova?asset=${asset.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined} />
       {query.updated && <div className="alert success" role="status">Equipamento atualizado com sucesso.</div>}
       {query.error && <div className="alert error" role="alert">Não foi possível salvar. Revise os dados informados.</div>}
       <section className="detail-hero">
@@ -42,8 +42,8 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
           <div className="definition-item"><dt>Observação</dt><dd>{asset.user_notes ?? "Sem observações"}</dd></div>
         </dl>
       </section>
-      {asset.ownership_type === "rented" && can(profile.role, "admin:manage") && <section className="panel" style={{ marginBottom: 16 }}><header className="panel-header"><div><h2>Devolver à locadora</h2><p>Encerra somente este patrimônio e preserva o histórico</p></div></header><div className="panel-body"><form action={returnRentedEquipment} className="inline-action"><input type="hidden" name="assetId" value={asset.id} /><input name="note" maxLength={500} placeholder="Motivo ou protocolo (opcional)" /><SubmitButton pendingLabel="Devolvendo…"><Undo2 size={16} />Registrar devolução</SubmitButton></form></div></section>}
-      {can(profile.role, "admin:manage") && <section className="panel">
+      {asset.ownership_type === "rented" && can(profile, "admin:manage") && <section className="panel" style={{ marginBottom: 16 }}><header className="panel-header"><div><h2>Devolver à locadora</h2><p>Encerra somente este patrimônio e preserva o histórico</p></div></header><div className="panel-body"><form action={returnRentedEquipment} className="inline-action"><input type="hidden" name="assetId" value={asset.id} /><input name="note" maxLength={500} placeholder="Motivo ou protocolo (opcional)" /><SubmitButton pendingLabel="Devolvendo…"><Undo2 size={16} />Registrar devolução</SubmitButton></form></div></section>}
+      {can(profile, "admin:manage") && <section className="panel">
         <header className="panel-header"><div><h2>Editar equipamento</h2><p>Tipo e patrimônio são atualizados na mesma transação</p></div></header>
         <div className="panel-body"><EquipmentForm action={updateEquipment} teams={teams} mode="edit" defaults={{ itemId: asset.items.id, assetId: asset.id, code: asset.items.code, name: asset.items.name, assetCode: asset.asset_code, serialNumber: asset.serial_number, teamId: asset.team_id, status: asset.status, notes: asset.user_notes, ownershipType: asset.ownership_type, rentalCompany: asset.rental_company, rentalStartDate: asset.rental_start_date, rentalEndDate: asset.rental_end_date }} /></div>
       </section>}
@@ -54,8 +54,8 @@ export default async function EquipmentDetailPage({ params, searchParams }: { pa
           <tbody>{movements.map((movement) => <tr key={movement.id}><td>{formatDateTime(movement.created_at)}</td><td>{movementLabel(movement.movement_type)}</td><td>{movement.origin?.name ?? "—"}</td><td>{movement.destination?.name ?? "—"}</td><td><StatusBadge value={movement.new_status} /></td><td>{movement.profiles?.full_name ?? "—"}</td></tr>)}</tbody>
         </table></div>
       </section>
-      {can(profile.role, "admin:manage") && asset.active && <DeactivateRecord id={asset.id} action={deactivateEquipment} name={asset.asset_code} />}
-      {asset.active && asset.ownership_type === "rented" && can(profile.role, "admin:manage") && <section className="panel"><header className="panel-header"><div><h2>Substituir equipamento locado</h2><p>Registra o novo patrimônio mantendo a locação, a equipe e o histórico.</p></div></header><div className="panel-body"><OperationForm action={replaceRentedEquipment} label="Registrar substituição"><input type="hidden" name="assetId" value={asset.id} /><label>Novo patrimônio<input name="assetCode" required maxLength={80} /></label><label>Número de série<input name="serialNumber" maxLength={120} /></label><label className="full">Motivo da substituição<textarea name="note" required minLength={3} maxLength={300} /></label></OperationForm></div></section>}
+      {can(profile, "admin:manage") && asset.active && <DeactivateRecord id={asset.id} action={deactivateEquipment} name={asset.asset_code} />}
+      {asset.active && asset.ownership_type === "rented" && can(profile, "admin:manage") && <section className="panel"><header className="panel-header"><div><h2>Substituir equipamento locado</h2><p>Registra o novo patrimônio mantendo a locação, a equipe e o histórico.</p></div></header><div className="panel-body"><OperationForm action={replaceRentedEquipment} label="Registrar substituição"><input type="hidden" name="assetId" value={asset.id} /><label>Novo patrimônio<input name="assetCode" required maxLength={80} /></label><label>Número de série<input name="serialNumber" maxLength={120} /></label><label className="full">Motivo da substituição<textarea name="note" required minLength={3} maxLength={300} /></label></OperationForm></div></section>}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserPermissions } from "@/02_COMPONENTES_VISUAIS/permissoes-usuario";
 import { createUserAccount } from "@/app/actions/administracao-completa";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
@@ -14,5 +15,6 @@ export default async function NewUserPage() {
       <label className="full">Senha inicial<input name="password" type="password" autoComplete="new-password" required minLength={12} aria-describedby="password-help" /><span id="password-help">Use 12 caracteres ou mais, com maiúscula, minúscula, número e símbolo.</span></label>
       <label>Papel<select name="role" defaultValue="collaborator"><option value="collaborator">Colaborador</option><option value="leader">Líder</option><option value="engineer">Engenheiro</option></select></label>
       <label>Equipe<select name="teamId" required defaultValue=""><option value="">Selecione</option>{teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
+      <UserPermissions teams={teams} permissions={[]} />
     </OperationForm></div></section></>;
 }

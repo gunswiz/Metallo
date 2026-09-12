@@ -1,3 +1,4 @@
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/08_ESTILOS/theme.dart';
@@ -50,9 +51,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
           return const Center(child: CircularProgressIndicator());
         }
         final data = snap.data!;
-        final canOperate = canOperateEquipment(widget.role);
-        final allowedTeams =
-            allowedEquipmentTeams(data.teams, widget.role, widget.userTeamId);
+        final canOperate = UserAccessScope.of(context).can('equipment:write');
+        final allowedTeams = data.teams
+            .where((t) => UserAccessScope.of(context).allowsTeam(t.id))
+            .toList();
         final equipment = filterEquipmentAssets(
           data.equipment,
           data.teams,
@@ -74,7 +76,7 @@ class _EquipmentPageState extends State<EquipmentPage> {
                     context,
                     widget.catalogRepository,
                     allowedTeams,
-                    widget.role == 'leader' ? widget.userTeamId : null,
+                    allowedTeams.length == 1 ? allowedTeams.first.id : null,
                   ),
                   icon: const Icon(Icons.add),
                   label: const Text('Novo equipamento'),

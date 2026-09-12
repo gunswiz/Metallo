@@ -1,9 +1,10 @@
 type Point = { label: string; value: number };
 
 export function BarChart({ points, suffix = "" }: { points: Point[]; suffix?: string }) {
+  const colors = ["#ffac6b", "#5edbb5", "#c6a0ff", "#64caff", "#ff8eab", "#e0d26d"];
   const maximum = Math.max(1, ...points.map((point) => point.value));
   if (points.length === 0) return <p className="muted">Sem consumo no período selecionado.</p>;
-  return <div className="bar-chart" role="img" aria-label="Gráfico de barras">{points.map((point) => <div className="bar-row" key={point.label}><span title={point.label}>{point.label}</span><div><i style={{ width: `${Math.max(2, (point.value / maximum) * 100)}%` }} /></div><strong>{formatNumber(point.value)} {suffix}</strong></div>)}</div>;
+  return <div className="bar-chart" role="img" aria-label="Gráfico de barras">{points.map((point, index) => <div className="bar-row" key={point.label}><span title={point.label}>{point.label}</span><div><i style={{ background: colors[index % colors.length], width: `${Math.max(2, (point.value / maximum) * 100)}%` }} /></div><strong>{formatNumber(point.value)} {suffix}</strong></div>)}</div>;
 }
 
 export function LineChart({ points }: { points: Point[] }) {

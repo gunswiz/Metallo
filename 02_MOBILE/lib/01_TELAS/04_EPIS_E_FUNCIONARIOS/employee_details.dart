@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
+import 'package:metallo/01_TELAS/04_EPIS_E_FUNCIONARIOS/employee_receipt_page.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/08_ESTILOS/theme.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/admin_repository.dart';
@@ -49,7 +51,16 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
   Widget build(BuildContext context) => DefaultTabController(
         length: 3,
         child: Scaffold(
-          appBar: AppBar(title: const Text('Funcionário')),
+          appBar: AppBar(title: const Text('Funcionário'), actions: [
+            IconButton(
+                tooltip: 'PDF individual de EPI',
+                icon: const Icon(Icons.picture_as_pdf_outlined),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => EmployeeReceiptPage(
+                            repo: widget.repo, person: widget.person))))
+          ]),
           body: Column(children: [
             Container(
               margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -84,14 +95,15 @@ class _EmployeeDetailsPageState extends State<_EmployeeDetailsPage> {
                     ]))
               ]),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: _AsoCard(
-                  repo: widget.repo,
-                  adminRepository: widget.adminRepository,
-                  person: widget.person,
-                  onChanged: () => setState(() {})),
-            ),
+            if (UserAccessScope.of(context).role == 'admin')
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: _AsoCard(
+                    repo: widget.repo,
+                    adminRepository: widget.adminRepository,
+                    person: widget.person,
+                    onChanged: () => setState(() {})),
+              ),
             const TabBar(tabs: [
               Tab(text: 'EPI'),
               Tab(text: 'Fardamento'),

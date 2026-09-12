@@ -17,7 +17,7 @@ export default async function EquipmentPage({ searchParams }: { searchParams: Se
   const requestedOwnership = Array.isArray(raw.ownership) ? raw.ownership[0] : raw.ownership;
   const ownership = requestedOwnership === "owned" || requestedOwnership === "rented" ? requestedOwnership : "all";
   const profile = await requireProfile();
-  const canOperate = can(profile.role, "operations:write");
+  const canOperate = can(profile, "equipment:write");
   const service = await getMetalloService();
   const result = await service.listAssets({ ...input, ownership });
   return (

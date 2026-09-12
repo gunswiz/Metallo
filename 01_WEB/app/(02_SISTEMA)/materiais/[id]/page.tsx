@@ -27,7 +27,7 @@ export default async function MaterialDetailPage({ params, searchParams }: {
         eyebrow="DETALHES DO MATERIAL"
         title={item.name}
         description={`Código ${item.code} · ${total} ${item.unit} no estoque distribuído`}
-        actions={can(profile.role, "operations:write") ? <Link className="button primary" href={`/movimentacoes/nova?item=${item.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined}
+        actions={can(profile, "materials:write") ? <Link className="button primary" href={`/movimentacoes/nova?item=${item.id}`}><ArrowLeftRight size={16} />Movimentar</Link> : undefined}
       />
       {query.updated && <div className="alert success" role="status">Material atualizado com sucesso.</div>}
       {query.error && <div className="alert error" role="alert">Não foi possível salvar. Revise os dados e tente novamente.</div>}
@@ -36,7 +36,7 @@ export default async function MaterialDetailPage({ params, searchParams }: {
           <div className="definition-item"><dt>Categoria</dt><dd>{item.category ?? "Sem categoria"}</dd></div>
           <div className="definition-item"><dt>Unidade</dt><dd>{item.unit}</dd></div>
           <div className="definition-item"><dt>Estoque mínimo</dt><dd>{item.minimum_stock} {item.unit}</dd></div>
-          <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={total <= item.minimum_stock ? "maintenance" : "available"} label={total <= item.minimum_stock ? "Estoque baixo" : "Regular"} /></dd></div>
+          {profile.role === "admin" && <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={total <= item.minimum_stock ? "maintenance" : "available"} label={total <= item.minimum_stock ? "Estoque baixo" : "Regular"} /></dd></div>}
           <div className="definition-item"><dt>Descrição</dt><dd>{item.description ?? "Não informada"}</dd></div>
         </dl>
       </section>
@@ -45,7 +45,7 @@ export default async function MaterialDetailPage({ params, searchParams }: {
           <header className="panel-header"><div><h2>Distribuição</h2><p>Saldo por equipe ou localização</p></div></header>
           <div className="panel-body list">{item.inventory.length === 0 ? <p className="muted">Sem estoque registrado.</p> : item.inventory.map((row) => <div className="list-row" key={row.id}><span className="list-row-main"><strong>{row.teams?.name ?? "Local removido"}</strong><span><StatusBadge value={row.status} /></span></span><span className="list-row-value">{row.quantity} {item.unit}</span></div>)}</div>
         </div>
-        {can(profile.role, "admin:manage") && <div className="panel">
+        {can(profile, "admin:manage") && <div className="panel">
           <header className="panel-header"><div><h2>Editar cadastro</h2><p>O histórico de movimentações não é alterado</p></div></header>
           <div className="panel-body"><form action={updateMaterial} className="form-grid">
             <input type="hidden" name="itemId" value={item.id} />
@@ -63,7 +63,7 @@ export default async function MaterialDetailPage({ params, searchParams }: {
         <header className="panel-header"><div><h2>Histórico</h2><p>Movimentações preservadas em ordem cronológica</p></div></header>
         <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Data</th><th>Operação</th><th>Origem</th><th>Destino</th><th>Quantidade</th><th>Responsável</th></tr></thead><tbody>{movements.map((movement) => <tr key={movement.id}><td>{formatDateTime(movement.created_at)}</td><td>{movementLabel(movement.movement_type)}</td><td>{movement.origin?.name ?? "Externo"}</td><td>{movement.destination?.name ?? "Baixa"}</td><td>{movement.quantity} {item.unit}</td><td>{movement.profiles?.full_name ?? "—"}</td></tr>)}</tbody></table></div>
       </section>
-      {can(profile.role, "admin:manage") && item.active && <DeactivateRecord id={item.id} action={deactivateMaterial} name={item.name} />}
+      {can(profile, "admin:manage") && item.active && <DeactivateRecord id={item.id} action={deactivateMaterial} name={item.name} />}
     </>
   );
 }

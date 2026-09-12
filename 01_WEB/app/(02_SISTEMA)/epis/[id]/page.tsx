@@ -37,7 +37,7 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
       </dl></section>
       <section className="content-grid">
         <div className="panel"><header className="panel-header"><div><h2>Estoque por variante</h2><p>Lotes disponíveis na COSEM</p></div></header><div className="panel-body list">{item.epi_stock_batches.length === 0 ? <p className="muted">Sem estoque disponível.</p> : item.epi_stock_batches.map((batch) => <div className="list-row" key={batch.id}><span className="list-row-main"><strong>{batch.variant ?? "Sem variante"}</strong><span>{batch.brand_model ?? item.brand_model ?? "Sem marca"} · lote {batch.lot_number ?? "não informado"}</span></span><span className="list-row-value">{batch.quantity} {item.unit}</span></div>)}</div></div>
-        {can(profile.role, "epi:write") && <div className="panel"><header className="panel-header"><div><h2>Entrada de estoque</h2><p>Cria um lote rastreável sem alterar entregas anteriores</p></div></header><div className="panel-body"><form action={addEpiStock} className="form-grid">
+        {can(profile, "epi:write") && <div className="panel"><header className="panel-header"><div><h2>Entrada de estoque</h2><p>Cria um lote rastreável sem alterar entregas anteriores</p></div></header><div className="panel-body"><form action={addEpiStock} className="form-grid">
           <input type="hidden" name="itemId" value={item.id} />
           <label>Quantidade<input name="quantity" type="number" min="1" required /></label>
           <label>Variante{variants.length > 0
@@ -50,7 +50,7 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
           <div className="form-actions"><SubmitButton pendingLabel="Adicionando…">Adicionar ao estoque</SubmitButton></div>
         </form></div></div>}
       </section>
-      {can(profile.role, "admin:manage") && <section className="panel"><header className="panel-header"><div><h2>Editar item</h2><p>Altera o catálogo sem reescrever o histórico entregue</p></div></header><div className="panel-body"><form action={updateEpiItem} className="form-grid">
+      {can(profile, "admin:manage") && <section className="panel"><header className="panel-header"><div><h2>Editar item</h2><p>Altera o catálogo sem reescrever o histórico entregue</p></div></header><div className="panel-body"><form action={updateEpiItem} className="form-grid">
         <input type="hidden" name="itemId" value={item.id} />
         <label>Código<input name="code" defaultValue={item.code} maxLength={50} required /></label>
         <label>Nome<input name="name" defaultValue={item.name} maxLength={140} required /></label>
@@ -62,8 +62,8 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
         <div className="form-actions"><SubmitButton pendingLabel="Salvando…">Salvar alterações</SubmitButton></div>
       </form></div></section>}
       <section className="panel"><header className="panel-header"><div><h2>Entregas recentes</h2><p>Responsável, equipe e condição atual</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Funcionário</th><th>Equipe</th><th>Data</th><th>Variante</th><th>Quantidade</th><th>Situação</th></tr></thead><tbody>{deliveries.map((delivery) => <tr key={delivery.id}><td>{delivery.epi_employees?.full_name ?? "Funcionário removido"}</td><td>{delivery.teams?.name ?? "—"}</td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.variant_snapshot ?? "—"}</td><td>{delivery.quantity} {item.unit}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></section>
-      {can(profile.role, "admin:manage") && item.active && <DeactivateRecord id={item.id} action={deactivateEpi} name={item.name} />}
-      {can(profile.role, "admin:manage") && <section className="panel"><header className="panel-header"><h2>Prazo de reposição</h2></header><div className="panel-body"><OperationForm action={updateReplacementDays} label="Salvar prazo"><input type="hidden" name="itemId" value={item.id} /><label>Dias para reposição<input name="replacementDays" type="number" min={1} max={3650} defaultValue={item.replacement_days ?? ""} /></label><p className="full muted">Deixe vazio quando não houver prazo definido.</p></OperationForm></div></section>}
+      {can(profile, "admin:manage") && item.active && <DeactivateRecord id={item.id} action={deactivateEpi} name={item.name} />}
+      {can(profile, "admin:manage") && <section className="panel"><header className="panel-header"><h2>Prazo de reposição</h2></header><div className="panel-body"><OperationForm action={updateReplacementDays} label="Salvar prazo"><input type="hidden" name="itemId" value={item.id} /><label>Dias para reposição<input name="replacementDays" type="number" min={1} max={3650} defaultValue={item.replacement_days ?? ""} /></label><p className="full muted">Deixe vazio quando não houver prazo definido.</p></OperationForm></div></section>}
     </>
   );
 }

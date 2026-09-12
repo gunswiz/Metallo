@@ -20,8 +20,8 @@ export default async function ToolsPage({ searchParams }: { searchParams: Search
   return (
     <>
       <PageHeader eyebrow="ITENS PESSOAIS" title="Ferramentas" description="Ferramentas manuais atribuídas a funcionários e controladas pela COSEM." actions={<>
-        {can(profile.role, "admin:manage") && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Novo item pessoal</Link>}
-        {can(profile.role, "epi:write") && <Link className="button primary" href="/epis/entrega?kind=personal_tool"><PackageCheck size={16} />Entregar item</Link>}
+        {can(profile, "admin:manage") && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Novo item pessoal</Link>}
+        {can(profile, "epi:write") && <Link className="button primary" href="/epis/entrega?kind=personal_tool"><PackageCheck size={16} />Entregar item</Link>}
       </>} />
       <section className="panel">
         <div className="panel-body"><SearchToolbar placeholder="Nome ou código da ferramenta" q={input.q} /></div>

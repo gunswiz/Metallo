@@ -6,7 +6,7 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { SubmitButton } from "@/02_COMPONENTES_VISUAIS/submit-button";
 
 export default async function NewMaterialPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  await requireCapability("operations:write");
+  await requireCapability("materials:write");
   const service = await getMetalloService();
   const teams = await service.listTeams();
   const { error } = await searchParams;

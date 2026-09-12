@@ -1,6 +1,9 @@
 import type { UserRole } from "@metallo/types";
+import { hasOperationPermission, type AccessProfile, type OperationPermission } from "./permissoes";
+export * from "./permissoes";
 
 export type Capability =
+  | OperationPermission
   | "dashboard:read"
   | "inventory:read"
   | "operations:write"
@@ -28,8 +31,14 @@ const grants: Record<UserRole, ReadonlySet<Capability>> = {
   collaborator: new Set(["dashboard:read", "inventory:read"]),
 };
 
-export function can(role: UserRole, capability: Capability): boolean {
-  return grants[role].has(capability);
+export function can(subject: UserRole | AccessProfile, capability: Capability): boolean {
+  const profile = typeof subject === "string" ? { role: subject } : subject;
+  if (profile.active === false) return false;
+  if (capability === "admin:manage") return profile.role === "admin";
+  if (capability === "epi:read") return hasOperationPermission(profile, "epi:write");
+  if (capability === "operations:write") return ["materials:write", "consumption:write", "equipment:write"].some((key) => hasOperationPermission(profile, key as OperationPermission));
+  if (capability.endsWith(":write")) return hasOperationPermission(profile, capability as OperationPermission);
+  return grants[profile.role].has(capability);
 }
 
 export function isUserRole(value: unknown): value is UserRole {

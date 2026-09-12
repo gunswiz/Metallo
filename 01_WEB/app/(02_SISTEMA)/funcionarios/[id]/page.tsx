@@ -32,8 +32,8 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
   const professionName = professions.find((profession) => profession.code === employee.profession)?.name ?? employee.profession;
   const activeDeliveries = deliveries.filter((delivery) => delivery.current_status === "active");
   const history = deliveries.filter((delivery) => delivery.current_status !== "active");
-  const canWrite = can(profile.role, "epi:write");
-  const canAdmin = can(profile.role, "admin:manage");
+  const canWrite = can(profile, "epi:write");
+  const canAdmin = can(profile, "admin:manage");
 
   return <>
     <PageHeader eyebrow="PERFIL DO FUNCIONÁRIO" title={employee.full_name} description={`${professionName} · ${employee.teams?.name ?? "Sem equipe"}`} actions={canWrite ? <>
@@ -45,7 +45,8 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
     {query.closed && <div className="alert success" role="status">Situação do item atualizada no histórico.</div>}
     {query.error && <div className="alert error" role="alert">Não foi possível salvar. Confira os campos e as datas informadas.</div>}
     <div className="module-tabs"><Link href={`/funcionarios/${employee.id}/kit`}>Kit e itens faltantes</Link><Link href={`/epis/solicitacoes?employee=${employee.id}`}>Solicitações</Link>{canWrite && <Link href={`/epis/entrega-em-lote?employee=${employee.id}`}>Entrega em lote</Link>}</div>
-    <AsoNotice expiry={employee.aso_expiry_date} />
+    <a className="button primary" href={`/funcionarios/${employee.id}/epi/pdf`} target="_blank" rel="noreferrer">PDF individual de EPI para assinatura</a>
+    {canAdmin && <AsoNotice expiry={employee.aso_expiry_date} />}
     <section className="detail-hero"><dl className="definition-grid">
       <div className="definition-item"><dt>Matrícula</dt><dd>{employee.registration_code ?? "Não informada"}</dd></div>
       <div className="definition-item"><dt>Fardamento</dt><dd>Camisa {employee.shirt_size ?? "—"} · Calça {employee.pants_size ?? "—"}</dd></div>

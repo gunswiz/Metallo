@@ -5,7 +5,7 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { EquipmentForm } from "@/02_COMPONENTES_VISUAIS/equipment-form";
 
 export default async function NewEquipmentPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  await requireCapability("operations:write");
+  await requireCapability("equipment:write");
   const service = await getMetalloService();
   const teams = await service.listTeams();
   const { error } = await searchParams;

@@ -89,7 +89,7 @@ export class MetalloRepository {
       this.client.from("inventory").select("quantity").gt("quantity", 0),
       this.client.from("assets").select("id,status").eq("active", true),
       this.client.from("teams").select("id", { count: "exact", head: true }).eq("active", true),
-      this.client.from("movements").select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)").order("created_at", { ascending: false }).limit(6),
+      this.client.from("movements").select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)").order("created_at", { ascending: false }).limit(6),
     ] as const;
 
     const [inventory, assets, teams, movements, employees, deliveries] = await Promise.all([
@@ -139,7 +139,7 @@ export class MetalloRepository {
         .maybeSingle(),
       this.client
         .from("movements")
-        .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)")
+        .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)")
         .eq("item_id", id)
         .order("created_at", { ascending: false })
         .limit(50),
@@ -243,7 +243,7 @@ export class MetalloRepository {
       this.client.from("inventory").select("*,items(name,code,unit)").eq("team_id", id).gt("quantity", 0).order("quantity", { ascending: false }),
       this.client.from("assets").select("*,items(name,code,category)").eq("team_id", id).eq("active", true),
       this.client.from("epi_employees").select("*").eq("team_id", id).eq("active", true).order("full_name"),
-      this.client.from("movements").select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)").or(`origin_team_id.eq.${id},destination_team_id.eq.${id}`).order("created_at", { ascending: false }).limit(12),
+      this.client.from("movements").select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)").or(`origin_team_id.eq.${id},destination_team_id.eq.${id}`).order("created_at", { ascending: false }).limit(12),
     ]);
     return {
       team: unwrap(team.data, team.error),
@@ -280,7 +280,7 @@ export class MetalloRepository {
     const { from, to } = range(input);
     let query = this.client
       .from("movements")
-      .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)", { count: "exact" })
+      .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(from, to);
     const term = safeTerm(input.q);
@@ -292,11 +292,11 @@ export class MetalloRepository {
   async consumptionRows(filter: AnalyticsFilter): Promise<ConsumptionRow[]> {
     let query = this.client
       .from("movements")
-      .select("id,item_id,origin_team_id,quantity,created_at,note,items!inner(id,name,code,unit,category),origin:teams!movements_origin_team_id_fkey(id,name)")
+      .select("id,item_id,origin_team_id,quantity,created_at:occurred_at,note,items!inner(id,name,code,unit,category),origin:teams!movements_origin_team_id_fkey(id,name)")
       .eq("movement_type", "consumption")
-      .gte("created_at", filter.from)
-      .lt("created_at", filter.to)
-      .order("created_at", { ascending: true })
+      .gte("occurred_at", filter.from)
+      .lt("occurred_at", filter.to)
+      .order("occurred_at", { ascending: true })
       .limit(5000);
     if (filter.teamId) query = query.eq("origin_team_id", filter.teamId);
     if (filter.itemId) query = query.eq("item_id", filter.itemId);
@@ -307,7 +307,7 @@ export class MetalloRepository {
   async reportData(filter: AnalyticsFilter, includeEpi: boolean) {
     let materialQuery = this.client
       .from("movements")
-      .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)")
+      .select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)")
       .gte("created_at", filter.from).lt("created_at", filter.to)
       .order("created_at", { ascending: false }).limit(300);
     let assetQuery = this.client

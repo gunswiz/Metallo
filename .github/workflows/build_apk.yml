@@ -38,6 +38,7 @@ jobs:
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: stable
+          flutter-version: '3.47.2'
           cache: true
 
       - name: Show Flutter version
@@ -47,7 +48,7 @@ jobs:
         working-directory: .
         run: |
           node 07_CONFIGURACOES_DO_PROJETO/validar-versao.mjs
-          node --test 06_TESTES_E_QUALIDADE/*.test.mjs
+          node --test 06_TESTES_E_QUALIDADE/ativacao.test.mjs 06_TESTES_E_QUALIDADE/versao.test.mjs
 
       - name: Configure permanent Android signing
         env:

@@ -22,6 +22,7 @@ import {
 } from "@metallo/validation";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
+import { parseUserPermissions } from "@/03_FUNCOES_E_LOGICA/validarPermissoes";
 
 const text = (data: FormData, name: string) => String(data.get(name) ?? "").trim();
 const optional = (data: FormData, name: string) => text(data, name) || undefined;
@@ -35,7 +36,7 @@ function operationError(destination: string, error: { message: string } | null) 
 }
 
 export async function createMaterial(formData: FormData) {
-  await requireCapability("operations:write");
+  await requireCapability("materials:write");
   const parsed = materialCreateSchema.safeParse({
     code: text(formData, "code"), name: text(formData, "name"), description: optional(formData, "description"),
     category: optional(formData, "category"), unit: text(formData, "unit"), minimumStock: text(formData, "minimumStock"),
@@ -54,7 +55,7 @@ export async function createMaterial(formData: FormData) {
 }
 
 export async function createEquipment(formData: FormData) {
-  await requireCapability("operations:write");
+  await requireCapability("equipment:write");
   const parsed = equipmentCreateSchema.safeParse({
     code: text(formData, "code"), name: text(formData, "name"), assetCode: text(formData, "assetCode"),
     serialNumber: optional(formData, "serialNumber"), description: optional(formData, "description"),
@@ -199,7 +200,7 @@ export async function addEpiStock(formData: FormData) {
 }
 
 export async function registerMaterialMovement(formData: FormData) {
-  await requireCapability("operations:write");
+  await requireCapability(text(formData, "movementType") === "consumption" ? "consumption:write" : "materials:write");
   const parsed = materialMovementSchema.safeParse({
     itemId: text(formData, "itemId"), originTeamId: nullable(formData, "originTeamId"),
     destinationTeamId: nullable(formData, "destinationTeamId"), quantity: text(formData, "quantity"),
@@ -218,7 +219,7 @@ export async function registerMaterialMovement(formData: FormData) {
 }
 
 export async function registerAssetMovement(formData: FormData) {
-  await requireCapability("operations:write");
+  await requireCapability("equipment:write");
   const parsed = assetMovementSchema.safeParse({
     assetId: text(formData, "assetId"), destinationTeamId: nullable(formData, "destinationTeamId"),
     movementType: text(formData, "movementType"), newStatus: text(formData, "newStatus"), note: optional(formData, "note"),
@@ -238,15 +239,18 @@ export async function registerAssetMovement(formData: FormData) {
 
 export async function updateProfile(formData: FormData) {
   await requireCapability("admin:manage");
+  const access = parseUserPermissions(formData);
+  if (!access.success) redirect("/usuarios?error=dados-invalidos");
   const parsed = profileUpdateSchema.safeParse({
     userId: text(formData, "userId"), fullName: text(formData, "fullName"), role: text(formData, "role"),
     teamId: nullable(formData, "teamId"), active: formData.get("active") === "on",
   });
   if (!parsed.success) redirect("/usuarios?error=dados-invalidos");
   const supabase = await createClient();
-  const { error } = await supabase.rpc("admin_update_profile", {
+  const { error } = await supabase.rpc("admin_update_profile_access", {
     p_user_id: parsed.data.userId, p_full_name: parsed.data.fullName, p_role: parsed.data.role,
     p_team_id: parsed.data.teamId as string, p_active: parsed.data.active,
+    p_operation_permissions: access.data.operationPermissions, p_operation_team_ids: access.data.operationTeamIds,
   });
   operationError("/usuarios", error);
   revalidatePath("/usuarios");

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:metallo/02_COMPONENTES/user_permissions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/errors.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/dashboard_snapshot.dart';
@@ -19,6 +20,8 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
   final password = TextEditingController();
   String role = 'collaborator';
   String? teamId;
+  List<String>? operationPermissions = [];
+  List<String>? operationTeamIds;
   bool busy = false;
   String? error;
 
@@ -58,6 +61,8 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
         password: password.text,
         role: role,
         teamId: teamId!,
+        operationPermissions: operationPermissions,
+        operationTeamIds: operationTeamIds,
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -138,6 +143,16 @@ class _CreateEmployeePageState extends State<CreateEmployeePage> {
                     .toList(),
                 onChanged: busy ? null : (v) => setState(() => teamId = v),
               ),
+              UserPermissionsEditor(
+                  role: role,
+                  teams: teams,
+                  permissions: operationPermissions,
+                  teamIds: operationTeamIds,
+                  enabled: !busy,
+                  onPermissionsChanged: (value) =>
+                      setState(() => operationPermissions = value),
+                  onTeamsChanged: (value) =>
+                      setState(() => operationTeamIds = value)),
               if (error != null) ...[
                 const SizedBox(height: 12),
                 Text(error!,

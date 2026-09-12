@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:metallo/01_TELAS/09_OBRAS_E_PEDIDOS/site_operations_page.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/site_operations_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/app_update.dart';
@@ -191,6 +193,15 @@ class _MainShellState extends State<MainShell> {
           ],
         ),
         actions: [
+          IconButton(
+              tooltip: 'Obras e pedidos',
+              icon: const Icon(Icons.construction_outlined),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SiteOperationsPage(
+                          repo: SiteOperationsRepository(
+                              adminRepository.client))))),
           if (isAdmin)
             IconButton(
               tooltip: 'Administração',
@@ -231,20 +242,22 @@ class _MainShellState extends State<MainShell> {
         onDestinationSelected: (v) => setState(() => index = v),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.inventory_2_outlined),
+            icon: Icon(Icons.inventory_2_outlined, color: Color(0xFF5EDBB5)),
             label: 'Materiais',
           ),
           NavigationDestination(
-            icon: Icon(Icons.handyman_outlined),
+            icon: Icon(Icons.handyman_outlined, color: Color(0xFFC6A0FF)),
             label: 'Equipamentos',
           ),
           NavigationDestination(
               icon: Icon(Icons.home_outlined), label: 'Início'),
           NavigationDestination(
-            icon: Icon(Icons.bar_chart_rounded),
+            icon: Icon(Icons.bar_chart_rounded, color: Color(0xFFFFAC6B)),
             label: 'Consumo',
           ),
-          NavigationDestination(icon: Icon(Icons.history), label: 'Histórico'),
+          NavigationDestination(
+              icon: Icon(Icons.history, color: Color(0xFF64CAFF)),
+              label: 'Histórico'),
         ],
       ),
     );

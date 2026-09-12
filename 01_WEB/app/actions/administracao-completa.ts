@@ -3,6 +3,7 @@
 import { accountCreateSchema, confirmedIdSchema, movementDeleteSchema, movementEditSchema, teamUpdateSchema } from "@/03_FUNCOES_E_LOGICA/validarParidadeMobile";
 import { executeValidated, type OperationState } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
 import type { Database } from "@metallo/types";
+import { parseUserPermissions } from "@/03_FUNCOES_E_LOGICA/validarPermissoes";
 
 const paths = ["/equipes", "/materiais", "/equipamentos", "/epis", "/ferramentas", "/movimentacoes", "/relatorios", "/consumo", "/dashboard"];
 export async function editTeam(_previous: OperationState, formData: FormData) {
@@ -38,8 +39,11 @@ export async function deactivateEpi(_previous: OperationState, formData: FormDat
 export async function createUserAccount(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: accountCreateSchema, capability: "admin:manage", formData, paths: ["/usuarios"],
     destination: "/usuarios?created=1", operation: async (client, data) => {
+      const access = parseUserPermissions(formData);
+      if (!access.success) return { error: { message: "invalid_permissions" } };
       const result = await client.functions.invoke("create-employee", { body: {
         full_name: data.fullName, email: data.email, password: data.password, role: data.role, team_id: data.teamId,
+        operation_permissions: access.data.operationPermissions, operation_team_ids: access.data.operationTeamIds,
       } });
       return { error: result.error ?? (result.data?.ok === true ? null : { message: "account_creation_failed" }) };
     },

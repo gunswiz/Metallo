@@ -1,3 +1,4 @@
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/08_ESTILOS/theme.dart';
@@ -49,9 +50,9 @@ class _MaterialsPageState extends State<MaterialsPage> {
           return const Center(child: CircularProgressIndicator());
         }
         final data = snap.data!;
-        final canOperate = canOperateMaterials(widget.role);
-        final allowedTeams =
-            allowedMaterialTeams(data.teams, widget.role, widget.userTeamId);
+        final allowedTeams = data.teams
+            .where((t) => UserAccessScope.of(context).allowsTeam(t.id))
+            .toList();
         final materials =
             filterMaterialStocks(data.materials, data.teams, search.text);
         final materialGroups = groupMaterialStocks(materials);
@@ -60,19 +61,21 @@ class _MaterialsPageState extends State<MaterialsPage> {
           backgroundColor: metalloBackground,
           endDrawer: MaterialCatalogDrawer(
               repo: widget.catalogRepository, isAdmin: widget.role == 'admin'),
-          floatingActionButton: canOperate && allowedTeams.isNotEmpty
-              ? FloatingActionButton.extended(
-                  heroTag: 'material-entry-fab',
-                  onPressed: () => showMaterialDialog(
-                    context,
-                    widget.catalogRepository,
-                    allowedTeams,
-                    widget.role == 'leader' ? widget.userTeamId : null,
-                  ),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Entrada'),
-                )
-              : null,
+          floatingActionButton:
+              UserAccessScope.of(context).can('materials:write') &&
+                      allowedTeams.isNotEmpty
+                  ? FloatingActionButton.extended(
+                      heroTag: 'material-entry-fab',
+                      onPressed: () => showMaterialDialog(
+                        context,
+                        widget.catalogRepository,
+                        allowedTeams,
+                        allowedTeams.length == 1 ? allowedTeams.first.id : null,
+                      ),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Entrada'),
+                    )
+                  : null,
           body: Builder(
             builder: (innerContext) => ListView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),

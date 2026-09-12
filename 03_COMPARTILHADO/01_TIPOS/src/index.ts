@@ -8,6 +8,8 @@ export type SessionProfile = {
   role: UserRole;
   teamId: string | null;
   active: boolean;
+  operationPermissions?: string[] | null;
+  operationTeamIds?: string[] | null;
 };
 
 export type PageResult<T> = {

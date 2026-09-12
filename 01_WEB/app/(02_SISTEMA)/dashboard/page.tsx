@@ -7,7 +7,7 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
-  const includeEpi = can(profile.role, "epi:read");
+  const includeEpi = can(profile, "epi:read");
   const service = await getMetalloService();
   const data = await service.dashboard(includeEpi);
 

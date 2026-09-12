@@ -1,3 +1,4 @@
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/errors.dart';
@@ -414,9 +415,11 @@ Future<void> showMaterialDistributionSheet(
                     const Divider(height: 1, indent: 20, endIndent: 20),
                 itemBuilder: (rowContext, index) {
                   final stock = sorted[index];
-                  final allowed = role == 'admin' ||
-                      role == 'engineer' ||
-                      stock.teamId == userTeamId;
+                  final access = UserAccessScope.of(context);
+                  final allowed =
+                      access.canAt('consumption:write', stock.teamId) ||
+                          (access.can('materials:write') &&
+                              findTeam(teams, stock.teamId)?.isCentral == true);
                   return ListTile(
                     leading: Icon(
                         findTeam(teams, stock.teamId)?.isCentral == true
@@ -459,8 +462,8 @@ Future<void> showMaterialActionsDialog(
   final centralMatches = teams.where((t) => t.isCentral).toList();
   final central = centralMatches.isEmpty ? null : centralMatches.first;
   final canConsume =
-      role == 'admin' || role == 'engineer' || material.teamId == userTeamId;
-  final canReplenish = (role == 'admin' || role == 'engineer') &&
+      UserAccessScope.of(context).canAt('consumption:write', material.teamId);
+  final canReplenish = UserAccessScope.of(context).can('materials:write') &&
       current?.isCentral == true &&
       central != null;
 
@@ -513,7 +516,10 @@ Future<void> showMaterialActionsDialog(
       ),
     );
   } else if (action == 'replenish' && central != null) {
-    final destinations = teams.where((t) => !t.isCentral).toList();
+    final destinations = teams
+        .where(
+            (t) => !t.isCentral && UserAccessScope.of(context).allowsTeam(t.id))
+        .toList();
     if (destinations.isEmpty) return;
     await showMaterialQuantityDialog(
       context,

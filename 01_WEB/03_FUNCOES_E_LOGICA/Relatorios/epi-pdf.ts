@@ -35,6 +35,9 @@ const reasonLabels: Readonly<Record<string, string>> = {
   initial: "Primeira entrega",
   replacement: "Substituição",
   additional: "Adicional",
+  wear: "Desgaste",
+  lost: "Perda",
+  damaged: "Dano",
 };
 
 export type EpiPdfInput = {

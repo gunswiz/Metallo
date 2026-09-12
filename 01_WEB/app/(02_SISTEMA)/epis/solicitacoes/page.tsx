@@ -23,7 +23,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Sea
   const quantity = z.coerce.number().int().min(1).max(100).catch(1).parse(raw.quantity);
   const repo = await getEpiOperations();
   const [result, choices] = await Promise.all([repo.requests(input.page, status, employeeId), repo.choices()]);
-  const canWrite = can(profile.role, "epi:write");
+  const canWrite = can(profile, "epi:write");
   return <>
     <PageHeader eyebrow="COSEM" title="Solicitações de EPI e itens" description="Acompanhe pendências e entregue o tamanho solicitado a partir do estoque disponível." actions={<Link className="button ghost" href="/epis">Voltar aos EPIs</Link>} />
     {raw.success && <div className="alert success" role="status">Operação concluída. A lista foi atualizada.</div>}

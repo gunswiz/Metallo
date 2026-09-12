@@ -1,6 +1,6 @@
 {
   "name": "metallo-platform",
-  "version": "0.9.8",
+  "version": "0.10.0",
   "private": true,
   "packageManager": "pnpm@11.19.0",
   "engines": {
@@ -12,6 +12,11 @@
     "typecheck:web": "pnpm --filter @metallo/web typecheck",
     "test:web": "pnpm --filter @metallo/web test",
     "build:web": "pnpm --filter @metallo/web build",
-    "check:web": "pnpm lint:web && pnpm typecheck:web && pnpm test:web && pnpm build:web"
+    "check:web": "pnpm lint:web && pnpm typecheck:web && pnpm test:web && pnpm build:web",
+    "test:db": "node --test 06_TESTES_E_QUALIDADE/*-banco.test.mjs",
+    "test:quality": "node --test 06_TESTES_E_QUALIDADE/*.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
   }
 }

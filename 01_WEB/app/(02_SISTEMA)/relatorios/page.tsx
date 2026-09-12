@@ -16,7 +16,7 @@ function inputDate(date: Date) {
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<Query> }) {
   const profile = await requireProfile();
-  const includeEpi = can(profile.role, "epi:read");
+  const includeEpi = can(profile, "epi:read");
   const query = await searchParams;
   const range = resolveConsumptionRange(query.from && query.to ? "custom" : "30", query.from, query.to);
   const service = await getMetalloService();

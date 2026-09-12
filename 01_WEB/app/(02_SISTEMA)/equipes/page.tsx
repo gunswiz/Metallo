@@ -13,7 +13,7 @@ export default async function TeamsPage() {
   const teams = await service.listTeams();
   return (
     <>
-      <PageHeader eyebrow="ESTRUTURA OPERACIONAL" title="Equipes e locais" description="A COSEM permanece como centro; equipes representam as frentes de trabalho." actions={can(profile.role, "admin:manage") ? <Link className="button primary" href="/equipes/nova"><Plus size={16} />Nova equipe</Link> : undefined} />
+      <PageHeader eyebrow="ESTRUTURA OPERACIONAL" title="Equipes e locais" description="A COSEM permanece como centro; equipes representam as frentes de trabalho." actions={can(profile, "admin:manage") ? <Link className="button primary" href="/equipes/nova"><Plus size={16} />Nova equipe</Link> : undefined} />
       <section className="panel"><div className="panel-body list">
         {teams.map((team) => <Link className="list-row" href={`/equipes/${team.id}`} key={team.id}>
           <span className="list-row-icon">{team.location_type === "central" ? <Building2 size={17} /> : <Users size={17} />}</span>

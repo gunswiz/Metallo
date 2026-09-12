@@ -20,9 +20,9 @@ class AdministrationPage extends StatelessWidget {
           const SizedBox(height: 18),
           _AdministrationOptionCard(
             icon: Icons.person_add_alt_1,
-            title: 'Criar funcionário',
+            title: 'Criar acesso ao Metallo',
             subtitle:
-                'Engenheiro, encarregado ou colaborador com equipe definida',
+                'Conta, equipe e permissões do responsável que usa o aplicativo',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => CreateEmployeePage(repo: repo),
@@ -32,7 +32,7 @@ class AdministrationPage extends StatelessWidget {
           _AdministrationOptionCard(
             icon: Icons.manage_accounts_outlined,
             title: 'Gerenciar usuários',
-            subtitle: 'Cargo, equipe e liberação de acesso',
+            subtitle: 'Cargo, equipes autorizadas e permissões de operação',
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => UsersManagementPage(repo: repo),

@@ -12,7 +12,7 @@ export const getSessionProfile = cache(async (): Promise<SessionProfile | null> 
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("id,full_name,role,team_id,active")
+    .select("id,full_name,role,team_id,active,operation_permissions,operation_team_ids")
     .eq("id", userId)
     .maybeSingle();
 
@@ -23,6 +23,8 @@ export const getSessionProfile = cache(async (): Promise<SessionProfile | null> 
     role: data.role,
     teamId: data.team_id,
     active: data.active,
+    operationPermissions: data.operation_permissions,
+    operationTeamIds: data.operation_team_ids,
   };
 });
 
@@ -35,6 +37,6 @@ export async function requireProfile(): Promise<SessionProfile> {
 
 export async function requireCapability(capability: Capability) {
   const profile = await requireProfile();
-  if (!can(profile.role, capability)) redirect("/sem-permissao");
+  if (!can(profile, capability)) redirect("/sem-permissao");
   return profile;
 }

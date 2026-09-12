@@ -15,7 +15,7 @@ export default async function WarehousePage() {
   const profile = await requireProfile();
   return (
     <><PageHeader eyebrow="CENTRO DE CONTROLE" title="Almoxarifado" description="Ponto único para consultar e operar itens sem misturar seus controles." />
-      <section className="metric-grid">{modules.filter((module) => can(profile.role, module.capability)).map(({ icon: Icon, ...module }) => <Link className="metric-card" href={module.href} key={module.href}><span className="metric-icon"><Icon size={18} /></span><strong className="metric-link-title">{module.title}</strong><span>{module.description}</span></Link>)}</section>
+      <section className="metric-grid">{modules.filter((module) => can(profile, module.capability)).map(({ icon: Icon, ...module }) => <Link className="metric-card" href={module.href} key={module.href}><span className="metric-icon"><Icon size={18} /></span><strong className="metric-link-title">{module.title}</strong><span>{module.description}</span></Link>)}</section>
     </>
   );
 }

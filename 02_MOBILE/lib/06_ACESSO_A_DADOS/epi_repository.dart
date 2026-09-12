@@ -8,6 +8,28 @@ class EpiRepository {
   final SupabaseClient client;
   final DashboardRepository dashboardRepository;
 
+  Future<List<Map<String, dynamic>>> fetchEmployeeReceipt(
+      String employeeId) async {
+    final result = <Map<String, dynamic>>[];
+    for (var offset = 0; offset <= 10000; offset += 500) {
+      final rows = await client
+          .from('epi_deliveries')
+          .select(
+              'id,employee_id,quantity,delivered_at,ca_snapshot,variant_snapshot,epi_items(name,item_kind)')
+          .eq('employee_id', employeeId)
+          .order('delivered_at')
+          .order('id')
+          .range(offset, offset + 499);
+      result.addAll(rows.map((row) => Map<String, dynamic>.from(row)));
+      if (result.length > 10000) {
+        throw StateError(
+            'Histórico extenso: solicite emissão por período à ADM.');
+      }
+      if (rows.length < 500) return result;
+    }
+    throw StateError('Não foi possível carregar o histórico completo.');
+  }
+
   Future<List<Map<String, dynamic>>> fetchEpiEmployees() async {
     try {
       final rows = await client

@@ -346,3 +346,30 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); box-sha
 .operation-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
 .operation-fields:disabled { opacity: .7; }
 .kit-item { padding: 12px; border-bottom: 1px solid var(--border); }
+
+.permission-fields { border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.checkbox-label { display: flex !important; align-items: center; gap: 10px; }
+.checkbox-label input[type=checkbox] { width: 20px; min-height: 20px; flex-shrink: 0; }
+
+/* Consistent accents identify each area while the company brand stays blue. */
+.page-content { --module-accent: #64caff; }
+.page-content[data-module="materiais"], .page-content[data-module="almoxarifado"] { --module-accent: #5edbb5; }
+.page-content[data-module="equipamentos"], .page-content[data-module="ferramentas"] { --module-accent: #c6a0ff; }
+.page-content[data-module="consumo"] { --module-accent: #ffac6b; }
+.page-content[data-module="epis"], .page-content[data-module="funcionarios"] { --module-accent: #e0d26d; }
+.page-content[data-module="obras"] { --module-accent: #64caff; }
+.page-content .page-header { border-left: 4px solid var(--module-accent); padding-left: 18px; }
+.page-content .eyebrow, .page-content .line-chart { color: var(--module-accent); }
+.operation-details { margin: 16px 0; border: 1px solid var(--border); border-left: 3px solid var(--module-accent); border-radius: 12px; background: var(--surface); }
+.operation-details > summary { padding: 18px; cursor: pointer; font-weight: 700; }
+.operation-details > form { padding: 0 18px 18px; }
+.operation-details fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pending-panel { border-color: #ffac6b; }
+.pending-operation, .order-line { padding: 16px 0; border-bottom: 1px solid var(--border); }
+.alert-card { display: flex; flex-direction: column; gap: 8px; width: 100%; text-align: left; margin: 10px 0; padding: 16px; color: inherit; background: transparent; border: 1px solid var(--border); border-left: 4px solid #ffac6b; border-radius: 10px; cursor: pointer; }
+.alert-card:hover { background: rgba(255,172,107,.08); }
+.module-tabs { flex-wrap: wrap; }
+.sidebar-nav a[href="/materiais"] svg { color: #5edbb5; }
+.sidebar-nav a[href="/equipamentos"] svg { color: #c6a0ff; }
+.sidebar-nav a[href="/consumo"] svg { color: #ffac6b; }
+.sidebar-nav a[href="/epis"] svg { color: #e0d26d; }
