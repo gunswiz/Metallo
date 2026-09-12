@@ -24,12 +24,13 @@ No web, abra **Obras e pedidos** no menu lateral. No mobile, toque no **ícone d
 | Certificado SHA-256, conferido com apksigner | `5B95A774E9EED0699322EF35F5662BC37631D0F888D447320625A0CC5981827C` |
 | SHA-256 do APK baixado | `F090A062CF9AA4ACF0A217EE3820CFCFC5157466BB91D8F174C34A3960E042EB` |
 | Checksum publicado e manifesto público | Iguais aos arquivos verificados localmente |
-| Versão Cloudflare | `a1ab7352-7661-4e4f-9f90-b8cb157f92c2` |
+| Versão Cloudflare final | `6b3f253c-928b-4dff-a327-9690ce563ddf` |
 | Login, CSS e JavaScript públicos | HTTP 200 |
 | Obras, usuários e funcionários sem sessão | HTTP 307 para login |
 | Serviço create-employee | ACTIVE, versão 13, verificação JWT habilitada |
 
 - [Workflow Web: qualidade e deploy aprovados](https://github.com/gunswiz/Metallo/actions/runs/34681418315).
+- [Conferência final após a correção da automação: qualidade e deploy aprovados](https://github.com/gunswiz/Metallo/actions/runs/34681793587), commit `652a84a`. Inclui os 27 testes de banco, cadastro e publicação. O endereço padrão do manifesto, sem parâmetro adicional, também foi consultado e confirmou o build 50.
 - [Workflow Android: build, testes, assinatura e publicação do APK aprovados](https://github.com/gunswiz/Metallo/actions/runs/34681419273). A última etapa gravou o manifesto, mas marcou falha ao reler imediatamente a referência `main`, que retornou o conteúdo anterior. A ativação foi confirmada depois pelo commit e pelo manifesto público. A conferência foi corrigida para ler o commit imutável retornado pela gravação, com dois testes de regressão. O APK publicado não foi substituído.
 
 ## Banco e preservação
