@@ -1,0 +1,108 @@
+{
+  "at": "2026-10-03T10:35:03.179Z",
+  "scope": "Marco 3I local sintético",
+  "checks": [
+    {
+      "name": "RPCs 3I só para authenticated",
+      "ok": true
+    },
+    {
+      "name": "tabela do termo sem DML para browser",
+      "ok": true
+    },
+    {
+      "name": "texto do termo não é exposto diretamente",
+      "ok": true
+    },
+    {
+      "name": "João vê termo pendente com texto e hash",
+      "ok": true
+    },
+    {
+      "name": "hash diferente do texto é recusado",
+      "ok": true
+    },
+    {
+      "name": "anon não aceita termo",
+      "ok": true
+    },
+    {
+      "name": "João aceita o termo",
+      "ok": true
+    },
+    {
+      "name": "aceite repetido não duplica e mantém a data original",
+      "ok": true
+    },
+    {
+      "name": "aceite de João não marca Maria",
+      "ok": true
+    },
+    {
+      "name": "aceite é imutável (update bloqueado)",
+      "ok": true
+    },
+    {
+      "name": "aceite é imutável (delete bloqueado)",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê aceite de João",
+      "ok": true
+    },
+    {
+      "name": "funcionário não consulta visão da Gestão",
+      "ok": true
+    },
+    {
+      "name": "recusa sem mensagem ao funcionário é rejeitada",
+      "ok": true
+    },
+    {
+      "name": "funcionário não registra recusa",
+      "ok": true
+    },
+    {
+      "name": "Gestão registra recusa",
+      "ok": true
+    },
+    {
+      "name": "retry da recusa é idempotente",
+      "ok": true
+    },
+    {
+      "name": "segunda recusa seguida é transição inválida",
+      "ok": true
+    },
+    {
+      "name": "João vê a recusa com a mensagem da Gestão",
+      "ok": true
+    },
+    {
+      "name": "nota interna não aparece ao funcionário",
+      "ok": true
+    },
+    {
+      "name": "ficha/histórico inclui a recusa",
+      "ok": true
+    },
+    {
+      "name": "após recusa, João ainda pode confirmar o recebimento",
+      "ok": true
+    },
+    {
+      "name": "recusa depois de confirmado é transição inválida",
+      "ok": true
+    },
+    {
+      "name": "evento de recusa é imutável",
+      "ok": true
+    },
+    {
+      "name": "fluxo antigo continua: confirmação direta sem recusa",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "count": 25
+}
