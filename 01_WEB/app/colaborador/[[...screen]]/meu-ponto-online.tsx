@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Clock3, MapPin, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { acquireEventLocation, type LocationInput } from "@/03_FUNCOES_E_LOGICA/Ponto/geolocalizacao-evento";
@@ -19,20 +19,25 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
   const [recordsRevision, setRecordsRevision] = useState(0);
   const alive = useRef(false), working = useRef(false), pending = useRef<Pending | null>(null), controller = useRef<AbortController | null>(null);
   const historyVersion = useRef(0);
+  // F-4C-ANDROID-01: a sessão é revalidada a cada 5 s e pode entregar uma nova referência de getToken.
+  // A marcação em andamento não pode ser cancelada por isso; só sair da tela, trocar de conta ou logout a encerram.
+  const tokenSource = useRef(getToken);
+  useLayoutEffect(() => { tokenSource.current = getToken; }, [getToken]);
+  const token = useCallback(() => tokenSource.current(), []);
   const load = useCallback(async () => {
     const version = historyVersion.current;
-    const body = await onlinePointRequest("/events", await getToken());
+    const body = await onlinePointRequest("/events", await token());
     const parsed = body.events.map((value: unknown) => pointReceipt.parse(value)) as PointReceipt[];
     if (alive.current && version === historyVersion.current) setEvents(parsed);
-  }, [getToken]);
+  }, [token]);
   useEffect(() => {
     alive.current = true; let reference: { at: string; monotonic: number } | null = null;
-    const synchronize = async () => { try { const result = await onlinePointRequest("/clock", await getToken()); if (alive.current) reference = { at: result.server_at, monotonic: performance.now() }; } catch { reference = null; } };
+    const synchronize = async () => { try { const result = await onlinePointRequest("/clock", await token()); if (alive.current) reference = { at: result.server_at, monotonic: performance.now() }; } catch { reference = null; } };
     const first = setTimeout(() => { if (presentation === "full") void load().catch(error => { if (alive.current) setMessage(errorMessage(error)); }); void synchronize(); }, 0);
     const refresh = setInterval(() => void synchronize(), 30000);
     const tick = setInterval(() => { if (alive.current) setClock(reference ? referenceTime(reference.at, reference.monotonic, performance.now()) : null); }, 250);
     return () => { alive.current = false; controller.current?.abort(); clearTimeout(first); clearInterval(refresh); clearInterval(tick); pending.current = null; };
-  }, [getToken, load, presentation]);
+  }, [token, load, presentation]);
   async function perform() {
     controller.current = new AbortController(); const signal = controller.current.signal;
     const operation = pending.current ?? { key: crypto.randomUUID() }; pending.current = operation;
@@ -45,18 +50,18 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
     try {
       if (!navigator.onLine) throw new Error("SEM_CONEXAO");
       setMessage(retry ? "Verificando a mesma intenção…" : "Iniciando marcação online…");
-      await onlinePointRequest("/begin", await getToken(), { method: "POST", body: JSON.stringify({ idempotency_key: operation.key }), signal });
+      await onlinePointRequest("/begin", await token(), { method: "POST", body: JSON.stringify({ idempotency_key: operation.key }), signal });
       if (!alive.current) return;
       if (!operation.location) { setMessage("Obtendo localização uma única vez…"); operation.location = await acquireEventLocation(navigator.geolocation, signal); }
       if (!alive.current) return;
       setMessage("Enviando marcação…");
-      const result = await onlinePointRequest("/events", await getToken(), { method: "POST", body: JSON.stringify({ idempotency_key: operation.key, location: operation.location }), signal });
+      const result = await onlinePointRequest("/events", await token(), { method: "POST", body: JSON.stringify({ idempotency_key: operation.key, location: operation.location }), signal });
       await confirmed(result.event);
     } catch (error) {
       if (!alive.current) return;
       if (error instanceof Error && /INTENCAO_EXPIRADA|PEDIDO_INVALIDO|CONFLITANTE/.test(error.message)) { pending.current = null; setRetry(false); setMessage(errorMessage(error)); return; }
       if (error instanceof Error && /SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(error.message)) { setEvents([]); setReceipt(null); pending.current = null; setRetry(false); setMessage(errorMessage(error)); return; }
-      try { const recovered = await onlinePointRequest(`/intent/${operation.key}`, await getToken(), { signal }); await confirmed(recovered.event); }
+      try { const recovered = await onlinePointRequest(`/intent/${operation.key}`, await token(), { signal }); await confirmed(recovered.event); }
       catch { if (alive.current) { setRetry(true); setMessage(navigator.onLine ? errorMessage(error) : "Sem conexão. Nenhuma confirmação recebida; não existe fila offline."); } }
     }
   }

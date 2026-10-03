@@ -301,3 +301,22 @@
 .pendingSummary{display:grid;gap:12px;min-width:0;padding-top:10px}.pendingSummary h2{display:flex;align-items:center;gap:9px;margin:0;font-size:18px}.pendingSummary h2 svg{color:var(--highlight)}.pendingSummary p{margin:0;color:var(--soft);font-size:14px;line-height:1.6}.pendingSummary ul{display:grid;gap:7px;list-style:none;margin:0;padding:0}.pendingSummary a{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;background:var(--panel);border-radius:9px;color:var(--ink);line-height:1.5;font-size:14px}.pendingSummary a span{min-width:0;overflow-wrap:anywhere}.pendingSummary a svg{flex:none;color:var(--highlight)}.pendingSummary button{background:transparent;color:var(--highlight);border:0;text-decoration:underline;padding:0 5px;font-size:inherit}
 .shellFootnote{position:relative;max-width:960px;margin:0 auto;padding:20px 24px 30px;color:var(--soft);font-size:12px;line-height:1.7;text-align:center}.shell [id]{scroll-margin-top:100px}
 @media(max-width:490px){.appTopbar{gap:12px;padding:8px 16px}.appTopbar .testBadge{max-width:90px;font-size:10px}.appTopbar .brand img{width:112px}.homeLayout{gap:22px}.homePointClock .pointClock{font-size:32px}.homeShortcuts{gap:8px}.homeShortcuts a{font-size:14px}.shellFootnote{padding:16px 18px 24px}}
+
+/* F-4C-ANDROID-02: telas muito estreitas (exibição/fonte do Android ampliadas, ~187px CSS).
+   O cabeçalho quebra em duas linhas e o conteúdo usa margens menores, sem rolagem lateral. */
+@media(max-width:360px){
+.appTopbar{flex-wrap:wrap;gap:8px;padding:8px 10px}
+.appTopbar .brand{flex:1 1 0;min-width:0}
+.appTopbar .brand img{width:100%;max-width:112px}
+.appTopbar .testBadge{order:3;flex:1 1 100%;max-width:none;margin:0}
+.content{padding:16px 10px;overflow-wrap:anywhere}
+.detailHeader h1{font-size:clamp(22px,9vw,32px);line-height:1.2}
+.detailCard{min-width:0;padding:14px}
+.pointHero{padding:16px 8px}
+.pointHero p{font-size:18px}
+.pointClock{font-size:clamp(26px,12vw,36px)}
+.pointOnline .primary,.homeLayout .primary{padding:10px 12px;font-size:16px}
+.homeShortcuts{grid-template-columns:1fr}
+.records{padding:12px}
+.records li button,.recordsButton{white-space:normal;max-width:100%}
+}

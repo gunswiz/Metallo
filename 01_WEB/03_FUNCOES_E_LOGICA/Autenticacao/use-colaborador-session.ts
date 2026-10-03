@@ -113,7 +113,9 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (result.error) throw result.error;
       const person = personalProfile(result.data);
       if (!person) { await endSession("Sua conta não tem acesso ativo. Procure a administração."); return; }
-      setProfile(person); setError("");
+      // Revalidação sem mudança mantém a mesma referência: evita reiniciar telas e operações em andamento.
+      setProfile(previous => previous && previous.employee_id === person.employee_id && previous.full_name === person.full_name &&
+        previous.profession === person.profession && previous.team_name === person.team_name ? previous : person); setError("");
       if (target === "login") go("inicio");
     } catch (cause) {
       if (ticket === generation.current) await endSession(friendlyPortalError(cause), false);

@@ -73,3 +73,16 @@ it.each(["2020-01-01","2030-01-01"])("relógio cliente %s não redefine hora de 
 it("virada de minuto é calculada pelo tempo monotônico",()=>expect(pointTime(referenceTime("2026-10-01T12:00:59Z",0,1000)!)).toBe("09:01:00"));
 it("virada de dia e timezone Fortaleza são preservados",()=>{const at=referenceTime("2026-10-02T02:59:59Z",0,1000)!;expect(pointDate(at)).toBe("02/10/2026");expect(pointTime(at)).toBe("00:00:00");});
 it("referência obsoleta ou tempo monotônico negativo fica indisponível",()=>{expect(referenceTime(event.marking_at,0,60001)).toBeNull();expect(referenceTime(event.marking_at,100,0)).toBeNull();});
+it("F-4C-ANDROID-01: nova referência de getToken durante GPS lento não cancela a marcação", async()=>{
+  let answerGps!:(error:{code:number})=>void;
+  gps.mockImplementation((_ok,fail)=>{answerGps=fail;});
+  // Como o navegador real: pedido com sinal já cancelado não chega ao servidor.
+  request.mockImplementation(async(path,_token,init)=>init?.signal?.aborted?Promise.reject(new DOMException("cancelado","AbortError")):path==="/events"&&init?.method==="POST"?{event}:path==="/events"?{events:[]}:path==="/begin"?{idempotency_key:"key"}:{server_at:event.marking_at});
+  const view=renderPoint();fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));await waitFor(()=>expect(answerGps).toBeTypeOf("function"));
+  const renewed=vi.fn(async()=>"JWT-SINTETICO-RENOVADO");
+  view.rerender(<MeuPontoOnline getToken={renewed} employeeId="joao" name="João Sintético"/>);
+  answerGps({code:3});
+  expect(await screen.findByRole("heading",{name:"Ponto registrado"})).toBeInTheDocument();
+  expect(request.mock.calls.filter(([path,,init])=>path==="/events"&&init?.method==="POST")).toHaveLength(1);
+  expect(request.mock.calls.filter(([path,,init])=>path==="/begin"&&init?.method==="POST")).toHaveLength(1);
+});
