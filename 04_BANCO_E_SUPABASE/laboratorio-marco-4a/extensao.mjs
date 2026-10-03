@@ -17,6 +17,11 @@ export function normalizeLocation(value) {
  if(![lat,lon,acc].every(v=>typeof v==='number'&&Number.isFinite(v))||Math.abs(lat)>90||Math.abs(lon)>180||acc<0||typeof at!=='string'||!/^\d{4}-\d\d-\d\dT/.test(at)||!Number.isFinite(Date.parse(at)))return empty('UNKNOWN');
  return {...empty(acc>100?'LOW_ACCURACY':'AVAILABLE'),latitude:lat,longitude:lon,accuracy_meters:acc,captured_at:new Date(at).toISOString()};
 }
+// Revisão 4C (03/10): a hora de captura informada pelo navegador precisa ser coerente com a intenção do servidor
+// (até 10 min antes e 150 s depois). Fora disso a localização não é comprovada: vira UNKNOWN, sem coordenadas.
+// A referência é a hora fixa da intenção, então um reenvio da mesma intenção gera sempre o mesmo resultado.
+export function boundLocation(location,markingAt){if(!location.captured_at)return location;const delta=Date.parse(location.captured_at)-new Date(markingAt).getTime();
+ if(Number.isFinite(delta)&&delta<=150000&&delta>=-600000)return location;return normalizeLocation({status:'UNKNOWN'});}
 const session=p=>({sessionId:p.sessionId,issuedAt:p.issuedAt});
 function keyOf(body,keys){if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join()!==keys.sort().join()||!uuid.test(body.idempotency_key??''))throw new LabError(400,'PEDIDO_INVALIDO');return body.idempotency_key;}
 export async function installExtension(core) {
@@ -63,13 +68,17 @@ export function createPointExtension(core,{testHook,telemetry}={}) {
  async function begin(p,body,access){const key=keyOf(body,['idempotency_key']);
   const result=await within(access,async db=>{await verify(db);let row=(await db.query('select * from lab4a.intent where idempotency_key=$1',[key])).rows[0];
    if(row&&(row.auth_user_id!==p.authUserId||row.employee_id!==p.employeeId))throw new LabError(409,'INTENCAO_CONFLITANTE');
+   // Revisão 4C (03/10): chave de original já gravado (inclusive legado sem intenção) não abre intenção nova;
+   // senão a hora exibida do original antigo poderia ser trocada pela hora de agora.
+   if(!row&&(await db.query('select 1 from public.lab_time_event where idempotency_key=$1',[key])).rows.length)throw new LabError(409,'INTENCAO_CONFLITANTE');
    if(!row)row=(await db.query('insert into lab4a.intent(idempotency_key,auth_user_id,employee_id) values($1,$2,$3) returning *',[key,p.authUserId,p.employeeId])).rows[0];
    return {idempotency_key:key,marking_at:new Date(row.marking_at).toISOString(),timezone:TZ};});telemetry?.mark('T4_intention_validated');return result;
  }
- async function finish(p,body,authorizeCurrent,access){const key=keyOf(body,['idempotency_key','location']);const location=normalizeLocation(body.location),requestHash=sha(location);
+ async function finish(p,body,authorizeCurrent,access){const key=keyOf(body,['idempotency_key','location']);const declared=normalizeLocation(body.location);let location=declared,requestHash=sha(declared);
   await within(access,async db=>{
    await verify(db);const intent=(await db.query('select * from lab4a.intent where idempotency_key=$1',[key])).rows[0];
    if(!intent||intent.auth_user_id!==p.authUserId||intent.employee_id!==p.employeeId)throw new LabError(403,'INTENCAO_NAO_AUTORIZADA');
+   location=boundLocation(declared,intent.marking_at);requestHash=sha(location);
    const prior=(await db.query('select * from lab4a.context where idempotency_key=$1',[key])).rows[0];
    if(prior&&prior.request_hash!==requestHash)throw new LabError(409,'INTENCAO_CONFLITANTE');
    const age=(await db.query('select extract(epoch from clock_timestamp()-marking_at) as age from lab4a.intent where idempotency_key=$1',[key])).rows[0].age;
@@ -98,6 +107,8 @@ export function createPointExtension(core,{testHook,telemetry}={}) {
    const record={...base,synthetic_sequence:seq,event_id:event.event_id,recorded_at:base.server_committed_at_utc,previous_hash:prev};
    await tx.query('insert into lab4a.receipt(synthetic_sequence,idempotency_key,event_id,recorded_at,previous_hash,hash_version,payload_hash) overriding system value values($1,$2,$3,$4,$5,1,$6)',[seq,key,event.event_id,record.recorded_at,prev,sha(canonical(record))]);
   });
+  // Revisão 4C (03/10): recibo durável no disco antes do frame do journal, como o original do núcleo.
+  if(typeof db.syncToFs==='function')await db.syncToFs(false);
   row=(await db.query(joined+' where r.idempotency_key=$1',[key])).rows[0];if(core.integrityMode==='incremental'){if(sha(canonical(row))!==row.payload_hash)core.incident('RECIBO_NOVO_DIVERGENTE');tail=row;receiptCount++;core.commitReceiptCheckpoint({count:receiptCount,sequence:row.synthetic_sequence,hash:row.payload_hash});verifiedRevision=core.integrityRevision();}return publicReceipt(row);
  });}
  async function outcome(p,key,access){if(!uuid.test(key))throw new LabError(400,'PEDIDO_INVALIDO');

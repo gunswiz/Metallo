@@ -2125,3 +2125,20 @@ Causa raiz de F-4C-ANDROID-01: a revalidação da sessão a cada 5 s criava um p
 | F — bloquear/acordar a tela | **PARCIAL** | nenhuma marcação automática; sessão após desbloqueio com PIN não verificada |
 
 Continuam como limitação (não aprovados): primeira marcação com o diálogo de permissão do Chrome (reset de permissão do site exige ação manual), zoom real do navegador desktop, segundo computador, múltiplos writers, falha física de energia/disco. **Os dois achados do teste físico (ALTO e MÉDIO) estão resolvidos.** SIMULAÇÃO SEM VALOR OFICIAL.
+
+## 28. REVISÃO INDEPENDENTE (03/10/2026) E FECHAMENTO DO MARCO 4C
+
+Revisão somente leitura feita por dois revisores automáticos independentes (plugin cartographer: segurança/autenticação e integridade de dados) sobre 32 arquivos do caminho do ponto (núcleo 2B, reconciliação 2F, servidor/extensão 4A, registros 4B, integridade incremental 4C e gateways Web). Cada achado foi conferido no código antes de corrigir. Substitui os ciclos Grok por decisão do responsável (menos trabalho manual).
+
+| Achado | Gravidade | Situação |
+|---|---|---|
+| `begin` com chave de original já gravado (legado sem intenção) abria intenção nova e podia trocar a hora exibida do original antigo | ALTO | **Corrigido** (`extensao.mjs`): 409 `INTENCAO_CONFLITANTE`; teste novo |
+| Queda entre o commit do recibo e o frame do journal deixava o sistema em incidente permanente; recibo sem `syncToFs` | ALTO | **Corrigido**: recibo sincronizado no disco; na partida, recupera somente UM recibo a mais encadeado ao checkpoint; qualquer outra diferença continua incidente; durante a execução continua incidente. 2 testes novos |
+| Hora de captura do GPS informada pelo navegador sem limite | MÉDIO | **Corrigido**: fora de 10 min antes / 150 s depois da intenção vira `UNKNOWN` (estável para reenvio). Teste novo |
+| Gateway lia o corpo inteiro antes de checar tamanho | BAIXO | **Corrigido** (`content-length` antes da leitura) |
+| Fila única sem limite de taxa; marcação até 120 s antes do envio (hora da intenção = toque); lock de processo em corrida rara; marcação sem recibo invisível à Gestão até a próxima leitura; restore aceita referência escolhida pelo operador; hash simples sem chave | MÉDIO/BAIXO | **Risco residual documentado** para a fase online/oficial (REP-P): limite de taxa, writer único garantido, conciliação de recibos pendentes e âncora externa |
+| Localização continua sendo declarada pelo aparelho (sem prova contra GPS falso) | — | Limite conhecido: geolocalização é contexto, nunca condição nem acusação |
+
+Testes após as correções: núcleo/incremental/caminho crítico **55/55**; bootstrap v1→v2, backup v2, paridade e agendamento **84/84** (rodada anterior às duas últimas correções, sem mudança nesses módulos); Web **302/302**, TypeScript e lint OK. Reteste físico (seção 27) aprovado.
+
+**MARCO 4C — DISPONIBILIDADE E DESEMPENHO LOCAL: FECHADO EM LABORATÓRIO (03/10/2026), autorizado pelo responsável.** Marca Git local: `marco-4c-lab`. Continuam valendo os limites da seção 27. NÃO É PRODUÇÃO, NÃO É PONTO OFICIAL, NÃO É REP-P. SIMULAÇÃO SEM VALOR OFICIAL.

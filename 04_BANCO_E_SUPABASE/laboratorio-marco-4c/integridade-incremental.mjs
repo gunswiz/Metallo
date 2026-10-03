@@ -87,7 +87,18 @@ export async function createIncrementalIntegrity(db,anchorPath,{measure=(n,f)=>f
    const actualReceipts=receiptState(await receiptInventoryForBackup(db));
    // Base v2 antiga sem recibos continua válida; recibos preexistentes exigem
    // checkpoint explícito, nunca uma correção silenciosa em caso de diferença.
-   if(!same(receiptCheckpoint,actualReceipts)&&!(receiptCheckpoint===null&&actualReceipts?.count===0))throw Error('RECIBO_CHECKPOINT_DIVERGENTE');
+   if(!same(receiptCheckpoint,actualReceipts)&&!(receiptCheckpoint===null&&actualReceipts?.count===0)){
+    // Revisão 4C (03/10): queda entre o commit do recibo e o frame 'receipt'. Só na recuperação de partida e só
+    // para EXATAMENTE um recibo a mais, encadeado ao último recibo do checkpoint (cadeia já validada pelo inventário).
+    // Qualquer outra diferença (recibo a menos, dois a mais, cadeia/sequência incoerente) continua sendo incidente.
+    const inventory=await receiptInventoryForBackup(db),list=inventory?.receipts??[],last=list.at(-1),prior=list.slice(0,-1);
+    const expectedPrior=receiptCheckpoint??{count:0,sequence:null,hash:null};
+    const priorState={count:prior.length,sequence:prior.at(-1)?.synthetic_sequence??null,hash:prior.at(-1)?.payload_hash??null};
+    if(recover&&last&&same(priorState,expectedPrior)&&(last.previous_hash??null)===(expectedPrior.hash??null)&&
+     (expectedPrior.sequence===null||Number(last.synthetic_sequence)>Number(expectedPrior.sequence))){
+     receiptCheckpoint=actualReceipts;append({kind:'receipt',committed,tail,recovered:'RECIBO_APOS_COMMIT_SEM_FRAME'});
+    }else throw Error('RECIBO_CHECKPOINT_DIVERGENTE');
+   }
    if(checkExtra)await checkExtra(db,true,receiptCheckpoint);dirty=false;return {...check,incremental:true,root:committed.digest,revision};
   }catch(e){if(e instanceof LabError)throw e;incident(/^[A-Z_]+$/.test(e.message)?e.message:'AUDITORIA_INACESSIVEL');}
  });}

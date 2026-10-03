@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { initializeAuthorization,createAuthorization } from '../laboratorio-marco-2b/autorizacao.mjs';
 import { eventHash } from '../laboratorio-marco-2b/integridade.mjs';
 import { randomUUID } from 'node:crypto';
-import { mkdirSync,readFileSync,writeFileSync,readdirSync } from 'node:fs';
+import { mkdirSync,readFileSync,writeFileSync,readdirSync,rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createLabCore } from '../laboratorio-marco-2b/nucleo.mjs';
 import { createPointExtension,installExtension } from '../laboratorio-marco-4a/extensao.mjs';
@@ -106,4 +106,36 @@ test('health incremental informa disponibilidade de contexto a partir do SQL rea
 
 test('bloqueador de adoção: backup v1 rejeita estado v2 sem produzir backup falso',async()=>{
  const f=await fixture();try{await f.mark();const before=JSON.stringify((await f.core.db.query('select * from lab_time_event')).rows);let observed;await assert.rejects(()=>backupCore(f.core,f.dir+'-backup-v1',{formatVersion:1}),e=>{observed=e.message;return e.message==='ANCORA_DIVERGENTE';});const unchanged=JSON.stringify((await f.core.db.query('select * from lab_time_event')).rows)===before;assert.equal(unchanged,true);assert.equal((await f.core.inspect()).ready_for_new_events,true);writeFileSync(resolve(import.meta.dirname,process.env.METALLO_EVIDENCE_REVISION==='4c-bootstrap'?'adocao-controlada/correcao-bootstrap/compatibilidade-v1.json':process.env.METALLO_EVIDENCE_REVISION==='4c-adocao'?'adocao-controlada/compatibilidade-v1.json':process.env.METALLO_4C_ROUND==='6'?'rodada-6/compatibilidade-v1.json':'rodada-5/bloqueador-backup.json'),JSON.stringify({at:new Date().toISOString(),candidate_format:2,helper_format:1,error:observed,compatible:false,false_success:false,originals_preserved:unchanged,original_count:1,scope:(process.env.METALLO_EVIDENCE_REVISION==='4c-bootstrap'||process.env.METALLO_EVIDENCE_REVISION==='4c-adocao'||process.env.METALLO_4C_ROUND==='6')?'Synthetic current v2: explicit formatVersion:1 rejection; version2 is tested separately':'Synthetic R5; adoption blocked; default full/v1 remains supported'},null,2)+'\n');}finally{await f.close();}
+});
+
+// Revisão 4C (03/10/2026) — achados de integridade confirmados e corrigidos.
+const journalOf=f=>{const name=readdirSync(base).find(n=>n.startsWith(f.dir.split(/[\\/]/).at(-1))&&n.endsWith('.v2'));assert.ok(name,'journal v2 ausente');return resolve(base,name);};
+const lastFrame=dir=>{const names=readdirSync(dir).filter(n=>/^\d{10}\.json$/.test(n)).sort();return {path:resolve(dir,names.at(-1)),frame:JSON.parse(readFileSync(resolve(dir,names.at(-1)),'utf8'))};};
+test('revisão 4C: begin com chave de original já gravado sem intenção (legado) é recusado e não troca a hora',async()=>{
+ const f=await fixture();try{const key=randomUUID();
+  const legacy=await f.core.record(f.p.authUserId,{contract_version:1,idempotency_key:key},{employeeId:f.p.employeeId});assert.ok(legacy.event.event_id);
+  await assert.rejects(()=>f.point.begin(f.p,{idempotency_key:key}),e=>e.status===409&&/INTENCAO_CONFLITANTE/.test(e.message));
+  assert.equal((await f.core.db.query('select count(*)::int as n from lab4a.intent where idempotency_key=$1',[key])).rows[0].n,0);
+  const normal=await f.mark();assert.ok(normal.event.event_id);}finally{await f.close();}
+});
+test('revisão 4C: queda entre commit do recibo e frame do journal é recuperada na partida, sem novo recibo',async()=>{
+ const f=await fixture();try{const r=await f.mark();const dir=journalOf(f),{path,frame}=lastFrame(dir);assert.equal(frame.kind,'receipt');
+  await f.pause();rmSync(path);await f.reopen();
+  const after=lastFrame(dir).frame;assert.equal(after.kind,'receipt');assert.equal(after.recovered,'RECIBO_APOS_COMMIT_SEM_FRAME');
+  const rows=await f.point.verify();assert.equal(rows.length,1);assert.equal(rows[0].event_id,r.event.event_id);assert.equal((await f.core.inspect()).ready_for_new_events,true);
+  assert.ok((await f.mark()).event.event_id);}finally{await f.close();}
+});
+test('revisão 4C: o mesmo frame ausente durante a execução continua incidente (sem autocorreção fora da partida)',async()=>{
+ const f=await fixture();try{await f.mark();const dir=journalOf(f),{path}=lastFrame(dir);rmSync(path);
+  const r=await f.core.auditIntegrity().catch(e=>({passed:false,error:e.message}));assert.equal(r.passed,false);
+  assert.ok(readdirSync(dir).includes('incident.json'),'incidente registrado');}finally{await f.close().catch(()=>{});}
+});
+test('revisão 4C: hora de captura do GPS incoerente com a intenção não vira localização comprovada',async()=>{
+ const f=await fixture();try{const loc=at=>({status:'AVAILABLE',latitude:-3.7,longitude:-38.5,accuracy_meters:12,captured_at:at});
+  const k1=randomUUID();const b1=await f.point.begin(f.p,{idempotency_key:k1});
+  const far=await f.point.finish(f.p,{idempotency_key:k1,location:loc('2030-01-01T00:00:00.000Z')});assert.equal(far.event.location_status,'UNKNOWN');
+  const again=await f.point.finish(f.p,{idempotency_key:k1,location:loc('2030-01-01T00:00:00.000Z')});assert.equal(again.event.event_id,far.event.event_id);
+  const k2=randomUUID();const b2=await f.point.begin(f.p,{idempotency_key:k2});
+  const ok=await f.point.finish(f.p,{idempotency_key:k2,location:loc(new Date(Date.parse(b2.marking_at)-2000).toISOString())});assert.equal(ok.event.location_status,'AVAILABLE');
+  void b1;}finally{await f.close();}
 });
