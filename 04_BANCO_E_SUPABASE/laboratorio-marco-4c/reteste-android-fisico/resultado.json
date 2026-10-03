@@ -1,0 +1,97 @@
+{
+  "at": "2026-10-03T19:50:15.200Z",
+  "scope": "Marco 4C — reteste Android físico após correção; SIMULAÇÃO SEM VALOR OFICIAL",
+  "device": {
+    "model": "2412DPC0AG",
+    "android": "16",
+    "chrome": "154.0.8037.92",
+    "originalState": {
+      "fine": "Uid mode: FINE_LOCATION: foreground\r\nFINE_LOCATION: allow; time=+4h11m45s842ms ago",
+      "coarse": "Uid mode: COARSE_LOCATION: foreground\r\nCOARSE_LOCATION: allow; time=+4h11m46s802ms ago",
+      "locationEnabled": "true",
+      "density": "Physical density: 520",
+      "font": "0.81"
+    },
+    "viewport": {
+      "w": 375,
+      "h": 722,
+      "dpr": 3.25
+    },
+    "finalState": {
+      "fine": "Uid mode: FINE_LOCATION: foreground\r\nFINE_LOCATION: allow; time=+24s233ms ago",
+      "coarse": "Uid mode: COARSE_LOCATION: foreground\r\nCOARSE_LOCATION: allow; time=+27s967ms ago",
+      "locationEnabled": "true",
+      "density": "Physical density: 520",
+      "font": "0.81"
+    }
+  },
+  "cases": [
+    {
+      "name": "login João e Meu Ponto no Android",
+      "status": "APROVADO"
+    },
+    {
+      "name": "A — localização bloqueada pelo Android",
+      "status": "APROVADO",
+      "ok": true,
+      "done": true,
+      "ms": 8804,
+      "posts": 1,
+      "location": "Tempo de localização esgotado",
+      "image": "A-localizacao-bloqueada.png"
+    },
+    {
+      "name": "B — localização do aparelho desligada",
+      "status": "APROVADO",
+      "ok": true,
+      "done": true,
+      "ms": 8417,
+      "posts": 1,
+      "location": "Tempo de localização esgotado",
+      "image": "B-localizacao-desligada.png"
+    },
+    {
+      "name": "C — localização permitida (regressão)",
+      "status": "APROVADO",
+      "ok": true,
+      "done": true,
+      "ms": 5021,
+      "posts": 1,
+      "location": "Localização disponível",
+      "image": "C-localizacao-normal.png"
+    },
+    {
+      "name": "D — duplo toque gera uma marcação",
+      "status": "APROVADO",
+      "ok": true,
+      "done": true,
+      "ms": 4410,
+      "posts": 1,
+      "location": "Localização disponível",
+      "image": "D-duplo-toque.png"
+    },
+    {
+      "name": "E — exibição e fonte ampliadas (~2×)",
+      "status": "APROVADO",
+      "viewport": 187,
+      "pageWidth": 187,
+      "horizontalScroll": false,
+      "button": {
+        "left": 24.923078536987305,
+        "right": 162.76923942565918,
+        "width": 137.84616088867188,
+        "height": 56.000003814697266
+      },
+      "buttonInside": true,
+      "elementsOutside": 0,
+      "image": "E-exibicao-2x.png"
+    },
+    {
+      "name": "F — bloqueio/desbloqueio sem marcação automática",
+      "status": "PARCIAL",
+      "postsDuring": 0,
+      "note": "Comando de bloquear/acordar aceito e nenhuma marcação automática; coerência da sessão após desbloqueio com PIN não foi verificada (nenhum PIN usado)."
+    }
+  ],
+  "restored": true
+}

@@ -2108,3 +2108,20 @@ remotos e conformidade REP-P. Nenhuma correção automática, Grok, baseline 4C,
 Marco 4D ou publicação nesta rodada. **SUPABASE REMOTO INTOCADO. NÃO LIBERADO PARA
 FUNCIONÁRIOS REAIS. NÃO É PRODUÇÃO. NÃO É CONFORMIDADE REP-P. NÃO É AUTORIZAÇÃO DE
 PONTO OFICIAL. NÃO AUTORIZA PUBLICAÇÃO. SIMULAÇÃO SEM VALOR OFICIAL.**
+
+## 27. RETESTE NO ANDROID FÍSICO APÓS A CORREÇÃO (03/10/2026)
+
+Executado por automação local (Claude), PC + USB: `adb reverse` 3101/54321 e DevTools do Chrome por `adb forward` em loopback. Mesmo aparelho (Android 16, Chrome 154), contas sintéticas, toques via eventos de toque do DevTools. Script: `04_BANCO_E_SUPABASE/laboratorio-marco-4c/reteste-android-fisico/reteste-android.mjs`; evidências: `resultado.json` e `capturas/` na mesma pasta. Todas as configurações do aparelho foram restauradas (localização, permissões do Chrome, densidade e fonte) e os encaminhamentos removidos.
+
+Causa raiz de F-4C-ANDROID-01: a revalidação da sessão a cada 5 s criava um perfil novo, trocava a função de token e reiniciava o Meu Ponto no meio da marcação, cancelando-a; com localização bloqueada a espera (até 8,5 s) sempre ultrapassava os 5 s. Corrigido no código (commit 3ad2402) com teste que falha no código antigo.
+
+| Caso | Resultado | Evidência |
+|---|---|---|
+| A — localização bloqueada pelo Android (AppOps ignore) | **APROVADO** | 1 envio, recibo criado, "Tempo de localização esgotado", ~8,8 s |
+| B — localização do aparelho desligada | **APROVADO** | 1 envio, recibo criado, sem coordenada, ~8,4 s |
+| C — localização permitida (regressão) | **APROVADO** | 1 envio, "Localização disponível", ~5,0 s |
+| D — duplo toque | **APROVADO** | 2 toques → 1 envio, 1 recibo |
+| E — exibição e fonte ampliadas (~2×, viewport 187 px) | **APROVADO** | sem rolagem horizontal, botão inteiro na tela, 0 elementos fora |
+| F — bloquear/acordar a tela | **PARCIAL** | nenhuma marcação automática; sessão após desbloqueio com PIN não verificada |
+
+Continuam como limitação (não aprovados): primeira marcação com o diálogo de permissão do Chrome (reset de permissão do site exige ação manual), zoom real do navegador desktop, segundo computador, múltiplos writers, falha física de energia/disco. **Os dois achados do teste físico (ALTO e MÉDIO) estão resolvidos.** SIMULAÇÃO SEM VALOR OFICIAL.
