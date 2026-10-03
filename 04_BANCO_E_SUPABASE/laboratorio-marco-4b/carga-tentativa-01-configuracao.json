@@ -1,0 +1,528 @@
+{
+  "at": "2026-10-01T14:46:27.401Z",
+  "scope": "50 usuários sintéticos — SIMULAÇÃO SEM VALOR OFICIAL",
+  "passed": false,
+  "requests": [
+    {
+      "id": 1,
+      "phase": "setup",
+      "user": 0,
+      "path": "/api/ponto-registros/list",
+      "method": "POST",
+      "start_ms": 39170.7025,
+      "status": 0,
+      "error_code": "TypeError",
+      "end_ms": 39175.5954,
+      "latency_ms": 4.892899999998917
+    }
+  ],
+  "phases": [],
+  "failures": [],
+  "intents": [],
+  "downloads": [],
+  "revocations": [],
+  "limits": [
+    "Um writer PGlite serializado; não prova writers distribuídos",
+    "Dados históricos fabricados antes da medição",
+    "Resposta pós-commit descartada pelo cliente; não falha física de rede",
+    "Sem SLA ou extrapolação de produção",
+    "Sem remoto, sem baseline 4B"
+  ],
+  "run": "c0d2eec2-7b7f-4e60-b273-6cb2707e8945",
+  "artifacts_dir": "C:\\Projetos\\Metallo\\backups\\marco-4b-ensaios\\carga-c0d2eec2-7b7f-4e60-b273-6cb2707e8945\\downloads",
+  "users": [
+    {
+      "index": 0,
+      "authUserId": "eb135177-892a-472e-af7c-cde21137bedd",
+      "employeeId": "4594e36b-12cf-4d37-80f5-bb6366c4495f",
+      "sessionId": "dc6d2011-21eb-4295-881a-78318ab0741c",
+      "issuedAt": 1790865988,
+      "noTeam": true,
+      "identityId": "b0456b7d-3e85-42ab-9b7e-edfb6c20bb7b"
+    },
+    {
+      "index": 1,
+      "authUserId": "4dcaff72-9824-4f47-9226-1805bc0ab00c",
+      "employeeId": "17e15b73-10a0-40ed-874d-accbc9271214",
+      "sessionId": "7e5c9750-d41a-4543-abea-1c5e22bf5aa0",
+      "issuedAt": 1790865989,
+      "noTeam": false,
+      "identityId": "fa62b57d-aa56-4b27-b998-7f0beb302e9c"
+    },
+    {
+      "index": 2,
+      "authUserId": "6fc0426c-ccc4-443d-b618-7e192256096a",
+      "employeeId": "71281d0c-b723-4033-8be5-aefa95829671",
+      "sessionId": "ca81442c-b676-43da-a535-cef79ecd2c83",
+      "issuedAt": 1790865989,
+      "noTeam": false,
+      "identityId": "c679a7af-a50f-4446-853f-bd1c211b38cd"
+    },
+    {
+      "index": 3,
+      "authUserId": "ea3a65ca-be22-4b47-a28f-f14b740f1157",
+      "employeeId": "6da81d45-05a3-4fd4-840f-08603447d318",
+      "sessionId": "2445d5b8-eac9-4797-87be-4487cf57ded1",
+      "issuedAt": 1790865990,
+      "noTeam": false,
+      "identityId": "63f1b23a-2def-4dd8-9ec3-6e394262645b"
+    },
+    {
+      "index": 4,
+      "authUserId": "c13e75cd-a0c9-4560-b198-b34397749f9a",
+      "employeeId": "eb33de2d-7617-4630-b90e-8a71d9d155cf",
+      "sessionId": "fe6af6c3-4373-4ae6-9f21-1a28ac58a54c",
+      "issuedAt": 1790865990,
+      "noTeam": false,
+      "identityId": "fee51a07-313a-465e-9c52-2c3be79fdd3f"
+    },
+    {
+      "index": 5,
+      "authUserId": "fb315b62-d4c7-4f18-a978-05f6af1692c5",
+      "employeeId": "0b40cd79-c7cf-472b-8036-92708315c13d",
+      "sessionId": "141d7b55-2142-4a4b-830d-8d5989be28dd",
+      "issuedAt": 1790865991,
+      "noTeam": false,
+      "identityId": "c278effe-4030-4cde-ac1c-6fc890c6eb32"
+    },
+    {
+      "index": 6,
+      "authUserId": "42956f8d-a8f4-4eab-9888-5e116b8fde4c",
+      "employeeId": "04b7327d-e1fc-47aa-a415-cb8e92173df7",
+      "sessionId": "e194fae3-2bf0-4541-afe3-5bd8fa645fc6",
+      "issuedAt": 1790865991,
+      "noTeam": false,
+      "identityId": "e106013c-7346-48ea-9417-0f6585b80955"
+    },
+    {
+      "index": 7,
+      "authUserId": "6a5ed398-9e2f-4b1c-b458-d25aeeed868e",
+      "employeeId": "e1747e5f-f167-4c7e-a5b4-10abb383d6a9",
+      "sessionId": "7b14e293-6367-4d47-9620-80e5ed9c08fe",
+      "issuedAt": 1790865992,
+      "noTeam": false,
+      "identityId": "17308cc1-4235-4ab6-857e-16b58387eb2f"
+    },
+    {
+      "index": 8,
+      "authUserId": "5e42f8b1-c2f9-4cb6-8f97-6b7316832a41",
+      "employeeId": "f01a902f-bb2f-4cb5-a360-d9f4fc04b59f",
+      "sessionId": "7fd3b56e-6cad-4141-8da5-46953f586cb4",
+      "issuedAt": 1790865993,
+      "noTeam": false,
+      "identityId": "65291758-5f3c-48c8-ae4e-cf94a433a72a"
+    },
+    {
+      "index": 9,
+      "authUserId": "19b7cc5b-b4a1-4422-a363-1427b7151a51",
+      "employeeId": "7f583c34-77b4-45c9-b8fb-b83629cb4bb3",
+      "sessionId": "f13d4e4e-945b-4645-9e1b-e75e0d8f3af6",
+      "issuedAt": 1790865993,
+      "noTeam": false,
+      "identityId": "4ef91299-22b0-4329-896a-08a9f0938669"
+    },
+    {
+      "index": 10,
+      "authUserId": "01736310-0639-4c99-8ea1-92c0bda99a6e",
+      "employeeId": "0ccec3a3-85c0-468d-a989-fb5f3d2d54a8",
+      "sessionId": "0b77de2d-7fea-464d-8ac3-3c21009996fb",
+      "issuedAt": 1790865994,
+      "noTeam": true,
+      "identityId": "e1204b67-6138-4a68-85c5-a58027c4b3b8"
+    },
+    {
+      "index": 11,
+      "authUserId": "cf9656c5-fed8-4742-8c5c-05acf2ed11ac",
+      "employeeId": "c478cf01-6f05-4c3b-957f-778097be0f26",
+      "sessionId": "0ad9a80b-35d9-4792-8290-caf7c5cada8b",
+      "issuedAt": 1790865994,
+      "noTeam": false,
+      "identityId": "591e23a3-ab16-48fb-a72d-f85fc2bc56d6"
+    },
+    {
+      "index": 12,
+      "authUserId": "8126f5c8-ea88-459a-af02-2e4aea2d0d71",
+      "employeeId": "77ccfb37-d2b1-442e-a57a-cff06045856e",
+      "sessionId": "730c649a-9861-4018-9b09-14ba1ecc344a",
+      "issuedAt": 1790865995,
+      "noTeam": false,
+      "identityId": "704594bf-5c81-4c71-a2d4-309a4215479e"
+    },
+    {
+      "index": 13,
+      "authUserId": "cea62cd7-8ff6-41ce-aebe-c1bcab870d06",
+      "employeeId": "886e2644-2d13-4b90-a4cd-f28a69e6d29a",
+      "sessionId": "f23a825b-d7f3-4b0b-8636-35988019b3ef",
+      "issuedAt": 1790865995,
+      "noTeam": false,
+      "identityId": "4e02c3b0-8803-4de6-bdc3-00e37e128401"
+    },
+    {
+      "index": 14,
+      "authUserId": "fc6af16f-9b0a-4ed3-baf5-3af1a2e86190",
+      "employeeId": "2b66afd3-1e54-43fb-a1e6-175662e931ec",
+      "sessionId": "5064ded8-b4fe-497b-80db-2032ac3d141e",
+      "issuedAt": 1790865996,
+      "noTeam": false,
+      "identityId": "cd76c637-acd9-44ee-ac23-3f7b29f12ad5"
+    },
+    {
+      "index": 15,
+      "authUserId": "5b5b364c-8630-4b23-94e7-8468d73803b7",
+      "employeeId": "83dfe499-cb74-40d4-a6e7-cfcf6698fcd3",
+      "sessionId": "03f96645-9823-400c-9759-5e42476b592e",
+      "issuedAt": 1790865997,
+      "noTeam": false,
+      "identityId": "6fdbd175-cfad-4efb-acee-cf918778733d"
+    },
+    {
+      "index": 16,
+      "authUserId": "7bd75902-e9c0-4287-979e-d4ffbc64af67",
+      "employeeId": "db2e2b4f-6544-47aa-8b53-f73824e40f9c",
+      "sessionId": "155d1cfe-a4fa-48a0-b633-84a067ac918f",
+      "issuedAt": 1790865997,
+      "noTeam": false,
+      "identityId": "9d367aac-8ad5-452f-a41f-1d5dbe649e93"
+    },
+    {
+      "index": 17,
+      "authUserId": "93fb7172-cd1f-4592-9006-6363887fed0d",
+      "employeeId": "ea76afd8-7a6d-4575-b5df-21ed21927f46",
+      "sessionId": "89f88b47-ca6f-457f-8154-2ed8afc2802b",
+      "issuedAt": 1790865998,
+      "noTeam": false,
+      "identityId": "b56e1a0a-6e83-4160-a5c8-d71d1bf91f61"
+    },
+    {
+      "index": 18,
+      "authUserId": "4faa2429-0502-47c2-89e9-2ba77169ecec",
+      "employeeId": "d6a160c3-3904-4b03-87fe-f2d8d9acccd1",
+      "sessionId": "ddeb5a6b-8376-445f-9428-3dd9e21f728c",
+      "issuedAt": 1790865998,
+      "noTeam": false,
+      "identityId": "4fd612ad-33b6-4a6c-88fd-33525b408c8a"
+    },
+    {
+      "index": 19,
+      "authUserId": "4423d1ed-7ec4-461a-bdde-ce999c1e2a4d",
+      "employeeId": "9356d1cc-37f1-4b28-899e-3b4a619ab43a",
+      "sessionId": "6e911872-4223-41a1-b7a9-162ceff00e8f",
+      "issuedAt": 1790865999,
+      "noTeam": false,
+      "identityId": "7b57dccf-b66d-4814-a4bb-f5f43bd589a9"
+    },
+    {
+      "index": 20,
+      "authUserId": "6d51bd06-44b7-4457-b53a-8b7371e3199f",
+      "employeeId": "fff8e30c-9df9-42f7-80ff-c2800629e5b1",
+      "sessionId": "b134f78b-20cd-4759-808f-31df1d10cfb5",
+      "issuedAt": 1790865999,
+      "noTeam": true,
+      "identityId": "02d6c69a-0cb8-49e4-9100-8a954b08cc41"
+    },
+    {
+      "index": 21,
+      "authUserId": "028991bf-0a40-48ea-92b8-24bce48f5e1b",
+      "employeeId": "a054a9a0-0e3e-4f78-8612-d3e6101e1549",
+      "sessionId": "977bd929-bae1-430a-bc04-287b7a366f66",
+      "issuedAt": 1790866000,
+      "noTeam": false,
+      "identityId": "3596ec94-cd90-402f-909b-cda0f6a8ea59"
+    },
+    {
+      "index": 22,
+      "authUserId": "e46418b4-eca1-4df2-8899-81dcd2109691",
+      "employeeId": "b666b6f5-201d-4acc-9dad-28b102af1f0b",
+      "sessionId": "6f61145f-94de-45b2-8c64-db46dba5c17d",
+      "issuedAt": 1790866000,
+      "noTeam": false,
+      "identityId": "62c89374-6196-48ea-b9b7-28439fe60fe9"
+    },
+    {
+      "index": 23,
+      "authUserId": "608e17a2-2e78-4ebe-b367-19ea5a94e719",
+      "employeeId": "072db8ab-a673-42ad-b327-d5e00b78435d",
+      "sessionId": "d0050c00-284e-4fbb-acd5-99e14da4b260",
+      "issuedAt": 1790866001,
+      "noTeam": false,
+      "identityId": "16564072-6056-401c-883e-379bb62d85ef"
+    },
+    {
+      "index": 24,
+      "authUserId": "adaed4a2-64be-4a6d-b429-d0a35109368f",
+      "employeeId": "5a5b08db-513a-4877-90d8-3561d465fed6",
+      "sessionId": "67d0d32a-a1d3-4f6c-925e-ab661470d2b1",
+      "issuedAt": 1790866001,
+      "noTeam": false,
+      "identityId": "1db4cc60-790b-4ca8-b54b-7f5e99d69982"
+    },
+    {
+      "index": 25,
+      "authUserId": "b7cbe08f-2b8e-4874-b49c-f6133470ebc2",
+      "employeeId": "2eff0149-3837-437d-bd41-c53beb57a182",
+      "sessionId": "55504b15-f3fd-485c-b448-3fbc4efc43e8",
+      "issuedAt": 1790866002,
+      "noTeam": false,
+      "identityId": "5de65021-6b40-4731-b198-a397324b8426"
+    },
+    {
+      "index": 26,
+      "authUserId": "33d05881-95d9-41db-9a6c-25e5c50559d7",
+      "employeeId": "b63cfde0-0950-450b-bb96-e6252bd05040",
+      "sessionId": "998f3ba1-16aa-41ad-8905-7b9f7f8586ab",
+      "issuedAt": 1790866002,
+      "noTeam": false,
+      "identityId": "1f642c3a-39c3-4ca8-91f7-337a0f4cfcad"
+    },
+    {
+      "index": 27,
+      "authUserId": "f3397e47-7d3c-418e-98f4-629f58c2acc4",
+      "employeeId": "9df71144-a395-498e-8cdd-bbc44ec09150",
+      "sessionId": "4814bf36-de22-4569-9ad7-9ec8b72d4a72",
+      "issuedAt": 1790866003,
+      "noTeam": false,
+      "identityId": "06cd6a60-ab8e-4d25-9807-09315c1bdec9"
+    },
+    {
+      "index": 28,
+      "authUserId": "93eda951-c139-4c1a-adcd-3652288d6c0d",
+      "employeeId": "6a63ba9d-361c-41d0-b04f-27ead039b691",
+      "sessionId": "7fcd9e6e-e8ea-482d-9b05-147136473eac",
+      "issuedAt": 1790866003,
+      "noTeam": false,
+      "identityId": "b50d2693-4f63-4185-8ce9-0497a77167f0"
+    },
+    {
+      "index": 29,
+      "authUserId": "d73d4617-00ff-46e6-b6f4-4689d3a9f6d3",
+      "employeeId": "9395ff5a-fa34-416f-8f96-2c188f393121",
+      "sessionId": "5932249d-8811-4361-bdbc-01969bc7c993",
+      "issuedAt": 1790866004,
+      "noTeam": false,
+      "identityId": "834c61a5-299a-4830-a040-99e4218081fe"
+    },
+    {
+      "index": 30,
+      "authUserId": "052fabba-0e9f-4707-a001-9264713e944d",
+      "employeeId": "3413a3cc-5674-463d-b663-718e37834e85",
+      "sessionId": "8e1b03a2-936c-4a83-82e4-6963fb30bf6b",
+      "issuedAt": 1790866004,
+      "noTeam": true,
+      "identityId": "7ba9adce-8fd7-4bee-9f12-e630d71f29db"
+    },
+    {
+      "index": 31,
+      "authUserId": "8b5a7659-7055-4bb5-8669-dcab22e71fd7",
+      "employeeId": "2f1fb6bb-2de3-45cb-a04a-39afe73f933a",
+      "sessionId": "28e9dec3-af4c-4ade-8a02-051d7245c87a",
+      "issuedAt": 1790866005,
+      "noTeam": false,
+      "identityId": "11c0a03e-13e9-4a37-a471-800542598aee"
+    },
+    {
+      "index": 32,
+      "authUserId": "c454f431-6989-4525-b452-142a5edd9d0d",
+      "employeeId": "9630b52e-169b-4911-8255-c3c067ab531a",
+      "sessionId": "e119ec7d-9f07-44e7-ad29-5ff46dc1fb03",
+      "issuedAt": 1790866005,
+      "noTeam": false,
+      "identityId": "31ab0616-b3d2-48ac-aa6b-6f6a62ec5aa2"
+    },
+    {
+      "index": 33,
+      "authUserId": "a92a6c86-24ee-4796-9254-e65a7cc23ae4",
+      "employeeId": "87bf60c3-f0ba-4689-b4bb-cd4d304cdb33",
+      "sessionId": "8736fb5e-de0e-4d08-944c-3f4bfd04948c",
+      "issuedAt": 1790866006,
+      "noTeam": false,
+      "identityId": "91cffb77-0716-4e29-83ef-319a88b734f0"
+    },
+    {
+      "index": 34,
+      "authUserId": "7a9fa93e-dbd9-40d7-a4f3-58d89d1d4a1f",
+      "employeeId": "5d761579-7bee-4873-b79c-0511a9ba8bec",
+      "sessionId": "ad1e99fe-a5a8-48df-a226-aa8f3c94ba2f",
+      "issuedAt": 1790866006,
+      "noTeam": false,
+      "identityId": "7271d74b-5702-40c5-862a-0bfde09480c1"
+    },
+    {
+      "index": 35,
+      "authUserId": "e8ad5a90-3f91-4e85-b14f-26ef2205ca14",
+      "employeeId": "cd6646b8-ce25-43a4-a0da-3b8c553712e6",
+      "sessionId": "5c12ebcc-8f6e-45dd-9ad7-9bb4f9444844",
+      "issuedAt": 1790866007,
+      "noTeam": false,
+      "identityId": "74cce2a4-deca-4279-ab9f-e1a851266ee4"
+    },
+    {
+      "index": 36,
+      "authUserId": "d11161d1-d076-44a6-afe7-acc2b6406181",
+      "employeeId": "6f31908d-c83a-47a1-ba17-bcb4ac329e42",
+      "sessionId": "fc39911c-6d0b-4eec-a5b3-5ad838f912f3",
+      "issuedAt": 1790866007,
+      "noTeam": false,
+      "identityId": "3ce63741-d0a1-4793-94ce-6bf52c77028e"
+    },
+    {
+      "index": 37,
+      "authUserId": "089d2f66-dc20-4239-9598-cf24f49456e0",
+      "employeeId": "6b380b96-8a4c-4191-be73-e9cd08f56d04",
+      "sessionId": "9d195db6-1dd6-4a9d-9a13-48a9f43a6dea",
+      "issuedAt": 1790866008,
+      "noTeam": false,
+      "identityId": "21f936e3-8e92-4d7a-9abd-526e07a53a20"
+    },
+    {
+      "index": 38,
+      "authUserId": "59b4afe4-ea28-4401-a103-e463dac97bc5",
+      "employeeId": "918962c8-77f6-4046-a44b-2e3b086a5882",
+      "sessionId": "8c430efb-367c-4e4b-ae43-61010f36791b",
+      "issuedAt": 1790866008,
+      "noTeam": false,
+      "identityId": "5e193b95-cc36-489b-b8fa-39fc4bc9368b"
+    },
+    {
+      "index": 39,
+      "authUserId": "f5253703-abd2-4601-a199-85b666320cb9",
+      "employeeId": "49d06bf0-5f92-4d1c-abc7-42d3ad575bde",
+      "sessionId": "f9717795-a576-4ba1-a081-7d3c4d1f5092",
+      "issuedAt": 1790866009,
+      "noTeam": false,
+      "identityId": "d20259bf-26d6-4dbc-95d8-3e1a53326130"
+    },
+    {
+      "index": 40,
+      "authUserId": "534f555b-c87a-4bee-942f-5c7aa89e5740",
+      "employeeId": "d9f23d58-6ee6-4ad4-967b-419ce70e137e",
+      "sessionId": "ec88815a-66fb-4b73-86c2-af74b6f83015",
+      "issuedAt": 1790866009,
+      "noTeam": true,
+      "identityId": "86c5bb54-bf57-42d5-9ac6-86f950b9c375"
+    },
+    {
+      "index": 41,
+      "authUserId": "d8f1f31e-661f-41e2-8f6c-f035d0604200",
+      "employeeId": "f8a981ea-026a-49e7-ad64-f17220650268",
+      "sessionId": "f447221e-e553-4889-b7f7-077057feb0c0",
+      "issuedAt": 1790866010,
+      "noTeam": false,
+      "identityId": "101c168a-d425-439f-9ca7-06159b0fb8fc"
+    },
+    {
+      "index": 42,
+      "authUserId": "bf7268ac-ec02-4873-994c-b60f265596ba",
+      "employeeId": "a867f161-65aa-424f-b30f-2e7ec3df4675",
+      "sessionId": "eae6d202-2b10-4c9a-b577-f8285852a560",
+      "issuedAt": 1790866010,
+      "noTeam": false,
+      "identityId": "873b8627-26aa-4ae0-b0b3-19c916c9cd80"
+    },
+    {
+      "index": 43,
+      "authUserId": "361c0c12-4159-40bf-85ff-1a9ceb910c9c",
+      "employeeId": "1f56122c-356f-49ac-8ed6-fa463506e54c",
+      "sessionId": "eeadc444-6209-4982-9982-59b4410d95fd",
+      "issuedAt": 1790866011,
+      "noTeam": false,
+      "identityId": "928e9eed-d430-4d47-9179-77a4543d7a17"
+    },
+    {
+      "index": 44,
+      "authUserId": "8235645e-4291-4087-b1bf-caa57e83b5a2",
+      "employeeId": "562830ee-e787-456d-9d81-de480c1a26c1",
+      "sessionId": "3ab99950-2b66-4755-8d9b-361253ba84a0",
+      "issuedAt": 1790866011,
+      "noTeam": false,
+      "identityId": "922c76f3-d8c9-4b6f-8a7c-7872d63793e2"
+    },
+    {
+      "index": 45,
+      "authUserId": "bdd83464-13bd-4826-9c12-69d67451ccd8",
+      "employeeId": "ee5fae76-b843-4a6d-a629-7c8e8862a565",
+      "sessionId": "ce327d09-93f0-43ff-8045-21f3ef11d190",
+      "issuedAt": 1790866012,
+      "noTeam": false,
+      "identityId": "cd5626b7-eeb0-4659-ab1a-9c07d84ee9c3"
+    },
+    {
+      "index": 46,
+      "authUserId": "29c8fb2a-4390-413b-a1a4-a5088034b1a9",
+      "employeeId": "00beb645-6d45-4e11-a0e1-b73caaff294f",
+      "sessionId": "9d6575d8-2f53-45ac-84f1-fc1cc1ca3b79",
+      "issuedAt": 1790866012,
+      "noTeam": false,
+      "identityId": "f6d286b3-afd1-4b98-be36-5f878b58d0d5"
+    },
+    {
+      "index": 47,
+      "authUserId": "89ad3c69-0680-40e5-b6df-f6ab5905c763",
+      "employeeId": "3838c7f0-4915-4577-8cb4-a0bdab607dd2",
+      "sessionId": "a0629d60-43b0-4cf0-abdd-86d9d2502f2e",
+      "issuedAt": 1790866013,
+      "noTeam": false,
+      "identityId": "70732892-afa5-44bc-a9bc-4693d8dcf28f"
+    },
+    {
+      "index": 48,
+      "authUserId": "ac747942-1116-4d15-a1c1-9c776e284a5c",
+      "employeeId": "b965e688-0bde-4662-ab53-8a458571d112",
+      "sessionId": "be403f76-5d7b-4cf4-8f7b-9e43e2709373",
+      "issuedAt": 1790866013,
+      "noTeam": false,
+      "identityId": "7c91f4d2-0c14-40fe-bf6e-d57ce2972414"
+    },
+    {
+      "index": 49,
+      "authUserId": "66ea6332-1c72-49d7-8965-143ae576bc19",
+      "employeeId": "77acb3ce-b524-40ac-88a5-4e293fd94c66",
+      "sessionId": "7c00aba9-5473-44ed-b1be-5b98c8e96d27",
+      "issuedAt": 1790866013,
+      "noTeam": false,
+      "identityId": "828a4639-b9fa-4185-9ebb-cca360c7137c"
+    }
+  ],
+  "environment": {
+    "os": "win32 10.0.26200",
+    "node": "v24.19.0",
+    "cpu": "AMD Ryzen 7 5700X3D 8-Core Processor           ",
+    "logical_cpus": 16,
+    "total_ram_bytes": 17086640128,
+    "users": 50,
+    "no_team": 5,
+    "core": "PGlite 0.5.8, relaxedDurability=false, 1 writer serializado",
+    "web": "Next start, um processo, sem cluster",
+    "ports": [
+      3103,
+      3107,
+      3108,
+      54321,
+      54322
+    ],
+    "host_header": "127.0.0.1:3101 (contrato da prévia); TCP 3103 exclusivo de carga",
+    "loopback_only": true,
+    "client_timeout_ms": 45000,
+    "gateway_mark_timeout_ms": 10000,
+    "gateway_download_timeout_ms": 30000
+  },
+  "before": {
+    "count": 1100,
+    "sha256": "6625b6c69b25386d60c9aca562aa55035ad86cc9e6fc9e7d3792892e8ce0f954"
+  },
+  "max_in_flight": 1,
+  "error": "Lista 0",
+  "metrics": {
+    "requests": 1,
+    "duration_ms": 4.892899999998917,
+    "rps": 204.37777187357625,
+    "success": 0,
+    "http4xx": 0,
+    "http5xx": 0,
+    "timeouts": 0,
+    "transport_errors": 1,
+    "p50_ms": 4.892899999998917,
+    "p95_ms": 4.892899999998917,
+    "p99_ms": 4.892899999998917,
+    "max_ms": 4.892899999998917
+  }
+}

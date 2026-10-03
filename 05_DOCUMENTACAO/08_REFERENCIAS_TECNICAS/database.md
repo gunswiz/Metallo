@@ -7,6 +7,8 @@ funções transacionais, gatilhos e políticas RLS já utilizadas pelo aplicativ
 
 ## Migrações
 
+Antes de aplicar novas migrations no projeto conectado, seguir a [reconciliação local/remoto de 25/09/2026](../20_RECONCILIACAO_MIGRATIONS_E_TIPOS.md). A [fundação de identidade](../../04_BANCO_E_SUPABASE/supabase/migrations/20260925120000_employee_identity_foundation.sql) está apenas local e testada em banco sintético.
+
 Novas alterações ficam em `04_BANCO_E_SUPABASE/supabase/migrations/` e devem ser incrementais. A
 migração `20260906021925_web_platform_hardening.sql` adiciona apenas índices para
 chaves estrangeiras e consultas paginadas; não remove colunas, políticas ou
@@ -24,9 +26,10 @@ registrem entradas de estoque pela RPC `add_epi_stock_batch`. A função valida
 papel ativo, item, quantidade e variantes configuradas antes de criar o lote.
 
 O histórico local antigo não representa integralmente todas as migrações já
-aplicadas no projeto remoto. Portanto, não use reset, diff destrutivo ou replay
-cego no banco de produção. Crie sempre uma nova migração e revise o SQL antes de
-aplicar.
+aplicadas no projeto remoto. Segundo o responsável, o remoto contém apenas dados
+de teste e ainda não é usado pela empresa. Mesmo assim, não use reset, diff
+destrutivo ou replay cego nesse ambiente de desenvolvimento compartilhado. Crie
+sempre uma nova migração e revise o SQL antes de aplicar.
 
 ## Tipos
 

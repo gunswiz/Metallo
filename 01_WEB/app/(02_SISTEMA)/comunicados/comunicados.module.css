@@ -1,0 +1,17 @@
+.form{display:grid;gap:17px;max-width:860px}
+.form label{display:grid;gap:8px;font-weight:700;min-width:0}
+.form input:not([type=checkbox]),.form select,.form textarea{width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--text);font:inherit}
+.form textarea{resize:vertical;line-height:1.5}
+.form input:focus-visible,.form select:focus-visible,.form textarea:focus-visible,.form button:focus-visible,.itemActions button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.form .check{display:flex;align-items:center;gap:9px}.check input{width:19px;height:19px}
+.actions,.itemActions{display:flex;flex-wrap:wrap;gap:10px}.hint,.meta{color:var(--muted);font-size:14px}
+.list{display:grid;gap:16px}.item{min-width:0;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2)}
+.itemHead{display:flex;align-items:start;justify-content:space-between;gap:12px}.itemHead strong{font-size:20px;overflow-wrap:anywhere}.itemHead p{margin:6px 0;color:var(--muted)}
+.itemHead>span{white-space:nowrap;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}
+.stats dt{font-size:13px;color:var(--muted)}.stats dd{font-weight:800;margin:4px 0 0;overflow-wrap:anywhere}
+.itemActions{margin-top:12px}.revise{margin-top:17px;border-top:1px solid var(--line);padding-top:14px}.revise summary{cursor:pointer;font-weight:800;margin-bottom:14px}
+.pagination{display:flex;align-items:center;gap:16px;margin-top:22px}.pagination a{color:var(--accent);font-weight:800}
+.newNotice summary{cursor:pointer;font-size:23px;font-weight:800;list-style:none}.newNotice summary::before{content:'+';display:inline-grid;place-items:center;width:30px;height:30px;margin-right:10px;border-radius:8px;background:var(--accent-soft);color:var(--accent)}.newNotice[open] summary::before{content:'−'}.newNotice summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.fields,.stats{grid-template-columns:1fr}.item{padding:15px}.actions>*{width:100%}}

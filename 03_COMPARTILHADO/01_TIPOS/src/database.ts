@@ -986,6 +986,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      replace_rented_equipment: { Args: { p_asset_id: string; p_asset_code: string; p_serial_number?: string; p_note?: string; p_occurred_at?: string; p_operation_id?: string }; Returns: string }
+
         add_epi_stock_batch: {
           Args: {
             p_brand_model?: string

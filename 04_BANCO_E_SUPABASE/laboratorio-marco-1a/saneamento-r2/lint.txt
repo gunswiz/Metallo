@@ -1,0 +1,3 @@
+$ pnpm --filter @metallo/web lint
+$ eslint . --max-warnings=0
+Reexecução após ajuste textual da prévia da Gestão: exit code 0 em 27/09/2026.

@@ -1,0 +1,13 @@
+Laboratorio iniciado em http://127.0.0.1:54321 (API).
+Banco em 127.0.0.1:54322; Studio em http://127.0.0.1:54323.
+Consulte o relatorio 26 para conferir o estado restaurado da baseline e da migration 1A.
+Bindings conferidos; execute o ensaio independente de rede antes de considerar o isolamento comprovado.
+PASS Todos os listeners Windows sao loopback
+PASS Bindings efetivos Docker somente loopback
+PASS Loopback IPv4 e IPv6 conecta nas cinco portas
+PASS Auth responde por loopback
+PASS Host nao alcanca laboratorio pelo IP Ethernet/rede
+PASS Controle positivo: cliente alcanca servidor sintetico na rede separada
+PASS Rede separada nao alcanca IP Ethernet/rede nas cinco portas
+PASS Firewall continua habilitado em todos os perfis
+Pilha encerrada; ausencia de listeners e sondas confirmada.

@@ -1,0 +1,6266 @@
+{
+  "started_at": "2026-09-26T19:58:31.578Z",
+  "checks": [
+    {
+      "group": "P1",
+      "name": "catalogo possui 30 tabelas publicas com chave",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P1",
+      "name": "todas as tentativas PATCH/DELETE possuem alvo existente",
+      "ok": true,
+      "detail": "30 tabelas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST assets",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH assets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE assets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_employees",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_professions",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST operation_reasons",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST profiles",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH profiles",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE profiles",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST teams",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH teams",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE teams",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST work_locations",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH work_locations",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE work_locations",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Joao POST worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao PATCH worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao DELETE worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Joao nao ativa o proprio perfil Gestao",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P1",
+      "name": "Joao fingerprints SHA256 de 33 tabelas inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE asset_movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST assets",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH assets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE assets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE employee_assignments",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_employees",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_professions",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE inventory",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST items",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE items",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE movements",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST operation_reasons",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST profiles",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH profiles",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE profiles",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE supply_order_events",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE supply_orders",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST teams",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH teams",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE teams",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST work_locations",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH work_locations",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE work_locations",
+      "ok": true,
+      "detail": "HTTP 200, 0 linhas"
+    },
+    {
+      "group": "P1",
+      "name": "Maria POST worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria PATCH worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria DELETE worksites",
+      "ok": true,
+      "detail": "HTTP 403, 42501"
+    },
+    {
+      "group": "P1",
+      "name": "Maria nao ativa o proprio perfil Gestao",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P1",
+      "name": "Maria fingerprints SHA256 de 33 tabelas inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P2",
+      "name": "controle admin confirma query valida ou objeto comprovadamente nao exposto",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "rows": null,
+        "found_maria": false,
+        "aso_column_present": false,
+        "errors": [
+          {
+            "message": "pg_graphql extension is not enabled."
+          }
+        ]
+      }
+    },
+    {
+      "group": "P2",
+      "name": "Joao GraphQL nao retorna colega nem ASO",
+      "ok": false,
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "P2",
+      "name": "Maria GraphQL nao retorna colega nem ASO",
+      "ok": false,
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "A-09",
+      "name": "create-employee Gestao cria conta real local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "A-09",
+      "name": "perfil Gestao ativo e sem marcador portal",
+      "ok": true,
+      "detail": {
+        "active": true,
+        "role": "collaborator",
+        "portal_marker": null
+      }
+    },
+    {
+      "group": "A-09",
+      "name": "conta Gestao ativa recusada como portal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "A-09",
+      "name": "conta Gestao inativa sem marcador recusada como portal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P5",
+      "name": "conta alvo vinculada por fluxo dedicado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P5",
+      "name": "delete-employee falha de forma fechada e controlada",
+      "ok": true,
+      "detail": {
+        "status": 400,
+        "data": {
+          "error": "Database error deleting user"
+        }
+      }
+    },
+    {
+      "group": "P5",
+      "name": "Auth identidade conta e auditoria preservados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P5",
+      "name": "Auth confirma usuario ainda existente",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "P5",
+      "name": "FKs de identidade e conta usam ON DELETE RESTRICT",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "A-13",
+      "name": "identidade e funcionario ativos com equipe inativa",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "A-13",
+      "name": "DTO desaparece pela equipe inativa conforme regra atual",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P3",
+      "name": "Joao autenticado antes da falha",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "P3",
+      "name": "falha de transporte apos SQL retorna 502 auth_ban_pending",
+      "ok": false,
+      "detail": {
+        "status": 500,
+        "data": {
+          "code": "WORKER_ERROR",
+          "message": "Function exited due to an error (please check logs)"
+        }
+      }
+    },
+    {
+      "group": "P3",
+      "name": "SQL revogado antes de ban Auth",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "group": "P3",
+      "name": "access token antigo continua roteavel mas DTO vazio",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+            "full_name": "Joao Sintetico",
+            "profession": "Profissao Teste",
+            "team_name": "COSEM"
+          }
+        ]
+      }
+    },
+    {
+      "group": "P3",
+      "name": "refresh intermediario observado sem reabrir DTO",
+      "ok": false,
+      "detail": "refresh HTTP 200; dados permanecem bloqueados"
+    },
+    {
+      "group": "P3",
+      "name": "motivo diferente retorna erro controlado e nao modifica historico",
+      "ok": false,
+      "detail": {
+        "status": 200,
+        "data": {
+          "ok": true,
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965"
+        }
+      }
+    },
+    {
+      "group": "P3",
+      "name": "retry mesmo motivo conclui ban Auth",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "group": "P3",
+      "name": "retry nao duplica auditoria",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "group": "P3",
+      "name": "refresh apos retry negado pelo Auth",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "group": "P3",
+      "name": "novo login apos retry negado pelo Auth",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "group": "P3",
+      "name": "JWT antigo ainda aceito pelo gateway sem acesso pessoal",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "rest_matrix": [
+    {
+      "viewer": "Joao",
+      "table": "asset_movements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": {
+        "id": "b6d37ee0-85dc-4f7a-9eea-345b604fa4c4",
+        "note": null,
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "new_status": "available",
+        "occurred_at": "2026-09-26T19:58:33.004117+00:00",
+        "performed_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "movement_type": "assign",
+        "origin_team_id": null,
+        "previous_status": "available",
+        "destination_team_id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"asset_movements\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "asset_movements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.asset_movements TO authenticated;",
+        "message": "permission denied for table asset_movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "asset_movements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.asset_movements TO authenticated;",
+        "message": "permission denied for table asset_movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "assets",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "id": "8ae328d5-3cb7-438a-9c12-67c6d095f4c9",
+        "notes": null,
+        "active": true,
+        "status": "available",
+        "item_id": "5f90b35d-ba7a-4b74-a5dd-a8a3ce38db6e",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "asset_code": "P1-muitaylr",
+        "user_notes": null,
+        "serial_number": null,
+        "ownership_type": "rented",
+        "rental_company": "Locadora sintetica",
+        "rental_end_date": null,
+        "rental_start_date": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"assets\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "assets",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "notes": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "assets",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "employee_assignments",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": {
+        "id": "44986620-2b22-4dd2-8f01-aca4f04ea93e",
+        "note": null,
+        "ends_at": null,
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "starts_at": "2026-09-01T00:00:00+00:00",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "employee_assignments",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "employee_assignments",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_deliveries",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": {
+        "id": "3d434a0b-e804-4f0e-8a86-5b690cbc0fdf",
+        "note": null,
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "team_id": "45caf66e-d514-4330-ab00-47fa8f70292e",
+        "quantity": 1,
+        "closed_at": null,
+        "closed_by": null,
+        "ca_snapshot": null,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "delivered_at": "2026-09-26T19:58:13.944173+00:00",
+        "delivered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "lot_snapshot": null,
+        "current_status": "active",
+        "stock_batch_id": "e5487325-d4b9-4e27-929e-deb816666452",
+        "delivery_reason": "initial",
+        "variant_snapshot": null,
+        "delivery_group_id": null,
+        "brand_model_snapshot": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_deliveries",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_deliveries",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_item_sets",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "updated_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employee_item_sets\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_item_sets",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "updated_at": "2026-09-26T19:58:38.129Z"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_item_sets",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "required_quantity": 1
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employee_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "required_quantity": 2
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employees",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "id": "45488e3b-767a-41cb-b20f-a59b158a6e27",
+        "active": true,
+        "team_id": "45caf66e-d514-4330-ab00-47fa8f70292e",
+        "full_name": "Maria Sintetica",
+        "shoe_size": null,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "pants_size": null,
+        "profession": "Profissao Teste",
+        "shirt_size": null,
+        "aso_exam_date": "2026-09-01",
+        "aso_expiry_date": "2027-09-01",
+        "registration_code": "LAB-M-muitaylr"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employees\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employees",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "full_name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employees",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_item_variants",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": {
+        "id": "ef82ffef-2a0d-4dd3-9735-91389f071f12",
+        "label": "Variante sintetica",
+        "value": "p1_muitaylr",
+        "active": true,
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "sort_order": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_item_variants\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_item_variants",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": {
+        "label": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_item_variants",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "id": "fb7ac611-8860-40a7-aedf-2a3c36494aae",
+        "code": "LAB-EPI-muitaylr",
+        "name": "Capacete sintetico",
+        "unit": "un",
+        "active": true,
+        "ca_number": null,
+        "item_kind": "epi",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "system_key": null,
+        "brand_model": null,
+        "minimum_stock": 0,
+        "return_policy": "returnable",
+        "replacement_days": null,
+        "requires_note_on_close": false
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_monthly_acknowledgements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": {
+        "id": "042ddc4b-02e2-47a1-9e2f-ce95c3778790",
+        "signed_at": null,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "signed_name": null,
+        "confirmed_by": null,
+        "reference_month": "2026-09-01"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_monthly_acknowledgements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_monthly_acknowledgements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_profession_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "profession_code": "p1_muitaylr",
+        "recommended_quantity": 1
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_profession_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_profession_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "recommended_quantity": 2
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_profession_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_professions",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": {
+        "code": "p1_muitaylr",
+        "name": "Profissao sintetica",
+        "active": true,
+        "sort_order": 0,
+        "uniform_color": "gray"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_professions\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_professions",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_professions",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_requests",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": {
+        "id": "76234e71-d139-47d3-9d2e-d4a0588e01e2",
+        "status": "pending",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 1,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "fulfilled_at": null,
+        "fulfilled_by": null,
+        "requested_by": null,
+        "requested_variant": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_requests",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": {
+        "quantity": 2
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_requests",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_batches",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": {
+        "id": "4f9832d0-c3b6-40d1-a831-42d32aa6ec18",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "variant": null,
+        "quantity": 10,
+        "ca_number": null,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "expires_on": null,
+        "lot_number": null,
+        "brand_model": null,
+        "received_at": "2026-09-26T19:58:13.549589+00:00",
+        "worksite_id": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_batches",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": {
+        "quantity": 11
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_batches",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_transfers",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": {
+        "id": "8f1bffee-83a0-4fd9-86bb-b585d576397d",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 1,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:35.594+00:00",
+        "origin_batch_id": "e5487325-d4b9-4e27-929e-deb816666452",
+        "destination_batch_id": "a3db8172-a4ca-4fa0-8340-e4acbf3d8bdb"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_transfers",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": {
+        "quantity": 2
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_transfers",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "inventory",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": {
+        "id": "ba1bb76d-15a3-4801-813f-3cbd23721db0",
+        "status": "available",
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 10
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "inventory",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": {
+        "quantity": 11
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "inventory",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": {
+        "id": "4073038c-b68f-47fc-a27f-66472bb0a7db",
+        "code": "P1-M-muitaylr",
+        "name": "Material sintetico P1",
+        "unit": "un",
+        "active": true,
+        "category": null,
+        "item_type": "material",
+        "description": null,
+        "minimum_stock": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "movements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": {
+        "id": "a3ebf393-794a-40f2-9a99-5381426bd9cd",
+        "note": null,
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "quantity": 1,
+        "occurred_at": "2026-09-26T19:58:36.055718+00:00",
+        "performed_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "movement_type": "consumption",
+        "origin_team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "destination_team_id": null,
+        "origin_stock_team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "destination_stock_team_id": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "movements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "movements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "operation_reasons",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": {
+        "id": "5f63aa1f-ee78-4ff9-86c5-d7c8b16459b8",
+        "code": "p1_muitaylr",
+        "label": "Motivo sintetico",
+        "scope": "epi_delivery",
+        "active": true,
+        "sort_order": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"operation_reasons\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "operation_reasons",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": {
+        "label": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "operation_reasons",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profile_access_audit",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": {
+        "id": "5ec90de6-ef31-4d43-b4f3-2e65bc971643",
+        "changed_at": "2026-09-26T19:58:36.435806+00:00",
+        "changed_by": null,
+        "new_access": {
+          "synthetic": true
+        },
+        "profile_id": "36a4dec6-328e-43bb-a202-e67f83bf54b5",
+        "previous_access": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profile_access_audit",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profile_access_audit",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profiles",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "36a4dec6-328e-43bb-a202-e67f83bf54b5"
+      },
+      "payload": {
+        "id": "6c911ecd-d576-4ada-93cd-0dd7182d50fe",
+        "role": "collaborator",
+        "active": false,
+        "team_id": null,
+        "full_name": "Maria Sintetica",
+        "operation_team_ids": null,
+        "operation_permissions": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"profiles\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profiles",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "36a4dec6-328e-43bb-a202-e67f83bf54b5"
+      },
+      "payload": {
+        "full_name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profiles",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "36a4dec6-328e-43bb-a202-e67f83bf54b5"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_admin_details",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "note": "Detalhe sintetico",
+        "amount": null,
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "updated_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "billing_period": null,
+        "expected_return": null,
+        "billing_closed_on": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_admin_details",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_admin_details",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_return_requests",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": {
+        "id": "bc59e74a-eea6-4a45-bf9a-a1441a4624ef",
+        "note": "Devolucao sintetica",
+        "status": "pending",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:36.925+00:00",
+        "resolved_at": null,
+        "resolved_by": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_return_requests",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_return_requests",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "site_operation_receipts",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": {
+        "id": "a6782324-5c83-4df4-9069-056e41d698ce",
+        "result": null,
+        "command": "p1_synthetic",
+        "payload": {},
+        "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:37.117+00:00"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "site_operation_receipts",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "site_operation_receipts",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_events",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": {
+        "id": "e164b8a9-f15a-4915-ace1-aef3dd42bc3d",
+        "note": null,
+        "event": "submitted",
+        "line_id": null,
+        "order_id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6",
+        "quantity": null,
+        "occurred_at": "2026-09-26T19:58:37.684+00:00",
+        "recorded_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_events",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_events",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_lines",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": {
+        "id": "aef06290-f652-464e-9a5a-9786a9ccddad",
+        "kind": "material",
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "variant": null,
+        "order_id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6",
+        "quantity": 1,
+        "description": "Linha sintetica",
+        "epi_item_id": null,
+        "received_quantity": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_lines",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": {
+        "description": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_lines",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_orders",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": {
+        "id": "a7a5e3d7-7f72-4677-85a4-74c3832ce1dd",
+        "note": "Pedido sintetico",
+        "status": "submitted",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:37.38599+00:00"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_orders",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_orders",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "teams",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": {
+        "id": "437a1832-9095-4da3-87c3-088c9279ac66",
+        "name": "Equipe P1 muitaylr",
+        "active": true,
+        "description": null,
+        "worksite_id": null,
+        "location_type": "field"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"teams\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "teams",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "teams",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "work_locations",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": {
+        "id": "e9040fd2-fa3c-4036-b985-fbd6202859b8",
+        "name": "Local P1 muitaylr",
+        "notes": null,
+        "active": true,
+        "created_by": null,
+        "location_type": "worksite"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"work_locations\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "work_locations",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "work_locations",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "worksites",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": {
+        "id": "5c0dac3b-352c-421f-9f6e-9020a2cf60b0",
+        "name": "Obra P1 muitaylr",
+        "active": true,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "stock_team_id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "worksites",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "worksites",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profiles",
+      "method": "PATCH",
+      "own_active_escalation": true,
+      "status": 200,
+      "response": [],
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "asset_movements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": {
+        "id": "65431317-eb46-48b3-a018-65ecb788adc0",
+        "note": null,
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "new_status": "available",
+        "occurred_at": "2026-09-26T19:58:33.004117+00:00",
+        "performed_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "movement_type": "assign",
+        "origin_team_id": null,
+        "previous_status": "available",
+        "destination_team_id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"asset_movements\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "asset_movements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.asset_movements TO authenticated;",
+        "message": "permission denied for table asset_movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "asset_movements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "6850624a-21ae-4904-9d03-0263b6059b09"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.asset_movements TO authenticated;",
+        "message": "permission denied for table asset_movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "assets",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "id": "3195ad61-0c21-4faa-8550-2c99f09b70fa",
+        "notes": null,
+        "active": true,
+        "status": "available",
+        "item_id": "5f90b35d-ba7a-4b74-a5dd-a8a3ce38db6e",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "asset_code": "P1-muitaylr",
+        "user_notes": null,
+        "serial_number": null,
+        "ownership_type": "rented",
+        "rental_company": "Locadora sintetica",
+        "rental_end_date": null,
+        "rental_start_date": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"assets\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "assets",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "notes": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "assets",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "employee_assignments",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": {
+        "id": "032c8bad-b151-43e3-b715-9eeef01fd6e6",
+        "note": null,
+        "ends_at": null,
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "starts_at": "2026-09-01T00:00:00+00:00",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "employee_assignments",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "employee_assignments",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e50754a4-e358-456b-9eca-a9c68e50cf94"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.employee_assignments TO authenticated;",
+        "message": "permission denied for table employee_assignments"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_deliveries",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": {
+        "id": "4575de7c-38a7-4c2b-a843-e72de4365e04",
+        "note": null,
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "team_id": "45caf66e-d514-4330-ab00-47fa8f70292e",
+        "quantity": 1,
+        "closed_at": null,
+        "closed_by": null,
+        "ca_snapshot": null,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "delivered_at": "2026-09-26T19:58:13.944173+00:00",
+        "delivered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "lot_snapshot": null,
+        "current_status": "active",
+        "stock_batch_id": "e5487325-d4b9-4e27-929e-deb816666452",
+        "delivery_reason": "initial",
+        "variant_snapshot": null,
+        "delivery_group_id": null,
+        "brand_model_snapshot": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_deliveries",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_deliveries",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0f76dee5-cf1b-47bc-a23b-af9c72b46a7f"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_deliveries TO authenticated;",
+        "message": "permission denied for table epi_deliveries"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_item_sets",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "updated_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employee_item_sets\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_item_sets",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": {
+        "updated_at": "2026-09-26T19:58:39.042Z"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_item_sets",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "required_quantity": 1
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employee_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "required_quantity": 2
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employees",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1"
+      },
+      "payload": {
+        "id": "255b84eb-dbfb-4662-85d4-27139b21a318",
+        "active": true,
+        "team_id": "45caf66e-d514-4330-ab00-47fa8f70292e",
+        "full_name": "Joao Sintetico",
+        "shoe_size": null,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "pants_size": null,
+        "profession": "Profissao Teste",
+        "shirt_size": null,
+        "aso_exam_date": "2026-09-01",
+        "aso_expiry_date": "2027-09-01",
+        "registration_code": "LAB-J-muitaylr"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_employees\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employees",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1"
+      },
+      "payload": {
+        "full_name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employees",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_item_variants",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": {
+        "id": "177f943e-366e-4fa1-baa5-dbb29265420c",
+        "label": "Variante sintetica",
+        "value": "p1_muitaylr",
+        "active": true,
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "sort_order": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_item_variants\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_item_variants",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": {
+        "label": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_item_variants",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "1492666d-4f93-4f60-958c-fefe3a565da6"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "id": "c53cdb0a-d6c3-4701-a94b-fcb0fef911d4",
+        "code": "LAB-EPI-muitaylr",
+        "name": "Capacete sintetico",
+        "unit": "un",
+        "active": true,
+        "ca_number": null,
+        "item_kind": "epi",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "system_key": null,
+        "brand_model": null,
+        "minimum_stock": 0,
+        "return_policy": "returnable",
+        "replacement_days": null,
+        "requires_note_on_close": false
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_monthly_acknowledgements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": {
+        "id": "510fcaf0-6bf4-4243-a748-16ace5f4e6c5",
+        "signed_at": null,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "signed_name": null,
+        "confirmed_by": null,
+        "reference_month": "2026-09-01"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_monthly_acknowledgements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_monthly_acknowledgements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "3b0708de-83ae-4201-bda9-516eca4e1667"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_profession_items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "profession_code": "p1_muitaylr",
+        "recommended_quantity": 1
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_profession_items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_profession_items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": {
+        "recommended_quantity": 2
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_profession_items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "profession_code": "p1_muitaylr",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_professions",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": {
+        "code": "p1_muitaylr",
+        "name": "Profissao sintetica",
+        "active": true,
+        "sort_order": 0,
+        "uniform_color": "gray"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"epi_professions\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_professions",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_professions",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "code": "p1_muitaylr"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_requests",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": {
+        "id": "98d1a34f-b7ab-4c47-a5ef-28e347d00521",
+        "status": "pending",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 1,
+        "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+        "fulfilled_at": null,
+        "fulfilled_by": null,
+        "requested_by": null,
+        "requested_variant": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_requests",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": {
+        "quantity": 2
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_requests",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "0df10db0-d9a5-4db8-9ec8-146622c51f53"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_requests TO authenticated;",
+        "message": "permission denied for table epi_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_batches",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": {
+        "id": "d91127bd-e0a2-483a-a150-8d4d38d20b43",
+        "item_id": "371e5be4-fb99-408e-85ae-37972ce2547b",
+        "variant": null,
+        "quantity": 10,
+        "ca_number": null,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "expires_on": null,
+        "lot_number": null,
+        "brand_model": null,
+        "received_at": "2026-09-26T19:58:13.549589+00:00",
+        "worksite_id": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_batches",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": {
+        "quantity": 11
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_batches",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e5487325-d4b9-4e27-929e-deb816666452"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_stock_batches TO authenticated;",
+        "message": "permission denied for table epi_stock_batches"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_transfers",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": {
+        "id": "e097b69b-5d5c-4c8b-b78b-3f38b5bd3f59",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 1,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:35.594+00:00",
+        "origin_batch_id": "e5487325-d4b9-4e27-929e-deb816666452",
+        "destination_batch_id": "a3db8172-a4ca-4fa0-8340-e4acbf3d8bdb"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_transfers",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": {
+        "quantity": 2
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_transfers",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "11f528b6-e0f2-406b-9d69-2d244ce8c801"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.epi_stock_transfers TO authenticated;",
+        "message": "permission denied for table epi_stock_transfers"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "inventory",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": {
+        "id": "a9d65989-53f4-4d1a-94e6-5867b8ed2394",
+        "status": "available",
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "quantity": 10
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "inventory",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": {
+        "quantity": 11
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "inventory",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "aed32830-076a-4879-9c52-317f889cd30c"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.inventory TO authenticated;",
+        "message": "permission denied for table inventory"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "items",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": {
+        "id": "43953356-7442-4263-a4a9-d9d800c128a4",
+        "code": "P1-M-muitaylr",
+        "name": "Material sintetico P1",
+        "unit": "un",
+        "active": true,
+        "category": null,
+        "item_type": "material",
+        "description": null,
+        "minimum_stock": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"items\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "items",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "items",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "a04791a5-c361-4fa5-81ea-304513586dd3"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "movements",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": {
+        "id": "1c99fbdb-8ddc-4427-8fc2-bc5acd03064e",
+        "note": null,
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "quantity": 1,
+        "occurred_at": "2026-09-26T19:58:36.055718+00:00",
+        "performed_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "movement_type": "consumption",
+        "origin_team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "destination_team_id": null,
+        "origin_stock_team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "destination_stock_team_id": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "movements",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "movements",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e0baca9b-5eaf-4c24-b89f-b34bb3288271"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.movements TO authenticated;",
+        "message": "permission denied for table movements"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "operation_reasons",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": {
+        "id": "f42d7c0e-ffeb-4396-a351-f8e3427bf71a",
+        "code": "p1_muitaylr",
+        "label": "Motivo sintetico",
+        "scope": "epi_delivery",
+        "active": true,
+        "sort_order": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"operation_reasons\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "operation_reasons",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": {
+        "label": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "operation_reasons",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "067fa4f9-c6f6-4a22-861e-eda8eb905326"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profile_access_audit",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": {
+        "id": "9214f64d-54b6-4004-a8a7-a2aafd44dd70",
+        "changed_at": "2026-09-26T19:58:36.435806+00:00",
+        "changed_by": null,
+        "new_access": {
+          "synthetic": true
+        },
+        "profile_id": "36a4dec6-328e-43bb-a202-e67f83bf54b5",
+        "previous_access": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profile_access_audit",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profile_access_audit",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "65242cc2-ec08-41cd-9729-44bd2eb72503"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.profile_access_audit TO authenticated;",
+        "message": "permission denied for table profile_access_audit"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profiles",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965"
+      },
+      "payload": {
+        "id": "70ea190f-c74c-446f-ad3b-f3d401000fdf",
+        "role": "collaborator",
+        "active": false,
+        "team_id": null,
+        "full_name": "Joao Sintetico",
+        "operation_team_ids": null,
+        "operation_permissions": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"profiles\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profiles",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965"
+      },
+      "payload": {
+        "full_name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profiles",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_admin_details",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "note": "Detalhe sintetico",
+        "amount": null,
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "updated_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "billing_period": null,
+        "expected_return": null,
+        "billing_closed_on": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_admin_details",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_admin_details",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.rental_admin_details TO authenticated;",
+        "message": "permission denied for table rental_admin_details"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_return_requests",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": {
+        "id": "1e32e3a2-aee9-4b17-bac1-1356d4f26943",
+        "note": "Devolucao sintetica",
+        "status": "pending",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "asset_id": "f5715834-cffb-49eb-848a-a65b007dcaac",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:36.925+00:00",
+        "resolved_at": null,
+        "resolved_by": null
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_return_requests",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_return_requests",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "7ca180b5-83fa-4457-a773-888fa842391a"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.rental_return_requests TO authenticated;",
+        "message": "permission denied for table rental_return_requests"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "site_operation_receipts",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": {
+        "id": "4d5d1c9f-c8e7-4acc-80c0-62cefa58e291",
+        "result": null,
+        "command": "p1_synthetic",
+        "payload": {},
+        "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:37.117+00:00"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "site_operation_receipts",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "site_operation_receipts",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d88c251e-bfb9-480c-917a-c096a14954d9"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.site_operation_receipts TO authenticated;",
+        "message": "permission denied for table site_operation_receipts"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_events",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": {
+        "id": "18a045b7-c51b-484d-a45a-53deb854d0e8",
+        "note": null,
+        "event": "submitted",
+        "line_id": null,
+        "order_id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6",
+        "quantity": null,
+        "occurred_at": "2026-09-26T19:58:37.684+00:00",
+        "recorded_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_events",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_events",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "db37e27a-425e-4228-be66-fdec287471ab"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_order_events TO authenticated;",
+        "message": "permission denied for table supply_order_events"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_lines",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": {
+        "id": "6495e030-607d-423f-a376-3460d7587bae",
+        "kind": "material",
+        "item_id": "a04791a5-c361-4fa5-81ea-304513586dd3",
+        "variant": null,
+        "order_id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6",
+        "quantity": 1,
+        "description": "Linha sintetica",
+        "epi_item_id": null,
+        "received_quantity": 0
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_lines",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": {
+        "description": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_lines",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "b8a83862-b8a4-4056-87d0-05e9d6a13880"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_order_lines TO authenticated;",
+        "message": "permission denied for table supply_order_lines"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_orders",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": {
+        "id": "17e50aae-64bb-4901-9322-392232808bc4",
+        "note": "Pedido sintetico",
+        "status": "submitted",
+        "team_id": "33db7bf3-6606-4253-be42-ae437cecc247",
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "occurred_at": "2026-09-26T19:58:37.38599+00:00"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_orders",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": {
+        "note": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_orders",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "e6dee56a-781b-4aa1-b121-ff769f5e26a6"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.supply_orders TO authenticated;",
+        "message": "permission denied for table supply_orders"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "teams",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": {
+        "id": "bee9b7b0-3c69-48a3-9551-68f1a3e5e08c",
+        "name": "Equipe P1 muitaylr",
+        "active": true,
+        "description": null,
+        "worksite_id": null,
+        "location_type": "field"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"teams\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "teams",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "teams",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "work_locations",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": {
+        "id": "a6c75704-cc50-4212-9678-5e7073381a29",
+        "name": "Local P1 muitaylr",
+        "notes": null,
+        "active": true,
+        "created_by": null,
+        "location_type": "worksite"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": null,
+        "message": "new row violates row-level security policy for table \"work_locations\""
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "work_locations",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "work_locations",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "d0cdc83e-f135-4334-a0fe-da969aaef19f"
+      },
+      "payload": null,
+      "status": 200,
+      "response": [],
+      "classification": "RLS_zero_linhas_em_alvo_existente",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "worksites",
+      "method": "POST",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": {
+        "id": "5733aadb-b049-4bea-80fa-8f9b2f4d7612",
+        "name": "Obra P1 muitaylr",
+        "active": true,
+        "created_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "stock_team_id": "33db7bf3-6606-4253-be42-ae437cecc247"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT INSERT ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "worksites",
+      "method": "PATCH",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": {
+        "name": "Sintetico P1"
+      },
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT UPDATE ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "worksites",
+      "method": "DELETE",
+      "target_exists": true,
+      "target_pk": {
+        "id": "54302bc8-173e-4a3c-b547-250ffec4bf06"
+      },
+      "payload": null,
+      "status": 403,
+      "response": {
+        "code": "42501",
+        "details": null,
+        "hint": "Grant the required privileges to the current role with: GRANT DELETE ON public.worksites TO authenticated;",
+        "message": "permission denied for table worksites"
+      },
+      "classification": "negacao_SQL_42501",
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profiles",
+      "method": "PATCH",
+      "own_active_escalation": true,
+      "status": 200,
+      "response": [],
+      "ok": true
+    }
+  ],
+  "graphql": [
+    {
+      "viewer": "Joao",
+      "query": "{ epi_employeesCollection(filter: {id: {eq: \"2d268d0c-d0db-42ed-83a7-632bfd074f75\"}}, first: 10) { edges { node { id full_name aso_expiry_date } } } }",
+      "status": 200,
+      "response": {
+        "errors": [
+          {
+            "message": "pg_graphql extension is not enabled."
+          }
+        ]
+      },
+      "classification": "NAO_COMPROVADO"
+    },
+    {
+      "viewer": "Maria",
+      "query": "{ epi_employeesCollection(filter: {id: {eq: \"cc3aed60-6554-4cf9-b7a9-fafe688c54a1\"}}, first: 10) { edges { node { id full_name aso_expiry_date } } } }",
+      "status": 200,
+      "response": {
+        "errors": [
+          {
+            "message": "pg_graphql extension is not enabled."
+          }
+        ]
+      },
+      "classification": "NAO_COMPROVADO"
+    }
+  ],
+  "catalog": [
+    {
+      "name": "asset_movements",
+      "insert": true,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "assets",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "employee_assignments",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_deliveries",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_employee_item_sets",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "employee_id"
+      ]
+    },
+    {
+      "name": "epi_employee_items",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "employee_id",
+        "item_id"
+      ]
+    },
+    {
+      "name": "epi_employees",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_item_variants",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_items",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_monthly_acknowledgements",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_profession_items",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "profession_code",
+        "item_id"
+      ]
+    },
+    {
+      "name": "epi_professions",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "code"
+      ]
+    },
+    {
+      "name": "epi_requests",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_stock_batches",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "epi_stock_transfers",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "inventory",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "items",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "movements",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "operation_reasons",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "profile_access_audit",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "profiles",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "rental_admin_details",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "asset_id"
+      ]
+    },
+    {
+      "name": "rental_return_requests",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "site_operation_receipts",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "supply_order_events",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "supply_order_lines",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "supply_orders",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "teams",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "work_locations",
+      "insert": true,
+      "update": true,
+      "delete": true,
+      "pk": [
+        "id"
+      ]
+    },
+    {
+      "name": "worksites",
+      "insert": false,
+      "update": false,
+      "delete": false,
+      "pk": [
+        "id"
+      ]
+    }
+  ],
+  "rest_fingerprints": {
+    "before": {
+      "public.\"asset_movements\"": {
+        "rows": 1,
+        "sha256": "12b113c58e62446221a7f2fa36e6b60fcb484e9f6a1953ad262d87fb29d85fb0"
+      },
+      "public.\"assets\"": {
+        "rows": 1,
+        "sha256": "cc8071c799c9e7329d5ccc4459b5f5011b94aacfac0929b959f0a253c22fc24d"
+      },
+      "public.\"employee_assignments\"": {
+        "rows": 1,
+        "sha256": "015394ced764db3dcfac20e4927e7001515a0e31004133ab3cd7f63b576a9a0b"
+      },
+      "public.\"epi_deliveries\"": {
+        "rows": 24,
+        "sha256": "c0959403b23e328faf98f958659d90763c7b0688e386cbe5f79c925f8f826a47"
+      },
+      "public.\"epi_employee_item_sets\"": {
+        "rows": 1,
+        "sha256": "7dc8d131748c27b287b4c2ebdb662f6fc0ee96fe745838266e97b191ca33b60b"
+      },
+      "public.\"epi_employee_items\"": {
+        "rows": 1,
+        "sha256": "57e86ad798cc00d5ee0381137fb7001aae1c461fb7c778d417d4f5cafa548619"
+      },
+      "public.\"epi_employees\"": {
+        "rows": 36,
+        "sha256": "d760426fa2c4183ef345a136ca608d81eb6184ec0e34b9070acefcdb79044654"
+      },
+      "public.\"epi_item_variants\"": {
+        "rows": 1,
+        "sha256": "9121c3b3ef4ce669e047da5297b4b8d931984c7d0d89e252d7059d6f25cf086c"
+      },
+      "public.\"epi_items\"": {
+        "rows": 12,
+        "sha256": "edeb0fb6d8df3df5d7197e234ce9381b65ddaa591a67227d488bef9857d50016"
+      },
+      "public.\"epi_monthly_acknowledgements\"": {
+        "rows": 1,
+        "sha256": "0d23f3ce9421ec3b0d010da0d662adb67d7c9e75a98055caab8c6d434265ba8a"
+      },
+      "public.\"epi_profession_items\"": {
+        "rows": 1,
+        "sha256": "fb222f20daf20afe8bc5110f2e5bafa150d1a232ccc0298716a5282419a58f7f"
+      },
+      "public.\"epi_professions\"": {
+        "rows": 7,
+        "sha256": "30539811184cb7c2d9ec8053f52fd446c9f41d5e6ee16e53afcbde1876206f08"
+      },
+      "public.\"epi_requests\"": {
+        "rows": 1,
+        "sha256": "c3b2b97c1c317bd4c2bfcf0daeccb010d04cc82b7d5c05380040053ebc4382bb"
+      },
+      "public.\"epi_stock_batches\"": {
+        "rows": 13,
+        "sha256": "72b3d00e5eaea62fa04fd88cb2430d405b138a1032d5f382651857f2caf227f6"
+      },
+      "public.\"epi_stock_transfers\"": {
+        "rows": 1,
+        "sha256": "62ef15cf963ffdeb68b4f8ec6e337552a62e9db07ca38a82536c7cfd42bb664e"
+      },
+      "public.\"inventory\"": {
+        "rows": 1,
+        "sha256": "1d1942871d3bc61ab6771eda09b5e493c06a303d1ef25dbcaf594e16478741d0"
+      },
+      "public.\"items\"": {
+        "rows": 2,
+        "sha256": "4877b74bbee466a4b6a9d67c9a025db45c104175156744eeada70997971fbbcf"
+      },
+      "public.\"movements\"": {
+        "rows": 1,
+        "sha256": "a871ff1ee985e88ab61761d3e8f0a3ae39928f626ace7ca64485f6150e74f18f"
+      },
+      "public.\"operation_reasons\"": {
+        "rows": 15,
+        "sha256": "45aa47d6aba9458a19939784af320720cc88cdcf379c87d80c052af79751d99b"
+      },
+      "public.\"profile_access_audit\"": {
+        "rows": 67,
+        "sha256": "91269bd6c15ea7d3344ae1663f3ef8bd8ea811a551d07897990e65ea4246d7d6"
+      },
+      "public.\"profiles\"": {
+        "rows": 51,
+        "sha256": "b9882269a832f51be3a729cf23205b15631cb4a89ff609afa416b13e13ce6768"
+      },
+      "public.\"rental_admin_details\"": {
+        "rows": 1,
+        "sha256": "7230bab98be20a3e6ed6a66f75dc8b3e9b6c727ab16056b7087a67448ce3aebc"
+      },
+      "public.\"rental_return_requests\"": {
+        "rows": 1,
+        "sha256": "f61f162babf62ca045d2de223385f0addb20c061db2d45f082ea930a808da017"
+      },
+      "public.\"site_operation_receipts\"": {
+        "rows": 1,
+        "sha256": "b6e74d1768dc1d07d1c769e64c98a966206b614c32349aefb57ff82832fee9fc"
+      },
+      "public.\"supply_order_events\"": {
+        "rows": 1,
+        "sha256": "c9f629f9891f8d4bc8ad63938772498056968ab4da0f293721d7cff382aa7151"
+      },
+      "public.\"supply_order_lines\"": {
+        "rows": 1,
+        "sha256": "a1eeb34beaffeb79737bf0ff86f342fd0db0fbe1221cb288bcd1aae0b929e9bd"
+      },
+      "public.\"supply_orders\"": {
+        "rows": 1,
+        "sha256": "5350d4f87061b94ee4314926a787efc4833614cc533ec0aa9aece9835981ff80"
+      },
+      "public.\"teams\"": {
+        "rows": 11,
+        "sha256": "00085105d3f665d3b1b46a109ce26aa46e32ad3e417c33683e69258f7ce11eea"
+      },
+      "public.\"work_locations\"": {
+        "rows": 2,
+        "sha256": "d801b9741860f5dff1a41d07c18ba92b5158d3b6adfb4ed451415f2c66e07572"
+      },
+      "public.\"worksites\"": {
+        "rows": 1,
+        "sha256": "47014e9f440da48ffc2e71348d81326cd6773ed2544171d4de0cfc125266e777"
+      },
+      "private.employee_identity": {
+        "rows": 36,
+        "sha256": "df4bbf043dcf49f5773f39f0455201a63bf8b6e7ee6c36a2e84ca85cce881a08"
+      },
+      "private.employee_portal_accounts": {
+        "rows": 36,
+        "sha256": "c0dcc7c318a4940389ef2ed766ec06c7ff993a412f36a678d8cd51c2cdfe00a9"
+      },
+      "private.employee_identity_audit": {
+        "rows": 48,
+        "sha256": "2cc43c8eb3d984f320b1a330e17a02e53615f2f82f8ef5e360414aac57680bfa"
+      }
+    },
+    "after_by_actor": {
+      "Joao": {
+        "public.\"asset_movements\"": {
+          "rows": 1,
+          "sha256": "12b113c58e62446221a7f2fa36e6b60fcb484e9f6a1953ad262d87fb29d85fb0"
+        },
+        "public.\"assets\"": {
+          "rows": 1,
+          "sha256": "cc8071c799c9e7329d5ccc4459b5f5011b94aacfac0929b959f0a253c22fc24d"
+        },
+        "public.\"employee_assignments\"": {
+          "rows": 1,
+          "sha256": "015394ced764db3dcfac20e4927e7001515a0e31004133ab3cd7f63b576a9a0b"
+        },
+        "public.\"epi_deliveries\"": {
+          "rows": 24,
+          "sha256": "c0959403b23e328faf98f958659d90763c7b0688e386cbe5f79c925f8f826a47"
+        },
+        "public.\"epi_employee_item_sets\"": {
+          "rows": 1,
+          "sha256": "7dc8d131748c27b287b4c2ebdb662f6fc0ee96fe745838266e97b191ca33b60b"
+        },
+        "public.\"epi_employee_items\"": {
+          "rows": 1,
+          "sha256": "57e86ad798cc00d5ee0381137fb7001aae1c461fb7c778d417d4f5cafa548619"
+        },
+        "public.\"epi_employees\"": {
+          "rows": 36,
+          "sha256": "d760426fa2c4183ef345a136ca608d81eb6184ec0e34b9070acefcdb79044654"
+        },
+        "public.\"epi_item_variants\"": {
+          "rows": 1,
+          "sha256": "9121c3b3ef4ce669e047da5297b4b8d931984c7d0d89e252d7059d6f25cf086c"
+        },
+        "public.\"epi_items\"": {
+          "rows": 12,
+          "sha256": "edeb0fb6d8df3df5d7197e234ce9381b65ddaa591a67227d488bef9857d50016"
+        },
+        "public.\"epi_monthly_acknowledgements\"": {
+          "rows": 1,
+          "sha256": "0d23f3ce9421ec3b0d010da0d662adb67d7c9e75a98055caab8c6d434265ba8a"
+        },
+        "public.\"epi_profession_items\"": {
+          "rows": 1,
+          "sha256": "fb222f20daf20afe8bc5110f2e5bafa150d1a232ccc0298716a5282419a58f7f"
+        },
+        "public.\"epi_professions\"": {
+          "rows": 7,
+          "sha256": "30539811184cb7c2d9ec8053f52fd446c9f41d5e6ee16e53afcbde1876206f08"
+        },
+        "public.\"epi_requests\"": {
+          "rows": 1,
+          "sha256": "c3b2b97c1c317bd4c2bfcf0daeccb010d04cc82b7d5c05380040053ebc4382bb"
+        },
+        "public.\"epi_stock_batches\"": {
+          "rows": 13,
+          "sha256": "72b3d00e5eaea62fa04fd88cb2430d405b138a1032d5f382651857f2caf227f6"
+        },
+        "public.\"epi_stock_transfers\"": {
+          "rows": 1,
+          "sha256": "62ef15cf963ffdeb68b4f8ec6e337552a62e9db07ca38a82536c7cfd42bb664e"
+        },
+        "public.\"inventory\"": {
+          "rows": 1,
+          "sha256": "1d1942871d3bc61ab6771eda09b5e493c06a303d1ef25dbcaf594e16478741d0"
+        },
+        "public.\"items\"": {
+          "rows": 2,
+          "sha256": "4877b74bbee466a4b6a9d67c9a025db45c104175156744eeada70997971fbbcf"
+        },
+        "public.\"movements\"": {
+          "rows": 1,
+          "sha256": "a871ff1ee985e88ab61761d3e8f0a3ae39928f626ace7ca64485f6150e74f18f"
+        },
+        "public.\"operation_reasons\"": {
+          "rows": 15,
+          "sha256": "45aa47d6aba9458a19939784af320720cc88cdcf379c87d80c052af79751d99b"
+        },
+        "public.\"profile_access_audit\"": {
+          "rows": 67,
+          "sha256": "91269bd6c15ea7d3344ae1663f3ef8bd8ea811a551d07897990e65ea4246d7d6"
+        },
+        "public.\"profiles\"": {
+          "rows": 51,
+          "sha256": "b9882269a832f51be3a729cf23205b15631cb4a89ff609afa416b13e13ce6768"
+        },
+        "public.\"rental_admin_details\"": {
+          "rows": 1,
+          "sha256": "7230bab98be20a3e6ed6a66f75dc8b3e9b6c727ab16056b7087a67448ce3aebc"
+        },
+        "public.\"rental_return_requests\"": {
+          "rows": 1,
+          "sha256": "f61f162babf62ca045d2de223385f0addb20c061db2d45f082ea930a808da017"
+        },
+        "public.\"site_operation_receipts\"": {
+          "rows": 1,
+          "sha256": "b6e74d1768dc1d07d1c769e64c98a966206b614c32349aefb57ff82832fee9fc"
+        },
+        "public.\"supply_order_events\"": {
+          "rows": 1,
+          "sha256": "c9f629f9891f8d4bc8ad63938772498056968ab4da0f293721d7cff382aa7151"
+        },
+        "public.\"supply_order_lines\"": {
+          "rows": 1,
+          "sha256": "a1eeb34beaffeb79737bf0ff86f342fd0db0fbe1221cb288bcd1aae0b929e9bd"
+        },
+        "public.\"supply_orders\"": {
+          "rows": 1,
+          "sha256": "5350d4f87061b94ee4314926a787efc4833614cc533ec0aa9aece9835981ff80"
+        },
+        "public.\"teams\"": {
+          "rows": 11,
+          "sha256": "00085105d3f665d3b1b46a109ce26aa46e32ad3e417c33683e69258f7ce11eea"
+        },
+        "public.\"work_locations\"": {
+          "rows": 2,
+          "sha256": "d801b9741860f5dff1a41d07c18ba92b5158d3b6adfb4ed451415f2c66e07572"
+        },
+        "public.\"worksites\"": {
+          "rows": 1,
+          "sha256": "47014e9f440da48ffc2e71348d81326cd6773ed2544171d4de0cfc125266e777"
+        },
+        "private.employee_identity": {
+          "rows": 36,
+          "sha256": "df4bbf043dcf49f5773f39f0455201a63bf8b6e7ee6c36a2e84ca85cce881a08"
+        },
+        "private.employee_portal_accounts": {
+          "rows": 36,
+          "sha256": "c0dcc7c318a4940389ef2ed766ec06c7ff993a412f36a678d8cd51c2cdfe00a9"
+        },
+        "private.employee_identity_audit": {
+          "rows": 48,
+          "sha256": "2cc43c8eb3d984f320b1a330e17a02e53615f2f82f8ef5e360414aac57680bfa"
+        }
+      },
+      "Maria": {
+        "public.\"asset_movements\"": {
+          "rows": 1,
+          "sha256": "12b113c58e62446221a7f2fa36e6b60fcb484e9f6a1953ad262d87fb29d85fb0"
+        },
+        "public.\"assets\"": {
+          "rows": 1,
+          "sha256": "cc8071c799c9e7329d5ccc4459b5f5011b94aacfac0929b959f0a253c22fc24d"
+        },
+        "public.\"employee_assignments\"": {
+          "rows": 1,
+          "sha256": "015394ced764db3dcfac20e4927e7001515a0e31004133ab3cd7f63b576a9a0b"
+        },
+        "public.\"epi_deliveries\"": {
+          "rows": 24,
+          "sha256": "c0959403b23e328faf98f958659d90763c7b0688e386cbe5f79c925f8f826a47"
+        },
+        "public.\"epi_employee_item_sets\"": {
+          "rows": 1,
+          "sha256": "7dc8d131748c27b287b4c2ebdb662f6fc0ee96fe745838266e97b191ca33b60b"
+        },
+        "public.\"epi_employee_items\"": {
+          "rows": 1,
+          "sha256": "57e86ad798cc00d5ee0381137fb7001aae1c461fb7c778d417d4f5cafa548619"
+        },
+        "public.\"epi_employees\"": {
+          "rows": 36,
+          "sha256": "d760426fa2c4183ef345a136ca608d81eb6184ec0e34b9070acefcdb79044654"
+        },
+        "public.\"epi_item_variants\"": {
+          "rows": 1,
+          "sha256": "9121c3b3ef4ce669e047da5297b4b8d931984c7d0d89e252d7059d6f25cf086c"
+        },
+        "public.\"epi_items\"": {
+          "rows": 12,
+          "sha256": "edeb0fb6d8df3df5d7197e234ce9381b65ddaa591a67227d488bef9857d50016"
+        },
+        "public.\"epi_monthly_acknowledgements\"": {
+          "rows": 1,
+          "sha256": "0d23f3ce9421ec3b0d010da0d662adb67d7c9e75a98055caab8c6d434265ba8a"
+        },
+        "public.\"epi_profession_items\"": {
+          "rows": 1,
+          "sha256": "fb222f20daf20afe8bc5110f2e5bafa150d1a232ccc0298716a5282419a58f7f"
+        },
+        "public.\"epi_professions\"": {
+          "rows": 7,
+          "sha256": "30539811184cb7c2d9ec8053f52fd446c9f41d5e6ee16e53afcbde1876206f08"
+        },
+        "public.\"epi_requests\"": {
+          "rows": 1,
+          "sha256": "c3b2b97c1c317bd4c2bfcf0daeccb010d04cc82b7d5c05380040053ebc4382bb"
+        },
+        "public.\"epi_stock_batches\"": {
+          "rows": 13,
+          "sha256": "72b3d00e5eaea62fa04fd88cb2430d405b138a1032d5f382651857f2caf227f6"
+        },
+        "public.\"epi_stock_transfers\"": {
+          "rows": 1,
+          "sha256": "62ef15cf963ffdeb68b4f8ec6e337552a62e9db07ca38a82536c7cfd42bb664e"
+        },
+        "public.\"inventory\"": {
+          "rows": 1,
+          "sha256": "1d1942871d3bc61ab6771eda09b5e493c06a303d1ef25dbcaf594e16478741d0"
+        },
+        "public.\"items\"": {
+          "rows": 2,
+          "sha256": "4877b74bbee466a4b6a9d67c9a025db45c104175156744eeada70997971fbbcf"
+        },
+        "public.\"movements\"": {
+          "rows": 1,
+          "sha256": "a871ff1ee985e88ab61761d3e8f0a3ae39928f626ace7ca64485f6150e74f18f"
+        },
+        "public.\"operation_reasons\"": {
+          "rows": 15,
+          "sha256": "45aa47d6aba9458a19939784af320720cc88cdcf379c87d80c052af79751d99b"
+        },
+        "public.\"profile_access_audit\"": {
+          "rows": 67,
+          "sha256": "91269bd6c15ea7d3344ae1663f3ef8bd8ea811a551d07897990e65ea4246d7d6"
+        },
+        "public.\"profiles\"": {
+          "rows": 51,
+          "sha256": "b9882269a832f51be3a729cf23205b15631cb4a89ff609afa416b13e13ce6768"
+        },
+        "public.\"rental_admin_details\"": {
+          "rows": 1,
+          "sha256": "7230bab98be20a3e6ed6a66f75dc8b3e9b6c727ab16056b7087a67448ce3aebc"
+        },
+        "public.\"rental_return_requests\"": {
+          "rows": 1,
+          "sha256": "f61f162babf62ca045d2de223385f0addb20c061db2d45f082ea930a808da017"
+        },
+        "public.\"site_operation_receipts\"": {
+          "rows": 1,
+          "sha256": "b6e74d1768dc1d07d1c769e64c98a966206b614c32349aefb57ff82832fee9fc"
+        },
+        "public.\"supply_order_events\"": {
+          "rows": 1,
+          "sha256": "c9f629f9891f8d4bc8ad63938772498056968ab4da0f293721d7cff382aa7151"
+        },
+        "public.\"supply_order_lines\"": {
+          "rows": 1,
+          "sha256": "a1eeb34beaffeb79737bf0ff86f342fd0db0fbe1221cb288bcd1aae0b929e9bd"
+        },
+        "public.\"supply_orders\"": {
+          "rows": 1,
+          "sha256": "5350d4f87061b94ee4314926a787efc4833614cc533ec0aa9aece9835981ff80"
+        },
+        "public.\"teams\"": {
+          "rows": 11,
+          "sha256": "00085105d3f665d3b1b46a109ce26aa46e32ad3e417c33683e69258f7ce11eea"
+        },
+        "public.\"work_locations\"": {
+          "rows": 2,
+          "sha256": "d801b9741860f5dff1a41d07c18ba92b5158d3b6adfb4ed451415f2c66e07572"
+        },
+        "public.\"worksites\"": {
+          "rows": 1,
+          "sha256": "47014e9f440da48ffc2e71348d81326cd6773ed2544171d4de0cfc125266e777"
+        },
+        "private.employee_identity": {
+          "rows": 36,
+          "sha256": "df4bbf043dcf49f5773f39f0455201a63bf8b6e7ee6c36a2e84ca85cce881a08"
+        },
+        "private.employee_portal_accounts": {
+          "rows": 36,
+          "sha256": "c0dcc7c318a4940389ef2ed766ec06c7ff993a412f36a678d8cd51c2cdfe00a9"
+        },
+        "private.employee_identity_audit": {
+          "rows": 48,
+          "sha256": "2cc43c8eb3d984f320b1a330e17a02e53615f2f82f8ef5e360414aac57680bfa"
+        }
+      }
+    }
+  },
+  "graphql_introspection": {
+    "status": 200,
+    "data": {
+      "errors": [
+        {
+          "message": "pg_graphql extension is not enabled."
+        }
+      ]
+    }
+  },
+  "graphql_admin_control": {
+    "status": 200,
+    "rows": null,
+    "found_maria": false,
+    "aso_column_present": false,
+    "errors": [
+      {
+        "message": "pg_graphql extension is not enabled."
+      }
+    ]
+  },
+  "management_registration": [
+    {
+      "profile_active": true,
+      "status": 400,
+      "data": {
+        "code": "22023",
+        "details": null,
+        "hint": null,
+        "message": "dedicated_portal_account_required"
+      }
+    },
+    {
+      "profile_active": false,
+      "status": 400,
+      "data": {
+        "code": "22023",
+        "details": null,
+        "hint": null,
+        "message": "dedicated_portal_account_required"
+      }
+    }
+  ],
+  "delete_test": {
+    "before": {
+      "auth": {
+        "id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "banned_until": null,
+        "deleted_at": null
+      },
+      "account": {
+        "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "registered_at": "2026-09-26T19:58:41.012312+00:00",
+        "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "identity": {
+        "id": "95fa0606-2636-44ca-b0e8-091d5989fa8b",
+        "status": "active",
+        "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "created_at": "2026-09-26T19:58:41.027369+00:00",
+        "revoked_at": null,
+        "revoked_by": null,
+        "employee_id": "5e8464c8-61c9-41f3-ba76-ece095c91599",
+        "activated_at": "2026-09-26T19:58:41.027369+00:00",
+        "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "revocation_reason": null,
+        "verification_method": "in_person"
+      },
+      "audit": [
+        {
+          "id": "74c71000-5c0d-45c6-be05-c27981e80002",
+          "reason": null,
+          "status": "active",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:41.027369+00:00",
+          "event_type": "linked",
+          "employee_id": "5e8464c8-61c9-41f3-ba76-ece095c91599",
+          "identity_id": "95fa0606-2636-44ca-b0e8-091d5989fa8b",
+          "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+          "verification_method": "in_person"
+        }
+      ]
+    },
+    "response": {
+      "status": 400,
+      "data": {
+        "error": "Database error deleting user"
+      }
+    },
+    "after": {
+      "auth": {
+        "id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "banned_until": null,
+        "deleted_at": null
+      },
+      "account": {
+        "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "registered_at": "2026-09-26T19:58:41.012312+00:00",
+        "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "identity": {
+        "id": "95fa0606-2636-44ca-b0e8-091d5989fa8b",
+        "status": "active",
+        "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "created_at": "2026-09-26T19:58:41.027369+00:00",
+        "revoked_at": null,
+        "revoked_by": null,
+        "employee_id": "5e8464c8-61c9-41f3-ba76-ece095c91599",
+        "activated_at": "2026-09-26T19:58:41.027369+00:00",
+        "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+        "revocation_reason": null,
+        "verification_method": "in_person"
+      },
+      "audit": [
+        {
+          "id": "74c71000-5c0d-45c6-be05-c27981e80002",
+          "reason": null,
+          "status": "active",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:41.027369+00:00",
+          "event_type": "linked",
+          "employee_id": "5e8464c8-61c9-41f3-ba76-ece095c91599",
+          "identity_id": "95fa0606-2636-44ca-b0e8-091d5989fa8b",
+          "auth_user_id": "94b2108d-0b23-474c-8cdd-59fa30f2b007",
+          "verification_method": "in_person"
+        }
+      ]
+    },
+    "fks": [
+      {
+        "table": "private.employee_portal_accounts",
+        "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      },
+      {
+        "table": "private.employee_portal_accounts",
+        "definition": "FOREIGN KEY (registered_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      },
+      {
+        "table": "private.employee_identity",
+        "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      },
+      {
+        "table": "private.employee_identity",
+        "definition": "FOREIGN KEY (linked_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      },
+      {
+        "table": "private.employee_identity",
+        "definition": "FOREIGN KEY (revoked_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      },
+      {
+        "table": "private.employee_identity_audit",
+        "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "delete_action": "r"
+      }
+    ]
+  },
+  "inactive_team": {
+    "conditions": {
+      "identity_active": true,
+      "employee_active": true,
+      "team_active": false
+    },
+    "before": {
+      "status": 200,
+      "data": [
+        {
+          "employee_id": "2d268d0c-d0db-42ed-83a7-632bfd074f75",
+          "full_name": "Maria Sintetica",
+          "profession": "Profissao Teste",
+          "team_name": "Equipe A13 muitaylr"
+        }
+      ]
+    },
+    "after": {
+      "status": 200,
+      "data": []
+    },
+    "product_decision": "Pendente: continuar perfil, sem equipe, ou perder acesso. Regra nao alterada."
+  },
+  "partial_revocation": {
+    "before": {
+      "auth": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "banned_until": null,
+        "deleted_at": null
+      },
+      "account": {
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "registered_at": "2026-09-26T19:58:14.065965+00:00",
+        "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "identity": {
+        "id": "a58ee3e4-c572-461c-b90c-304da509522b",
+        "status": "active",
+        "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "created_at": "2026-09-26T19:58:14.080692+00:00",
+        "revoked_at": null,
+        "revoked_by": null,
+        "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+        "activated_at": "2026-09-26T19:58:14.080692+00:00",
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "revocation_reason": null,
+        "verification_method": "in_person"
+      },
+      "audit": [
+        {
+          "id": "53f259ea-386e-4098-b77e-d24e9aad5cfa",
+          "reason": null,
+          "status": "active",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:14.080692+00:00",
+          "event_type": "linked",
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "verification_method": "in_person"
+        }
+      ]
+    },
+    "injected_failure": {
+      "status": 500,
+      "data": {
+        "code": "WORKER_ERROR",
+        "message": "Function exited due to an error (please check logs)"
+      }
+    },
+    "middle": {
+      "auth": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "banned_until": null,
+        "deleted_at": null
+      },
+      "account": {
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "registered_at": "2026-09-26T19:58:14.065965+00:00",
+        "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "identity": {
+        "id": "a58ee3e4-c572-461c-b90c-304da509522b",
+        "status": "active",
+        "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "created_at": "2026-09-26T19:58:14.080692+00:00",
+        "revoked_at": null,
+        "revoked_by": null,
+        "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+        "activated_at": "2026-09-26T19:58:14.080692+00:00",
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "revocation_reason": null,
+        "verification_method": "in_person"
+      },
+      "audit": [
+        {
+          "id": "53f259ea-386e-4098-b77e-d24e9aad5cfa",
+          "reason": null,
+          "status": "active",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:14.080692+00:00",
+          "event_type": "linked",
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "verification_method": "in_person"
+        }
+      ]
+    },
+    "dto_with_old_token": {
+      "status": 200,
+      "data": [
+        {
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "full_name": "Joao Sintetico",
+          "profession": "Profissao Teste",
+          "team_name": "COSEM"
+        }
+      ]
+    },
+    "refresh_intermediate": {
+      "status": 200,
+      "token_issued": true
+    },
+    "dto_with_refreshed_token": {
+      "status": 200,
+      "data": [
+        {
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "full_name": "Joao Sintetico",
+          "profession": "Profissao Teste",
+          "team_name": "COSEM"
+        }
+      ]
+    },
+    "different_reason": {
+      "response": {
+        "status": 200,
+        "data": {
+          "ok": true,
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965"
+        }
+      },
+      "after": {
+        "auth": {
+          "id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "banned_until": "2126-09-02T19:58:43.452128+00:00",
+          "deleted_at": null
+        },
+        "account": {
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "registered_at": "2026-09-26T19:58:14.065965+00:00",
+          "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+        },
+        "identity": {
+          "id": "a58ee3e4-c572-461c-b90c-304da509522b",
+          "status": "revoked",
+          "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "created_at": "2026-09-26T19:58:14.080692+00:00",
+          "revoked_at": "2026-09-26T19:58:43.420173+00:00",
+          "revoked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "activated_at": "2026-09-26T19:58:14.080692+00:00",
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "revocation_reason": "other",
+          "verification_method": "in_person"
+        },
+        "audit": [
+          {
+            "id": "53f259ea-386e-4098-b77e-d24e9aad5cfa",
+            "reason": null,
+            "status": "active",
+            "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+            "event_at": "2026-09-26T19:58:14.080692+00:00",
+            "event_type": "linked",
+            "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+            "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+            "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+            "verification_method": "in_person"
+          },
+          {
+            "id": "e8c67311-e22e-4ae5-a65c-ba75310f9277",
+            "reason": "other",
+            "status": "revoked",
+            "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+            "event_at": "2026-09-26T19:58:43.420173+00:00",
+            "event_type": "revoked",
+            "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+            "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+            "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+            "verification_method": null
+          }
+        ]
+      }
+    },
+    "retry": {
+      "status": 400,
+      "data": {
+        "error": "identity_revocation_denied"
+      }
+    },
+    "final": {
+      "auth": {
+        "id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "banned_until": "2126-09-02T19:58:43.452128+00:00",
+        "deleted_at": null
+      },
+      "account": {
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "registered_at": "2026-09-26T19:58:14.065965+00:00",
+        "registered_by": "6acd8481-b650-4ca9-a401-d07cb53a5388"
+      },
+      "identity": {
+        "id": "a58ee3e4-c572-461c-b90c-304da509522b",
+        "status": "revoked",
+        "linked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "created_at": "2026-09-26T19:58:14.080692+00:00",
+        "revoked_at": "2026-09-26T19:58:43.420173+00:00",
+        "revoked_by": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+        "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+        "activated_at": "2026-09-26T19:58:14.080692+00:00",
+        "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+        "revocation_reason": "other",
+        "verification_method": "in_person"
+      },
+      "audit": [
+        {
+          "id": "53f259ea-386e-4098-b77e-d24e9aad5cfa",
+          "reason": null,
+          "status": "active",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:14.080692+00:00",
+          "event_type": "linked",
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "verification_method": "in_person"
+        },
+        {
+          "id": "e8c67311-e22e-4ae5-a65c-ba75310f9277",
+          "reason": "other",
+          "status": "revoked",
+          "actor_id": "6acd8481-b650-4ca9-a401-d07cb53a5388",
+          "event_at": "2026-09-26T19:58:43.420173+00:00",
+          "event_type": "revoked",
+          "employee_id": "cc3aed60-6554-4cf9-b7a9-fafe688c54a1",
+          "identity_id": "a58ee3e4-c572-461c-b90c-304da509522b",
+          "auth_user_id": "bd807200-87ab-43a4-bf21-29509e249965",
+          "verification_method": null
+        }
+      ]
+    },
+    "refresh_after": {
+      "status": 400,
+      "error_code": "user_banned"
+    },
+    "login_after": {
+      "status": 400,
+      "error_code": "user_banned"
+    }
+  },
+  "finished_at": "2026-09-26T19:58:43.960Z",
+  "passed": false
+}

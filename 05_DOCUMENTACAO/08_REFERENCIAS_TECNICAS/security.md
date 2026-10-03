@@ -16,6 +16,8 @@ entrar; a regra é aplicada ao criar ou trocar a senha.
 
 ## RPCs `SECURITY DEFINER`
 
+A [auditoria do catálogo remoto](../21_AUDITORIA_SECURITY_DEFINER.md) detalha 46 funções. Duas helpers públicas (`employee_work_team` e `stock_team`) não validam titular/papel, e a ativação de `collaborator` exige nova revisão de RLS. Os critérios abaixo são o padrão **alvo para RPCs mutantes**, não uma certificação de todas as funções existentes.
+
 As RPCs operacionais precisam executar movimentações atômicas que abrangem mais
 de uma tabela. Por isso algumas permanecem `SECURITY DEFINER` e o advisor do
 Supabase continuará exibindo o alerta genérico 0029 para elas. Essa exposição é

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:metallo/06_ACESSO_A_DADOS/site_operations_repository.dart';
+import 'package:metallo/01_TELAS/09_OBRAS_E_PEDIDOS/receber_itens.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/epi_repository.dart';
@@ -709,7 +711,14 @@ Future<void> showItemActions(BuildContext context, EpiRepository repo,
   }
 }
 
-Future<bool> showStockForm(
+Future<bool> showStockForm(BuildContext context, EpiRepository repo, Map<String, dynamic> item) async {
+  var registered = false;
+  await showReceiveItems(context, SiteOperationsRepository(repo.client),
+    itemId: item['id'].toString(), kind: 'epi', onSaved: () { registered = true; });
+  return registered;
+}
+
+Future<bool> _legacyStockForm(
     BuildContext context, EpiRepository repo, Map<String, dynamic> item) async {
   final actionLock = UiActionLock.acquire(context, 'showStockForm');
   if (actionLock == null) return false;

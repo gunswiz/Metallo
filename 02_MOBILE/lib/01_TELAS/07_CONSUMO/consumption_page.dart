@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'medidas_consumo.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/dashboard_snapshot.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/dashboard_repository.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/movement_repository.dart';
@@ -28,6 +29,7 @@ class ConsumptionPage extends StatefulWidget {
 
 class _ConsumptionPageState extends State<ConsumptionPage> {
   String? teamId;
+  String? selectedUnit;
   String period = 'month';
 
   @override
@@ -47,8 +49,10 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
               return const Center(child: CircularProgressIndicator());
             }
             final allRows = snap.data!;
+            final unit = effectiveConsumptionUnit(allRows, selectedUnit);
+            final unitRows = filterConsumptionUnit(allRows, unit);
             final overview =
-                consumptionOverview(allRows, teamId, period, DateTime.now());
+                consumptionOverview(unitRows, teamId, period, DateTime.now());
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -58,6 +62,8 @@ class _ConsumptionPageState extends State<ConsumptionPage> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 92),
                 children: [
+                  ConsumptionUnitPicker(rows: allRows, value: unit, onChanged: (value) => setState(() => selectedUnit = value)),
+                  ConsumptionMaterialDonut(rows: overview.currentRows, unit: unit),
                   Row(
                     children: [
                       const Expanded(

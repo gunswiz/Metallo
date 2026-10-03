@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-01T10:34:28.963Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL; antes/depois em instância descartável",
+  "checks": [
+    {
+      "name": "F-4A-01 ANTES: rota v1 grava original sem intenção/contexto/recibo 4A",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01 DEPOIS: gravação v1 negada sem aumentar originais",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01: histórico e consulta v1 também fechados na instância 4A",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01: fluxo extensão 4A permanece funcional",
+      "ok": true
+    },
+    {
+      "name": "Logout atual 2F preservado: encerra uma sessão e mantém outra",
+      "ok": true
+    },
+    {
+      "name": "Logout global 2F preservado: encerra sessões restantes",
+      "ok": true
+    },
+    {
+      "name": "F-4A-02: catálogo real não contém status em employee_portal_accounts",
+      "ok": true
+    },
+    {
+      "name": "F-4A-04: definição, search_path e ACL de is_active_admin já constam do catálogo",
+      "ok": true
+    },
+    {
+      "name": "F-4A-04: administrador global ativo pode consultar Gestão",
+      "ok": true
+    },
+    {
+      "name": "F-4A-04: administrador inativo não consulta Gestão",
+      "ok": true
+    },
+    {
+      "name": "F-4A-04: JWT residual do admin sem sessão ativa não consulta Gestão",
+      "ok": true
+    },
+    {
+      "name": "F-4A-03: ordem de chaves diferente produz mesmo jsonb no driver atual",
+      "ok": true
+    },
+    {
+      "name": "F-4A-10: employee_id de origem é uuid e valor malformado é rejeitado pelo banco",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "before": {
+    "legacy_http_status": 201,
+    "core_events": 1,
+    "intents": 0,
+    "receipts": 0,
+    "management_events": 0
+  },
+  "after": {
+    "legacy_http_status": 404,
+    "core_events": 1,
+    "added_events": 0
+  },
+  "portal_account_columns": [
+    "auth_user_id",
+    "registered_by",
+    "registered_at"
+  ],
+  "catalog_sha256": "8902b1f16bd7a3111a71d43349f939913e9a7cccfbc428ad4c26410c5ea19571",
+  "hash_driver_limit": "Driver PGlite atual comprovado; portabilidade para outro driver e tipos permanece risco futuro"
+}

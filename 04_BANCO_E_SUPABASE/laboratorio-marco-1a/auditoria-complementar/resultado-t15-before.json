@@ -1,0 +1,4610 @@
+{
+  "started_at": "2026-09-26T23:30:41.462Z",
+  "phase": "before",
+  "checks": [
+    {
+      "name": "admin own GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin own GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin own GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin own POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "admin own PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin own DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin other GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin other GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin other GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin other POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "admin other PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin other DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin unassigned GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin unassigned GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin unassigned GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin unassigned POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "admin unassigned PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin unassigned DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer own GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer own GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer own GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer own POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "engineer own PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer own DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer other GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer other GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer other GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer other POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "engineer other POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer other PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer other PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer other DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer other DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer unassigned GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer unassigned GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer unassigned GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer unassigned POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "engineer unassigned POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer unassigned PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer unassigned PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer unassigned DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer unassigned DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader own GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader own GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader own GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader own POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "leader own PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader own DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader other GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader other GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader other GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader other POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "leader other POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader other PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader other PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader other DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader other DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader unassigned GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader unassigned GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader unassigned GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader unassigned POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "leader unassigned POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader unassigned PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader unassigned PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader unassigned DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader unassigned DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator own GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator own GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator own GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator own POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "name": "collaborator own PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator own DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator other GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator other GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator other GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator other POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "collaborator other POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator other PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator other PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator other DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator other DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator unassigned GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator unassigned GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator unassigned GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator unassigned POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "collaborator unassigned POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator unassigned PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator unassigned PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator unassigned DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator unassigned DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal own GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal own GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal own GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal own POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "portal own POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal own PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal own PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal own DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal own DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal other GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal other GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal other GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal other POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "portal other POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal other PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal other PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal other DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal other DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal unassigned GET epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal unassigned GET epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal unassigned GET epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal unassigned POST acknowledgement",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "portal unassigned POST conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal unassigned PATCH acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal unassigned PATCH conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal unassigned DELETE acknowledgement",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal unassigned DELETE conserva onze tabelas e auditorias",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "matrix": [
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "bc4354a8-8cd3-4319-be8c-23a901582fc5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "223eb26d-d8e7-4120-98c3-f00017d95799",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 admin",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:42.341545+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "bc4354a8-8cd3-4319-be8c-23a901582fc5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "own",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "bc4354a8-8cd3-4319-be8c-23a901582fc5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.7417+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "23319a83-40e0-470a-87c2-d2ff4101f35a",
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.7417+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "9d8fdb34-bc3c-4e05-bade-d0e7b9dd3602",
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 admin",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:43.269995+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "23319a83-40e0-470a-87c2-d2ff4101f35a",
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.7417+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "23319a83-40e0-470a-87c2-d2ff4101f35a",
+            "employee_id": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.7417+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.935294+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "d0aba314-6976-4c3e-ad57-cc0a7f7a5840",
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.935294+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "9a46a005-904b-4bab-8884-ce15cced450f",
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 admin",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:44.202064+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "d0aba314-6976-4c3e-ad57-cc0a7f7a5840",
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.935294+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "d0aba314-6976-4c3e-ad57-cc0a7f7a5840",
+            "employee_id": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado admin",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:41.935294+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "7c547d0a-5e16-4bc7-8228-991771d1d12b",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:42.863506+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "be54e9ba-24f7-4235-b0cc-34f435b59a30",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 engineer",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:45.133372+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "7c547d0a-5e16-4bc7-8228-991771d1d12b",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado engineer",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:42.863506+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "7c547d0a-5e16-4bc7-8228-991771d1d12b",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado engineer",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:42.863506+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "94624ffe-f6a9-485b-8933-50820d8fe9a5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:45.647353+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "7e1abfd0-9eb0-470f-abd1-f7c0ba897982",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 leader",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:49.095533+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "94624ffe-f6a9-485b-8933-50820d8fe9a5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado leader",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:45.647353+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "94624ffe-f6a9-485b-8933-50820d8fe9a5",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado leader",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:45.647353+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "item_id": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+            "required_quantity": 1
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "updated_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "updated_at": "2026-09-26T23:30:41.546851+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "2bbfc31e-a263-4829-a290-c4f0f6d888dc",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Fixture T15",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:49.61515+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 201,
+        "data": [
+          {
+            "id": "b9a405c8-2b70-4663-a797-9189e1d2596f",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-02-01",
+            "signed_name": "T15 collaborator",
+            "signed_at": null,
+            "confirmed_by": null,
+            "created_at": "2026-09-26T23:30:53.076486+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "2bbfc31e-a263-4829-a290-c4f0f6d888dc",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado collaborator",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:49.61515+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": true,
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "2bbfc31e-a263-4829-a290-c4f0f6d888dc",
+            "employee_id": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+            "reference_month": "2026-01-01",
+            "signed_name": "Alterado collaborator",
+            "signed_at": null,
+            "confirmed_by": "53d11388-66aa-41df-a1b9-a008629730f3",
+            "created_at": "2026-09-26T23:30:49.61515+00:00"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_items",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_employee_item_sets",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "GET",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "POST",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "new row violates row-level security policy for table \"epi_monthly_acknowledgements\""
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "PATCH",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "DELETE",
+      "table": "epi_monthly_acknowledgements",
+      "permitted": false,
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    }
+  ],
+  "fingerprints": [
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "f019671ea7112bc1192076ead7e4a1f9107006eafb9cd7ede4ac4715cdfd1e93"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "a2bfa0d56f7054b4813cdce438088f8537e8a4e8684b11b1f6e069379e07f28a"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "57e8b1793fa933e4ddafcdc442b356d27aaf91c89736894936b111a2ada93f3c"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "3d666857395dbc20545a8d4bcfe3628e2c932c53df750cf9553ae416a4eed548"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6ac46f46094752e578db4f6d43a15b919df4def469d8d0bf9571734b9c29ffd1"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "da7732d86b03bef32e87ef9651148dea2e85ceea78940b788897a0c9175d3804"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "7d0a4f8bb7e7887ec01a9893188aaad6640898eabca14dddb0802cc2549dcbde"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "6cace44825e1c38995c87e6d5c9c138ad2e5b60c3be8ae08caaca592b95a1b07"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "POST",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "PATCH",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "method": "DELETE",
+      "before": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      },
+      "after": {
+        "public.epi_employee_items": {
+          "count": 11,
+          "sha256": "a9d68e65bd468f47f959f65af0962df27248a8f2b437efbc14d6b16bc24694f5"
+        },
+        "public.epi_employee_item_sets": {
+          "count": 11,
+          "sha256": "f30e1034b884706f6ed14d4c6953e9bcf6556c833087da46f140a3b35b7338b7"
+        },
+        "public.epi_monthly_acknowledgements": {
+          "count": 11,
+          "sha256": "8ccb1c91ece1b91361cba10ef4c966d6163d5c17bb74c555d68ff726b65944f8"
+        },
+        "public.epi_deliveries": {
+          "count": 46,
+          "sha256": "e636b604c0ad70ea9ee6319c38c91743e7285c8b6d5dc5a9123255db4c3454ca"
+        },
+        "public.epi_stock_batches": {
+          "count": 30,
+          "sha256": "b4bf1cb29d17ac707899799ccd85679c884aec3288ca03274c0548263bc26b0e"
+        },
+        "public.epi_requests": {
+          "count": 10,
+          "sha256": "f69f3db58fca0e8a552912c0f72a4dca3c7eed08fb48ede42a345d8399cb43e4"
+        },
+        "private.employee_identity": {
+          "count": 64,
+          "sha256": "bcf53330e52cc609b9db3c60ad02d295c6336214e0b9102082e37640ca5c1590"
+        },
+        "private.employee_identity_audit": {
+          "count": 90,
+          "sha256": "9dc7c12fd17e3ce85d0f72f1d01d372fb8e41a6eb6cfff86da4f1f64474ef0ec"
+        },
+        "private.employee_portal_accounts": {
+          "count": 64,
+          "sha256": "21d776ab04e1b192b154a1dcb47d3fa196b27c4035219e2569922a9d517baaef"
+        },
+        "public.profile_access_audit": {
+          "count": 187,
+          "sha256": "e9f05356d65ae212b51cf50dd63d8e99355603df1719d4c050fcdef3bdc23c53"
+        },
+        "public.site_operation_receipts": {
+          "count": 7,
+          "sha256": "1ad58c0d1b794440bb4d78fe1a787152336cbec34278785dd5bb8c846cf34ac8"
+        }
+      }
+    }
+  ],
+  "router": [],
+  "actors": [
+    {
+      "key": "admin",
+      "id": "53d11388-66aa-41df-a1b9-a008629730f3",
+      "expected": [
+        "own",
+        "other",
+        "unassigned"
+      ]
+    },
+    {
+      "key": "engineer",
+      "id": "1e6e2e94-03cd-4e1d-be9f-3ba1fd023a22",
+      "expected": [
+        "own"
+      ]
+    },
+    {
+      "key": "leader",
+      "id": "b4576e8b-1f4b-4c95-b5b9-7cc3fbcaab4c",
+      "expected": [
+        "own"
+      ]
+    },
+    {
+      "key": "collaborator",
+      "id": "443c3328-b5ee-4597-ae4f-e6556887036b",
+      "expected": [
+        "own"
+      ]
+    },
+    {
+      "key": "portal",
+      "expected": []
+    }
+  ],
+  "fixtures": {
+    "employees": {
+      "own": "89ddba9f-85e6-4940-887f-32acb3b61a7c",
+      "other": "c506d5c2-2c7c-4a86-b80a-e1289386206d",
+      "unassigned": "f54766ff-a7de-47c5-8d86-c2f35acf4ca3"
+    },
+    "item": "db379fe8-137f-4580-bdd2-6c25d77bf2b6",
+    "batch": "30a822ac-6952-4dfa-aa36-0deaa98be3c6",
+    "delivery": "a2ab574a-9caf-4ebf-b34b-4f0a1ef498ef"
+  },
+  "finished_at": "2026-09-26T23:31:01.579Z",
+  "passed": true
+}

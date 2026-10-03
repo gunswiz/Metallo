@@ -1,0 +1,281 @@
+{
+  "at": "2026-09-29T09:18:27.086Z",
+  "scope": "Marco 3B local sintético",
+  "checks": [
+    {
+      "name": "dono postgres e SECURITY DEFINER",
+      "ok": true
+    },
+    {
+      "name": "search_path vazio",
+      "ok": true
+    },
+    {
+      "name": "anon negado, authenticated permitido",
+      "ok": true
+    },
+    {
+      "name": "RPC sem argumentos e sem overload",
+      "ok": true
+    },
+    {
+      "name": "RLS preservado nas tabelas EPI",
+      "ok": true
+    },
+    {
+      "name": "João recebe EPI atual e histórico próprios",
+      "ok": true
+    },
+    {
+      "name": "Maria recebe somente EPI próprio",
+      "ok": true
+    },
+    {
+      "name": "João não recebe Maria",
+      "ok": true
+    },
+    {
+      "name": "Maria não recebe João",
+      "ok": true
+    },
+    {
+      "name": "conjunto ou uniforme não é EPI entregue",
+      "ok": true
+    },
+    {
+      "name": "CA vem da entrega, não do catálogo atual",
+      "ok": true
+    },
+    {
+      "name": "DTO sem IDs e campos administrativos",
+      "ok": true
+    },
+    {
+      "name": "anon não executa RPC",
+      "ok": true
+    },
+    {
+      "name": "admin Gestão não recebe EPI pessoal",
+      "ok": true
+    },
+    {
+      "name": "João sem leitura operacional direta em epi_deliveries",
+      "ok": true
+    },
+    {
+      "name": "João sem leitura operacional direta em epi_items",
+      "ok": true
+    },
+    {
+      "name": "João sem leitura operacional direta em epi_employee_items",
+      "ok": true
+    },
+    {
+      "name": "João sem leitura operacional direta em epi_monthly_acknowledgements",
+      "ok": true
+    },
+    {
+      "name": "Maria sem leitura operacional direta em epi_deliveries",
+      "ok": true
+    },
+    {
+      "name": "Maria sem leitura operacional direta em epi_items",
+      "ok": true
+    },
+    {
+      "name": "Maria sem leitura operacional direta em epi_employee_items",
+      "ok": true
+    },
+    {
+      "name": "Maria sem leitura operacional direta em epi_monthly_acknowledgements",
+      "ok": true
+    },
+    {
+      "name": "argumento extra employee_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring employee_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "argumento extra user_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring user_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "argumento extra cpf não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring cpf não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "argumento extra team_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring team_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "argumento extra item_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring item_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "argumento extra delivery_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "querystring delivery_id não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "ID de entrega em URL não revela Maria",
+      "ok": true
+    },
+    {
+      "name": "seleção de colunas não amplia DTO",
+      "ok": true
+    },
+    {
+      "name": "funcionário inativo sem EPI pessoal",
+      "ok": true
+    },
+    {
+      "name": "funcionário ativo sem entrega recebe lista vazia",
+      "ok": true
+    },
+    {
+      "name": "conta previamente revogada não faz login",
+      "ok": true
+    },
+    {
+      "name": "sem equipe mantém EPIs próprios",
+      "ok": true
+    },
+    {
+      "name": "obra existente antes de encerrar vínculo",
+      "ok": true
+    },
+    {
+      "name": "sem obra real mantém EPIs próprios",
+      "ok": true
+    },
+    {
+      "name": "fechamento parcial aceito pela Gestão sintética",
+      "ok": true
+    },
+    {
+      "name": "fechamento parcial devolve 2 ativos e 1 encerrado",
+      "ok": true
+    },
+    {
+      "name": "parcial preserva data e CA sem duplicar a quantidade",
+      "ok": true
+    },
+    {
+      "name": "JWT residual após revogação não retorna EPIs",
+      "ok": true
+    },
+    {
+      "name": "novo login após revogação não recupera EPIs",
+      "ok": true
+    },
+    {
+      "name": "refresh após revogação não recupera EPIs",
+      "ok": true
+    }
+  ],
+  "http_samples": [
+    {
+      "case": "leitura operacional direta",
+      "actor": "João",
+      "table": "epi_deliveries",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "João",
+      "table": "epi_items",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "João",
+      "table": "epi_employee_items",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "João",
+      "table": "epi_monthly_acknowledgements",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "Maria",
+      "table": "epi_deliveries",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "Maria",
+      "table": "epi_items",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "Maria",
+      "table": "epi_employee_items",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "leitura operacional direta",
+      "actor": "Maria",
+      "table": "epi_monthly_acknowledgements",
+      "status": 200,
+      "rows": 0
+    },
+    {
+      "case": "fechamento parcial",
+      "close_status": 200,
+      "personal_status": 200,
+      "active_quantity": 2,
+      "closed_quantity": 1,
+      "total_quantity": 3
+    },
+    {
+      "case": "João/Maria pessoais",
+      "joao_status": 200,
+      "joao_rows": 2,
+      "maria_status": 200,
+      "maria_rows": 1,
+      "restricted_delivery_reference_present": true
+    }
+  ],
+  "catalog": {
+    "owner": "postgres",
+    "security_definer": true,
+    "empty_search_path": true,
+    "anon_execute": false,
+    "authenticated_execute": true,
+    "signatures": "1",
+    "zero_arguments": true
+  }
+}

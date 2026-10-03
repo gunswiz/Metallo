@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/epi_repository.dart';
 import 'package:metallo/02_COMPONENTES/ui_action_lock.dart';
@@ -16,7 +17,8 @@ Future<void> showDeliveryStart(
     try {
       final values =
           await Future.wait([repo.fetchEpiEmployees(), repo.fetchEpiStock()]);
-      employees = values[0];
+      if (!context.mounted) return;
+      employees = values[0].where((person) => UserAccessScope.of(context).canAt('epi:write', (person['current_team_id'] ?? person['team_id']).toString())).toList();
       stock = availableEpiStockBatches(values[1]);
     } catch (e) {
       if (context.mounted) {
@@ -30,6 +32,7 @@ Future<void> showDeliveryStart(
     String search = '';
     final selected = <String, int>{};
     String reason = 'initial';
+    DateTime occurred = DateTime.now();
     String? error;
     bool saving = false;
     await showModalBottomSheet<void>(
@@ -78,7 +81,7 @@ Future<void> showDeliveryStart(
                                         '${e['full_name']} • ${e['profession']}',
                                         overflow: TextOverflow.ellipsis)))
                                 .toList(),
-                            onChanged: (v) => setLocal(() => employeeId = v),
+                            onChanged: (v) => setLocal(() { employeeId = v; selected.clear(); }),
                           ),
                         const SizedBox(height: 10),
                         if (stock.isNotEmpty) ...[
@@ -135,6 +138,7 @@ Future<void> showDeliveryStart(
                                         variant.isNotEmpty &&
                                         variant ==
                                             employee?['shoe_size']?.toString();
+                                    if (batch['worksite_id'] != null && batch['worksite_id'] != employee?['current_worksite_id']) return const SizedBox.shrink();
                                     return Card(
                                       color: epiCardColor,
                                       child: ListTile(
@@ -145,6 +149,7 @@ Future<void> showDeliveryStart(
                                         title: Text(
                                             '${item?['name'] ?? 'Item'}${variant == null || variant.isEmpty ? '' : isBootEpiItem(item) ? ' • Nº $variant' : ' • $variant'}'),
                                         subtitle: Text(
+                                            'Local: ' + ((batch['worksites'] as Map?)?['name']?.toString() ?? 'COSEM / central') + ' · C.A. ' + (batch['ca_number']?.toString() ?? 'não informado') + '\n' +
                                             '${epiKindLabel(item?['item_kind']?.toString())} • $available ${item?['unit'] ?? 'un'} disponíveis${preferredBoot ? '\nTamanho cadastrado do funcionário' : ''}'),
                                         isThreeLine: preferredBoot,
                                         trailing: Row(
@@ -204,6 +209,14 @@ Future<void> showDeliveryStart(
                             ],
                             onChanged: (v) =>
                                 setLocal(() => reason = v ?? 'initial')),
+                        OutlinedButton.icon(icon: const Icon(Icons.schedule),
+                          label: Text('Quando aconteceu: ' + occurred.toString().substring(0,16)),
+                          onPressed: () async {
+                            final date = await showDatePicker(context: context, initialDate: occurred, firstDate: DateTime(2000), lastDate: DateTime.now());
+                            if (!context.mounted || date == null) return;
+                            final time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(occurred));
+                            if(time != null) setLocal(() => occurred = DateTime(date.year,date.month,date.day,time.hour,time.minute));
+                          }),
                         if (error != null)
                           Padding(
                               padding: const EdgeInsets.only(top: 10),
@@ -225,10 +238,11 @@ Future<void> showDeliveryStart(
                                   try {
                                     final lines =
                                         buildEpiDeliveryLines(selected, stock);
-                                    await repo.registerEpiDeliveryBatch(
+                                    final result = await repo.registerEpiDeliveryBatch(
                                         employeeId: employeeId!,
                                         lines: lines,
-                                        reason: reason);
+                                        reason: reason, occurredAt: occurred);
+                                    if(context.mounted) showEpiMessage(context, result);
                                     if (context.mounted) Navigator.pop(context);
                                     onSaved();
                                   } catch (_) {

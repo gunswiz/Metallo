@@ -1,0 +1,734 @@
+{
+  "at": "2026-10-01T08:16:18.171346+00:00",
+  "scope": "somente estrutura local; zero linhas de pessoas/sessoes/credenciais",
+  "tables": [
+    {
+      "acl": [
+        "postgres=ar*wdDxtm/supabase_auth_admin",
+        "supabase_auth_admin=arwdDxtm/supabase_auth_admin",
+        "dashboard_user=arwdDxtm/supabase_auth_admin"
+      ],
+      "rls": true,
+      "owner": "supabase_auth_admin",
+      "table": "sessions",
+      "schema": "auth",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "factor_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "aal",
+          "type": "auth.aal_level",
+          "not_null": false
+        },
+        {
+          "name": "not_after",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "refreshed_at",
+          "type": "timestamp without time zone",
+          "not_null": false
+        },
+        {
+          "name": "user_agent",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "ip",
+          "type": "inet",
+          "not_null": false
+        },
+        {
+          "name": "tag",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "oauth_client_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "refresh_token_hmac_key",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "refresh_token_counter",
+          "type": "bigint",
+          "not_null": false
+        },
+        {
+          "name": "scopes",
+          "type": "text",
+          "not_null": false
+        }
+      ],
+      "policies": null,
+      "triggers": null,
+      "force_rls": false,
+      "constraints": [
+        "FOREIGN KEY (oauth_client_id) REFERENCES auth.oauth_clients(id) ON DELETE CASCADE",
+        "PRIMARY KEY (id)",
+        "CHECK ((char_length(scopes) <= 4096))",
+        "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "employee_identity",
+      "schema": "private",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "auth_user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "verification_method",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "linked_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "activated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "revoked_by",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "revocation_reason",
+          "type": "text",
+          "not_null": false
+        }
+      ],
+      "policies": null,
+      "triggers": [
+        "CREATE TRIGGER employee_identity_guard_update BEFORE DELETE OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.guard_employee_identity_history()",
+        "CREATE TRIGGER employee_identity_audit_event AFTER INSERT OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.audit_employee_identity()"
+      ],
+      "force_rls": false,
+      "constraints": [
+        "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "UNIQUE (auth_user_id)",
+        "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT",
+        "FOREIGN KEY (linked_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "PRIMARY KEY (id)",
+        "CHECK ((((status = 'active'::text) AND (revoked_at IS NULL) AND (revoked_by IS NULL) AND (revocation_reason IS NULL)) OR ((status = 'revoked'::text) AND (revoked_at IS NOT NULL) AND (revoked_by IS NOT NULL) AND (revocation_reason IS NOT NULL))))",
+        "CHECK ((revocation_reason = ANY (ARRAY['employment_ended'::text, 'wrong_association'::text, 'account_replaced'::text, 'other'::text])))",
+        "FOREIGN KEY (revoked_by) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "CHECK ((status = ANY (ARRAY['active'::text, 'revoked'::text])))",
+        "CHECK ((verification_method = ANY (ARRAY['in_person'::text, 'hr_record'::text])))"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "employee_identity_audit",
+      "schema": "private",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "identity_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "auth_user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "event_type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "event_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "verification_method",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "not_null": false
+        }
+      ],
+      "policies": null,
+      "triggers": [
+        "CREATE TRIGGER employee_identity_audit_immutable BEFORE DELETE OR UPDATE ON private.employee_identity_audit FOR EACH ROW EXECUTE FUNCTION private.prevent_employee_identity_audit_change()"
+      ],
+      "force_rls": false,
+      "constraints": [
+        "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "CHECK ((((event_type = 'linked'::text) AND (status = 'active'::text) AND (verification_method IS NOT NULL) AND (reason IS NULL)) OR ((event_type = 'revoked'::text) AND (status = 'revoked'::text) AND (verification_method IS NULL) AND (reason IS NOT NULL))))",
+        "CHECK ((event_type = ANY (ARRAY['linked'::text, 'revoked'::text])))",
+        "FOREIGN KEY (identity_id) REFERENCES private.employee_identity(id) ON DELETE RESTRICT",
+        "PRIMARY KEY (id)",
+        "CHECK ((status = ANY (ARRAY['active'::text, 'revoked'::text])))"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "employee_portal_accounts",
+      "schema": "private",
+      "columns": [
+        {
+          "name": "auth_user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "registered_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "registered_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "policies": null,
+      "triggers": null,
+      "force_rls": false,
+      "constraints": [
+        "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT",
+        "PRIMARY KEY (auth_user_id)",
+        "FOREIGN KEY (registered_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres",
+        "anon=arwdDxtm/postgres",
+        "authenticated=arwdDxtm/postgres",
+        "service_role=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "epi_employees",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "full_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "registration_code",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "profession",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "team_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "shirt_size",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "pants_size",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "shoe_size",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "aso_exam_date",
+          "type": "date",
+          "not_null": false
+        },
+        {
+          "name": "aso_expiry_date",
+          "type": "date",
+          "not_null": false
+        }
+      ],
+      "policies": [
+        {
+          "cmd": "ALL",
+          "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "epi_employees",
+          "permissive": "PERMISSIVE",
+          "policyname": "epi_employees_admin_write",
+          "schemaname": "public",
+          "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+        },
+        {
+          "cmd": "SELECT",
+          "qual": "(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "epi_employees",
+          "permissive": "PERMISSIVE",
+          "policyname": "epi_employees_read",
+          "schemaname": "public",
+          "with_check": null
+        }
+      ],
+      "triggers": null,
+      "force_rls": false,
+      "constraints": [
+        "CHECK (((aso_expiry_date IS NULL) OR ((aso_exam_date IS NOT NULL) AND (aso_expiry_date >= aso_exam_date))))",
+        "FOREIGN KEY (created_by) REFERENCES auth.users(id)",
+        "CHECK ((length(TRIM(BOTH FROM full_name)) >= 3))",
+        "PRIMARY KEY (id)",
+        "FOREIGN KEY (team_id) REFERENCES teams(id)"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres",
+        "service_role=arwdDxtm/postgres",
+        "authenticated=arwd/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "profiles",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "full_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "role",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "team_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "operation_permissions",
+          "type": "text[]",
+          "not_null": false
+        },
+        {
+          "name": "operation_team_ids",
+          "type": "uuid[]",
+          "not_null": false
+        }
+      ],
+      "policies": [
+        {
+          "cmd": "INSERT",
+          "qual": null,
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "profiles",
+          "permissive": "PERMISSIVE",
+          "policyname": "profiles_admin_insert",
+          "schemaname": "public",
+          "with_check": "private.is_admin()"
+        },
+        {
+          "cmd": "UPDATE",
+          "qual": "private.is_admin()",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "profiles",
+          "permissive": "PERMISSIVE",
+          "policyname": "profiles_admin_update",
+          "schemaname": "public",
+          "with_check": "private.is_admin()"
+        },
+        {
+          "cmd": "DELETE",
+          "qual": "private.is_admin()",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "profiles",
+          "permissive": "PERMISSIVE",
+          "policyname": "profiles_admin_delete",
+          "schemaname": "public",
+          "with_check": null
+        },
+        {
+          "cmd": "SELECT",
+          "qual": "((id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_active_user() AS is_active_user))",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "profiles",
+          "permissive": "PERMISSIVE",
+          "policyname": "profiles_read",
+          "schemaname": "public",
+          "with_check": null
+        }
+      ],
+      "triggers": [
+        "CREATE TRIGGER trg_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+        "CREATE TRIGGER validate_profile_access AFTER INSERT OR UPDATE OF role, active, team_id, operation_permissions, operation_team_ids ON public.profiles FOR EACH ROW EXECUTE FUNCTION validate_profile_access()",
+        "CREATE TRIGGER prevent_portal_management_activation BEFORE INSERT OR UPDATE OF active ON public.profiles FOR EACH ROW EXECUTE FUNCTION private.prevent_portal_management_activation()"
+      ],
+      "force_rls": false,
+      "constraints": [
+        "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE",
+        "CHECK (((operation_permissions IS NULL) OR ((operation_permissions <@ ARRAY['materials:write'::text, 'consumption:write'::text, 'equipment:write'::text, 'epi:write'::text, 'requests:write'::text, 'rentals:write'::text]) AND (array_position(operation_permissions, NULL::text) IS NULL) AND (cardinality(operation_permissions) <= 6))))",
+        "CHECK (((operation_team_ids IS NULL) OR ((array_position(operation_team_ids, NULL::uuid) IS NULL) AND (cardinality(operation_team_ids) <= 100))))",
+        "PRIMARY KEY (id)",
+        "CHECK ((role = ANY (ARRAY['admin'::text, 'engineer'::text, 'leader'::text, 'collaborator'::text])))",
+        "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL"
+      ]
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres",
+        "service_role=arwdDxtm/postgres",
+        "authenticated=arwd/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "teams",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "location_type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "worksite_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "policies": [
+        {
+          "cmd": "SELECT",
+          "qual": "private.is_active_user()",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "teams",
+          "permissive": "PERMISSIVE",
+          "policyname": "teams_read",
+          "schemaname": "public",
+          "with_check": null
+        },
+        {
+          "cmd": "INSERT",
+          "qual": null,
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "teams",
+          "permissive": "PERMISSIVE",
+          "policyname": "teams_admin_insert",
+          "schemaname": "public",
+          "with_check": "private.is_admin()"
+        },
+        {
+          "cmd": "UPDATE",
+          "qual": "private.is_admin()",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "teams",
+          "permissive": "PERMISSIVE",
+          "policyname": "teams_admin_update",
+          "schemaname": "public",
+          "with_check": "private.is_admin()"
+        },
+        {
+          "cmd": "DELETE",
+          "qual": "private.is_admin()",
+          "roles": [
+            "authenticated"
+          ],
+          "tablename": "teams",
+          "permissive": "PERMISSIVE",
+          "policyname": "teams_admin_delete",
+          "schemaname": "public",
+          "with_check": null
+        }
+      ],
+      "triggers": [
+        "CREATE TRIGGER trg_teams_updated_at BEFORE UPDATE ON public.teams FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+      ],
+      "force_rls": false,
+      "constraints": [
+        "CHECK ((location_type = ANY (ARRAY['central'::text, 'field'::text])))",
+        "UNIQUE (name)",
+        "PRIMARY KEY (id)",
+        "FOREIGN KEY (worksite_id) REFERENCES worksites(id)"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "acl": [
+        "postgres=X/postgres",
+        "authenticated=X/postgres",
+        "service_role=X/postgres"
+      ],
+      "owner": "postgres",
+      "settings": [
+        "search_path=public, pg_temp"
+      ],
+      "signature": "is_active_admin()",
+      "definition": "CREATE OR REPLACE FUNCTION public.is_active_admin()\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\n  select exists (\n    select 1 from public.profiles p\n    where p.id = auth.uid() and p.active = true and p.role = 'admin'\n  );\n$function$\n",
+      "security_definer": false
+    },
+    {
+      "acl": [
+        "postgres=X/postgres",
+        "service_role=X/postgres"
+      ],
+      "owner": "postgres",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "lab_active_session_2e(uuid,uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION public.lab_active_session_2e(p_session_id uuid, p_auth_user_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists (\n    select 1 from auth.sessions s\n    join auth.users u on u.id = s.user_id\n    where s.id = p_session_id\n      and s.user_id = p_auth_user_id\n      and u.deleted_at is null\n      and (u.banned_until is null or u.banned_until <= now())\n  );\n$function$\n",
+      "security_definer": true
+    },
+    {
+      "acl": [
+        "postgres=X/postgres",
+        "service_role=X/postgres"
+      ],
+      "owner": "postgres",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "lab_authz_source_2f(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION public.lab_authz_source_2f(p_auth_user_id uuid)\n RETURNS jsonb\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select jsonb_build_object(\n    'auth_user_id', i.auth_user_id,\n    'employee_id', i.employee_id,\n    'state', upper(i.status),\n    'events', coalesce((\n      select jsonb_agg(jsonb_build_object(\n        'event_id', x.id, 'version', x.version,\n        'auth_user_id', x.auth_user_id, 'employee_id', x.employee_id,\n        'state', upper(x.status)) order by x.version)\n      from (\n        select a.id, a.auth_user_id, a.employee_id, a.status,\n          row_number() over (order by case a.event_type when 'linked' then 0 else 1 end, a.event_at, a.id)::integer as version\n        from private.employee_identity_audit a\n        where a.identity_id = i.id\n      ) x\n    ), '[]'::jsonb)\n  )\n  from private.employee_identity i where i.auth_user_id = p_auth_user_id;\n$function$\n",
+      "security_definer": true
+    },
+    {
+      "acl": [
+        "postgres=X/postgres",
+        "service_role=X/postgres"
+      ],
+      "owner": "postgres",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "lab_sessions_before_cutoff_2f(uuid,bigint)",
+      "definition": "CREATE OR REPLACE FUNCTION public.lab_sessions_before_cutoff_2f(p_auth_user_id uuid, p_cutoff_sec bigint)\n RETURNS bigint\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select count(*) from auth.sessions s\n  where s.user_id = p_auth_user_id\n    and s.created_at < to_timestamp(p_cutoff_sec + 1);\n$function$\n",
+      "security_definer": true
+    },
+    {
+      "acl": [
+        "postgres=X/postgres",
+        "service_role=X/postgres",
+        "authenticated=X/postgres"
+      ],
+      "owner": "postgres",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "signature": "my_employee_profile()",
+      "definition": "CREATE OR REPLACE FUNCTION public.my_employee_profile()\n RETURNS TABLE(employee_id uuid, full_name text, profession text, team_name text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select e.id, e.full_name, e.profession, t.name\n  from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id = i.auth_user_id\n    join public.profiles p on p.id = i.auth_user_id and not p.active\n    join public.epi_employees e on e.id = i.employee_id and e.active\n    left join public.teams t on t.id = e.team_id and t.active\n  where i.auth_user_id = (select auth.uid()) and i.status = 'active';\n$function$\n",
+      "security_definer": true
+    }
+  ],
+  "schema_acl": {
+    "auth": [
+      "supabase_admin=UC/supabase_admin",
+      "anon=U/supabase_admin",
+      "authenticated=U/supabase_admin",
+      "service_role=U/supabase_admin",
+      "supabase_auth_admin=UC/supabase_admin",
+      "dashboard_user=UC/supabase_admin",
+      "postgres=U/supabase_admin"
+    ],
+    "private": [
+      "postgres=UC/postgres",
+      "authenticated=U/postgres",
+      "supabase_auth_admin=U/postgres"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+MARCO 3G — catálogo estrutural do PostgreSQL local; somente metadados, sem linhas de funcionários ou segredos
+SIMULAÇÃO SEM VALOR OFICIAL
+proname|pronargs|prosecdef|owner|acl
+admin_personal_items_3g|4|t|postgres|postgres=X/postgres,authenticated=X/postgres
+close_personal_item_3g|6|t|postgres|postgres=X/postgres,authenticated=X/postgres
+confirm_personal_item_3g|2|t|postgres|postgres=X/postgres,authenticated=X/postgres
+decide_personal_item_3g|4|t|postgres|postgres=X/postgres,authenticated=X/postgres
+deliver_personal_item_3g|10|t|postgres|postgres=X/postgres,authenticated=X/postgres
+my_personal_items_3g|0|t|postgres|postgres=X/postgres,authenticated=X/postgres
+report_personal_item_3g|5|t|postgres|postgres=X/postgres,authenticated=X/postgres
+(7 rows)
+schemaname|tablename|policyname|cmd|qual
+public|epi_employees|epi_employees_admin_write|ALL|(EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))
+public|epi_employees|epi_employees_read|SELECT|(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))
+public|epi_items|epi_items_admin_write|ALL|(EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))
+public|epi_items|epi_items_read|SELECT|(( SELECT can_operate('epi:write'::text) AS can_operate) OR ( SELECT can_operate('requests:write'::text) AS can_operate))
+public|epi_stock_batches|epi_stock_admin_write|ALL|(EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))
+public|epi_stock_batches|epi_stock_read|SELECT|(can_operate('epi:write'::text) AND ((worksite_id IS NULL) OR (EXISTS ( SELECT 1
+   FROM teams t
+  WHERE ((t.worksite_id = epi_stock_batches.worksite_id) AND can_operate('epi:write'::text, t.id))))))
+(6 rows)
+conname|pg_get_constraintdef
+epi_stock_batches_quantity_check|CHECK ((quantity >= 0))
+(1 row)
+auth_private_read|anon_private_read|anon_deliver|auth_deliver
+f|f|f|t
+(1 row)

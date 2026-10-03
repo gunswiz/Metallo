@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'medidas_consumo.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/componentes_consumo.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/graficos_consumo.dart';
@@ -17,12 +18,15 @@ class ConsumptionTeamsComparePage extends StatefulWidget {
 class _ConsumptionTeamsComparePageState
     extends State<ConsumptionTeamsComparePage> {
   String period = 'month';
+  String? selectedUnit;
   @override
   Widget build(BuildContext context) {
+    final unit = effectiveConsumptionUnit(widget.rows, selectedUnit);
+    final unitRows = filterConsumptionUnit(widget.rows, unit);
     final now = DateTime.now();
     final start = consumptionPeriodStart(now, period),
         end = consumptionPeriodEnd(now, period);
-    final current = filterConsumption(widget.rows, null, start, end);
+    final current = filterConsumption(unitRows, null, start, end);
     final teamTotals = consumptionTotalsByTeam(current, widget.teams);
     final ranking = groupConsumedMaterials(current, const []);
     return Scaffold(
@@ -30,6 +34,7 @@ class _ConsumptionTeamsComparePageState
       body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
           children: [
+            ConsumptionUnitPicker(rows: widget.rows, value: unit, onChanged: (value) => setState(() => selectedUnit = value)),
             DropdownButtonFormField<String>(
                 initialValue: period,
                 decoration: const InputDecoration(

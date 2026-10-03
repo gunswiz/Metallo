@@ -1,0 +1,81 @@
+▲ Next.js 16.3.4 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 43ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.6s
+  Running TypeScript ...
+  Finished TypeScript in 4.0s ...
+  Collecting page data using 15 workers ...
+(node:21132) ExperimentalWarning: The supports Web Crypto API method is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21132) ExperimentalWarning: The ML-DSA-44 Web Crypto API algorithm is an experimental feature and might change at any time
+  Generating static pages using 15 workers (0/41) ...
+  Generating static pages using 15 workers (10/41) 
+  Generating static pages using 15 workers (20/41) 
+  Generating static pages using 15 workers (30/41) 
+✓ Generating static pages using 15 workers (41/41) in 346ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /acesso-pendente
+├ ƒ /ajuda
+├ ƒ /almoxarifado
+├ ƒ /api/laboratorio/assinatura-epi
+├ ƒ /api/ponto-lab/[...path]
+├ ƒ /atualizar-senha
+├ ƒ /auth/callback
+├ ƒ /colaborador/[[...screen]]
+├ ƒ /comunicados
+├ ƒ /configuracoes
+├ ƒ /consumo
+├ ƒ /dashboard
+├ ƒ /epis
+├ ƒ /epis/[id]
+├ ƒ /epis/entrega
+├ ƒ /epis/entrega-em-lote
+├ ƒ /epis/novo
+├ ƒ /epis/solicitacoes
+├ ƒ /equipamentos
+├ ƒ /equipamentos/[id]
+├ ƒ /equipamentos/novo
+├ ƒ /equipes
+├ ƒ /equipes/[id]
+├ ƒ /equipes/nova
+├ ƒ /ferramentas
+├ ƒ /ferramentas/atribuicoes
+├ ƒ /funcionarios
+├ ƒ /funcionarios/[id]
+├ ƒ /funcionarios/[id]/epi
+├ ƒ /funcionarios/[id]/epi/pdf
+├ ƒ /funcionarios/[id]/itens
+├ ƒ /funcionarios/[id]/kit
+├ ƒ /funcionarios/novo
+├ ƒ /login
+├ ○ /manifest.webmanifest
+├ ƒ /materiais
+├ ƒ /materiais/[id]
+├ ƒ /materiais/novo
+├ ƒ /minha-conta
+├ ƒ /movimentacoes
+├ ƒ /movimentacoes/[id]/editar
+├ ƒ /movimentacoes/nova
+├ ƒ /obras
+├ ○ /previa/consumo
+├ ○ /previa/correcoes-metallo
+├ ○ /previa/revisao-metallo
+├ ƒ /recuperar-senha
+├ ƒ /relatorios
+├ ƒ /relatorios/epi/pdf
+├ ƒ /sem-permissao
+├ ƒ /usuarios
+└ ƒ /usuarios/novo
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

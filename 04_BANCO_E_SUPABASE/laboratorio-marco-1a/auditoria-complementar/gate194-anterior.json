@@ -1,0 +1,1745 @@
+{
+  "started_at": "2026-09-26T18:11:17.724Z",
+  "environment": "Supabase CLI 2.117.0 local",
+  "checks": [
+    {
+      "name": "Auth local saudavel",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket admin",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create admin",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Admin Gestao sintetico ativo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Admin Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Admin Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Gestao via PostgREST",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Perfil admin pela RLS",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Inscricao publica bloqueada",
+      "ok": true,
+      "detail": "HTTP 422"
+    },
+    {
+      "name": "ticket joao",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create joao",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket maria",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create maria",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket revogada",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create revogada",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Equipe sintetica disponivel",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Funcionarios EPI sinteticos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entregas EPI sinteticas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Registro de conta dedicada Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Registro de conta dedicada Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Registro de conta dedicada Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth login Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Edge Function admin-invite-user nega Joao",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "Edge Function create-employee nega Joao",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "Edge Function delete-employee nega Joao",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "Edge Function revoke-portal-account nega Joao",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "DTO proprio Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DTO proprio Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DTO proprio Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Gestao le EPI via RLS",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao encontra tres funcionarios",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Joao nao le epi_employees alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_deliveries alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_monthly_acknowledgements alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_requests alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_employees alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_deliveries alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_monthly_acknowledgements alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_requests alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le ASO",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao acessa identidade privada",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Maria nao le ASO",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao acessa identidade privada",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Joao tabela asset_movements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela assets",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela employee_assignments",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_requests",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela inventory",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela movements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela profiles",
+      "ok": true,
+      "detail": "HTTP 200, linhas 1"
+    },
+    {
+      "name": "Joao tabela rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela supply_order_events",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela supply_orders",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela teams",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela work_locations",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Joao tabela worksites",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela asset_movements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela assets",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela employee_assignments",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_employee_item_sets",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_employee_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_employees",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_item_variants",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_monthly_acknowledgements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_profession_items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_professions",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_requests",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_stock_batches",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela epi_stock_transfers",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela inventory",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela items",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela movements",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela operation_reasons",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela profile_access_audit",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela profiles",
+      "ok": true,
+      "detail": "HTTP 200, linhas 1"
+    },
+    {
+      "name": "Maria tabela rental_admin_details",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela rental_return_requests",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela site_operation_receipts",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela supply_order_events",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela supply_order_lines",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela supply_orders",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela teams",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela work_locations",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Maria tabela worksites",
+      "ok": true,
+      "detail": "HTTP 200, linhas 0"
+    },
+    {
+      "name": "Inventario REST de 30 tabelas para Joao e Maria",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Portal RPC add_epi_stock_batch(p_item_id uuid, p_quantity integer, p_variant text, p_ca_number text, p_brand_model text, p_lot_number text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_delete_asset_movement(p_movement_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_delete_material_movement(p_movement_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_link_employee_identity(p_auth_user_id uuid, p_employee_id uuid, p_expected_employee_name text, p_expected_registration_code text, p_verification_method text)",
+      "ok": true,
+      "detail": "HTTP 403, codigo 42501"
+    },
+    {
+      "name": "Portal RPC admin_register_portal_account(p_auth_user_id uuid)",
+      "ok": true,
+      "detail": "HTTP 403, codigo 42501"
+    },
+    {
+      "name": "Portal RPC admin_revoke_employee_identity(p_identity_id uuid, p_reason text)",
+      "ok": true,
+      "detail": "HTTP 403, codigo 42501"
+    },
+    {
+      "name": "Portal RPC admin_update_asset_movement(p_movement_id uuid, p_destination_team_id uuid, p_new_status text, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_update_material_movement(p_movement_id uuid, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_update_profile(p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC admin_update_profile_access(p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean, p_operation_permissions text[], p_operation_team_ids uuid[])",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC can_operate(p_permission text, p_team_id uuid)",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC close_epi_delivery_quantity(p_delivery_id uuid, p_quantity integer, p_status text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC consume_material(p_item_id uuid, p_team_id uuid, p_quantity numeric, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC create_epi_item_with_stock(p_code text, p_name text, p_item_kind text, p_unit text, p_ca_number text, p_brand_model text, p_minimum_stock integer, p_return_policy text, p_initial_quantity integer, p_variant text, p_lot_number text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC create_equipment_for_team(p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_notes text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC create_equipment_for_team_v2(p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC create_material_for_team(p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock integer, p_team_id uuid, p_quantity integer)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC create_team_admin(p_name text, p_description text)",
+      "ok": true,
+      "detail": "HTTP 300, codigo PGRST203"
+    },
+    {
+      "name": "Portal RPC create_team_admin(p_name text, p_description text, p_location_type text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC deactivate_asset_admin(p_asset_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC deactivate_item_admin(p_item_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC delete_team_admin(p_team_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC employee_work_team(p_employee_id uuid, p_at timestamp with time zone)",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC fulfill_epi_request(p_request_id uuid, p_stock_batch_id uuid)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC is_active_admin()",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC my_employee_profile()",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC register_asset_movement(p_asset_id uuid, p_movement_type text, p_destination_team_id uuid, p_new_status text, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC register_epi_delivery(p_employee_id uuid, p_item_id uuid, p_stock_batch_id uuid, p_quantity integer, p_delivery_reason text, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC register_epi_delivery_batch(p_employee_id uuid, p_lines jsonb, p_delivery_reason text, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC register_movement(p_item_id uuid, p_movement_type text, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC replenish_material(p_item_id uuid, p_origin_team_id uuid, p_destination_team_id uuid, p_quantity numeric, p_note text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC request_epi_item(p_employee_id uuid, p_item_id uuid, p_quantity integer, p_requested_variant text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC return_rented_equipment(p_asset_id uuid, p_note text)",
+      "ok": true,
+      "detail": "HTTP 403, codigo 42501"
+    },
+    {
+      "name": "Portal RPC run_site_operation(p_command text, p_data jsonb, p_operation_id uuid, p_occurred_at timestamp with time zone)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC set_epi_employee_items(p_employee_id uuid, p_lines jsonb)",
+      "ok": true,
+      "detail": "HTTP 403, codigo 42501"
+    },
+    {
+      "name": "Portal RPC set_updated_at()",
+      "ok": true,
+      "detail": "HTTP 404, codigo PGRST202"
+    },
+    {
+      "name": "Portal RPC site_dashboard()",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC stock_team(p_team_id uuid)",
+      "ok": true,
+      "detail": "HTTP 200, codigo -"
+    },
+    {
+      "name": "Portal RPC update_asset_admin(p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC update_equipment_admin(p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC update_equipment_admin_v2(p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date, p_active boolean)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC update_item_admin(p_item_id uuid, p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock numeric, p_active boolean)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "Portal RPC update_team_admin(p_team_id uuid, p_name text, p_description text)",
+      "ok": true,
+      "detail": "HTTP 400, codigo P0001"
+    },
+    {
+      "name": "RPCs do portal nao alteram tabelas publicas ou identidades privadas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Inventario RPC autenticadas executado",
+      "ok": true,
+      "detail": "43 assinaturas"
+    },
+    {
+      "name": "Manipulacao de ID na RPC pessoal",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Joao nao chama RPC administrativa",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "RPC employee_work_team nao vaza dados",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "RPC stock_team nao vaza dados",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT adulterado recusado pelo PostgREST",
+      "ok": true,
+      "detail": "HTTP 401"
+    },
+    {
+      "name": "Refresh de conta ativa funciona",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo profiles",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo teams",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo worksites",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo items",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo inventory",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo epi_employees",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo epi_items",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo epi_deliveries",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao continua lendo supply_orders",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "RPC admin da Gestao continua ativa",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao cria equipe sintetica via RPC",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao edita equipe sintetica via RPC",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Edge servidor revoga banco e bloqueia Auth",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Revogacao pode ser repetida sem novo evento",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Token antigo perde acesso pessoal imediato",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Refresh da conta revogada bloqueado",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "name": "Novo login da conta revogada bloqueado",
+      "ok": true,
+      "detail": "HTTP 400"
+    },
+    {
+      "name": "Edge Function admin-invite-user nega token antigo revogado",
+      "ok": true,
+      "detail": "HTTP 401"
+    },
+    {
+      "name": "Edge Function create-employee nega token antigo revogado",
+      "ok": true,
+      "detail": "HTTP 401"
+    },
+    {
+      "name": "Edge Function delete-employee nega token antigo revogado",
+      "ok": true,
+      "detail": "HTTP 401"
+    },
+    {
+      "name": "Edge Function revoke-portal-account nega token antigo revogado",
+      "ok": true,
+      "detail": "HTTP 403"
+    }
+  ],
+  "table_matrix": [
+    {
+      "viewer": "Joao",
+      "table": "asset_movements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "assets",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "employee_assignments",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_deliveries",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_item_sets",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employee_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_employees",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_item_variants",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_monthly_acknowledgements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_profession_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_professions",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_requests",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_batches",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "epi_stock_transfers",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "inventory",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "movements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "operation_reasons",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profile_access_audit",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "profiles",
+      "status": 200,
+      "rows": 1,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_admin_details",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "rental_return_requests",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "site_operation_receipts",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_events",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_order_lines",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "supply_orders",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "teams",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "work_locations",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Joao",
+      "table": "worksites",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "asset_movements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "assets",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "employee_assignments",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_deliveries",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_item_sets",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employee_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_employees",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_item_variants",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_monthly_acknowledgements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_profession_items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_professions",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_requests",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_batches",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "epi_stock_transfers",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "inventory",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "items",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "movements",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "operation_reasons",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profile_access_audit",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "profiles",
+      "status": 200,
+      "rows": 1,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_admin_details",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "rental_return_requests",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "site_operation_receipts",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_events",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_order_lines",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "supply_orders",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "teams",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "work_locations",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    },
+    {
+      "viewer": "Maria",
+      "table": "worksites",
+      "status": 200,
+      "rows": 0,
+      "ok": true
+    }
+  ],
+  "rpc_matrix": [
+    {
+      "name": "add_epi_stock_batch",
+      "args": "p_item_id uuid, p_quantity integer, p_variant text, p_ca_number text, p_brand_model text, p_lot_number text",
+      "status": 400,
+      "code": "P0001",
+      "message": "not authorized",
+      "ok": true
+    },
+    {
+      "name": "admin_delete_asset_movement",
+      "args": "p_movement_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_delete_material_movement",
+      "args": "p_movement_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_link_employee_identity",
+      "args": "p_auth_user_id uuid, p_employee_id uuid, p_expected_employee_name text, p_expected_registration_code text, p_verification_method text",
+      "status": 403,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_register_portal_account",
+      "args": "p_auth_user_id uuid",
+      "status": 403,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_revoke_employee_identity",
+      "args": "p_identity_id uuid, p_reason text",
+      "status": 403,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_asset_movement",
+      "args": "p_movement_id uuid, p_destination_team_id uuid, p_new_status text, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_material_movement",
+      "args": "p_movement_id uuid, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_profile",
+      "args": "p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_profile_access",
+      "args": "p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean, p_operation_permissions text[], p_operation_team_ids uuid[]",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "can_operate",
+      "args": "p_permission text, p_team_id uuid",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "close_epi_delivery_quantity",
+      "args": "p_delivery_id uuid, p_quantity integer, p_status text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "consume_material",
+      "args": "p_item_id uuid, p_team_id uuid, p_quantity numeric, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "create_epi_item_with_stock",
+      "args": "p_code text, p_name text, p_item_kind text, p_unit text, p_ca_number text, p_brand_model text, p_minimum_stock integer, p_return_policy text, p_initial_quantity integer, p_variant text, p_lot_number text",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "create_equipment_for_team",
+      "args": "p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_notes text",
+      "status": 400,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_equipment_for_team_v2",
+      "args": "p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date",
+      "status": 400,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_material_for_team",
+      "args": "p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock integer, p_team_id uuid, p_quantity integer",
+      "status": 400,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_team_admin",
+      "args": "p_name text, p_description text",
+      "status": 300,
+      "code": "PGRST203",
+      "message": "Could not choose the best candidate function between: public.create_team_admin(p_name => text, p_description => text), public.create_team_admin(p_name => text, p_description => text, p_location_type => text)",
+      "ok": true
+    },
+    {
+      "name": "create_team_admin",
+      "args": "p_name text, p_description text, p_location_type text",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "deactivate_asset_admin",
+      "args": "p_asset_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "deactivate_item_admin",
+      "args": "p_item_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "delete_team_admin",
+      "args": "p_team_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "employee_work_team",
+      "args": "p_employee_id uuid, p_at timestamp with time zone",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "fulfill_epi_request",
+      "args": "p_request_id uuid, p_stock_batch_id uuid",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "is_active_admin",
+      "args": "",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "my_employee_profile",
+      "args": "",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "register_asset_movement",
+      "args": "p_asset_id uuid, p_movement_type text, p_destination_team_id uuid, p_new_status text, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "register_epi_delivery",
+      "args": "p_employee_id uuid, p_item_id uuid, p_stock_batch_id uuid, p_quantity integer, p_delivery_reason text, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "register_epi_delivery_batch",
+      "args": "p_employee_id uuid, p_lines jsonb, p_delivery_reason text, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "register_movement",
+      "args": "p_item_id uuid, p_movement_type text, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "replenish_material",
+      "args": "p_item_id uuid, p_origin_team_id uuid, p_destination_team_id uuid, p_quantity numeric, p_note text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "request_epi_item",
+      "args": "p_employee_id uuid, p_item_id uuid, p_quantity integer, p_requested_variant text",
+      "status": 400,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "return_rented_equipment",
+      "args": "p_asset_id uuid, p_note text",
+      "status": 403,
+      "code": "42501",
+      "message": "permission denied for function asset_visible_notes",
+      "ok": true
+    },
+    {
+      "name": "run_site_operation",
+      "args": "p_command text, p_data jsonb, p_operation_id uuid, p_occurred_at timestamp with time zone",
+      "status": 400,
+      "code": "P0001",
+      "message": "authentication_required",
+      "ok": true
+    },
+    {
+      "name": "set_epi_employee_items",
+      "args": "p_employee_id uuid, p_lines jsonb",
+      "status": 403,
+      "code": "42501",
+      "message": "new row violates row-level security policy for table \"epi_employee_item_sets\"",
+      "ok": true
+    },
+    {
+      "name": "set_updated_at",
+      "args": "",
+      "status": 404,
+      "code": "PGRST202",
+      "message": "Could not find the function public.set_updated_at without parameters in the schema cache",
+      "ok": true
+    },
+    {
+      "name": "site_dashboard",
+      "args": "",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "stock_team",
+      "args": "p_team_id uuid",
+      "status": 200,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "update_asset_admin",
+      "args": "p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_equipment_admin",
+      "args": "p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_equipment_admin_v2",
+      "args": "p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date, p_active boolean",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_item_admin",
+      "args": "p_item_id uuid, p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock numeric, p_active boolean",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_team_admin",
+      "args": "p_team_id uuid, p_name text, p_description text",
+      "status": 400,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    }
+  ],
+  "finished_at": "2026-09-26T18:11:37.103Z"
+}

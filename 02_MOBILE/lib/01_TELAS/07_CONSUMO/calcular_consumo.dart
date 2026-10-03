@@ -27,9 +27,45 @@ List<Map<String, dynamic>> filterConsumption(List<Map<String, dynamic>> rows,
 double sumConsumption(List<Map<String, dynamic>> rows) => rows.fold<double>(
     0, (a, r) => a + ((r['quantity'] as num?)?.toDouble() ?? 0));
 
-String consumptionRowUnit(Map<String, dynamic> row) {
-  final unit = (row['items'] as Map?)?['unit']?.toString().trim();
-  return unit == null || unit.isEmpty ? 'un' : unit;
+// Normalize spelling only. Package contents are never inferred.
+String consumptionUnit(String? raw) {
+  final value = raw?.trim() ?? '';
+  if (value.isEmpty) return 'sem unidade';
+  final key = value.toLowerCase().replaceFirst(RegExp(r'\.$'), '');
+  const aliases = {
+    'un': 'un', 'und': 'un', 'unid': 'un', 'unidade': 'un', 'unidades': 'un',
+    'cx': 'caixa', 'cxs': 'caixa', 'caixa': 'caixa', 'caixas': 'caixa',
+    'kg': 'kg', 'quilo': 'kg', 'quilos': 'kg', 'quilograma': 'kg', 'quilogramas': 'kg',
+    'l': 'l', 'lt': 'l', 'litro': 'l', 'litros': 'l',
+    'm': 'm', 'metro': 'm', 'metros': 'm',
+    'pct': 'pacote', 'pacote': 'pacote', 'pacotes': 'pacote',
+  };
+  return aliases[key] ?? value;
+}
+
+String consumptionRowUnit(Map<String, dynamic> row) =>
+    consumptionUnit((row['items'] as Map?)?['unit']?.toString());
+
+String consumptionUnitLabel(String? unit, [double? quantity]) {
+  const labels = {
+    'un': ['unidade', 'unidades'],
+    'caixa': ['caixa', 'caixas'],
+    'l': ['litro', 'litros'],
+    'm': ['metro', 'metros'],
+    'pacote': ['pacote', 'pacotes'],
+  };
+  final forms = labels[unit];
+  return forms == null ? unit ?? 'sem consumo' : forms[quantity == 1 ? 0 : 1];
+}
+
+String consumptionQuantity(double quantity, String? unit) =>
+    '${formatConsumptionQuantity(quantity)} ${consumptionUnitLabel(unit, quantity)}';
+
+String consumptionShare(double quantity, double total) {
+  if (total <= 0) return '—';
+  final percent = quantity / total * 100;
+  if (percent > 0 && percent < 0.1) return '<0,1%';
+  return '${percent.toStringAsFixed(1).replaceAll('.', ',')}%';
 }
 
 List<String> consumptionUnits(List<Map<String, dynamic>> rows) {
@@ -43,7 +79,8 @@ String? effectiveConsumptionUnit(
 ) {
   final units = consumptionUnits(rows);
   if (units.isEmpty) return null;
-  return units.contains(selectedUnit) ? selectedUnit : units.first;
+  if (units.contains(selectedUnit)) return selectedUnit;
+  return units.contains('un') ? 'un' : units.first;
 }
 
 List<Map<String, dynamic>> filterConsumptionUnit(
@@ -118,37 +155,37 @@ List<Map<String, dynamic>> consumptionTrend(List<Map<String, dynamic>> rows,
 
 String hasMixedConsumptionUnits(List<Map<String, dynamic>> rows) {
   final units = consumptionUnits(rows);
-  if (units.isEmpty) return 'un/kg/L';
-  return units.take(3).join('/');
+  if (units.isEmpty) return 'sem consumo';
+  return units.map((unit) => consumptionUnitLabel(unit)).join(' · ');
 }
 
 List<Map<String, dynamic>> groupConsumedMaterials(
     List<Map<String, dynamic>> current, List<Map<String, dynamic>> previous) {
   final grouped = <String, Map<String, dynamic>>{};
   for (final r in [...current, ...previous]) {
-    final id = r['item_id']?.toString() ?? '';
+    final id = _consumptionMaterialKey(r);
     final item = r['items'] as Map?;
     grouped.putIfAbsent(
         id,
         () => {
-              'id': id,
+              'id': r['item_id']?.toString() ?? '',
               'code': item?['code']?.toString() ?? '',
               'name': item?['name']?.toString() ?? 'Material',
-              'unit': item?['unit']?.toString() ?? 'un',
+              'unit': consumptionRowUnit(r),
               'category': item?['category']?.toString() ?? 'Outros',
               'qty': 0.0,
               'prev': 0.0
             });
   }
   for (final r in current) {
-    final id = r['item_id']?.toString() ?? '';
+    final id = _consumptionMaterialKey(r);
     if (grouped[id] != null) {
       grouped[id]!['qty'] = (grouped[id]!['qty'] as double) +
           ((r['quantity'] as num?)?.toDouble() ?? 0);
     }
   }
   for (final r in previous) {
-    final id = r['item_id']?.toString() ?? '';
+    final id = _consumptionMaterialKey(r);
     if (grouped[id] != null) {
       grouped[id]!['prev'] = (grouped[id]!['prev'] as double) +
           ((r['quantity'] as num?)?.toDouble() ?? 0);
@@ -158,6 +195,9 @@ List<Map<String, dynamic>> groupConsumedMaterials(
   out.sort((a, b) => (b['qty'] as double).compareTo(a['qty'] as double));
   return out;
 }
+
+String _consumptionMaterialKey(Map<String, dynamic> row) =>
+    '${row['item_id'] ?? 'registro-${row['id']}'}|${consumptionRowUnit(row)}';
 
 String _consumptionCategory(Map<String, dynamic> row) {
   final item = row['items'] as Map?;

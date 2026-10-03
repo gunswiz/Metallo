@@ -1,0 +1,80 @@
+{
+  "at": "2026-10-01T15:39:52.5036349Z",
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54327,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54324,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54323,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54327,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54324,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54323,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321,
+      "OwningProcess": 20504
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3106,
+      "OwningProcess": 29172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3105,
+      "OwningProcess": 29172
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3102,
+      "OwningProcess": 33636
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101,
+      "OwningProcess": 22368
+    }
+  ],
+  "loopback_only": true,
+  "load_ports_stopped": true,
+  "original_preview_process_preserved": true,
+  "remote_accessed": false,
+  "baseline4b_created": false
+}

@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-27T21:56:04.490Z",
+  "frozen_before_execution": true,
+  "separate_declaration_command": true,
+  "previous_plan_sha256": "243177cbe2abf964c9522ef5326f22b854fae47c8fd044e39d1a34bf522c04db",
+  "expected": 17,
+  "cases": [
+    "Preparação sintética autentica João/Maria com ES256 real",
+    "João registra antes do restart",
+    "Maria registra antes do restart",
+    "Restart real recupera mesma intenção/ID/hash/timestamp",
+    "João vê somente original próprio após restart",
+    "Maria vê somente original próprio após restart",
+    "João → Maria intenção negada após restart",
+    "Maria → João intenção negada após restart",
+    "Cinco POST reais mesma chave pós-restart geram um original",
+    "Auth realmente pausado: health distingue dependência indisponível",
+    "Auth realmente pausado: POST negado, zero evento novo",
+    "Auth recuperado: autorização real volta a funcionar",
+    "João revogado, processo reiniciado, token residual negado",
+    "Retry do token revogado continua negado e sem original",
+    "Funcionário inativo não marca após restart",
+    "Maria permanece isolada após revogação de João e restart",
+    "Shutdown gracioso encerra listener e preserva integridade"
+  ]
+}

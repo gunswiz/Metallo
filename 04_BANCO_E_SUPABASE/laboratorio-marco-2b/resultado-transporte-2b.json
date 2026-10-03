@@ -1,0 +1,59 @@
+{
+  "at": "2026-09-28T01:31:58.365Z",
+  "scope": "Transporte local 2B pelo navegador; não somar ao núcleo",
+  "checks": [
+    {
+      "name": "Sem JWT pessoal retorna 401",
+      "ok": true
+    },
+    {
+      "name": "João lê histórico via transporte",
+      "ok": true
+    },
+    {
+      "name": "Maria lê histórico via transporte",
+      "ok": true
+    },
+    {
+      "name": "João registra via transporte",
+      "ok": true
+    },
+    {
+      "name": "Retry via transporte devolve original",
+      "ok": true
+    },
+    {
+      "name": "Maria não consulta intenção João",
+      "ok": true
+    },
+    {
+      "name": "Body com titular escolhido é rejeitado",
+      "ok": true
+    },
+    {
+      "name": "Histórico João contém marcação nova",
+      "ok": true
+    },
+    {
+      "name": "Histórico Maria após POST João não contém João",
+      "ok": true
+    },
+    {
+      "name": "Maria registra via transporte",
+      "ok": true
+    },
+    {
+      "name": "Histórico Maria contém marcação própria nova",
+      "ok": true
+    },
+    {
+      "name": "Histórico João após POST Maria não contém Maria",
+      "ok": true
+    },
+    {
+      "name": "João não consulta intenção Maria",
+      "ok": true
+    }
+  ],
+  "passed": true
+}

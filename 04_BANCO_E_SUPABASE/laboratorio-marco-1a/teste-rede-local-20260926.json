@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-26",
+  "stack": "Supabase CLI 2.117.0 on Docker Desktop for Windows, Linux containers",
+  "host_bind_observed": ["0.0.0.0:54321", "[::]:54321", "0.0.0.0:54322", "[::]:54322", "0.0.0.0:54323", "[::]:54323", "0.0.0.0:54324", "[::]:54324", "0.0.0.0:54327", "[::]:54327"],
+  "bridge_default_bind_option": "com.docker.network.bridge.host_binding_ipv4=127.0.0.1",
+  "firewall_rule": "MetalloSupabaseLocalOnly; inbound block TCP 54320-54329; all profiles",
+  "host_to_own_ethernet_ip": "TCP connection to 192.168.0.3:54321 succeeded",
+  "separate_docker_bridge_to_host_ethernet_ip": "GET /auth/v1/health returned HTTP 200 from temporary container with no published ports or volumes",
+  "physical_lan_probe": "not performed; another machine was not available",
+  "interpretation": "The local tests do not establish external LAN reachability or firewall efficacy for external clients. Loopback-only bind was not achieved. Keep stack off outside supervised tests and use synthetic data only.",
+  "state_after_probe": "Supabase local stack stopped; no TCP listeners on tested ports"
+}

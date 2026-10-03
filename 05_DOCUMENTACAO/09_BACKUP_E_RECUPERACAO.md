@@ -1,5 +1,7 @@
 # Backup e recuperação local
 
+Este documento cobre a cópia anterior do **código**. Para PostgreSQL, Storage, secrets, certificados e futuro REP-P, consultar o [plano de backup e recuperação](PLANO_DE_BACKUP_E_RECUPERACAO.md). Nenhum restore integral do Supabase conectado foi comprovado.
+
 O estado anterior está em `C:\Projetos\Metallo-backups\ANTES_DA_REORGANIZACAO_20260908`. A cópia terminou sem falhas. Ela preserva código, configurações locais, imagens, documentação e arquivos anteriores. Dependências e caches como `node_modules`, `.next`, `.dart_tool`, `build`, `.gradle`, `dist`, `coverage` e `tmp` ficaram fora; `.git` continua no projeto original.
 
 Para consultar ou testar o estado antigo com segurança, copie o backup para uma nova pasta, por exemplo `C:\Projetos\Metallo-recuperado`, e reinstale as dependências ali. Na estrutura antiga, os comandos Flutter eram executados na raiz. Não copie o backup por cima da nova organização: isso misturaria os caminhos antigos e novos.

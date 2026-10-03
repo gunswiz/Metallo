@@ -1,0 +1,9 @@
+{
+  "AutoStart": false,
+  "DisplayedOnboarding": true,
+  "InferenceCanUseGPUVariant": true,
+  "LastContainerdSnapshotterEnable": 1790422887,
+  "LicenseTermsVersion": 2,
+  "SettingsVersion": 46,
+  "WslEngineEnabled": true
+}

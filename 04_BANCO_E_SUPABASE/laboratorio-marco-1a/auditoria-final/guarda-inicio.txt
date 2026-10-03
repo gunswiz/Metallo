@@ -1,0 +1,9 @@
+Inicio bloqueado: configure Docker Desktop / Network / Port binding behavior = Localhost only, com autorizacao para o 
+alcance global dessa opcao. Nenhum container foi iniciado.
+No C:\Projetos\Metallo\04_BANCO_E_SUPABASE\laboratorio-marco-1a\iniciar-laboratorio.ps1:47 caractere:3
++   throw 'Inicio bloqueado: configure Docker Desktop / Network / Port  ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Inicio bloquead...r foi iniciado.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Inicio bloqueado: configure Docker Desktop / Network / Port binding behavior = Localhost 
+    only, com autorizacao para o alcance global dessa opcao. Nenhum container foi iniciado.
+ 

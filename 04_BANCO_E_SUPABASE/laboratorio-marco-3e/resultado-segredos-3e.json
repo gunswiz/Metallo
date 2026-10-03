@@ -1,0 +1,2443 @@
+{
+  "at": "2026-09-29T10:44:40.640062+00:00",
+  "scope": "Marco 3E final adjustments: sources, evidence, client bundles and four regenerated PDFs (raw and extracted); no ZIP created",
+  "files": 291,
+  "source_and_evidence_files": 30,
+  "client_bundles": 257,
+  "known_local_credentials_checked": 10,
+  "scanner_patterns_reused_from": "04_BANCO_E_SUPABASE/laboratorio-marco-3d/gerar-baseline-3d.py",
+  "files_checked": [
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_07_ESTILOS_globals_0wtcjqa.css",
+      "sha256": "1698cc8676ba2600a12ce58355d5177f0b9484f26e88e5704f7b335b23c842b2",
+      "bytes": 34273
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_07_ESTILOS_globals_0wtcjqa.css.map",
+      "sha256": "1907a5f85b2cd281a276f6b72cdaa5569750f59014c89c82e5974d45f17a9439",
+      "bytes": 36516
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_0jnqujq._.js",
+      "sha256": "206abf2a5288cbf0e876fcb2a32030fcccda7da9e7e63504e488855033ae789e",
+      "bytes": 592
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_0jqvt7-._.js",
+      "sha256": "52adafe1a1a34c92680dc0c831c19a7b08f3b434a1aa7da04955e7a8eb8ee299",
+      "bytes": 847
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_0w7i232._.js",
+      "sha256": "da3d3e2759b3afd93c1fcfb6ae5b6f3658a0929dbac30f20a95d26863e6225d9",
+      "bytes": 425
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_11hxfwb._.js",
+      "sha256": "1b60dfaf266e37ab3c6bcad990e98b42860d2d0c1f241783db24d520812fd5d7",
+      "bytes": 435
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_15iy_cs._.js",
+      "sha256": "0243b873d273319a9acd0d73d016e8d1c9f29d2d6f46f850ade490646cbc84fb",
+      "bytes": 562
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1anvha4._.js",
+      "sha256": "3b6335e713c30c0e0c610a6bdaca99926bd1b8c20b400fb600b71140476b90e4",
+      "bytes": 778
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1dra8y_._.js",
+      "sha256": "54bf6d6030fe0d7dd61a89887b4ecf0843306f22545e5f75aac3c7421f3fae72",
+      "bytes": 134229
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1dra8y_._.js.map",
+      "sha256": "0afad320c8eaf24a1dabcf9abe8fd020ad8b15f6ba0e399502db73959243b913",
+      "bytes": 40939
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1l-6_i1._.js",
+      "sha256": "4839ac04436b73b2bfb1b77a2cbb928c4ad9cad4ba09ac7abc42fe6fd2661116",
+      "bytes": 652
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1qy4l2_._.js.map",
+      "sha256": "669fcfa3efe296c574da9eac5b31032368a0e2874ba3c52bd4de2b2f4c66cf6e",
+      "bytes": 176965
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1vbwtrf._.js",
+      "sha256": "0243b873d273319a9acd0d73d016e8d1c9f29d2d6f46f850ade490646cbc84fb",
+      "bytes": 562
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_1w9t-bk._.js",
+      "sha256": "fc573ddbef4d8e33bbcefe89e41e6e3e020de81bcdf339093ac00fab9c3de50f",
+      "bytes": 660
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_211s7hk._.js",
+      "sha256": "0ae9a554f2f07fb89998cafc4ee91051a5e88159a5d2ab1b4ae48f2423ca27b7",
+      "bytes": 479392
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_211s7hk._.js.map",
+      "sha256": "7188d757e1d143a076efffe11eff16962936bbca908fae7c52f9b4c8834f3480",
+      "bytes": 179477
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_219uq1s._.js",
+      "sha256": "a34612fd4443c8072e32446df3b19f81b2b11a7dc561af1ad9ed6eecd726b2f6",
+      "bytes": 351
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_app_previa_correcoes-metallo_preview_module_0ruuqqk.css",
+      "sha256": "5ad92130c5a8e700cf21e491eb231ba4378324793ad919d9bc998ad991f260e5",
+      "bytes": 2000
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/01_WEB_app_previa_correcoes-metallo_preview_module_0ruuqqk.css.map",
+      "sha256": "aafd9a327d312445715798b171c7badfba98532282098a0810c49e6db7a1d08d",
+      "bytes": 1637
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_classic_1pv--5j._.js",
+      "sha256": "736a3d4da1be495831490a44ddfc4219c63cda57972de31674df1f13cb813de1",
+      "bytes": 291879
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_classic_1pv--5j._.js.map",
+      "sha256": "4c9d3f9e4e37811700c8cecc624c1a690a41068633de543c6e2503e4f80bd70a",
+      "bytes": 163050
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+      "sha256": "280f08e15ed69ce28a6b0e49e05845868f88f50ced529d1daf26ef455bd5608e",
+      "bytes": 621346
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_core_0570rwe._.js.map",
+      "sha256": "66e6c28f0f363ddccad97b9c1c15f63df82dd0af8a4615d7152dde74dde5b955",
+      "bytes": 669739
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js",
+      "sha256": "a2adbcf48d442fdcfe3cf0d26cfac34c8443a1034af1699e69ae7534e999f74f",
+      "bytes": 457854
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js.map",
+      "sha256": "8c682e6ea4c58ad4969a2205df5bd576fd1a87c2ea46211071ed7da3a554f058",
+      "bytes": 587060
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "sha256": "0255d8739736cb0a7bd88ce37f4b71fc54e062ede182f86f64ba9b8f6fb0dcfe",
+      "bytes": 547351
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "sha256": "8f640cc813f2cbc0f8347f590abb02fb9d03fa8279403df9fa8fecb04628f426",
+      "bytes": 751126
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0zix_@swc_helpers_cjs_0hi-e47._.js",
+      "sha256": "522b0987093c05d34b375597898752bd33cb2cae8acd3cdec116a2f9c150bebe",
+      "bytes": 2054
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0zix_@swc_helpers_cjs_0hi-e47._.js.map",
+      "sha256": "a0a83d8ab72319a0d6cf7b5f6618f3b5a11ec3624db888eaaf82f989870e46e3",
+      "bytes": 3538
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_0knzkzd._.js",
+      "sha256": "7794b654c84a89764c28eb461a50dfa2f08b6c07b2b97931db4ff85ec39ba26f",
+      "bytes": 260145
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_0knzkzd._.js.map",
+      "sha256": "56976203cc1569d2be7d8702972323988e80030cdd6428626a8820859fbd2c04",
+      "bytes": 338087
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_01xcz_6._.js",
+      "sha256": "2a0ae441071401f55de53820642779dab1dc353c24ba4b53cbdae169a49651d4",
+      "bytes": 42074
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_01xcz_6._.js.map",
+      "sha256": "823fe107804e9ac0cb187b9820dd12890e51dd795421d14654c47bc5ffb06051",
+      "bytes": 69755
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_03-kang._.js",
+      "sha256": "b20122727b90c9bed30b59012efee1f42180cfb75df8f7768110b0d9cc1846d0",
+      "bytes": 76556
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_03-kang._.js.map",
+      "sha256": "14b00c77492233573d6ef4cf8d43751a600bd65df339818b3693eaff7c3b6e4f",
+      "bytes": 89859
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_0ij0n2p._.js",
+      "sha256": "d83f5898cf8828193e25dc06329623b6445416080120ae7370c4dd4182cc7b7f",
+      "bytes": 185294
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_0ij0n2p._.js.map",
+      "sha256": "9faf409e52ab5625d114bc03e57aeb327abf02a200e3f11d33c9470a06606506",
+      "bytes": 241409
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_1mi7h0-._.js",
+      "sha256": "80146f6fe96fd654d2aba07577426354f283569ddbb898e27cb7ced82e8403cc",
+      "bytes": 172430
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_1mi7h0-._.js.map",
+      "sha256": "fb7e4aa0aeb1773b935d72cbafb29ac4cd3503cdb271e843a2519b7c4955477e",
+      "bytes": 225889
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_build_polyfills_polyfill-nomodule.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "bytes": 112594
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_build_polyfills_polyfill-nomodule.js.map",
+      "sha256": "f98c9bec24734bc6336f2743eb2960c292331d0aab551f0a656a841894617cc4",
+      "bytes": 115807
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_build_webpack_loaders_next-flight-loader_action-client-wrapper_0mollm_.js",
+      "sha256": "e754ae9c81c447b967a6169e0085e773b76705f95bca0530075091ae904f99f9",
+      "bytes": 1928
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_build_webpack_loaders_next-flight-loader_action-client-wrapper_0mollm_.js.map",
+      "sha256": "f3b002a32cd7bfc9793b921c01ca80c04171ddc223aab79a9ebe254ebf354d3c",
+      "bytes": 1140
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js",
+      "sha256": "c0e02ca758616bfa9ecd400fb241cf0d61778e234ec4057bb39d902a790d7337",
+      "bytes": 946696
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "sha256": "9eabe1ce2293ae076ecce363bb1f4c4af18baa7d18aea1f691ff33e90016b351",
+      "bytes": 1310919
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_088v_ld._.js",
+      "sha256": "5d2ac679fd762699bc38b475603b1880168a7fd4dca50a15600c3de7d9fbac78",
+      "bytes": 148117
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_088v_ld._.js.map",
+      "sha256": "dd174acc17510fd2ff6f9903a891729886f4797975dc668ddc40a201b2bf40e7",
+      "bytes": 201525
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js",
+      "sha256": "f4148f70614e5c91d5929db9f908476fd5321505b5e8942e3b2b3a1fce1c8915",
+      "bytes": 864274
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "sha256": "ac44aa21a2cff7da2029beb1e280d7c55aae54868e1c798ab1f094b1b0508a8e",
+      "bytes": 2966500
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_react-dom_09yns_y._.js",
+      "sha256": "1d648eb7addd9310f06d4e8b24d4db098a29365ff641e4faedb56a819ae9aa7a",
+      "bytes": 1064046
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_react-dom_09yns_y._.js.map",
+      "sha256": "1be3af2471f3dfabe9358f9d416ceff81cb506ab41844e55032768bec8a8152c",
+      "bytes": 1872600
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_react-server-dom-turbopack_1qtykg_._.js",
+      "sha256": "59afed017ea0d2c47c0e67caef2bbb1ee2054a473d7e4121ed13f39941f69a11",
+      "bytes": 177788
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_react-server-dom-turbopack_1qtykg_._.js.map",
+      "sha256": "974226ffbc25e4c755294f34d6e72f06b9d98d7f97eef4e13579e3b4777866ad",
+      "bytes": 319560
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1rf2_lucide-react_dist_esm_icons_1b58ji8._.js",
+      "sha256": "6ab5ea757ba5ae36901594a1996c8b43016e46e112678b438057fb3472abecfd",
+      "bytes": 7281
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1rf2_lucide-react_dist_esm_icons_1b58ji8._.js.map",
+      "sha256": "da55ccd4f4a5f03ec642ebe23c1195c220a79b9a17987b11359ff66c715f7af3",
+      "bytes": 12317
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_12r1_9i._.js",
+      "sha256": "bac4b672f8d841edbf97a68fedcb5fb2da718596996fce7374e7a0f91d875f7c",
+      "bytes": 594
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_12r1_9i._.js.map",
+      "sha256": "a8ae20908e3aa88a005bf3b5cadedd7f1107cf28a6e4db9da80280fe9f54de95",
+      "bytes": 53
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js",
+      "sha256": "afddc7ff7745c3b04afdf480abb98a2471f9652f2b701946d80264619672781b",
+      "bytes": 15615
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js.map",
+      "sha256": "b2c61b87a0a4deb932d607e3b7124e199d9200ab7c020d7a9c48a1b06f5e284e",
+      "bytes": 27581
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0757ag3._.js",
+      "sha256": "3e8a3ffb5db8630e57124e1a2b0c462f3bb8b5f5f5ba2e15031579e3eaf68a31",
+      "bytes": 26514
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0757ag3._.js.map",
+      "sha256": "84194160ddabf0cccc3541885dbe6c128d3fd9f64bb7bf39030b02eaeec29d6f",
+      "bytes": 15732
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0_o6vue._.js",
+      "sha256": "ae81d005c76c95f4f0ac8443e327adaacc9501b777cc7ac1c8a0f86483dccc39",
+      "bytes": 389711
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0_o6vue._.js.map",
+      "sha256": "90f14cdf55514e16e9277a70643b251badc75b61f24860ffccbdff8285317e79",
+      "bytes": 143495
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0n19_fg._.js",
+      "sha256": "24fac28b534e60b751549de55274e8e4faa37bc915fe25458c8f79f5414df1a4",
+      "bytes": 33069
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0n19_fg._.js.map",
+      "sha256": "2f84dd306968eb70e619367f340da8ee3893848cfe5fd0640be61e8409cde4af",
+      "bytes": 18974
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0uehp_2._.js",
+      "sha256": "914f5fa876bf06deabb4ce1a49a4fd8fba8461844a878b503c5891b8d4d45524",
+      "bytes": 16805
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0uehp_2._.js.map",
+      "sha256": "8f0257c9813c2305ebfe4c1de905897808ba5a9f90ef09554bfb74ea513c7847",
+      "bytes": 23142
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1dtw5et._.js",
+      "sha256": "86d29909118359fd4160e6c23c9545d515b820ebd982cc682bc93fefdb04a153",
+      "bytes": 389711
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1dtw5et._.js.map",
+      "sha256": "a2cf273de6913872c7846490047a142abdb33c7fd613a55a82734b6a81995dc3",
+      "bytes": 147454
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1fspu6g._.js",
+      "sha256": "4bf4570cdafa6000312c33fbcf6b25196525ee87e08ec2c72ac9f71ea9b48df9",
+      "bytes": 11037
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1fspu6g._.js.map",
+      "sha256": "e791d80f3b5cdc6faa4057600599b66406d92d647500501ff688a65c3a19199d",
+      "bytes": 4886
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1h--uue._.js",
+      "sha256": "4f431a7931091ebd1e83f55aa452e9a4bb1aeeadbbfb6fc2c02c79ee86e466c6",
+      "bytes": 389711
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1h--uue._.js.map",
+      "sha256": "7d0e6f9d58010ba91cdb3ed548a005107931613b0f9a23f334cf82da2d75d20b",
+      "bytes": 144685
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1totc0z._.js",
+      "sha256": "0493006f95aaef3c31eb8da4851ceff7601c13ac3b3b01d8ad82f012c4a8099f",
+      "bytes": 26514
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_1totc0z._.js.map",
+      "sha256": "218407482f2ceb7c49a4bc2da5fbd4097b724fa4a714f7e50f6fa8c8a8384d1c",
+      "bytes": 12963
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_0nwvahp._.js",
+      "sha256": "b80dc5eb4013891fa356ecf8b2bb60d61873007d66285880991938400a0115e8",
+      "bytes": 83929
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_0nwvahp._.js.map",
+      "sha256": "c6cae5d95bd11a1e797e42175f6f5585846f1ec8cd0c92527626b5ab69d6c7f7",
+      "bytes": 123598
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1shrkh-._.js",
+      "sha256": "015d2968ff5f8eae3ef9764a41f680718b8d31ccaa4aaecb19fd2b2cf557ae79",
+      "bytes": 93371
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1shrkh-._.js.map",
+      "sha256": "9ddc01b5153303701b0898dd59370327b3ed9c99502e56259c4e5740760d32f3",
+      "bytes": 134123
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1vwgzi8._.js",
+      "sha256": "d61d36ad55c901f6e1726b3b424349508ba9029d317ceea77b819575c461307c",
+      "bytes": 641758
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1vwgzi8._.js.map",
+      "sha256": "46939b061c0507f36d6323a0289c6ffa940066cd2b0c2afb3d9f77a594cda0de",
+      "bytes": 1030227
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/turbopack-01_WEB_1qy4l2_._.js",
+      "sha256": "13318b59c47ede19968f0861bad3592b0464a70d198e3e48ec4a342129cecbb5",
+      "bytes": 105459
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_02fxkdb._.js",
+      "sha256": "16d02ef50324baef42da065529f256d4e400aacb3f18315d709b338e738a55a3",
+      "bytes": 177551
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_02fxkdb._.js.map",
+      "sha256": "76f9633d2b4b2e5bd19af2b7345d5780b2fa7452c93b8c5213872574ff1f8f0b",
+      "bytes": 44188
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_03itb39._.js",
+      "sha256": "3a38270f7c57cdf2fc95c0ff8b21c53a34b67bd5f7b0191ec22bb25fc6b4d265",
+      "bytes": 172957
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_03itb39._.js.map",
+      "sha256": "da0a0b2a044f036b0ff6a3cda022f29ba276cbf771f8050a7932935858bef5f5",
+      "bytes": 40954
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_07_ESTILOS_globals_0wtcjqa.css",
+      "sha256": "1698cc8676ba2600a12ce58355d5177f0b9484f26e88e5704f7b335b23c842b2",
+      "bytes": 34273
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_07_ESTILOS_globals_0wtcjqa.css.map",
+      "sha256": "1907a5f85b2cd281a276f6b72cdaa5569750f59014c89c82e5974d45f17a9439",
+      "bytes": 36516
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0886chy._.js",
+      "sha256": "78760834a7c8506f0fbb39b3e959ab5ae24f97ec720f1c7fb7f2e1309bd63c96",
+      "bytes": 595275
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0886chy._.js.map",
+      "sha256": "68568fb8f6b1adf8261c46295a941822b11b68d706e086fb9eb3417d8d93caa6",
+      "bytes": 205351
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0days1i._.js",
+      "sha256": "522fb18dfc5ec1ab48b984739e75b7fb2fae45ed23b19f770f536990938db046",
+      "bytes": 193247
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0days1i._.js.map",
+      "sha256": "ffa040b100b596c081a4d75460e4e5b0412b91ae7ff74acdb283aa00713a1d19",
+      "bytes": 50057
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0fpt8eo._.js",
+      "sha256": "31a29ed753df8b82faaccc4f99b2c255c832e6aff10203f93c444adbfe3c3350",
+      "bytes": 1010
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0xz43zq._.js",
+      "sha256": "1720dd31a5bde6b001f9da90b53c25d76f90b34c768ed4dbd1abc2f23f694b3e",
+      "bytes": 225511
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_0xz43zq._.js.map",
+      "sha256": "070ef6a2a6cf060faa997b8943e1368044e5ace2e14d6b8a641629c1dc6383a8",
+      "bytes": 64172
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_12jktt2._.js",
+      "sha256": "25d19705f918f81bddf57828ecc100520579566563c4b7f24e436b387f9e90e9",
+      "bytes": 364856
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_12jktt2._.js.map",
+      "sha256": "8a92b0e0f8d5db15ee64f85831d83c8aa39bc94ebd335e8afb03a726297ba528",
+      "bytes": 101408
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1anvha4._.js",
+      "sha256": "3b6335e713c30c0e0c610a6bdaca99926bd1b8c20b400fb600b71140476b90e4",
+      "bytes": 778
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1ix1m7t._.js",
+      "sha256": "6dc6e756ac2638613dc5d2a077d7acdafef1096b2a2ee0cbb1641c18e854e69e",
+      "bytes": 312853
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1ix1m7t._.js.map",
+      "sha256": "2f8222f645d6029290c19f5039c4ff010e394257dd69683369c010bd48919fb5",
+      "bytes": 91136
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1kp-c9r._.js",
+      "sha256": "88e18b62ad0bdeef9ed2edf2d720fd5c365ffbd454169a285c3a4a6630ea9756",
+      "bytes": 231234
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1kp-c9r._.js.map",
+      "sha256": "322c93b07269da8c30c997c845824f6d08dbb47dbac5d53980ee39518aeddc1c",
+      "bytes": 70291
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1qy4l2_._.js.map",
+      "sha256": "669fcfa3efe296c574da9eac5b31032368a0e2874ba3c52bd4de2b2f4c66cf6e",
+      "bytes": 176965
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1rmhbf4._.js",
+      "sha256": "5fc905a95c94c841ab1c7e8e780e3e95322b0c08997709054dabdf9682b7efe3",
+      "bytes": 602645
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_1rmhbf4._.js.map",
+      "sha256": "963edaca7df45ac95061ce483f33336b9aaec4697999d0dac8edd29f6c3dd488",
+      "bytes": 215493
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_app_colaborador_[[___screen]]_07o9td6._.js",
+      "sha256": "bfdf1920146a5f0d7d32207715c47e30238516d6e37f90e6729c73033db98005",
+      "bytes": 159546
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_app_colaborador_[[___screen]]_07o9td6._.js.map",
+      "sha256": "518f0c4f9f4c5a343bf77fb05f7e79b450cae55d5cfb3560d96fb1535cb62e19",
+      "bytes": 30148
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_app_colaborador_[[___screen]]_colaborador_module_1gscmom.css",
+      "sha256": "1d986aa68b7a06b8ef11d30cea91453cac1b3c4d72eecac1bbf25838cd9b71da",
+      "bytes": 34737
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/01_WEB_app_colaborador_[[___screen]]_colaborador_module_1gscmom.css.map",
+      "sha256": "7282e94d7a07a684dc42afc3392e638456718a5996a01868337be43dcf9ca869",
+      "bytes": 24538
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/02wh_pako_0nlb_66._.js",
+      "sha256": "05287376e1005b7b4a13b3ded866c66611c07521659218e2a50e4e69f37f0f4c",
+      "bytes": 241573
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/02wh_pako_0nlb_66._.js.map",
+      "sha256": "5d056028caa8e93017adb850ae24edaebd11da6415283d67063ab30429444fba",
+      "bytes": 361619
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_classic_1pv--5j._.js",
+      "sha256": "736a3d4da1be495831490a44ddfc4219c63cda57972de31674df1f13cb813de1",
+      "bytes": 291879
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_classic_1pv--5j._.js.map",
+      "sha256": "4c9d3f9e4e37811700c8cecc624c1a690a41068633de543c6e2503e4f80bd70a",
+      "bytes": 163050
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+      "sha256": "280f08e15ed69ce28a6b0e49e05845868f88f50ced529d1daf26ef455bd5608e",
+      "bytes": 621346
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_core_0570rwe._.js.map",
+      "sha256": "66e6c28f0f363ddccad97b9c1c15f63df82dd0af8a4615d7152dde74dde5b955",
+      "bytes": 669739
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js",
+      "sha256": "a2adbcf48d442fdcfe3cf0d26cfac34c8443a1034af1699e69ae7534e999f74f",
+      "bytes": 457854
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js.map",
+      "sha256": "8c682e6ea4c58ad4969a2205df5bd576fd1a87c2ea46211071ed7da3a554f058",
+      "bytes": 587060
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "sha256": "0255d8739736cb0a7bd88ce37f4b71fc54e062ede182f86f64ba9b8f6fb0dcfe",
+      "bytes": 547351
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "sha256": "8f640cc813f2cbc0f8347f590abb02fb9d03fa8279403df9fa8fecb04628f426",
+      "bytes": 751126
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0tmm_@pdf-lib_standard-fonts_es_0q06n5h._.js",
+      "sha256": "5fbea0815a581b007746093a2783e0b03bb8f37692c3baa64198fee7924fdabd",
+      "bytes": 152676
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0tmm_@pdf-lib_standard-fonts_es_0q06n5h._.js.map",
+      "sha256": "f548795c10479472b11ed16f93c4d06362dc5e66d9635d838305f1a27b3728f2",
+      "bytes": 145225
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_1xiz50m._.js",
+      "sha256": "974a815da9f36f4b21e9a2a20af1d2a3326d66e2bec5b4d5c09665b8944f55b3",
+      "bytes": 59512
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_1xiz50m._.js.map",
+      "sha256": "419420f6b2b6c0d0155ac27b3b58ae20260c9bc22e3edfeb93eb0b9dee4de731",
+      "bytes": 86744
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_api_0s0z1kb._.js",
+      "sha256": "8006fdd8683eb202f8dffa2c64a338c56da1a0085469b42312298ea1cbf14527",
+      "bytes": 853739
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_api_0s0z1kb._.js.map",
+      "sha256": "f6008a242ed140cf3c8b4cd2c86ea196a4cc4a118069a1f370d5a7d66ca2ae45",
+      "bytes": 625640
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_core_0nh83y-._.js",
+      "sha256": "f2db3e93c3583791f43e4636a07d5c1bfc11f9140555328df0d27f905e5631f8",
+      "bytes": 815601
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0v5y_pdf-lib_es_core_0nh83y-._.js.map",
+      "sha256": "e8d4950881063eaa79e6f1bf31e9ae2c72f2e1dd4f78b6c5b7eff4fc8d4fa328",
+      "bytes": 597350
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0zix_@swc_helpers_cjs_0hi-e47._.js",
+      "sha256": "522b0987093c05d34b375597898752bd33cb2cae8acd3cdec116a2f9c150bebe",
+      "bytes": 2054
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0zix_@swc_helpers_cjs_0hi-e47._.js.map",
+      "sha256": "a0a83d8ab72319a0d6cf7b5f6618f3b5a11ec3624db888eaaf82f989870e46e3",
+      "bytes": 3538
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_1-tt9xl._.js",
+      "sha256": "f94785f88b72cb3693dcdf2c52073f10f9a25e61c5fe97c4556d1329d4dd39d7",
+      "bytes": 265120
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_1-tt9xl._.js.map",
+      "sha256": "1c0e8ce6303023fe5146983b1b514fc9286708326f55c00e67f80e08534bc40b",
+      "bytes": 340883
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_01xcz_6._.js",
+      "sha256": "2a0ae441071401f55de53820642779dab1dc353c24ba4b53cbdae169a49651d4",
+      "bytes": 42074
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_01xcz_6._.js.map",
+      "sha256": "823fe107804e9ac0cb187b9820dd12890e51dd795421d14654c47bc5ffb06051",
+      "bytes": 69755
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_03-kang._.js",
+      "sha256": "b20122727b90c9bed30b59012efee1f42180cfb75df8f7768110b0d9cc1846d0",
+      "bytes": 76556
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_03-kang._.js.map",
+      "sha256": "14b00c77492233573d6ef4cf8d43751a600bd65df339818b3693eaff7c3b6e4f",
+      "bytes": 89859
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_1mi7h0-._.js",
+      "sha256": "80146f6fe96fd654d2aba07577426354f283569ddbb898e27cb7ced82e8403cc",
+      "bytes": 172430
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_1mi7h0-._.js.map",
+      "sha256": "fb7e4aa0aeb1773b935d72cbafb29ac4cd3503cdb271e843a2519b7c4955477e",
+      "bytes": 225889
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_build_polyfills_polyfill-nomodule.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "bytes": 112594
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_build_polyfills_polyfill-nomodule.js.map",
+      "sha256": "f98c9bec24734bc6336f2743eb2960c292331d0aab551f0a656a841894617cc4",
+      "bytes": 115807
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js",
+      "sha256": "c0e02ca758616bfa9ecd400fb241cf0d61778e234ec4057bb39d902a790d7337",
+      "bytes": 946696
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "sha256": "9eabe1ce2293ae076ecce363bb1f4c4af18baa7d18aea1f691ff33e90016b351",
+      "bytes": 1310919
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_088v_ld._.js",
+      "sha256": "5d2ac679fd762699bc38b475603b1880168a7fd4dca50a15600c3de7d9fbac78",
+      "bytes": 148117
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_088v_ld._.js.map",
+      "sha256": "dd174acc17510fd2ff6f9903a891729886f4797975dc668ddc40a201b2bf40e7",
+      "bytes": 201525
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js",
+      "sha256": "53e20e34181d6aca2e2948396c471087a57de8b79311b30c3e3f464fe605b4ee",
+      "bytes": 864273
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "sha256": "ac44aa21a2cff7da2029beb1e280d7c55aae54868e1c798ab1f094b1b0508a8e",
+      "bytes": 2966500
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_react-dom_09yns_y._.js",
+      "sha256": "1d648eb7addd9310f06d4e8b24d4db098a29365ff641e4faedb56a819ae9aa7a",
+      "bytes": 1064046
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_react-dom_09yns_y._.js.map",
+      "sha256": "1be3af2471f3dfabe9358f9d416ceff81cb506ab41844e55032768bec8a8152c",
+      "bytes": 1872600
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_react-server-dom-turbopack_1qtykg_._.js",
+      "sha256": "59afed017ea0d2c47c0e67caef2bbb1ee2054a473d7e4121ed13f39941f69a11",
+      "bytes": 177788
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_react-server-dom-turbopack_1qtykg_._.js.map",
+      "sha256": "974226ffbc25e4c755294f34d6e72f06b9d98d7f97eef4e13579e3b4777866ad",
+      "bytes": 319560
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_12r1_9i._.js",
+      "sha256": "bac4b672f8d841edbf97a68fedcb5fb2da718596996fce7374e7a0f91d875f7c",
+      "bytes": 594
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_12r1_9i._.js.map",
+      "sha256": "a8ae20908e3aa88a005bf3b5cadedd7f1107cf28a6e4db9da80280fe9f54de95",
+      "bytes": 53
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js",
+      "sha256": "afddc7ff7745c3b04afdf480abb98a2471f9652f2b701946d80264619672781b",
+      "bytes": 15615
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js.map",
+      "sha256": "b2c61b87a0a4deb932d607e3b7124e199d9200ab7c020d7a9c48a1b06f5e284e",
+      "bytes": 27581
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/_app-pages-browser_node_modules_pnpm_next_16_3_4__babel_core_7_2_a82c49799677867cf75a346c9e61-91eded.js",
+      "sha256": "3b217cf7f72d6653c8605163fa4adef0149e2348b148c46286f34539e6dd4386",
+      "bytes": 6926
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/app-pages-internals.js",
+      "sha256": "16470d98f7e940be5a0f3eee88a409d1c86017ef6c4ed90094eff8ce65f4b018",
+      "bytes": 288366
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/app/layout.js",
+      "sha256": "1f8c043093a4e2bfd4e17e5938e43f6a0227c90786d554f19ef8ad25507c9b5c",
+      "bytes": 5392
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/app/not-found.js",
+      "sha256": "4c83714a85bb93ffa73f6b1d56ef095e26bdfc736e67b73963c1d92fde08a8e0",
+      "bytes": 169395
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/app/previa/consumo/page.js",
+      "sha256": "75d5e1cacd91f59d18f3e8921913927f632cca058d6675481f969ac157f22dfc",
+      "bytes": 444107
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/app/previa/correcoes-metallo/page.js",
+      "sha256": "e91a7154e244afec18a2d08addba46148cd404c68dc6bbcb0fbae9e3a1adaac0",
+      "bytes": 1863892
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/main-app.js",
+      "sha256": "59a7d0dddb929e8ab3b10423dc9595836ce9c72f87eb360586040ec988e0f728",
+      "bytes": 13378049
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_05srn3s._.js",
+      "sha256": "45e0985db88d5d8f05c158b243f687cfe960d7ec1868be18f0d7d7f3233230f9",
+      "bytes": 586332
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_05srn3s._.js.map",
+      "sha256": "7864c6a9c83af54320822e137e654a658cdd3129e64c4c638aac38be2a2f2aba",
+      "bytes": 939383
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0n2589t._.js",
+      "sha256": "576935ac4255fd8ca4873b04f23684741399bd17d85b4766c7a0b91224b511aa",
+      "bytes": 669896
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0n2589t._.js.map",
+      "sha256": "3950141ddf33d0bbdfeb3bd62f96786988fa964aa17c8f8c6af311380c6b37aa",
+      "bytes": 1085708
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0u67lje._.js",
+      "sha256": "154ed9193c7060cf418a6ba60ad6f22d02a18c276bac16e6b9a5711bc515037e",
+      "bytes": 586332
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0u67lje._.js.map",
+      "sha256": "7864c6a9c83af54320822e137e654a658cdd3129e64c4c638aac38be2a2f2aba",
+      "bytes": 939383
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "sha256": "6663b9e4e18ae478c080090be1a34e693f2f58a78d9faf90a55208d4fce725e6",
+      "bytes": 1205428
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js.map",
+      "sha256": "2ecaa0cbab8e7b93cab0aee5781c44fcd2095d9dcf1c4f90d021b2923d6cdf73",
+      "bytes": 1782970
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_18f8b3y._.js",
+      "sha256": "b21ff2f075591fca0364fd289a9c01a59eff3b9ec8b95a1f253a922b4800ef40",
+      "bytes": 583433
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_18f8b3y._.js.map",
+      "sha256": "4d0f4c9003d0a4db144b20902df2abdd65cab58ad67d3c586f0557debbe22304",
+      "bytes": 935188
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "sha256": "25b2989f98b2c1fd76cf6b215559df7d6c4650b4508d158accaec538aa500611",
+      "bytes": 1247312
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js.map",
+      "sha256": "5420fe01f6bdc7e270ea910c5c806e49ca2227163dd3e9616b156fda2f78502f",
+      "bytes": 1852689
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "sha256": "9fa875b964db24a25107883accf3eda941d70bc8831622d3f643baf0c73da6ad",
+      "bytes": 1247312
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js.map",
+      "sha256": "5420fe01f6bdc7e270ea910c5c806e49ca2227163dd3e9616b156fda2f78502f",
+      "bytes": 1852689
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/polyfills.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "bytes": 112594
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/turbopack-01_WEB_1qy4l2_._.js",
+      "sha256": "13318b59c47ede19968f0861bad3592b0464a70d198e3e48ec4a342129cecbb5",
+      "bytes": 105459
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/webpack.js",
+      "sha256": "77ed7fc203cb9f76e833a4232b02bf2e19e7c3c19eb46df223fe3cd5f1d96ec4",
+      "bytes": 142828
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/06fam1_45vklj.css",
+      "sha256": "4bff2bcacfe5fd2a4e075bbf1b6ff15294adad84c419a6bfcc16d8bd01d1580d",
+      "bytes": 1528
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/07tbvdgopvo_2.js",
+      "sha256": "c4824dc50cdb1dd02ebf771039ae3814d8f41c3bde0eec897d526f5231e6f620",
+      "bytes": 2838
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0_zymvxbxtxg8.js",
+      "sha256": "1920f2e2388458384a9eda2688fe51ec7ff13c5c0b7303bbeecf45452bcb485d",
+      "bytes": 1040
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0a40_nr8q_9j0.js",
+      "sha256": "cbf7b2661d655d6ffbb27065935fea0421df10a8bfb5697dedc67c9f825e9556",
+      "bytes": 3774
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0bymyeb6v3hya.js",
+      "sha256": "21d164f08948179579cec1aa8d2f7c36725c3726197b469e94bdee4ad380aab5",
+      "bytes": 47877
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0c-rc6ucfr7iy.js",
+      "sha256": "a166d7be4ac53a2200d93aaad549a25eccb0773ac09d7465b204dbced8d9ec32",
+      "bytes": 161806
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0cz1d0mv5g_q7.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "bytes": 112594
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0l7m3jw34bm_2.css",
+      "sha256": "92b9affb22e52fc48b8c0b6f8177cbfee9890f260567f5bf6d20d690206241b5",
+      "bytes": 27739
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/0yq8t5r1omhbi.js",
+      "sha256": "37b71621bbfc70c8549f8bc762be468552ae920178a150715fc8a68bb7404450",
+      "bytes": 5597
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/10qazzebhsva7.js",
+      "sha256": "61b85b88329fecbb80cd3be6d8cd3785d0e8a747c2d9288bbdd7e39507ed2834",
+      "bytes": 773
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/11alhz3on8284.js",
+      "sha256": "9e5e609cccbb784e515b133c446fcdc357bc9701639e00a03d93072eb6ec15e5",
+      "bytes": 1070
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1_8h-rx8mf4a4.css",
+      "sha256": "df441a1b71b832eb7a5b3e7076026aab17c64504752282000552a8fa8eefb59e",
+      "bytes": 9002
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1adt_st7xhrkg.js",
+      "sha256": "947e5f9ce578f1d88f5f1fda58c1809fcb378c942e36a6b04e84990e8a16ac8d",
+      "bytes": 8857
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1br-jv_y--1zy.js",
+      "sha256": "a2acce11913f302479f14263f6460298c5c4e2724427957106648f616f369afc",
+      "bytes": 18477
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1dj9406n4rd50.js",
+      "sha256": "52914604bbc5a11f97456d3ab11b629aa1081f5bcb70881d800620f3e4028bdc",
+      "bytes": 410724
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1j_3g4mc689ll.js",
+      "sha256": "06e02f2d3bbefd1a435e87da6f15ae15b0525e263af115b7d643f79960c4c778",
+      "bytes": 411
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1l1cjrdvefs3y.js",
+      "sha256": "fa39340c175438d5170bb706d86e8f001908ff59197dfb01a543801d711d6c30",
+      "bytes": 891
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1qzhed05hdiv5.css",
+      "sha256": "7c07dd3a09700e8684a6eed849efae9134bd978d96d840ef707ac175d577ed4e",
+      "bytes": 28245
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1rbe9sp3c4kl9.js",
+      "sha256": "e6c45cd1f0b9b0580b120535642ac5ea7622790b5bd3f6f8b23d698ca1d1a80d",
+      "bytes": 3028
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1uf4l4cczte68.js",
+      "sha256": "075258ecccb4e033425ccba0ae1d1fd9f3e319988bf1ca1f0ede7a2a76ec9351",
+      "bytes": 2463
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/1uy-odr_p_pia.js",
+      "sha256": "509ce32c285fd50e26c5353ae03ed5b2771273ed663c64291bccb7d87baf64fe",
+      "bytes": 12933
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2ao4hrcxxmdl-.js",
+      "sha256": "292d735ac559d44f3da135822817792ca8ba0835924593c4b93c92de04be95cb",
+      "bytes": 14368
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2cje5frfozc7e.js",
+      "sha256": "6be52aebb8e15c3f86196724a6a687698034027d0bcd653ad9ee3b63e4683cbc",
+      "bytes": 26859
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2o0luub4-1lfo.js",
+      "sha256": "176d78a861a365d0a6b7e409fe6b0f3a0430180219757aa1b0dc115010bf9d3e",
+      "bytes": 22794
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2oz-kd_w52k5j.js",
+      "sha256": "8e1578a622bf648a1ae9610cb0b48c573ed593b41771ca0b92d7f44957543d61",
+      "bytes": 5959
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2rnozgf2rb09g.js",
+      "sha256": "4f2f296f1b414a2183e0c7fe4c8f382acbd1d8d9f0a84edc3e9998e33921b466",
+      "bytes": 39941
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/2x2-r5ijx5dvs.js",
+      "sha256": "8ad4fae433b6c9f44f1a4220522b4250f136969f089f23bfc1ca5015d76a9c1f",
+      "bytes": 23529
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3_tyh5ane6w_t.js",
+      "sha256": "608c4d4023951140b0c5af26996f2c1893c6e493953b81aa32c260d4d18acc9f",
+      "bytes": 3032
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3bx8vt1bktyb8.js",
+      "sha256": "910fdc554680527aae1ac8420dc88dbb2f240d6ed044d234d4bb6104ca89cbdb",
+      "bytes": 26016
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3fjlp0igym4xt.js",
+      "sha256": "b002264d4cd432d597c9495112178d78bfdbb567f0da04636919a88c02f00a54",
+      "bytes": 32890
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3k23xxovj7l_f.js",
+      "sha256": "14bb33a009311e154af39b2a0662550b2b868192ae2787203ce70c0770c8d727",
+      "bytes": 4433
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3ljahui07x2g9.js",
+      "sha256": "c99c2ac7aa54fea92d47c943700d3af65e443c42d0264d07b4b93964439f1f42",
+      "bytes": 228900
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3n5hfhym06bp2.js",
+      "sha256": "3b8da9c00ff712bb8ad4d9afaba65eb688c91a3816b224aac711f82df92a0090",
+      "bytes": 61287
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/3ztc0x93rr235.js",
+      "sha256": "7ceac2619ebafaf832153c67c8f29dabd6d8c52444ad5106b02775de058b11b5",
+      "bytes": 238881
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/44la7uqva0oqz.js",
+      "sha256": "210aaf3c38ae6208cfb748e9a81ce76f04a4c491a565d8cb5ecc4064235cb99f",
+      "bytes": 23677
+    },
+    {
+      "path": "01_WEB/.next-local-preview/static/chunks/turbopack-2j67gdt0w_-y-.js",
+      "sha256": "7c3a876c19984fd1b3d9633353fc9513312e48a082d043286485558c4af6f5ce",
+      "bytes": 9721
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/01_WEB_0jmm3vl._.js",
+      "sha256": "ee00b46fd999ea1eefe447f376a57b1b0c516cced1be65dc9de794da7c4a24ff",
+      "bytes": 534
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/01_WEB_app_previa_revisao-metallo_0d4t_hw._.js",
+      "sha256": "78c2801e71fe5e1d2ed07721fdfcea3f161ba704cd5f6e41f926833c1cb795b7",
+      "bytes": 199688
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/01_WEB_app_previa_revisao-metallo_0d4t_hw._.js.map",
+      "sha256": "5bcf28ab69f1c65e3186bb778476fa42c8235349c7bd5d85717b47a0b67e5d41",
+      "bytes": 47514
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/01_WEB_app_previa_revisao-metallo_review_module_0yk8q1p.css",
+      "sha256": "d95008a2f248dbc52a02e8eb51d9b6d89bc2b44f4fa556d3ed42594c8af56f05",
+      "bytes": 10886
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/01_WEB_app_previa_revisao-metallo_review_module_0yk8q1p.css.map",
+      "sha256": "2439386588d0a45ca0d6c07241bc2f535fefab40263d4abcd9aeff7625c7382f",
+      "bytes": 8651
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/1_mm_next_dist_00gj1qb._.js",
+      "sha256": "213dbe45d18b3b2d1e13c77f8623bd360ccfce987f7694c171e9dcff2e5af4d1",
+      "bytes": 55686
+    },
+    {
+      "path": "01_WEB/.next/dev/static/chunks/1_mm_next_dist_00gj1qb._.js.map",
+      "sha256": "599218ba1c0fd64cba3b600de45439744fa66981cc1ca12116ad141ffbf3c063",
+      "bytes": 91873
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/06fam1_45vklj.css",
+      "sha256": "4bff2bcacfe5fd2a4e075bbf1b6ff15294adad84c419a6bfcc16d8bd01d1580d",
+      "bytes": 1528
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/07tbvdgopvo_2.js",
+      "sha256": "c4824dc50cdb1dd02ebf771039ae3814d8f41c3bde0eec897d526f5231e6f620",
+      "bytes": 2838
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0_zymvxbxtxg8.js",
+      "sha256": "1920f2e2388458384a9eda2688fe51ec7ff13c5c0b7303bbeecf45452bcb485d",
+      "bytes": 1040
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0a40_nr8q_9j0.js",
+      "sha256": "cbf7b2661d655d6ffbb27065935fea0421df10a8bfb5697dedc67c9f825e9556",
+      "bytes": 3774
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0aq5mg42pi3bm.js",
+      "sha256": "1eb0274a69bfe788e9267cc9cd82f75d69dc62f01f6461892f7af59a693ddac8",
+      "bytes": 22794
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0bymyeb6v3hya.js",
+      "sha256": "21d164f08948179579cec1aa8d2f7c36725c3726197b469e94bdee4ad380aab5",
+      "bytes": 47877
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0c-rc6ucfr7iy.js",
+      "sha256": "a166d7be4ac53a2200d93aaad549a25eccb0773ac09d7465b204dbced8d9ec32",
+      "bytes": 161806
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0cz1d0mv5g_q7.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "bytes": 112594
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0h3581xt7voy_.js",
+      "sha256": "87c2bb55a33fc7cf6075d92eaf05dc99aeaa1fec85a95c3e33b4c4e4b3ec9d3e",
+      "bytes": 2463
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0hmk2mn0hqocj.js",
+      "sha256": "e81dfc940074165ff70c50ee2d5d6d632a3e9dfa5bdf572c3bd97d270cf44732",
+      "bytes": 502845
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0jw8wxlm60jp2.js",
+      "sha256": "4ad4100d456e90c853f1e7895994d8ee589ca46cf67c8e13705b70c3027e0f6a",
+      "bytes": 5959
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0l7m3jw34bm_2.css",
+      "sha256": "92b9affb22e52fc48b8c0b6f8177cbfee9890f260567f5bf6d20d690206241b5",
+      "bytes": 27739
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/0yq8t5r1omhbi.js",
+      "sha256": "37b71621bbfc70c8549f8bc762be468552ae920178a150715fc8a68bb7404450",
+      "bytes": 5597
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/10qazzebhsva7.js",
+      "sha256": "61b85b88329fecbb80cd3be6d8cd3785d0e8a747c2d9288bbdd7e39507ed2834",
+      "bytes": 773
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/11alhz3on8284.js",
+      "sha256": "9e5e609cccbb784e515b133c446fcdc357bc9701639e00a03d93072eb6ec15e5",
+      "bytes": 1070
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/131vl68okti3q.js",
+      "sha256": "6f610ea5e6523d1d547628cce84ad8bf5d6d86fdab8f2d4f99f5ef4d43f919ca",
+      "bytes": 374751
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1_8h-rx8mf4a4.css",
+      "sha256": "df441a1b71b832eb7a5b3e7076026aab17c64504752282000552a8fa8eefb59e",
+      "bytes": 9002
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1adt_st7xhrkg.js",
+      "sha256": "947e5f9ce578f1d88f5f1fda58c1809fcb378c942e36a6b04e84990e8a16ac8d",
+      "bytes": 8857
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1br-jv_y--1zy.js",
+      "sha256": "a2acce11913f302479f14263f6460298c5c4e2724427957106648f616f369afc",
+      "bytes": 18477
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1j_3g4mc689ll.js",
+      "sha256": "06e02f2d3bbefd1a435e87da6f15ae15b0525e263af115b7d643f79960c4c778",
+      "bytes": 411
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1l1cjrdvefs3y.js",
+      "sha256": "fa39340c175438d5170bb706d86e8f001908ff59197dfb01a543801d711d6c30",
+      "bytes": 891
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1ldf_url7chun.js",
+      "sha256": "a3cd0459d47403cadf4217577677b115d019a967c88d34b3ce93ef2e8baa1c69",
+      "bytes": 36105
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/1uy-odr_p_pia.js",
+      "sha256": "509ce32c285fd50e26c5353ae03ed5b2771273ed663c64291bccb7d87baf64fe",
+      "bytes": 12933
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2ao4hrcxxmdl-.js",
+      "sha256": "292d735ac559d44f3da135822817792ca8ba0835924593c4b93c92de04be95cb",
+      "bytes": 14368
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2cje5frfozc7e.js",
+      "sha256": "6be52aebb8e15c3f86196724a6a687698034027d0bcd653ad9ee3b63e4683cbc",
+      "bytes": 26859
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2css3lf2k1775.css",
+      "sha256": "50b3e7bb56b6e16bbb57ec534b43848bee4f67d560b531a224c3188991562305",
+      "bytes": 29042
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2cyq4xada1jhv.js",
+      "sha256": "031b3cb0ff5b873d95bb675d8a40e5a836943f7da62cf06b1e22dcafae1ca906",
+      "bytes": 3028
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2rnozgf2rb09g.js",
+      "sha256": "4f2f296f1b414a2183e0c7fe4c8f382acbd1d8d9f0a84edc3e9998e33921b466",
+      "bytes": 39941
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/2x2-r5ijx5dvs.js",
+      "sha256": "8ad4fae433b6c9f44f1a4220522b4250f136969f089f23bfc1ca5015d76a9c1f",
+      "bytes": 23529
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3_tyh5ane6w_t.js",
+      "sha256": "608c4d4023951140b0c5af26996f2c1893c6e493953b81aa32c260d4d18acc9f",
+      "bytes": 3032
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3bx8vt1bktyb8.js",
+      "sha256": "910fdc554680527aae1ac8420dc88dbb2f240d6ed044d234d4bb6104ca89cbdb",
+      "bytes": 26016
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3fjlp0igym4xt.js",
+      "sha256": "b002264d4cd432d597c9495112178d78bfdbb567f0da04636919a88c02f00a54",
+      "bytes": 32890
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3k23xxovj7l_f.js",
+      "sha256": "14bb33a009311e154af39b2a0662550b2b868192ae2787203ce70c0770c8d727",
+      "bytes": 4433
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3ljahui07x2g9.js",
+      "sha256": "c99c2ac7aa54fea92d47c943700d3af65e443c42d0264d07b4b93964439f1f42",
+      "bytes": 228900
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/3ztc0x93rr235.js",
+      "sha256": "7ceac2619ebafaf832153c67c8f29dabd6d8c52444ad5106b02775de058b11b5",
+      "bytes": 238881
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/44la7uqva0oqz.js",
+      "sha256": "210aaf3c38ae6208cfb748e9a81ce76f04a4c491a565d8cb5ecc4064235cb99f",
+      "bytes": 23677
+    },
+    {
+      "path": "01_WEB/.next/static/chunks/turbopack-2j67gdt0w_-y-.js",
+      "sha256": "7c3a876c19984fd1b3d9633353fc9513312e48a082d043286485558c4af6f5ce",
+      "bytes": 9721
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session.ts",
+      "sha256": "758699b3cc3af4d4a50f55809a6b2f54fcdf57cbf9a04bc206573feb9d4ff14d",
+      "bytes": 13801
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e-pdf.ts",
+      "sha256": "6d25f7f0d4013a3f6893bb3a4cb0bea9d32e9aa6e431318a43d97c22fb52384d",
+      "bytes": 9743
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e.ts",
+      "sha256": "c8fb52aa06d767fa322a39f5bbcdb0aa53bf260c6c953ba71752260c419c109b",
+      "bytes": 13509
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository.ts",
+      "sha256": "e038adb7e5c8f3dd41b59e475604d156639237f821759a4966a547dc49f76f35",
+      "bytes": 7264
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Supabase/colaborador-local.ts",
+      "sha256": "b2df1e5e80a46d51c74bbf5c45d3c443c5f4dab4e9a3d891357cf9968951a342",
+      "bytes": 13181
+    },
+    {
+      "path": "01_WEB/10_TESTES/colaborador-relatorios-epi.test.tsx",
+      "sha256": "02ffc97dbaab3a28f14806571b819617949e86c26d09e71598d34b26866c20a5",
+      "bytes": 5170
+    },
+    {
+      "path": "01_WEB/10_TESTES/epi-report-3e.test.ts",
+      "sha256": "fe477571e025efe5f45ec8b93d9e0307a9efffcf0722ac01e1e58bbffd5439ec",
+      "bytes": 10802
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/funcionarios/[id]/epi/page.tsx",
+      "sha256": "65585258a577a198b4170b4be3cd203c99a7aa6e0792cebbaff19ab723ac1831",
+      "bytes": 7132
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/funcionarios/[id]/epi/pdf/route.ts",
+      "sha256": "4101cd8b0e923c07d5d39fc7f6b39d75ea6ad260f8dc439847d4fb84700ec4bd",
+      "bytes": 2660
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/funcionarios/[id]/page.tsx",
+      "sha256": "e5078f09ea89c9f9d45263783f7dc4b283a4dc1dc9e124b03217d581f48a67b7",
+      "bytes": 10755
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador-app.tsx",
+      "sha256": "4305ca3873fbbf574f7b8110b5562d2879071a0b28006c14356024e4cdc04688",
+      "bytes": 10711
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador.module.css",
+      "sha256": "5a72f136c16720aa1a60998115ff6898a25dfe8da61e9f53e6cad32709c9d723",
+      "bytes": 21291
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/epi-relatorios.tsx",
+      "sha256": "ef8dcfb79d2c60218dd269214f139afef5c35a7c96586f3fd99fc2bfcc9e8b1a",
+      "bytes": 7332
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/meus-epis.tsx",
+      "sha256": "a69c01bbd6181448da894dcbcd1df23211b0bb55561377f121a24ef50093a6f5",
+      "bytes": 5335
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/page.tsx",
+      "sha256": "8f15af7c7c2df86f103dafa67210d818e3270857389bf9d0c941d472662bfb9f",
+      "bytes": 892
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/use-personal-detail.ts",
+      "sha256": "122f3f25ff1e2a2ae0d0ac062b276b26f072854b0dd8a50232c57629aacee996",
+      "bytes": 1435
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/banco-final.log",
+      "sha256": "4cfe968535b36b7b63958978557ff3cf4c7e8f4748b88c4a7ab1f42386b6df9f",
+      "bytes": 3159
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/build-final.log",
+      "sha256": "8620247c27d18cf989db98a1656cec1cd870117981a4fb1aac0d32088df13e07",
+      "bytes": 1981
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/contrato-ficha-historico.sql",
+      "sha256": "d632efb6dfb535f2521825a81608e54a833c3e5b1df0f0f34ebf560649d1ef5f",
+      "bytes": 5631
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/lint-ajustes-final.log",
+      "sha256": "a9f58776a09b5dac438049683f24bf85764e0ff8e7455952456165c68c158627",
+      "bytes": 13
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/lint-final.log",
+      "sha256": "b16fff7b82f5c3a6898d482451b4c004edc2f042f1dd790bea242f0c476e959d",
+      "bytes": 64
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/provas-3e.mjs",
+      "sha256": "8c59d74ce23a50b535a98e945e216f832c600cdffdcb1ced6269f5c5754a02f0",
+      "bytes": 15294
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/qualidade-final.log",
+      "sha256": "9eed6efedce168cad134a47b56a1106c675ba65acbebcee21c7f7118360a57e2",
+      "bytes": 4694
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/rede.json",
+      "sha256": "f68376f4136bdca0cbf3d75d2d50e70a657425eb50a7e34a14c1f176a8e6e9d6",
+      "bytes": 18336
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/resultado-3e.json",
+      "sha256": "2b56cb2da1d25acba5d575fe23638110ba14895a313a2faa7647a28c1f8c39c0",
+      "bytes": 3996
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/typecheck-final.log",
+      "sha256": "da337a0b8094afba3f25a6976235573b205b0d2f7adf97660364e5b9bde6728f",
+      "bytes": 69
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/unitarios-final.log",
+      "sha256": "175d49b1451772b60640f563b953904323fe97781f3fc64e6d779e2c9a7f318a",
+      "bytes": 214
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/web-final.log",
+      "sha256": "420d83167c109234d347e0ff96c28e6e9eaf9c62f63398f63edbfbb2f05a8110",
+      "bytes": 570
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/web-tentativa-paralela.log",
+      "sha256": "673c3373539fc90986fd614d51f06dfc48f0a54b4ac01a84dc75f60f600555c6",
+      "bytes": 11355
+    },
+    {
+      "path": "05_DOCUMENTACAO/43_MARCO_3E_FICHA_HISTORICO_EPI_PDF.md",
+      "sha256": "0a0f072d48f572a452320b34e474e021929cd759170ab75e7893f6c17e9b613c",
+      "bytes": 24628
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+      "sha256": "5917310c676b74ac8240f012983f5eb2d11547b9518e4b7c7126ffdaec80a5ac",
+      "bytes": 950514
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+      "sha256": "a514cdfd0c9918194f5debbc064fb9a4cb16184a49a83942d48269bf9c664078",
+      "bytes": 952196
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+      "sha256": "bb3e520845f586fa4a6d78ff6103a1fa52885c39dbb5464fae43fbed27a7ca8d",
+      "bytes": 951571
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+      "sha256": "b72848541b21c51042d84fb02cbb865b108100e453cbfa21df4abbcb3bb62c09",
+      "bytes": 987963
+    }
+  ],
+  "pdfs": [
+    {
+      "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+      "pages": 1,
+      "sha256": "5917310c676b74ac8240f012983f5eb2d11547b9518e4b7c7126ffdaec80a5ac"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+      "pages": 2,
+      "sha256": "a514cdfd0c9918194f5debbc064fb9a4cb16184a49a83942d48269bf9c664078"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+      "pages": 2,
+      "sha256": "bb3e520845f586fa4a6d78ff6103a1fa52885c39dbb5464fae43fbed27a7ca8d"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+      "pages": 24,
+      "sha256": "b72848541b21c51042d84fb02cbb865b108100e453cbfa21df4abbcb3bb62c09"
+    }
+  ],
+  "findings": [],
+  "passed": true,
+  "initial_raw_alerts": [
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0n19_fg._.js",
+      "kind": "JWT literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1vwgzi8._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/main-app.js",
+      "kind": "cookie literal",
+      "occurrences": 2
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/provas-3e.mjs",
+      "kind": "cookie literal",
+      "occurrences": 4
+    }
+  ],
+  "triage": [
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "ca24f28abb986b25961870b13df2f0bc0ca2b0335c93e92ffc96ea1819a10103",
+          "classification": "NOT_SECRET",
+          "reason": "Next library code expression, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "a7f38303ae46d1332ef85531cc18b74e7c28ba67cc2595415c59a6d7c12c29b3",
+          "classification": "NOT_SECRET",
+          "reason": "Next library comment, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/_0n19_fg._.js",
+      "kind": "JWT literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "bf1725a8f98bea37e88618702e725ba84bd8acdb2647c5e0ed638bfd685791cf",
+          "classification": "NOT_SECRET",
+          "reason": "Public local demo anon key; not a user JWT or privileged credential"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/node_modules__pnpm_1vwgzi8._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "20356e86deb12fe4121e2054cd1286e9f36c4fc7e958f5de8bf3428d3a30161e",
+          "classification": "NOT_SECRET",
+          "reason": "Library type declaration, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "ca24f28abb986b25961870b13df2f0bc0ca2b0335c93e92ffc96ea1819a10103",
+          "classification": "NOT_SECRET",
+          "reason": "Next library code expression, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_compiled_next-devtools_index_1x6z4hm.js.map",
+      "kind": "cookie literal",
+      "occurrences": 1,
+      "matches": [
+        {
+          "match_sha256": "a7f38303ae46d1332ef85531cc18b74e7c28ba67cc2595415c59a6d7c12c29b3",
+          "classification": "NOT_SECRET",
+          "reason": "Next library comment, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/main-app.js",
+      "kind": "cookie literal",
+      "occurrences": 2,
+      "matches": [
+        {
+          "match_sha256": "325427fa368098d9751a982de5f228ecd8257263b7b183817ec0eba57c9df514",
+          "classification": "NOT_SECRET",
+          "reason": "Next exported identifier, not a cookie value"
+        },
+        {
+          "match_sha256": "b321f233a0c3d9965070d1f210dcc846e15ffde982d6b8ee35ebe5c88610e364",
+          "classification": "NOT_SECRET",
+          "reason": "Next exported identifier, not a cookie value"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js.map",
+      "kind": "senha literal",
+      "occurrences": 11,
+      "matches": [
+        {
+          "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        },
+        {
+          "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+          "classification": "NOT_SECRET",
+          "reason": "SDK public documentation example"
+        }
+      ]
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/provas-3e.mjs",
+      "kind": "cookie literal",
+      "occurrences": 4,
+      "matches": [
+        {
+          "match_sha256": "48ca966e4f6c19b941e8f8a93ce663465e7d6c1a5221df89277ab705a5992ac6",
+          "classification": "NOT_SECRET",
+          "reason": "Test uses an in-memory variable, no cookie literal"
+        },
+        {
+          "match_sha256": "48ca966e4f6c19b941e8f8a93ce663465e7d6c1a5221df89277ab705a5992ac6",
+          "classification": "NOT_SECRET",
+          "reason": "Test uses an in-memory variable, no cookie literal"
+        },
+        {
+          "match_sha256": "cd46de7638f25fb01d745e107ba8b3f7f7ed011ab811a1787d79fe57c99e9aea",
+          "classification": "NOT_SECRET",
+          "reason": "Test uses an in-memory variable, no cookie literal"
+        },
+        {
+          "match_sha256": "7cf81c6de4d4039863279c749f414dffe1842813792f0d3eb969b4fc20e68556",
+          "classification": "NOT_SECRET",
+          "reason": "Test uses an in-memory variable, no cookie literal"
+        }
+      ]
+    }
+  ],
+  "heuristic_alert_groups": 18,
+  "values_redacted": true,
+  "packaging_rule": "No generated bundles, maps, env files or literal JWTs in a future audit ZIP; mandatory separate direct ZIP scan.",
+  "pdf_validation": {
+    "at": "2026-09-29T10:42:14.592380+00:00",
+    "pages": 29,
+    "checks": [
+      {
+        "file": "ficha-atual-sintetica.pdf",
+        "pages": 1,
+        "a4": true,
+        "pagination": true,
+        "history_signatures_last_page_only": false,
+        "operational_uuids_not_printed": true,
+        "unique_report_uuid": "00000000-0000-4000-8000-000000000900"
+      },
+      {
+        "file": "historico-completo-sintetico.pdf",
+        "pages": 2,
+        "a4": true,
+        "pagination": true,
+        "history_signatures_last_page_only": true,
+        "operational_uuids_not_printed": true,
+        "unique_report_uuid": "00000000-0000-4000-8000-000000000901"
+      },
+      {
+        "file": "historico-filtrado-sintetico.pdf",
+        "pages": 2,
+        "a4": true,
+        "pagination": true,
+        "history_signatures_last_page_only": true,
+        "operational_uuids_not_printed": true,
+        "unique_report_uuid": "00000000-0000-4000-8000-000000000902"
+      },
+      {
+        "file": "historico-multipagina-sintetico.pdf",
+        "pages": 24,
+        "a4": true,
+        "pagination": true,
+        "history_signatures_last_page_only": true,
+        "operational_uuids_not_printed": true,
+        "unique_report_uuid": "00000000-0000-4000-8000-000000000903"
+      }
+    ],
+    "render_scales": {
+      "100_percent_dpi": 72,
+      "200_percent_dpi": 144
+    },
+    "manual_approval": false,
+    "real_browser_zoom_proven": false
+  },
+  "privacy_initial_raw_alerts": [
+    {
+      "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+      "kind": "PDF privacy field"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+      "kind": "PDF privacy field"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+      "kind": "PDF privacy field"
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+      "kind": "PDF privacy field"
+    }
+  ],
+  "privacy_triage": [
+    {
+      "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+      "kind": "PDF privacy field",
+      "classification": "NOT_PERSONAL_DATA",
+      "reason": "binary match inside compressed image identical to the existing public logo; absent from extracted text and metadata",
+      "logo_proof": {
+        "object": "/Image-7098480789",
+        "compressed_stream_sha256": "2efb5fca0fe552755069c550dc8c7d925bd5c6b590a77e8198642a18172dfd27",
+        "decoded_pixels_sha256": "c9d17a76d92a90bc003ba2f375ca579e8bcc9063c06b0ff079c54a8588a1b213",
+        "decoded_pixels_equal_existing_public_logo": true
+      }
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+      "kind": "PDF privacy field",
+      "classification": "NOT_PERSONAL_DATA",
+      "reason": "binary match inside compressed image identical to the existing public logo; absent from extracted text and metadata",
+      "logo_proof": {
+        "object": "/Image-7098480789",
+        "compressed_stream_sha256": "2efb5fca0fe552755069c550dc8c7d925bd5c6b590a77e8198642a18172dfd27",
+        "decoded_pixels_sha256": "c9d17a76d92a90bc003ba2f375ca579e8bcc9063c06b0ff079c54a8588a1b213",
+        "decoded_pixels_equal_existing_public_logo": true
+      }
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+      "kind": "PDF privacy field",
+      "classification": "NOT_PERSONAL_DATA",
+      "reason": "binary match inside compressed image identical to the existing public logo; absent from extracted text and metadata",
+      "logo_proof": {
+        "object": "/Image-7098480789",
+        "compressed_stream_sha256": "2efb5fca0fe552755069c550dc8c7d925bd5c6b590a77e8198642a18172dfd27",
+        "decoded_pixels_sha256": "c9d17a76d92a90bc003ba2f375ca579e8bcc9063c06b0ff079c54a8588a1b213",
+        "decoded_pixels_equal_existing_public_logo": true
+      }
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+      "kind": "PDF privacy field",
+      "classification": "NOT_PERSONAL_DATA",
+      "reason": "binary match inside compressed image identical to the existing public logo; absent from extracted text and metadata",
+      "logo_proof": {
+        "object": "/Image-7098480789",
+        "compressed_stream_sha256": "2efb5fca0fe552755069c550dc8c7d925bd5c6b590a77e8198642a18172dfd27",
+        "decoded_pixels_sha256": "c9d17a76d92a90bc003ba2f375ca579e8bcc9063c06b0ff079c54a8588a1b213",
+        "decoded_pixels_equal_existing_public_logo": true
+      }
+    }
+  ],
+  "immutable_origin": {
+    "id": "METALLO-3D-LAB-20260929-R1",
+    "sha256": "4246426837e90324b1e2242ca2162dd0d2b0d3cd49c72abb8c209283ec6b9516"
+  }
+}

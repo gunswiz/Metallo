@@ -1,6 +1,8 @@
 import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:metallo/06_ACESSO_A_DADOS/site_operations_repository.dart';
+import 'package:metallo/01_TELAS/09_OBRAS_E_PEDIDOS/operation_form.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/errors.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/formatters.dart';
 import 'package:metallo/08_ESTILOS/theme.dart';
@@ -417,7 +419,7 @@ Future<void> showMaterialDistributionSheet(
                   final stock = sorted[index];
                   final access = UserAccessScope.of(context);
                   final allowed =
-                      access.canAt('consumption:write', stock.teamId) ||
+                      teams.any((team) => stock.servesTeam(team.id) && access.canAt('consumption:write', team.id)) ||
                           (access.can('materials:write') &&
                               findTeam(teams, stock.teamId)?.isCentral == true);
                   return ListTile(
@@ -425,7 +427,7 @@ Future<void> showMaterialDistributionSheet(
                         findTeam(teams, stock.teamId)?.isCentral == true
                             ? Icons.warehouse_outlined
                             : Icons.groups_2_outlined),
-                    title: Text(findTeam(teams, stock.teamId)?.name ?? 'Local'),
+                    title: Text(stock.locationName ?? findTeam(teams, stock.teamId)?.name ?? 'Local'),
                     subtitle: Text(allowed
                         ? 'Toque para registrar movimentação'
                         : 'Somente consulta'),
@@ -461,8 +463,8 @@ Future<void> showMaterialActionsDialog(
   final current = findTeam(teams, material.teamId);
   final centralMatches = teams.where((t) => t.isCentral).toList();
   final central = centralMatches.isEmpty ? null : centralMatches.first;
-  final canConsume =
-      UserAccessScope.of(context).canAt('consumption:write', material.teamId);
+  final consumingTeams = teams.where((team) => material.servesTeam(team.id) && UserAccessScope.of(context).canAt('consumption:write', team.id)).toList();
+  final canConsume = consumingTeams.isNotEmpty;
   final canReplenish = UserAccessScope.of(context).can('materials:write') &&
       current?.isCentral == true &&
       central != null;
@@ -503,17 +505,16 @@ Future<void> showMaterialActionsDialog(
   if (!context.mounted || action == null) return;
 
   if (action == 'consume') {
-    await showMaterialQuantityDialog(
-      context,
-      title: 'Consumo de ${material.name}',
-      maximum: material.quantity,
-      actionLabel: 'Registrar consumo',
-      onConfirm: (quantity, note, _) => repo.consumeMaterial(
-        itemId: material.itemId,
-        teamId: material.teamId,
-        quantity: quantity,
-        note: note,
-      ),
+    await showSiteOperation(context, SiteOperationsRepository(repo.client),
+      title: 'Consumo de ' + material.name,
+      command: 'consume',
+      fields: [
+        SiteField('team_id', 'Equipe que consumiu', options: consumingTeams.map((team) => {'id':team.id,'name':team.name}).toList()),
+        SiteField('quantity', 'Quantidade (' + material.unit + ') · saldo ' + material.quantity.toString(), kind: 'number', value: '1', max: material.quantity),
+        const SiteField('note', 'Observação', kind: 'textarea', required: false),
+      ],
+      fixed: {'item_id': material.itemId},
+      onSaved: () { repo.dashboardRepository.refreshDashboard(); },
     );
   } else if (action == 'replenish' && central != null) {
     final destinations = teams

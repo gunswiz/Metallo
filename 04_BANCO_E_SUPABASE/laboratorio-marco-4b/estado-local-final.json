@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-01T10:58:57.1125328Z",
+  "ready_for_new_events": true,
+  "loopback_only": true,
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3106
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3105
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3102
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101
+    }
+  ],
+  "remote_accessed": false,
+  "baseline_created": false,
+  "grok_sent": false
+}

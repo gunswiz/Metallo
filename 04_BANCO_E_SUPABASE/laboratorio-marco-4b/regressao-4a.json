@@ -1,0 +1,359 @@
+{
+  "at": "2026-10-01T10:30:40.750Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL — 4A local",
+  "checks": [
+    {
+      "name": "Baseline 3H confere e permanece imutável",
+      "ok": true
+    },
+    {
+      "name": "Auth/JWT/PostgREST real + João registra com GPS sintético",
+      "ok": true
+    },
+    {
+      "name": "Maria registra com GPS negado sem bloqueio",
+      "ok": true
+    },
+    {
+      "name": "GPS UNAVAILABLE preserva marcação",
+      "ok": true
+    },
+    {
+      "name": "GPS TIMEOUT preserva marcação",
+      "ok": true
+    },
+    {
+      "name": "GPS UNKNOWN preserva marcação",
+      "ok": true
+    },
+    {
+      "name": "Precisão baixa não impede marcação",
+      "ok": true
+    },
+    {
+      "name": "Precisão alta preservada sem inventar",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido lat91 vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido lon181 vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido nan vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido null vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido negativeAccuracy vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido badTime vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido infinity vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Contexto inválido mock vira UNKNOWN sem fraude/bloqueio",
+      "ok": true
+    },
+    {
+      "name": "Funcionário ativo sem equipe marca normalmente",
+      "ok": true
+    },
+    {
+      "name": "João só consulta seus eventos",
+      "ok": true
+    },
+    {
+      "name": "Maria só consulta seus eventos",
+      "ok": true
+    },
+    {
+      "name": "Horário vem do servidor, não de captured_at antigo",
+      "ok": true
+    },
+    {
+      "name": "Retry retorna mesmo evento e não muda horário original",
+      "ok": true
+    },
+    {
+      "name": "Reuso de chave alterando geo negado",
+      "ok": true
+    },
+    {
+      "name": "Maria não reutiliza intenção de João",
+      "ok": true
+    },
+    {
+      "name": "Maria não confirma intenção de João",
+      "ok": true
+    },
+    {
+      "name": "Resultado João não é consultável por Maria",
+      "ok": true
+    },
+    {
+      "name": "Injeção employee_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção punch_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção account_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção identity_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção team_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção work_id rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção marking_at rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção recorded_at rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção collector rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção hash rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção online rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Injeção no contexto geo rejeitada",
+      "ok": true
+    },
+    {
+      "name": "Intenção não iniciada falha fechada",
+      "ok": true
+    },
+    {
+      "name": "Intenção antiga sem commit expira",
+      "ok": true
+    },
+    {
+      "name": "Intenção antiga sem commit expira mesmo com contexto durável",
+      "ok": true
+    },
+    {
+      "name": "Duplo envio concorrente cria um evento",
+      "ok": true
+    },
+    {
+      "name": "Nova intenção voluntária é aceita",
+      "ok": true
+    },
+    {
+      "name": "Queda após commit 2F recupera recibo sem duplicação",
+      "ok": true
+    },
+    {
+      "name": "lab4a.intent UPDATE original negado",
+      "ok": true
+    },
+    {
+      "name": "lab4a.intent DELETE original negado",
+      "ok": true
+    },
+    {
+      "name": "lab4a.context UPDATE original negado",
+      "ok": true
+    },
+    {
+      "name": "lab4a.context DELETE original negado",
+      "ok": true
+    },
+    {
+      "name": "lab4a.receipt UPDATE original negado",
+      "ok": true
+    },
+    {
+      "name": "lab4a.receipt DELETE original negado",
+      "ok": true
+    },
+    {
+      "name": "public.lab_time_event UPDATE original negado",
+      "ok": true
+    },
+    {
+      "name": "public.lab_time_event DELETE original negado",
+      "ok": true
+    },
+    {
+      "name": "RLS e ausência de políticas/grants públicos da extensão",
+      "ok": true
+    },
+    {
+      "name": "Restart mantém originais e geo sem alteração",
+      "ok": true
+    },
+    {
+      "name": "Auth inativo/revogado não consegue identidade pessoal",
+      "ok": true
+    },
+    {
+      "name": "Revogação durante transação aborta evento e mantém contexto sem sucesso",
+      "ok": true
+    },
+    {
+      "name": "Token residual não recupera acesso após desligamento",
+      "ok": true
+    },
+    {
+      "name": "HTTP real begin/event João",
+      "ok": true
+    },
+    {
+      "name": "HTTP real begin/event Maria",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01 HTTP real servidor não permite gravação v1",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01 HTTP real gateway Web não permite gravação v1",
+      "ok": true
+    },
+    {
+      "name": "F-4A-01 HTTP real legado não expõe histórico/resultado do núcleo",
+      "ok": true
+    },
+    {
+      "name": "HTTP João não consulta intenção Maria",
+      "ok": true
+    },
+    {
+      "name": "HTTP Maria não consulta intenção João",
+      "ok": true
+    },
+    {
+      "name": "HTTP funcionário sem equipe é autorizado",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção employee_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção punch_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção account_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção identity_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção team_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção work_id",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção marking_at",
+      "ok": true
+    },
+    {
+      "name": "HTTP injeção collector",
+      "ok": true
+    },
+    {
+      "name": "HTTP querystring manipulada negada",
+      "ok": true
+    },
+    {
+      "name": "HTTP UPDATE/DELETE não oferecidos",
+      "ok": true
+    },
+    {
+      "name": "Gestão global autorizada com nomes corretos e sem latitude/longitude/hash",
+      "ok": true
+    },
+    {
+      "name": "Funcionário não recebe permissão Gestão",
+      "ok": true
+    },
+    {
+      "name": "Admin Gestão não marca ponto sem identidade pessoal",
+      "ok": true
+    },
+    {
+      "name": "Origem externa negada",
+      "ok": true
+    },
+    {
+      "name": "Nenhuma RPC/tabela 4A exposta no PostgREST",
+      "ok": true
+    },
+    {
+      "name": "Núcleo 2F permanece íntegro",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "previous_attempts": [
+    {
+      "at": "2026-10-01T06:54:23.535Z",
+      "passed": false,
+      "checks": 51,
+      "error": "ERR_ASSERTION"
+    },
+    {
+      "at": "2026-10-01T06:56:08.492Z",
+      "passed": true,
+      "checks": 75,
+      "error": null
+    },
+    {
+      "at": "2026-10-01T07:11:35.756Z",
+      "passed": true,
+      "checks": 77,
+      "error": null
+    },
+    {
+      "at": "2026-10-01T07:17:51.574Z",
+      "passed": true,
+      "checks": 77,
+      "error": null
+    },
+    {
+      "at": "2026-10-01T08:30:48.576Z",
+      "passed": true,
+      "checks": 80,
+      "error": null
+    }
+  ]
+}

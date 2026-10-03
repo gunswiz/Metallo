@@ -1,9 +1,10 @@
+import { SiteOperations } from "@/02_COMPONENTES_VISUAIS/obras-pedidos";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { updateReplacementDays } from "@/app/actions/epi-completo";
 import { DeactivateRecord } from "@/02_COMPONENTES_VISUAIS/desativar-registro";
 import { deactivateEpi } from "@/app/actions/administracao-completa";
 import { can, formatDateTime, itemKindLabel } from "@metallo/core";
-import { addEpiStock, updateEpiItem } from "@/app/actions/operations";
+import { updateEpiItem } from "@/app/actions/operations";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { StatusBadge } from "@/02_COMPONENTES_VISUAIS/status-badge";
 import { SubmitButton } from "@/02_COMPONENTES_VISUAIS/submit-button";
@@ -19,9 +20,8 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
   const query = await searchParams;
   const profile = await requireProfile();
   const service = await getMetalloService();
-  const { item, deliveries } = await service.getEpiItem(id);
+  const [{ item, deliveries }, snapshot] = await Promise.all([service.getEpiItem(id),service.siteSnapshot()]);
   const stock = item.epi_stock_batches.reduce((sum, batch) => sum + batch.quantity, 0);
-  const variants = [...item.epi_item_variants].sort((left, right) => left.sort_order - right.sort_order || left.label.localeCompare(right.label, "pt-BR"));
 
   return (
     <>
@@ -36,19 +36,8 @@ export default async function EpiItemDetailPage({ params, searchParams }: {
         <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={stock <= item.minimum_stock ? "maintenance" : "available"} label={stock <= item.minimum_stock ? "Repor" : "Regular"} /></dd></div>
       </dl></section>
       <section className="content-grid">
-        <div className="panel"><header className="panel-header"><div><h2>Estoque por variante</h2><p>Lotes disponíveis na COSEM</p></div></header><div className="panel-body list">{item.epi_stock_batches.length === 0 ? <p className="muted">Sem estoque disponível.</p> : item.epi_stock_batches.map((batch) => <div className="list-row" key={batch.id}><span className="list-row-main"><strong>{batch.variant ?? "Sem variante"}</strong><span>{batch.brand_model ?? item.brand_model ?? "Sem marca"} · lote {batch.lot_number ?? "não informado"}</span></span><span className="list-row-value">{batch.quantity} {item.unit}</span></div>)}</div></div>
-        {can(profile, "epi:write") && <div className="panel"><header className="panel-header"><div><h2>Entrada de estoque</h2><p>Cria um lote rastreável sem alterar entregas anteriores</p></div></header><div className="panel-body"><form action={addEpiStock} className="form-grid">
-          <input type="hidden" name="itemId" value={item.id} />
-          <label>Quantidade<input name="quantity" type="number" min="1" required /></label>
-          <label>Variante{variants.length > 0
-            ? <select name="variant" required defaultValue=""><option value="" disabled>Selecione</option>{variants.map((variant) => <option key={variant.value} value={variant.value}>{variant.label}</option>)}</select>
-            : <input name="variant" placeholder="Ex.: tamanho ou modelo" maxLength={80} />}
-          </label>
-          <label>C.A.<input name="caNumber" defaultValue={item.ca_number ?? ""} maxLength={60} /></label>
-          <label>Marca / modelo<input name="brandModel" defaultValue={item.brand_model ?? ""} maxLength={140} /></label>
-          <label className="full">Lote<input name="lotNumber" maxLength={100} /></label>
-          <div className="form-actions"><SubmitButton pendingLabel="Adicionando…">Adicionar ao estoque</SubmitButton></div>
-        </form></div></div>}
+        <div className="panel"><header className="panel-header"><div><h2>Estoque por variante</h2><p>Lotes identificados por obra ou estoque central</p></div></header><div className="panel-body list">{item.epi_stock_batches.length === 0 ? <p className="muted">Sem estoque disponível.</p> : item.epi_stock_batches.map((batch) => <div className="list-row" key={batch.id}><span className="list-row-main"><strong>{batch.variant ?? "Sem variante"}</strong><span>{snapshot.works.find(work=>work.id===batch.worksite_id)?.name ?? "COSEM / central"} · C.A. {batch.ca_number ?? "não informado"} · {batch.brand_model ?? item.brand_model ?? "Sem marca"} · lote {batch.lot_number ?? "não informado"}</span></span><span className="list-row-value">{batch.quantity} {item.unit}</span></div>)}</div></div>
+        {can(profile, "epi:write") && <SiteOperations initial={snapshot} profile={profile} mode="receiving" initialItem={item.id}/>}
       </section>
       {can(profile, "admin:manage") && <section className="panel"><header className="panel-header"><div><h2>Editar item</h2><p>Altera o catálogo sem reescrever o histórico entregue</p></div></header><div className="panel-body"><form action={updateEpiItem} className="form-grid">
         <input type="hidden" name="itemId" value={item.id} />

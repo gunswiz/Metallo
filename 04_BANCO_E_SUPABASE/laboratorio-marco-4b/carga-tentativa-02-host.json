@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-01T14:49:42.424Z",
+  "scope": "50 usuários sintéticos — SIMULAÇÃO SEM VALOR OFICIAL",
+  "passed": false,
+  "requests": [],
+  "phases": [],
+  "failures": [],
+  "intents": [],
+  "downloads": [],
+  "revocations": [],
+  "limits": [
+    "Um writer PGlite serializado; não prova writers distribuídos",
+    "Dados históricos fabricados antes da medição",
+    "Resposta pós-commit descartada pelo cliente; não falha física de rede",
+    "Sem SLA ou extrapolação de produção",
+    "Sem remoto, sem baseline 4B"
+  ],
+  "error": "Gateway descartável não iniciou",
+  "metrics": {
+    "requests": 0,
+    "duration_ms": 0,
+    "rps": 0,
+    "success": 0,
+    "http4xx": 0,
+    "http5xx": 0,
+    "timeouts": 0,
+    "transport_errors": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "p99_ms": 0,
+    "max_ms": 0
+  }
+}

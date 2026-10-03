@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-01T10:56:15.211Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL",
+  "checks": [
+    {
+      "dpr": 2,
+      "focused": "Recibo de marcação — laboratório",
+      "height": 844,
+      "overflow": false,
+      "overflows": [],
+      "width": 390
+    },
+    {
+      "dpr": 2,
+      "focused": "Baixar recibo em PDF",
+      "height": 900,
+      "overflow": false,
+      "overflows": [],
+      "width": 768
+    },
+    {
+      "dpr": 2,
+      "focused": "Baixar recibo em PDF",
+      "height": 900,
+      "overflow": false,
+      "overflows": [],
+      "width": 1280
+    }
+  ],
+  "receipt_survived_session_poll": true,
+  "keyboard_focus_confirmed": true,
+  "real_browser_zoom": "PENDENTE DE CONFIRMAÇÃO MANUAL — atalhos não alteraram a medição; devicePixelRatio não é prova de zoom",
+  "pdf_visual": "A4 renderizado em 1200 e 2400 pixels, sem sobreposição ou corte; não substitui confirmação do zoom real do Edge",
+  "temporary_viewport_reset": true,
+  "manual_approval": false
+}

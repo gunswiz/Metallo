@@ -1,0 +1,18 @@
+{
+  "platform": "Grok",
+  "mode": "Expert (rótulo da interface; versão exata não exibida)",
+  "conversation": "https://grok.com/c/1972efec-b6f5-46d3-9e77-8b9f0d9b50c2?rid=e16e167a-3883-43c5-81f8-bfa4bd5974af",
+  "cycle": 1,
+  "package": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo1.zip",
+  "package_sha256": "cee1e84d13136581fe8baea24551f903f067811d69092008cd9964ad8d72c9a4",
+  "prompt": "05_DOCUMENTACAO/29_PROMPT_SUPERGROK_SOMENTE_LEITURA.md",
+  "status": "resposta integral original preservada",
+  "scope": "Somente ZIP sanitizado e prompt, conforme autorização do responsável",
+  "send_observed_at": "2026-09-27T08:39:20.683Z",
+  "received_at": "2026-09-27T08:43:20.059Z",
+  "response_file": "parecer-grok-ciclo1-original.md",
+  "response_sha256": "5b533dfcce0c2b24a8e53d090f737d841d15b10f07fa12ced067b5e3cb4f118e",
+  "response_chars": 19108,
+  "capture": "Texto renderizado integral do bloco final via DOM somente leitura, sem edição; botão Copiar retornou vazio",
+  "prompt_archive": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo1.zip :: PROMPT_REVISAO_SOMENTE_LEITURA.md"
+}

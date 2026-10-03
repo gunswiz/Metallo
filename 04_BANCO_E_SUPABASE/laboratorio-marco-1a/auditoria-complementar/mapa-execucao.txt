@@ -1,0 +1,201 @@
+{
+  "phase": "after",
+  "functions": [
+    "add_epi_stock_batch",
+    "close_epi_delivery_quantity",
+    "consume_material",
+    "create_equipment_for_team",
+    "create_equipment_for_team_v2",
+    "create_material_for_team",
+    "fulfill_epi_request",
+    "register_asset_movement",
+    "register_epi_delivery",
+    "register_epi_delivery_batch",
+    "register_movement",
+    "replenish_material",
+    "request_epi_item",
+    "run_site_operation"
+  ],
+  "policies": [
+    "assignments_read",
+    "epi_deliveries_close",
+    "epi_deliveries_read",
+    "epi_employee_item_sets_read",
+    "epi_employee_items_read",
+    "epi_employees_read",
+    "epi_item_variants_read",
+    "epi_items_read",
+    "epi_ack_read",
+    "epi_ack_write",
+    "epi_profession_items_read",
+    "epi_professions_read",
+    "epi_requests_create",
+    "epi_requests_read",
+    "epi_stock_read",
+    "epi_transfers_read",
+    "operation_reasons_read",
+    "returns_read",
+    "orders_read",
+    "work_locations_read"
+  ],
+  "references": 92,
+  "employee_policies": [
+    {
+      "cmd": "SELECT",
+      "qual": "(can_operate('epi:write'::text, team_id) OR ((employee_work_team(employee_id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(employee_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "employee_assignments",
+      "permissive": "PERMISSIVE",
+      "policyname": "assignments_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "((current_status = 'active'::text) AND can_operate('epi:write'::text, team_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_deliveries",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_deliveries_close",
+      "schemaname": "public",
+      "with_check": "((current_status = ANY (ARRAY['returned'::text, 'replaced'::text, 'lost'::text, 'damaged'::text, 'consumed'::text])) AND (closed_by = ( SELECT auth.uid() AS uid)) AND (closed_at IS NOT NULL) AND can_operate('epi:write'::text, team_id))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(can_operate('epi:write'::text, team_id) OR ((employee_work_team(employee_id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(employee_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_deliveries",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_deliveries_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employee_item_sets",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employee_item_sets_admin_write",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_employee_item_sets.employee_id) AND can_operate('epi:write'::text, e.team_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employee_item_sets",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employee_item_sets_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employee_items",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employee_items_admin_write",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_employee_items.employee_id) AND can_operate('epi:write'::text, e.team_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employee_items",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employee_items_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employees",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employees_admin_write",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_employees",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_employees_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_monthly_acknowledgements.employee_id) AND can_operate('epi:write'::text, e.team_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_monthly_acknowledgements",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_ack_read",
+      "schemaname": "public",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_monthly_acknowledgements.employee_id) AND can_operate('epi:write'::text, e.team_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_monthly_acknowledgements",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_ack_write",
+      "schemaname": "public",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_monthly_acknowledgements.employee_id) AND can_operate('epi:write'::text, e.team_id))))"
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_requests",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_requests_create",
+      "schemaname": "public",
+      "with_check": "((status = 'pending'::text) AND (requested_by = ( SELECT auth.uid() AS uid)) AND (fulfilled_by IS NULL) AND (fulfilled_at IS NULL) AND can_operate('epi:write'::text, team_id) AND (EXISTS ( SELECT 1\n   FROM epi_employees e\n  WHERE ((e.id = epi_requests.employee_id) AND e.active AND (e.team_id = epi_requests.team_id)))) AND (EXISTS ( SELECT 1\n   FROM epi_items i\n  WHERE ((i.id = epi_requests.item_id) AND i.active))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "can_operate('epi:write'::text, team_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "epi_requests",
+      "permissive": "PERMISSIVE",
+      "policyname": "epi_requests_read",
+      "schemaname": "public",
+      "with_check": null
+    }
+  ],
+  "can_operate_unchanged": true
+}

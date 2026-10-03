@@ -1,0 +1,100 @@
+{
+  "created_at": "2026-09-26T23:46:07.957Z",
+  "head": "eadd1f8cf9e62b85c4c62b9d2f2b83a970ecf77c",
+  "scope": "Somente laboratorio; T15 explicito, concorrencia e roteador EPI. Remoto intocado. 1B somente visual.",
+  "t15_status": "criterios locais comprovados; nova revisao independente pendente",
+  "before_interpretation": "Policies sem guarda NULL explicita, mas tentativas reais ja negadas pela RLS transitiva de epi_employees; exploracao alegada nao reproduzida no catalogo T05.",
+  "changed_policies": [
+    "epi_employee_items_read",
+    "epi_employee_item_sets_read",
+    "epi_ack_read",
+    "epi_ack_write"
+  ],
+  "can_operate_unchanged": true,
+  "personal_dto_unchanged": true,
+  "suites": {
+    "gate": {
+      "pass": 682,
+      "total": 682,
+      "composition": "547 anteriores reexecutadas + 135 T15",
+      "finished_at": "2026-09-26T23:42:09.402Z"
+    },
+    "t15": {
+      "pass": 135,
+      "total": 135,
+      "included_in_gate": true
+    },
+    "t15_before": {
+      "pass": 117,
+      "total": 117,
+      "not_added_to_gate": true
+    },
+    "database": {
+      "pass": 31,
+      "total": 31
+    },
+    "quality": {
+      "pass": 44,
+      "total": 44,
+      "includes_database": true
+    },
+    "preview": {
+      "pass": 13,
+      "total": 13,
+      "mocked": true
+    },
+    "web": {
+      "pass": 67,
+      "total": 71,
+      "fail": 4,
+      "includes_preview": true,
+      "failure_names": [
+        "ações com serviços simulados, sem escrita remota substituição preserva locação e registra patrimônios antigo e novo",
+        "duplo envio não duplica lançamento e falha de resposta mantém o mesmo identificador",
+        "escala tipográfica e foco da interface web mantém os textos operacionais fora das escalas minúsculas",
+        "mostra apenas os direitos concedidos e reserva alertas para ADM"
+      ]
+    },
+    "network": {
+      "pass": 8,
+      "total": 8
+    },
+    "replay": {
+      "pass": 6,
+      "total": 6
+    }
+  },
+  "concurrency": "Dois cenarios, A UPDATE aberto e B JWT/PostgREST bloqueado; apos commit NULL, negacao403/42501 e fingerprints iguais.",
+  "fingerprints": {
+    "tables": 11,
+    "denied_operations": 29,
+    "scope": "Itens kits ack entregas estoque pedidos identidades contas auditorias e recibos; nenhuma alteracao em tentativas negadas."
+  },
+  "remote_reads_this_round": false,
+  "remote_mutations_this_round": false,
+  "stack_stopped_without_listeners": true,
+  "limitations": [
+    "Nao e prova exaustiva de interleavings ou de toda Gestao",
+    "Quatro falhas Web preexistentes",
+    "Auth produto1B nao iniciado",
+    "GraphQL ativo/Storage pessoal/ponto/REP-P fora",
+    "Nao houve segunda maquina fisica de rede"
+  ],
+  "references": [
+    {
+      "name": "Metallo-SuperGrok-Marcos-0-1A-1B-20260926.zip",
+      "sha256": "5770feb14cdd555a8ea7466f9510a1a11a76bbf00822f071fa189a2ea6b28624",
+      "unchanged": true
+    },
+    {
+      "name": "Metallo-Marco1A-ConfrontoFinal-20260926.zip",
+      "sha256": "c4fc4f7a42f34cecd3b59b1f7ee60e02fef93b1f56e426b51d821a178a0a5d78",
+      "unchanged": true
+    },
+    {
+      "name": "Metallo-EquipeOpcional-Pos1A-Auditoria-20260926.zip",
+      "sha256": "8f61ae82af9ce269d65ac6970b8d6a2a7580e44f356c9706caf041a987c579af",
+      "unchanged": true
+    }
+  ]
+}

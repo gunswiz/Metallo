@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-01T20:58:57.996188+00:00",
+  "listeners": [
+    {
+      "address": "127.0.0.1:3101",
+      "port": 3101,
+      "pid": 10544
+    },
+    {
+      "address": "127.0.0.1:3102",
+      "port": 3102,
+      "pid": 39880
+    },
+    {
+      "address": "127.0.0.1:3105",
+      "port": 3105,
+      "pid": 29172
+    },
+    {
+      "address": "127.0.0.1:3106",
+      "port": 3106,
+      "pid": 29172
+    },
+    {
+      "address": "127.0.0.1:54321",
+      "port": 54321,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1:54322",
+      "port": 54322,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1:54323",
+      "port": 54323,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1:54324",
+      "port": 54324,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1:54327",
+      "port": 54327,
+      "pid": 20504
+    }
+  ],
+  "temporary_ports_closed": true,
+  "preview_health": {
+    "state": null,
+    "ready_for_new_events": true,
+    "schema_ok": true,
+    "append_only_ok": true,
+    "database_ok": true,
+    "observed_ready": true,
+    "status": "READY"
+  },
+  "manual_preview_not_restarted": true,
+  "remote_accessed": false,
+  "baseline_created": false,
+  "grok": false,
+  "manual_core_not_restarted_by_this_round": true,
+  "optimized_core_validated_in_disposable_instances": true
+}

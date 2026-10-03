@@ -5,10 +5,12 @@ export function SiteEpiStockForms({
   data,
   teams,
   submit,
+  transferOnly = false,
 }: {
   data: SiteSnapshot;
   teams: SiteSnapshot["teams"];
   submit: SubmitOperation;
+  transferOnly?: boolean;
 }) {
   const batchOptions = data.batches.map((b) => ({
     id: b.id,
@@ -16,7 +18,7 @@ export function SiteEpiStockForms({
   }));
   return (
     <>
-      <SiteOperationForm
+      {!transferOnly && <SiteOperationForm
         title="Compra de EPI entregue direto na obra"
         command="epi_entry"
         submit={submit}
@@ -53,7 +55,7 @@ export function SiteEpiStockForms({
           { name: "brand_model", label: "Marca / modelo", required: false },
           { name: "lot_number", label: "Lote", required: false },
         ]}
-      />
+      />}
       <SiteOperationForm
         title="Transferir EPI da COSEM ou entre obras"
         command="epi_transfer"

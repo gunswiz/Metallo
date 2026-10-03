@@ -1,0 +1,144 @@
+{
+  "scope": "Marco 3G — laboratório local sintético",
+  "at": "2026-09-30T20:32:45.765Z",
+  "checks": [
+    {
+      "name": "A: Gestao entrega item pessoal",
+      "ok": true
+    },
+    {
+      "name": "idempotencia de entrega retorna mesmo ID",
+      "ok": true
+    },
+    {
+      "name": "B/F: item aparece somente para titular correto",
+      "ok": true
+    },
+    {
+      "name": "contrato Web valida resposta real pessoal",
+      "ok": true
+    },
+    {
+      "name": "G/I: Joao nao confirma entrega de Maria por ID",
+      "ok": true
+    },
+    {
+      "name": "H: employee_id injetado nao altera titular",
+      "ok": true
+    },
+    {
+      "name": "C: confirmacao simples separada da entrega",
+      "ok": true
+    },
+    {
+      "name": "D/E: duplo clique e duas abas formam uma confirmacao",
+      "ok": true
+    },
+    {
+      "name": "J: Joao sem equipe continua no portal",
+      "ok": true
+    },
+    {
+      "name": "J: so admin entrega para empregado sem equipe",
+      "ok": true
+    },
+    {
+      "name": "K: funcionario inativo nao executa acao",
+      "ok": true
+    },
+    {
+      "name": "F: Maria nao informa problema no item de Joao",
+      "ok": true
+    },
+    {
+      "name": "L: problema cria evento sem encerramento",
+      "ok": true
+    },
+    {
+      "name": "M/F: Joao solicita troca propria, Maria nao",
+      "ok": true
+    },
+    {
+      "name": "N: aprovacao nao cria entrega",
+      "ok": true
+    },
+    {
+      "name": "dados internos da Gestao nao aparecem no contrato pessoal",
+      "ok": true
+    },
+    {
+      "name": "request_id manipulado/usuario portal nao decide",
+      "ok": true
+    },
+    {
+      "name": "O: nova entrega nao encerra anterior",
+      "ok": true
+    },
+    {
+      "name": "Q: substituicao exige nova entrega do mesmo tipo",
+      "ok": true
+    },
+    {
+      "name": "Q/R: substituicao formal preserva historico",
+      "ok": true
+    },
+    {
+      "name": "P: devolucao so pela Gestao",
+      "ok": true
+    },
+    {
+      "name": "S: EPI classificado nao entra no 3G",
+      "ok": true
+    },
+    {
+      "name": "T: item fora do catalogo pessoal nao pode ser entregue",
+      "ok": true
+    },
+    {
+      "name": "novo item pessoal nao entra no fluxo legado de EPI",
+      "ok": true
+    },
+    {
+      "name": "Gestao sem permissao nao registra entrega",
+      "ok": true
+    },
+    {
+      "name": "R: fatos historicos impedem UPDATE",
+      "ok": true
+    },
+    {
+      "name": "U: token residual de identidade revogada nao consulta modulo",
+      "ok": true
+    },
+    {
+      "name": "visao Gestao limitada a funcionario selecionado",
+      "ok": true
+    },
+    {
+      "name": "contrato Web valida resposta real da Gestao",
+      "ok": true
+    },
+    {
+      "name": "tabelas privadas nao sao acessiveis por PostgREST",
+      "ok": true
+    },
+    {
+      "name": "Gestao com escopo nao entrega para funcionario sem equipe",
+      "ok": true
+    },
+    {
+      "name": "Gestao com escopo ve apenas equipe autorizada",
+      "ok": true
+    },
+    {
+      "name": "Gestao sem epi:write nao entrega",
+      "ok": true
+    },
+    {
+      "name": "massa manual: Joao pendente/em uso e Maria isolada",
+      "ok": true
+    }
+  ],
+  "passed": 34,
+  "total": 34
+}

@@ -1,0 +1,288 @@
+{
+  "scope": "Marco 3H — laboratório local sintético",
+  "at": "2026-10-01T02:46:04.158Z",
+  "checks": [
+    {
+      "name": "A: criar rascunho",
+      "ok": true
+    },
+    {
+      "name": "rascunho não aparece ao funcionário",
+      "ok": true
+    },
+    {
+      "name": "idempotência de criação",
+      "ok": true
+    },
+    {
+      "name": "título vazio recusado",
+      "ok": true
+    },
+    {
+      "name": "mensagem vazia recusada",
+      "ok": true
+    },
+    {
+      "name": "HTML/script recusado",
+      "ok": true
+    },
+    {
+      "name": "F02: título HTML recusado pela RPC",
+      "ok": true
+    },
+    {
+      "name": "título longo recusado",
+      "ok": true
+    },
+    {
+      "name": "mensagem longa recusada",
+      "ok": true
+    },
+    {
+      "name": "funcionário não cria",
+      "ok": true
+    },
+    {
+      "name": "funcionário não publica",
+      "ok": true
+    },
+    {
+      "name": "público inválido recusado",
+      "ok": true
+    },
+    {
+      "name": "D: publicado para Todos",
+      "ok": true
+    },
+    {
+      "name": "funcionário sem equipe vê Todos",
+      "ok": true
+    },
+    {
+      "name": "inativo não lista",
+      "ok": true
+    },
+    {
+      "name": "Equipe João isolada",
+      "ok": true
+    },
+    {
+      "name": "Equipe Maria isolada",
+      "ok": true
+    },
+    {
+      "name": "Obra João isolada",
+      "ok": true
+    },
+    {
+      "name": "Obra Maria isolada",
+      "ok": true
+    },
+    {
+      "name": "sem equipe não vê públicos específicos",
+      "ok": true
+    },
+    {
+      "name": "IDOR João→Maria",
+      "ok": true
+    },
+    {
+      "name": "IDOR Maria→João",
+      "ok": true
+    },
+    {
+      "name": "team_id injetado não concede acesso",
+      "ok": true
+    },
+    {
+      "name": "work_id injetado não concede acesso",
+      "ok": true
+    },
+    {
+      "name": "F10: João não lista por employee_id da Maria",
+      "ok": true
+    },
+    {
+      "name": "F10: João não abre por employee_id da Maria",
+      "ok": true
+    },
+    {
+      "name": "F10: view_id injetado é recusado",
+      "ok": true
+    },
+    {
+      "name": "F10: target_id injetado é recusado",
+      "ok": true
+    },
+    {
+      "name": "F10: tentativas não registram visualização da Maria",
+      "ok": true
+    },
+    {
+      "name": "tabela privada não exposta pelo PostgREST",
+      "ok": true
+    },
+    {
+      "name": "abertura retorna mensagem",
+      "ok": true
+    },
+    {
+      "name": "primeira abertura registra viewed_at",
+      "ok": true
+    },
+    {
+      "name": "não lidos remove aberto",
+      "ok": true
+    },
+    {
+      "name": "Todos mantém aberto",
+      "ok": true
+    },
+    {
+      "name": "reabertura preserva primeira hora",
+      "ok": true
+    },
+    {
+      "name": "duas abas geram uma visualização",
+      "ok": true
+    },
+    {
+      "name": "fixado ordenado acima",
+      "ok": true
+    },
+    {
+      "name": "F01: banco guarda 18h Fortaleza como 21h UTC",
+      "ok": true
+    },
+    {
+      "name": "F01: correção conserva o instante de expiração",
+      "ok": true
+    },
+    {
+      "name": "antes da expiração aparece",
+      "ok": true
+    },
+    {
+      "name": "depois da expiração desaparece",
+      "ok": true
+    },
+    {
+      "name": "expiração preserva visualização",
+      "ok": true
+    },
+    {
+      "name": "correção publicada autorizada",
+      "ok": true
+    },
+    {
+      "name": "correção visível com versão e data",
+      "ok": true
+    },
+    {
+      "name": "revisão append-only preserva anterior",
+      "ok": true
+    },
+    {
+      "name": "troca silenciosa do público negada",
+      "ok": true
+    },
+    {
+      "name": "F04: correção concorrente tem um sucesso e um conflito explícito",
+      "ok": true
+    },
+    {
+      "name": "F04: correção concorrente não cria revisão extra",
+      "ok": true
+    },
+    {
+      "name": "arquivamento autorizado",
+      "ok": true
+    },
+    {
+      "name": "arquivado não abre nem lista",
+      "ok": true
+    },
+    {
+      "name": "arquivamento preserva histórico",
+      "ok": true
+    },
+    {
+      "name": "funcionário não arquiva",
+      "ok": true
+    },
+    {
+      "name": "paginação limita resultado",
+      "ok": true
+    },
+    {
+      "name": "limite excessivo recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê resumo sem lista nominal",
+      "ok": true
+    },
+    {
+      "name": "funcionário não vê resumo Gestão",
+      "ok": true
+    },
+    {
+      "name": "mudança de equipe revoga acesso anterior",
+      "ok": true
+    },
+    {
+      "name": "mudança de equipe revoga ID direto",
+      "ok": true
+    },
+    {
+      "name": "novo público atual passa a aparecer",
+      "ok": true
+    },
+    {
+      "name": "vínculo ambíguo falha seguro",
+      "ok": true
+    },
+    {
+      "name": "vínculo encerrado falha seguro",
+      "ok": true
+    },
+    {
+      "name": "sem equipe continua no portal",
+      "ok": true
+    },
+    {
+      "name": "duplo clique não duplica comunicado",
+      "ok": true
+    },
+    {
+      "name": "dupla publicação não duplica evento",
+      "ok": true
+    },
+    {
+      "name": "Gestão engenheiro não cria",
+      "ok": true
+    },
+    {
+      "name": "Gestão engenheiro não publica",
+      "ok": true
+    },
+    {
+      "name": "Gestão engenheiro não arquiva",
+      "ok": true
+    },
+    {
+      "name": "Gestão engenheiro não recebe resumo",
+      "ok": true
+    },
+    {
+      "name": "identidade revogada com JWT antigo não lista comunicados",
+      "ok": true
+    },
+    {
+      "name": "identidade revogada com JWT antigo não abre comunicado",
+      "ok": true
+    }
+  ],
+  "passed": 70,
+  "failed": 0
+}

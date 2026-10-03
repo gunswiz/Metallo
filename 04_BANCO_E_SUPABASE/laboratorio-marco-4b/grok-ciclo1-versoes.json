@@ -1,0 +1,30 @@
+{
+  "scope": "Mesmo prompt e ZIP do ciclo 1; versões observadas pela UI, não novos pacotes/ciclos",
+  "versions": [
+    {
+      "version": 1,
+      "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d?rid=058c01f4-9a6f-4446-a6ac-13ba893f7041",
+      "text": "Grok não conseguiu concluir a resposta.\nPor favor, tente novamente mais tarde ou use um modelo diferente.",
+      "verdictDelivered": false
+    },
+    {
+      "version": 2,
+      "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d?rid=d07dc4b7-bb6f-4a67-985f-6059b29c2528",
+      "text": "Trabalhou por 3m 39s\n\nManifesto bate com 182 arquivos; o ZIP de amostra diverge do hash registrado na verificação. Vou cruzar evidência de carga e código das fronteiras.",
+      "serviceError": "Este modelo está temporariamente indisponível. Por favor, tente um modelo diferente.",
+      "verdictDelivered": false,
+      "interrupted": true
+    },
+    {
+      "version": 3,
+      "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d?rid=37f5473e-355d-4fd2-b2cb-d3e76ffd6fea",
+      "text": "Este modelo está temporariamente indisponível. Por favor, tente um modelo diferente.",
+      "verdictDelivered": false
+    },
+    {
+      "version": 4,
+      "originalFile": "parecer-grok-ciclo1-original.md",
+      "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d?rid=580b1bbb-8609-4c8e-ad29-7ef9072c6057"
+    }
+  ]
+}

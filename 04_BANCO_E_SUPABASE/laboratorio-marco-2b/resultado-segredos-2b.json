@@ -1,0 +1,44 @@
+{
+  "at": "2026-09-27T18:49:55.693Z",
+  "scope": "fontes 2B, evidências JSON/log, bundles Web da prévia local e ZIP opcional",
+  "sourceFiles": 35,
+  "clientBundles": 75,
+  "bytes": 29228616,
+  "findings": [],
+  "zip": {
+    "path": "outputs/Metallo-Marco2B-BaselineAprovada-20260927-R1.zip",
+    "entries": 205,
+    "sha256": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0"
+  },
+  "zipScans": [
+    {
+      "path": "outputs/Metallo-Marco2B-PontoExperimental-Auditoria-20260927-Ciclo1.zip",
+      "entries": 68,
+      "sha256": "0fd2111e86edfacc7c9998f7aaa3becf32c37ad015f6364c6f97322969ff6436",
+      "at": "2026-09-27T18:09:08.656Z",
+      "passed": true
+    },
+    {
+      "path": "outputs/Metallo-Marco1C-BaselineAprovada-20260927-R1.zip",
+      "entries": 164,
+      "sha256": "ea672a8c90c0f1b4de6c5e739404508b1fc68523e0d8c6d91bcd24f8621f70ae",
+      "at": "2026-09-27T18:19:29.248Z",
+      "passed": true
+    },
+    {
+      "path": "outputs/Metallo-Marco2B-PontoExperimental-Auditoria-20260927-Ciclo2.zip",
+      "entries": 74,
+      "sha256": "3ce816b021dcfa6087d14cfa2d7306edeb35e6f62afc009f70f81ecab1429bd2",
+      "at": "2026-09-27T18:21:46.593Z",
+      "passed": true
+    },
+    {
+      "path": "outputs/Metallo-Marco2B-BaselineAprovada-20260927-R1.zip",
+      "entries": 205,
+      "sha256": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+      "at": "2026-09-27T18:49:55.692Z",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

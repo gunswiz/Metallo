@@ -1,11 +1,11 @@
-import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen, waitFor, within} from '@testing-library/react';
 import {afterEach,beforeEach,expect,it,vi} from 'vitest';
 import {SiteOperations} from '@/02_COMPONENTES_VISUAIS/obras-pedidos';
 import type {SiteSnapshot} from '@/03_FUNCOES_E_LOGICA/operacoesObra';
 const {rpc}=vi.hoisted(()=>({rpc:vi.fn()}));
 const userId='a0000000-0000-4000-8000-000000000001';
 vi.mock('@/05_ACESSO_A_DADOS/Supabase/client',()=>({createClient:()=>({rpc,auth:{getUser:async()=>({data:{user:{id:'a0000000-0000-4000-8000-000000000001'}}})}})}));
-const data:SiteSnapshot={works:[],teams:[{id:'team',name:'Equipe Teste',worksite_id:null,central:false}],materials:[{id:'material',name:'Disco de teste',code:'MAT',unit:'un',stock:[]}],epi_items:[],batches:[],employees:[],assignments:[],assets:[],orders:[],rental_returns:[],rental_details:[],alerts:[]};
+const data:SiteSnapshot={works:[],teams:[{id:'team',name:'Equipe Teste',worksite_id:null,central:false}],materials:[{id:'material',name:'Disco de teste',code:'MAT',unit:'un',stock:[{team_id:'team',quantity:10}]}],epi_items:[],batches:[],employees:[],assignments:[],assets:[],orders:[],rental_returns:[],rental_details:[],alerts:[]};
 const profile={id:userId,fullName:'Responsável Teste',role:'collaborator' as const,active:true,teamId:'team',operationPermissions:['consumption:write'],operationTeamIds:null};
 beforeEach(()=>{
  localStorage.clear();rpc.mockReset();
@@ -14,11 +14,16 @@ beforeEach(()=>{
 });
 afterEach(cleanup);
 it('mostra apenas os direitos concedidos e reserva alertas para ADM',()=>{
- render(<SiteOperations initial={data} profile={profile}/>);
- expect(screen.getByText('Registrar consumo diário')).toBeInTheDocument();
- expect(screen.queryByText('Registrar compra entregue direto na obra')).not.toBeInTheDocument();
+ const view=render(<SiteOperations initial={data} profile={profile} mode="movement"/>);
+ expect(screen.getByRole('heading',{name:'Movimentar material'})).toBeInTheDocument();
+ expect(within(screen.getByLabelText('Operação')).getAllByRole('option').map(o=>o.textContent)).toEqual(['Consumo']);
+ expect(screen.queryByRole('option',{name:'Entrada sem pedido'})).not.toBeInTheDocument();
+ view.rerender(<SiteOperations initial={data} profile={profile}/>);
  expect(screen.queryByRole('button',{name:/Alertas/})).not.toBeInTheDocument();
  expect(screen.queryByRole('button',{name:'Obras e equipes'})).not.toBeInTheDocument();
+ view.rerender(<SiteOperations initial={data} profile={{...profile,role:'admin'}}/>);
+ expect(screen.getByRole('button',{name:/Alertas/})).toBeInTheDocument();
+ expect(screen.getByRole('button',{name:'Obras e equipes'})).toBeInTheDocument();
 });
 it('duplo envio não duplica lançamento e falha de resposta mantém o mesmo identificador',async()=>{
  let release:()=>void=()=>{};
@@ -26,15 +31,18 @@ it('duplo envio não duplica lançamento e falha de resposta mantém o mesmo ide
  const sent:string[]=[];let fail=true;
  rpc.mockImplementation(async(command:string,args:Record<string,unknown>)=>{
    if(command==='site_dashboard')return {data,error:null};
+   expect(command).toBe('run_site_operation');
+   expect(args.p_command).toBe('material_movement');
+   expect(args.p_data).toEqual(expect.objectContaining({item_id:'material',origin_team_id:'team',movement_type:'consumption',quantity:2,actor_id:userId}));
    sent.push(args.p_operation_id as string);
    expect(localStorage.getItem(`metallo-operations-v1-${userId}`)).toContain(sent.at(-1));
    await gate;
    return {data:{},error:fail?{message:'network failure'}:null};
  });
- render(<SiteOperations initial={data} profile={profile}/>);
- fireEvent.change(screen.getByLabelText('Equipe que está executando o serviço'),{target:{value:'team'}});
- fireEvent.change(screen.getByLabelText('Material consumido'),{target:{value:'material'}});
- fireEvent.change(screen.getByLabelText('Quantidade'),{target:{value:'2'}});
+ render(<SiteOperations initial={data} profile={profile} mode="movement"/>);
+ fireEvent.change(screen.getByLabelText('Equipe que consumiu'),{target:{value:'team'}});
+ fireEvent.change(screen.getByLabelText('Material'),{target:{value:'material'}});
+ fireEvent.change(screen.getByLabelText('Quantidade (un)'),{target:{value:'2'}});
  const form=screen.getByRole('button',{name:'Registrar',hidden:true}).closest('form')!;
  fireEvent.submit(form);fireEvent.submit(form);
  await waitFor(()=>expect(sent).toHaveLength(1));release();

@@ -1,0 +1,114 @@
+{
+  "started_at": "2026-09-27T11:45:14.874Z",
+  "checks": [
+    {
+      "name": "Coletor conecta pelo socket local e fica ativo",
+      "ok": true
+    },
+    {
+      "name": "Nenhuma porta publicada; restart automático desativado",
+      "ok": true
+    },
+    {
+      "name": "Dependência indisponível gera espera, sem declarar falha do portal",
+      "ok": true
+    },
+    {
+      "name": "Auth principal continua respondendo",
+      "ok": true
+    },
+    {
+      "name": "Cinco tentativas em ordem levam a estado de espera",
+      "ok": true,
+      "detail": [
+        {
+          "epoch": 1790509535,
+          "attempt": 1,
+          "next_delay": 5
+        },
+        {
+          "epoch": 1790509542,
+          "attempt": 2,
+          "next_delay": 10
+        },
+        {
+          "epoch": 1790509555,
+          "attempt": 3,
+          "next_delay": 20
+        },
+        {
+          "epoch": 1790509577,
+          "attempt": 4,
+          "next_delay": 40
+        },
+        {
+          "epoch": 1790509620,
+          "attempt": 5,
+          "next_delay": 300
+        }
+      ]
+    },
+    {
+      "name": "Backoff real de5/10/20/40s e espera final de300s",
+      "ok": true
+    },
+    {
+      "name": "Container permaneceu vivo sem loop de restart",
+      "ok": true
+    },
+    {
+      "name": "Espera usa menos de2% de CPU",
+      "ok": true,
+      "detail": {
+        "cpu": "0.00%",
+        "memory": "2.41MiB / 192MiB"
+      }
+    },
+    {
+      "name": "Supervisor sem spam: até8 mensagens de estado durante indisponibilidade",
+      "ok": true
+    },
+    {
+      "name": "Reconexão automática após restauração da dependência",
+      "ok": true
+    },
+    {
+      "name": "Shutdown limpo e limitado, sem SIGKILL",
+      "ok": true
+    },
+    {
+      "name": "Reinício explícito recupera coleta",
+      "ok": true
+    }
+  ],
+  "attempts": [
+    {
+      "epoch": 1790509535,
+      "attempt": 1,
+      "next_delay": 5
+    },
+    {
+      "epoch": 1790509542,
+      "attempt": 2,
+      "next_delay": 10
+    },
+    {
+      "epoch": 1790509555,
+      "attempt": 3,
+      "next_delay": 20
+    },
+    {
+      "epoch": 1790509577,
+      "attempt": 4,
+      "next_delay": 40
+    },
+    {
+      "epoch": 1790509620,
+      "attempt": 5,
+      "next_delay": 300
+    }
+  ],
+  "scope": "Docker/Analytics locais reais, intervalos reais de5/10/20/40 e espera300 segundos; sem relógio simulado.",
+  "finished_at": "2026-09-27T11:52:14.206Z",
+  "passed": true
+}

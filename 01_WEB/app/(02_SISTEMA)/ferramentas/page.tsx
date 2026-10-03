@@ -19,14 +19,14 @@ export default async function ToolsPage({ searchParams }: { searchParams: Search
   const result = await service.listEpiItems(input, "personal_tool");
   return (
     <>
-      <PageHeader eyebrow="ITENS PESSOAIS" title="Ferramentas" description="Ferramentas manuais atribuídas a funcionários e controladas pela COSEM." actions={<>
+      <PageHeader eyebrow="ITENS PESSOAIS" title="Ferramentas" description="Catálogo e saldo operacional da COSEM. As atribuições pessoais 3G têm histórico próprio; esta prévia não baixa lote automaticamente." actions={<>
         {can(profile, "admin:manage") && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Novo item pessoal</Link>}
-        {can(profile, "epi:write") && <Link className="button primary" href="/epis/entrega?kind=personal_tool"><PackageCheck size={16} />Entregar item</Link>}
+        {can(profile, "epi:write") && <Link className="button primary" href="/ferramentas/atribuicoes"><PackageCheck size={16} />Ver atribuições</Link>}
       </>} />
       <section className="panel">
         <div className="panel-body"><SearchToolbar placeholder="Nome ou código da ferramenta" q={input.q} /></div>
         {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table">
-          <thead><tr><th>Ferramenta</th><th>Modelo</th><th>Estoque disponível</th><th>Política de retorno</th><th>Situação</th></tr></thead>
+          <thead><tr><th>Ferramenta</th><th>Modelo</th><th>Saldo cadastrado na COSEM</th><th>Política de retorno</th><th>Situação</th></tr></thead>
           <tbody>{result.data.map((item) => { const stock = item.epi_stock_batches.reduce((sum, batch) => sum + batch.quantity, 0); return <tr key={item.id}><td><Link className="primary-cell" href={`/epis/${item.id}`}>{item.name}</Link><span className="secondary-cell">{item.code}</span></td><td>{item.brand_model ?? "Não informado"}</td><td>{stock} {item.unit}</td><td>{returnPolicyLabel(item.return_policy)}</td><td><StatusBadge value={stock <= item.minimum_stock ? "maintenance" : "available"} label={stock <= item.minimum_stock ? "Repor" : "Disponível"} /></td></tr>; })}</tbody>
         </table></div>}
         <Pagination {...result} q={input.q} />

@@ -1,0 +1,164 @@
+{
+  "captured_at": "2026-09-26T12:04:51.926Z",
+  "source": "Docker Desktop local; PostgreSQL 17",
+  "remote_capture": "2026-09-26",
+  "summary": {
+    "relations": {
+      "remote": 31,
+      "local": 31,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "columns": {
+      "remote": 274,
+      "local": 274,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "constraints": {
+      "remote": 169,
+      "local": 169,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "indexes": {
+      "remote": 126,
+      "local": 126,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "policies": {
+      "remote": 70,
+      "local": 70,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "triggers": {
+      "remote": 17,
+      "local": 17,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "functions": {
+      "remote": 57,
+      "local": 57,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      },
+      "body_fingerprint_different": 0,
+      "body_examples": []
+    },
+    "views": {
+      "remote": 0,
+      "local": 0,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "extensions": {
+      "remote": 5,
+      "local": 5,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "grants": {
+      "remote": 420,
+      "local": 420,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "schemas": {
+      "remote": 12,
+      "local": 12,
+      "only_remote": 3,
+      "only_local": 3,
+      "differing": 0,
+      "examples": {
+        "only_remote": [
+          "metallo_safe_20260903",
+          "metallo_safe_posttest_20260904",
+          "supabase_migrations"
+        ],
+        "only_local": [
+          "_realtime",
+          "pgbouncer",
+          "supabase_functions"
+        ],
+        "differing": []
+      }
+    },
+    "auth_fks": {
+      "remote": 21,
+      "local": 19,
+      "only_remote": 2,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [
+          "auth.mfa_recovery_code_sets.mfa_recovery_code_sets_user_id_fkey",
+          "auth.scim_users.scim_users_user_id_fkey"
+        ],
+        "only_local": [],
+        "differing": []
+      }
+    }
+  }
+}

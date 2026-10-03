@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-28T21:15:10.514Z",
+  "scope": "fontes e bundles locais 3B; ZIP final",
+  "sourceFiles": 11,
+  "clientBundles": 112,
+  "bytes": 31604699,
+  "zip": {
+    "path": "outputs/Metallo-Marco3C-TrocaEPI-Auditoria-20260928-Ciclo2.zip",
+    "entries": 65,
+    "sha256": "8f39505a03fab270dbae3faffcf98f157e7d5205b74e53126b5209c3d0d1df87"
+  },
+  "findings": [],
+  "passed": true
+}

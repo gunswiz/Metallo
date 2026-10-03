@@ -17,6 +17,7 @@
     "test:quality": "node --test 06_TESTES_E_QUALIDADE/*.test.mjs"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8"
+    "@electric-sql/pglite": "^0.5.8",
+    "supabase": "2.117.0"
   }
 }

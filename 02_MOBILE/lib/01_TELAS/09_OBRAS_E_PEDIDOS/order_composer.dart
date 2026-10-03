@@ -20,10 +20,9 @@ class OrderComposer extends StatefulWidget {
 }
 
 class _OrderComposerState extends State<OrderComposer> {
-  late String kind = widget.canPurchase ? 'material' : 'rental';
+  String kind = 'material';
   String? item, team;
   final quantity = TextEditingController(text: '1'),
-      description = TextEditingController(),
       variant = TextEditingController(),
       note = TextEditingController();
   final lines = <Map<String, dynamic>>[];
@@ -32,7 +31,7 @@ class _OrderComposerState extends State<OrderComposer> {
   DateTime occurred = DateTime.now();
   @override
   void dispose() {
-    for (final c in [quantity, description, variant, note]) {
+    for (final c in [quantity, variant, note]) {
       c.dispose();
     }
     super.dispose();
@@ -40,42 +39,76 @@ class _OrderComposerState extends State<OrderComposer> {
 
   List<Map<String, dynamic>> get choices => kind == 'material'
       ? rowsOf(widget.data, 'materials')
-      : kind == 'epi'
-          ? rowsOf(widget.data, 'epi_items')
-          : [];
+      : rowsOf(widget.data, 'epi_items');
   void add() {
-    if (busy) return;
+    if (busy || !widget.canPurchase) return;
     final n = int.tryParse(quantity.text);
     final selected = choices.where((c) => c['id'] == item).firstOrNull;
-    final name = kind == 'rental'
-        ? description.text.trim()
-        : selected?['name']?.toString();
+    final name = selected?['name']?.toString();
     final variants = (selected?['variants'] as List?) ?? [];
     if (n == null ||
         n < 1 ||
         n > 100000 ||
         name == null ||
         name.isEmpty ||
-        lines.length >= 100 ||
         (variants.isNotEmpty && !variants.contains(variant.text))) {
       setState(() => error = 'Confira o item, a quantidade e a variante.');
       return;
     }
+    final selectedVariant = variant.text.trim();
+    final existing = lines.indexWhere((line) => line['kind'] == kind &&
+        (line['item_id'] ?? line['epi_item_id']) == item && line['variant'] == selectedVariant);
+    if ((existing >= 0 && (lines[existing]['quantity'] as int) + n > 100000) ||
+        (existing < 0 && lines.length >= 100)) {
+      setState(() => error = 'Use até 100 itens e até 100.000 por item.');
+      return;
+    }
     setState(() {
-      lines.add({
+      if (existing >= 0) {
+        lines[existing]['quantity'] = (lines[existing]['quantity'] as int) + n;
+      } else {
+        lines.add({
         'kind': kind,
         'description': name,
         'quantity': n,
-        'variant': variant.text.trim(),
+        'variant': selectedVariant,
         if (kind == 'material') 'item_id': item,
         if (kind == 'epi') 'epi_item_id': item
       });
+      }
+      item = null;
+      quantity.text = '1';
+      variant.clear();
       error = null;
     });
   }
 
+  Future<void> editQuantity(int index) async {
+    final field = GlobalKey<FormState>();
+    final controller = TextEditingController(text: lines[index]['quantity'].toString());
+    try {
+      final value = await showDialog<int>(context: context, builder: (dialog) => AlertDialog(
+        title: Text(lines[index]['description'].toString()),
+        content: Form(key: field, child: TextFormField(
+          controller: controller, autofocus: true, keyboardType: TextInputType.number,
+          decoration: const InputDecoration(labelText: 'Quantidade'),
+          validator: (text) {
+            final n = int.tryParse(text ?? '');
+            return n == null || n < 1 || n > 100000 ? 'Use um inteiro de 1 a 100.000.' : null;
+          })),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialog), child: const Text('Cancelar')),
+          FilledButton(onPressed: () { if (field.currentState!.validate()) Navigator.pop(dialog, int.parse(controller.text)); }, child: const Text('Guardar')),
+        ],
+      ));
+      if (value != null && mounted) setState(() => lines[index]['quantity'] = value);
+    } finally {
+      WidgetsBinding.instance.addPostFrameCallback((_) => controller.dispose());
+    }
+  }
+
   Future<void> send() async {
-    if (busy || lines.isEmpty) return;
+    if (busy || lines.isEmpty || !widget.canPurchase) return;
     if (team == null) {
       setState(() => error = 'Selecione a equipe solicitante.');
       return;
@@ -138,9 +171,6 @@ class _OrderComposerState extends State<OrderComposer> {
                       value: 'epi',
                       child: Text('EPI / fardamento / item pessoal'))
                 ],
-                if (widget.canRent)
-                  const DropdownMenuItem(
-                      value: 'rental', child: Text('Máquina alugada'))
               ],
               onChanged: busy
                   ? null
@@ -150,16 +180,8 @@ class _OrderComposerState extends State<OrderComposer> {
                         variant.clear();
                       })),
           const SizedBox(height: 14),
-          if (kind == 'rental')
-            TextField(
-                controller: description,
-                enabled: !busy,
-                maxLength: 180,
-                decoration:
-                    const InputDecoration(labelText: 'Máquina necessária'))
-          else
-            DropdownButtonFormField<String>(
-                key: ValueKey(kind),
+          DropdownButtonFormField<String>(
+                key: ValueKey('$kind:$item'),
                 isExpanded: true,
                 initialValue: item,
                 decoration: const InputDecoration(labelText: 'Item'),
@@ -175,6 +197,12 @@ class _OrderComposerState extends State<OrderComposer> {
                           item = v;
                           variant.clear();
                         })),
+          if (widget.canRent)
+            const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                    'Máquinas são registradas em Máquinas alugadas quando a necessidade surgir.',
+                    style: TextStyle(color: Colors.white60))),
           const SizedBox(height: 14),
           if (variants.isNotEmpty)
             DropdownButtonFormField<String>(
@@ -203,15 +231,21 @@ class _OrderComposerState extends State<OrderComposer> {
               onPressed: busy ? null : add,
               icon: const Icon(Icons.add),
               label: const Text('Adicionar à lista')),
+          const SizedBox(height: 14),
+          Text('Itens do pedido (${lines.length})', style: Theme.of(context).textTheme.titleMedium),
+          if (lines.isEmpty) const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Text('Adicione os materiais e EPI acima; depois envie a lista completa à ADM.')),
           for (var i = 0; i < lines.length; i++)
             ListTile(
                 title: Text(
                     '${lines[i]['quantity']} × ${lines[i]['description']}'),
-                subtitle: Text(lines[i]['variant'].toString()),
-                trailing: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed:
-                        busy ? null : () => setState(() => lines.removeAt(i)))),
+                subtitle: Text([lines[i]['kind'] == 'epi' ? 'EPI' : 'Material', if (lines[i]['variant'].toString().isNotEmpty) lines[i]['variant']].join(' · ')),
+                onTap: busy ? null : () => editQuantity(i),
+                trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                  IconButton(tooltip: 'Editar quantidade', icon: const Icon(Icons.edit_outlined), onPressed: busy ? null : () => editQuantity(i)),
+                  IconButton(tooltip: 'Remover item', icon: const Icon(Icons.close), onPressed: busy ? null : () => setState(() => lines.removeAt(i))),
+                ])),
           const Divider(),
           DropdownButtonFormField<String>(
               initialValue: team,

@@ -1,0 +1,743 @@
+{
+  "at": "2026-10-01T09:22:36.667528+00:00",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL; fontes/evidências 4A e bundles locais; não é scan de ZIP nem baseline",
+  "origin": {
+    "id": "METALLO-3H-LAB-20261001-R1",
+    "sha256": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd",
+    "manifest_entry_hashes_verified": true
+  },
+  "gates": {
+    "origin_sha256_identical": true,
+    "frozen_core_sources_identical": true,
+    "4a_80": true,
+    "audit_13": true,
+    "web_246": true,
+    "2f_28": true,
+    "network_8": true,
+    "bank_31": true,
+    "quality_44": true,
+    "typecheck_empty_log": true,
+    "lint_zero_warnings_empty_log": true,
+    "build_success": true,
+    "one_shot_no_watch_api": true,
+    "no_private_secrets_in_scanned_sources_bundles_evidence": true
+  },
+  "passed": true,
+  "frozen_core": [
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/auth-local.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/autorizacao.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/backup.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/http-lab.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/integridade.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/nucleo.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-revogacao-concorrente-2b.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-transporte-2b.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/recuperacao.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/schema.sql",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/sessao-local-2e.sql",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/processo-ensaio.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-2d.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-auth-real-2d.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/verificar-segredos-2d.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2e/gerar-pacote-auditoria-2e.py",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2e/preparar-2e.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2e/provas-2e.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2e/servidor-2e.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/gerar-pacote-auditoria-2f.py",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/origem-local-2f.sql",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/preparar-2f.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/provas-2f.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/reconciliacao.mjs",
+      "identical": true
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2f/servidor-2f.mjs",
+      "identical": true
+    }
+  ],
+  "selected_changes_since_origin": [
+    {
+      "path": "01_WEB/02_COMPONENTES_VISUAIS/sidebar-nav.tsx",
+      "status": "DIFFERENT_FROM_3H"
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Ponto/geolocalizacao-evento.ts",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia.ts",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Ponto/ponto-gestao.ts",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Ponto/ponto-online.ts",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/10_TESTES/ponto-online.test.tsx",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/ponto-laboratorio/page.tsx",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/app/api/ponto-online/[...path]/route.ts",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador-app.tsx",
+      "status": "DIFFERENT_FROM_3H"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador.module.css",
+      "status": "DIFFERENT_FROM_3H"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/meu-ponto-online.tsx",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "01_WEB/proxy.ts",
+      "status": "DIFFERENT_FROM_3H"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/verificar-rede-local.mjs",
+      "status": "DIFFERENT_FROM_3H"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/ambiente.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/auditoria-4a.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/banco.log",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/build.log",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/catalogo-autorizacao-local.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/extensao.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/extensao.sql",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/gerar-pacote-auditoria-4a.py",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/lint.log",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/provas-4a.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/provas-auditoria-4a.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/qualidade.log",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/rede.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/resultado-4a.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/resultado-auditoria-4a.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/servidor-4a.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/sessao-http.mjs",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/typecheck.log",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/verificar-4a.py",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/visual-4a.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/web-completa-4a.json",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "05_DOCUMENTACAO/47_MARCO_4A_MEU_PONTO_ONLINE_GEOLOCALIZACAO.md",
+      "status": "NOT_IN_3H_INVENTORY"
+    },
+    {
+      "path": "05_DOCUMENTACAO/MAPA_DO_METALLO.md",
+      "status": "DIFFERENT_FROM_3H"
+    }
+  ],
+  "source_and_evidence_files_scanned": 36,
+  "client_bundles_scanned": 182,
+  "known_private_values_compared_only_in_memory": 19,
+  "local_anon_public_key_occurrences_allowed": 1,
+  "reviewed_public_documentation_examples": [
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-gestao-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/0s8r_@supabase_auth-js_dist_module_1ns1kyl._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_0vpryh-._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1cb3f-w._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "4ddfb4d009a1b5e9b96066012e9938964fae159dcd750668f47eda1fb3659d61",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "bd759ac61d5b17b5dc333bd0de629955d95e4565480a5a3809d7ad474271c7a0",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "39cc3212a766e41f58b7ba39291f4a062c94962d25104f30e387acd6b3f3cc26",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    },
+    {
+      "path": "01_WEB/.next-local-preview/dev/static/chunks/node_modules__pnpm_1iyqd2i._.js",
+      "match_sha256": "a5fd2fe86feca1bcab7db0b6938186ec891c3d0d1c9bf5b202d5b442671b912c",
+      "reason": "exemplo público em comentário de documentação @supabase/auth-js; não é credencial do projeto"
+    }
+  ],
+  "findings": [],
+  "inventory": [
+    {
+      "path": "01_WEB/02_COMPONENTES_VISUAIS/sidebar-nav.tsx",
+      "bytes": 2693,
+      "sha256": "e0c377c227fc82e2f303c99dc9291a6f454945cec64a23404168f09293da122a"
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Ponto/geolocalizacao-evento.ts",
+      "bytes": 1685,
+      "sha256": "2ed64f05ebb8294fafb33aa4c47ce2b8c0497e1a518dbf2b9c8dba6f2b4e6033"
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia.ts",
+      "bytes": 800,
+      "sha256": "b4e0a4153472c400bd50f16d75e470f107c4191e1124481c700e6a85239a3061"
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Ponto/ponto-gestao.ts",
+      "bytes": 1103,
+      "sha256": "11bfb4024ccadbd7028595fff8399f718c951bbc0b7f6b90bd6da7a3dea0cea1"
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Ponto/ponto-online.ts",
+      "bytes": 1697,
+      "sha256": "2250e9b2c8109b69d932146638092a2a05c41d4be3b733af28734b039565aef2"
+    },
+    {
+      "path": "01_WEB/10_TESTES/ponto-online.test.tsx",
+      "bytes": 11281,
+      "sha256": "e1a3ed2c560700ef2e6c543f74b5e00f011e5fffe1616762696fa52399666ffc"
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/ponto-laboratorio/page.tsx",
+      "bytes": 2000,
+      "sha256": "2bb27547e0155b8d96dd119a5792aecce93338527e80fed3c665a2db68181735"
+    },
+    {
+      "path": "01_WEB/app/api/ponto-online/[...path]/route.ts",
+      "bytes": 2075,
+      "sha256": "1b1c8851c455a471e2348a5943ba7e806df9ac82bf545b96043de4a7b0d689ef"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador-app.tsx",
+      "bytes": 12535,
+      "sha256": "c1b09a0f78109e77d5990c1114e6bc6714d77c0a63e1fb5a44ebc3bbcf33250d"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/colaborador.module.css",
+      "bytes": 25651,
+      "sha256": "3229a32506dc8d4d355a93977f4f587c2268e6a070531f5dc57503f3dc4d1eb4"
+    },
+    {
+      "path": "01_WEB/app/colaborador/[[...screen]]/meu-ponto-online.tsx",
+      "bytes": 8363,
+      "sha256": "04202b8799d6d8ea6552b6665d1b830078ccf874cd7214b5f2208b3353f3cec4"
+    },
+    {
+      "path": "01_WEB/proxy.ts",
+      "bytes": 1920,
+      "sha256": "676c5e344e3b2043cf4a1a731062e5374e0da3e512ae75370d6d4fae54c8695d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/verificar-rede-local.mjs",
+      "bytes": 7634,
+      "sha256": "618383818145dad5fd36ec6590bdbc0da537945610b31d8716625b8276d85182"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/ambiente.mjs",
+      "bytes": 1089,
+      "sha256": "bf5dcae4f96051c828ae2ee21a2f5a0f1035d807c41744bd240aefcf0ccc2816"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/auditoria-4a.json",
+      "bytes": 4126,
+      "sha256": "1c310e2a231938ba3921471d19e5dc16c56b0fc6a0277087b9595df496707350"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/banco.log",
+      "bytes": 3106,
+      "sha256": "d42571f97c3512b00a9f9c2659b25f63cc919b9e25ee5184b4d7c65a7fdb8ecd"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/build.log",
+      "bytes": 2451,
+      "sha256": "4f3f52ade8feb1012dfa63ca7fabfc6c6c75fa253126f5f908c0d7bef21a3ffe"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/catalogo-autorizacao-local.json",
+      "bytes": 23683,
+      "sha256": "8902b1f16bd7a3111a71d43349f939913e9a7cccfbc428ad4c26410c5ea19571"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/extensao.mjs",
+      "bytes": 8968,
+      "sha256": "51c761997651344d0c79234e11da7395352348e5e0af4c8f353d674fa4c7d7f5"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/extensao.sql",
+      "bytes": 2116,
+      "sha256": "e691cf5aa123134d764dae61b62648d6e025f953b36c8129071c0d480b7b4975"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/gerar-pacote-auditoria-4a.py",
+      "bytes": 15257,
+      "sha256": "7acc67edc02f914c12180f4a1ca3c28721d3ac66012d9bb7ad81b4fc4d48d8c2"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/provas-4a.mjs",
+      "bytes": 15986,
+      "sha256": "63c0433d269edc1c1cb782cc572a2ac503b07e09f934043e8bc2a2ae55b30d3e"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/provas-auditoria-4a.mjs",
+      "bytes": 8689,
+      "sha256": "8355bef0b55169512334902cc89f47c1acd3309f1d78487f1cac8a74eb44723d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/qualidade.log",
+      "bytes": 4650,
+      "sha256": "ad90afad44d1528958f83cfcd0bf6e6fe6a39395d013c5f1f23bd569c64189ac"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/rede.json",
+      "bytes": 26888,
+      "sha256": "21dad1c7a972f22555f9686e69b647976f17c7ea47383ab05078404790b58372"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/resultado-4a.json",
+      "bytes": 7718,
+      "sha256": "08e4c82e45fe149cd8e8937376ecfca25ceb3fe35282b68d3552ad8fbb0ff358"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/resultado-auditoria-4a.json",
+      "bytes": 2164,
+      "sha256": "eb6d61ae55fb4b0f20fae505cdc8878614da768e22748b2f1d290289f5e706e3"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/servidor-4a.mjs",
+      "bytes": 6656,
+      "sha256": "3dc6dadec5b8f058355f20e240166a89504d52913f1cb59aee1632df717eadcb"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/sessao-http.mjs",
+      "bytes": 540,
+      "sha256": "b71be88a22af35e81b51f6c33b535439fbb0eeb84025d8c2ada181437098e08b"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/verificar-4a.py",
+      "bytes": 10629,
+      "sha256": "66a32566e4b1f311a99a00bd3f8d506b867776b73ae72d24e79c9a43f44af042"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/visual-4a.json",
+      "bytes": 1235,
+      "sha256": "49dc553085040666818b9a083bcfe1d40f68e663dee92eaae487a312b9fa14fd"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/web-completa-4a.json",
+      "bytes": 80158,
+      "sha256": "49c2f861790eb3a444cf3d5e3e9e73d5d8fc8b384c51d202e34c14cbff10d98c"
+    },
+    {
+      "path": "05_DOCUMENTACAO/47_MARCO_4A_MEU_PONTO_ONLINE_GEOLOCALIZACAO.md",
+      "bytes": 46089,
+      "sha256": "db9a0ae5bd7bc62ac06b4f0b2ec7490acae318388eb91ab7557e381f1696a33c"
+    },
+    {
+      "path": "05_DOCUMENTACAO/MAPA_DO_METALLO.md",
+      "bytes": 5047,
+      "sha256": "21f85a40ee5fb0981879c491bcb9d6d8d4c31461318be6b455a722c1a1775570"
+    }
+  ],
+  "manual_approval": "APROVADA pelo responsável em 01/10/2026",
+  "real_browser_zoom_100_200": "Não há prova automatizada nova de valor no menu; avaliação manual da interface concluída pelo responsável",
+  "grok": "DOIS CICLOS PRESERVADOS E CONFRONTADOS; zero crítico/alto confirmado aberto",
+  "baseline_4a": "NÃO CRIADA",
+  "remote_changes": "NENHUMA AÇÃO REMOTA EXECUTADA"
+}

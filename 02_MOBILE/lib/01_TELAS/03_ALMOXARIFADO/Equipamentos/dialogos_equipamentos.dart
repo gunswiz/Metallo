@@ -971,22 +971,9 @@ Future<void> showRentedEquipmentReplacementDialog(
           }
           return null;
         },
-        onAction: () => repo.updateEquipmentAsset(
-          assetId: equipment.id,
-          assetCode: assetCode.text,
-          serialNumber: serialNumber.text,
-          teamId: equipment.teamId,
-          status: 'available',
-          notes: _rentedReplacementNotes(
-            equipment,
-            assetCode.text,
-            reason.text,
-            DateTime.now(),
-          ),
-          ownershipType: 'rented',
-          rentalCompany: equipment.rentalCompany,
-          rentalStartDate: equipment.rentalStartDate,
-          rentalEndDate: equipment.rentalEndDate,
+        onAction: () => repo.replaceRentedEquipment(
+          assetId: equipment.id, assetCode: assetCode.text,
+          serialNumber: serialNumber.text, note: reason.text.trim().isEmpty ? 'Substituição pela locadora' : reason.text,
         ),
         errorText: friendlyError,
         scrollContent: true,

@@ -1,0 +1,194 @@
+diff --git a/01_WEB/02_COMPONENTES_VISUAIS/obras-pedidos.tsx b/01_WEB/02_COMPONENTES_VISUAIS/obras-pedidos.tsx
+index e1f781f..a6b872a 100644
+--- a/01_WEB/02_COMPONENTES_VISUAIS/obras-pedidos.tsx
++++ b/01_WEB/02_COMPONENTES_VISUAIS/obras-pedidos.tsx
+@@ -12,14 +12,18 @@ import {
+ import type { SubmitOperation } from "./formulario-obra";
+ 
+ import { createOperationQueue } from "@/03_FUNCOES_E_LOGICA/fila-operacoes";
++import { PendingReview } from "./revisar-pendente";
+ 
+-import { EstoqueObra } from "./ObrasEPedidos/estoque";
++import { MaterialOperations, EquipmentOperations, IntegratedDelivery, IntegratedBatchDelivery, ReceivingForm } from "./operacoes-integradas";
++import { StockWorkspace as EstoqueObra } from "./estoque-integrado";
+ import { PedidosObra } from "./ObrasEPedidos/pedidos";
+ import { LocacoesObra } from "./ObrasEPedidos/locacoes";
+ import { FuncionariosObra } from "./ObrasEPedidos/funcionarios";
+ import { CadastroObras } from "./ObrasEPedidos/cadastro";
+ 
+ const commandLabels: Record<string, string> = {
++  material_movement: "Movimentação de material",
++  asset_movement: "Movimentação de equipamento",
+   epi_entry: "Entrada de EPI",
+   epi_transfer: "Transferência de EPI",
+   set_worksite_status: "Situação da obra",
+@@ -42,10 +46,13 @@ export function SiteOperations({
+   initial,
+   profile,
+   initialSection = "stock",
++  mode = "all", initialItem, initialAsset, initialEmployee, initialType,
+ }: {
+   initial: SiteSnapshot;
+   profile: SessionProfile;
+   initialSection?: string;
++  mode?: "all" | "movement" | "delivery" | "batch" | "receiving";
++  initialItem?: string; initialAsset?: string; initialEmployee?: string; initialType?: string;
+ }) {
+   const [data, setData] = useState(initial);
+   const [section, setSection] = useState(initialSection);
+@@ -71,6 +78,7 @@ export function SiteOperations({
+     setSyncing(true);
+     try {
+       for (const entry of [...queue.read().entries]) {
++        if (entry.failure === "rejected") continue;
+         if (!navigator.onLine) {
+           setMessage(
+             "Sem conexão. Os lançamentos estão guardados neste navegador e ainda não alteraram o estoque.",
+@@ -94,16 +102,19 @@ export function SiteOperations({
+           await queue.update((rows) => rows.filter((x) => x.id !== entry.id));
+           setMessage("Lançamento confirmado no Metallo.");
+         } catch (error) {
++          const code = String((error as {code?:string})?.code ?? "");
++          const rawMessage = String((error as {message?:string})?.message ?? "");
++          const failure = ["P0001","23505","23514","42501","22P02"].includes(code) && !rawMessage.includes("operation_id_conflict") && !rawMessage.includes("operation_actor_mismatch") ? "rejected" as const : "uncertain" as const;
+           const detail = operationErrorMessage(
+             error instanceof Error
+               ? error.message
+               : String((error as { message?: string })?.message ?? error),
+           );
+           await queue.update((rows) =>
+-            rows.map((x) => (x.id === entry.id ? { ...x, error: detail } : x)),
++            rows.map((x) => (x.id === entry.id ? { ...x, error: detail, failure } : x)),
+           );
+           setMessage(detail);
+-          break;
++          if (failure === "uncertain") break;
+         }
+       }
+       try {
+@@ -149,7 +160,7 @@ export function SiteOperations({
+   ];
+   return (
+     <>
+-      <div className="module-tabs">
++      {mode === "all" && <div className="module-tabs">
+         {navigation.map(([id, label]) => (
+           <button
+             key={id}
+@@ -159,7 +170,7 @@ export function SiteOperations({
+             {label}
+           </button>
+         ))}
+-      </div>
++      </div>}
+       <p className="muted">
+         Uma obra pode reunir várias equipes com um estoque único. Os lançamentos
+         continuam identificando a equipe e o funcionário.
+@@ -198,8 +209,12 @@ export function SiteOperations({
+                   {formatDateTime(entry.occurredAt)}
+                 </strong>
+                 {entry.error && <p>{entry.error}</p>}
++                {entry.failure === "rejected" && <PendingReview entry={entry} data={data} busy={syncing} onSave={async corrected=>{await queue.update(rows=>rows.map(row=>row.id===entry.id?corrected:row));await sync();}}/>}
++                <p className="muted">{entry.failure === "rejected" ? "Recusado pelo banco: os demais lançamentos podem continuar. Confira os dados antes de reenviar." : "Aguardando confirmação. Em caso de resposta incerta, reenvie o mesmo lançamento; não crie outro."}</p>
++                <details><summary>Conferir dados do lançamento</summary><pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{JSON.stringify(entry.data,null,2)}</pre></details>
++                {entry.failure === "rejected" && <button className="button secondary" disabled={syncing} onClick={async()=>{await queue.update(rows=>rows.map(row=>row.id===entry.id?{...row,failure:undefined,error:undefined}:row)); await sync();}}>Conferi os dados: reenviar</button>}
+                 <button
+-                  disabled={syncing}
++                  disabled={syncing || entry.failure !== "rejected"}
+                   className="button ghost"
+                   onClick={async () => {
+                     try {
+@@ -223,22 +238,26 @@ export function SiteOperations({
+           </div>
+         </section>
+       )}
+-      {section === "stock" && (
++      {mode === "movement" && <>{can(profile,"consumption:write")||can(profile,"materials:write")?<MaterialOperations data={data} profile={profile} submit={submit} initialItem={initialItem} initialType={initialType}/>:null}{can(profile,"equipment:write")&&<EquipmentOperations data={data} profile={profile} submit={submit} initialAsset={initialAsset}/>}<ReceivingForm data={data} profile={profile} submit={submit} initialItem={initialItem}/></>}
++      {mode === "batch" && can(profile,"epi:write") && <IntegratedBatchDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee}/>}
++      {mode === "delivery" && can(profile,"epi:write") && <IntegratedDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee} initialItem={initialItem}/>}
++      {mode === "receiving" && <ReceivingForm data={data} profile={profile} submit={submit} initialItem={initialItem}/>}
++      {mode === "all" && section === "stock" && (
+         <EstoqueObra data={data} profile={profile} submit={submit} />
+       )}
+-      {section === "orders" && (
++      {mode === "all" && section === "orders" && (
+         <PedidosObra data={data} profile={profile} submit={submit} />
+       )}
+-      {section === "rentals" && (
++      {mode === "all" && section === "rentals" && (
+         <LocacoesObra data={data} profile={profile} submit={submit} />
+       )}
+-      {section === "people" && (
++      {mode === "all" && section === "people" && (
+         <FuncionariosObra data={data} profile={profile} submit={submit} />
+       )}
+-      {section === "works" && admin && (
++      {mode === "all" && section === "works" && admin && (
+         <CadastroObras data={data} profile={profile} submit={submit} />
+       )}
+-      {section === "alerts" && admin && (
++      {mode === "all" && section === "alerts" && admin && (
+         <section className="panel">
+           <header className="panel-header">
+             <h2>Alertas da ADM</h2>
+diff --git a/01_WEB/07_ESTILOS/globals.css b/01_WEB/07_ESTILOS/globals.css
+index b373a49..1808703 100644
+--- a/01_WEB/07_ESTILOS/globals.css
++++ b/01_WEB/07_ESTILOS/globals.css
+@@ -24,6 +24,15 @@
+ 
+ * { box-sizing: border-box; }
+ 
++.order-draft { display: grid; gap: 10px; margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
++.order-draft-header { display: flex; justify-content: space-between; gap: 12px; }
++.order-draft-header span { color: var(--muted); font-size: var(--font-small); }
++.order-draft-row { display: grid; grid-template-columns: minmax(0, 1fr) 92px auto; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
++.order-draft-row > span { overflow-wrap: anywhere; }
++.order-draft-row b { display: block; color: var(--accent); font-size: var(--font-small); }
++.order-draft-row input { min-height: 38px; }
++@media (max-width: 680px) { .order-draft-row { grid-template-columns: minmax(0, 1fr) 76px; } .order-draft-row button { grid-column: 1 / -1; justify-self: start; } }
++
+ html { background: var(--bg-deep); }
+ 
+ body {
+diff --git a/01_WEB/app/actions/substituir-locado.ts b/01_WEB/app/actions/substituir-locado.ts
+index b0278a6..48896c7 100644
+--- a/01_WEB/app/actions/substituir-locado.ts
++++ b/01_WEB/app/actions/substituir-locado.ts
+@@ -1,28 +1,18 @@
+ "use server";
+-
+ import { rentalSwapSchema } from "@/03_FUNCOES_E_LOGICA/validarParidadeMobile";
+ import { executeValidated, type OperationState } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
+-
+ export async function replaceRentedEquipment(_previous: OperationState, formData: FormData) {
++  let replacementId = "";
+   return executeValidated({ schema: rentalSwapSchema, capability: "admin:manage", formData,
+-    paths: ["/equipamentos", "/equipes", "/dashboard", "/relatorios", "/movimentacoes"],
+-    destination: (data) => `/equipamentos/${data.assetId}?updated=1`,
++    paths: ["/equipamentos", "/equipes", "/dashboard", "/relatorios", "/movimentacoes", "/obras"],
++    destination: () => "/equipamentos/" + replacementId + "?updated=1",
+     operation: async (client, data) => {
+-      const result = await client.from("assets").select("*,items(id,code,name)").eq("id", data.assetId).maybeSingle();
+-      if (result.error) return { error: result.error };
+-      const asset = result.data;
+-      if (!asset?.active || !asset.items || !asset.team_id) return { error: { message: "asset_not_found" } };
+-      if (asset.ownership_type !== "rented" || asset.asset_code === data.assetCode) return { error: { message: "invalid_replacement" } };
+-      const stamp = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Fortaleza" });
+-      const notes = [asset.user_notes, `Substituição em ${stamp}: patrimônio ${asset.asset_code} → ${data.assetCode} • ${data.note}`].filter(Boolean).join("\n");
+-      // Same Mobile operation: retain the rental record and its history.
+-      return client.rpc("update_equipment_admin_v2", {
+-        p_item_id: asset.items.id, p_item_code: asset.items.code, p_item_name: asset.items.name,
+-        p_asset_id: asset.id, p_asset_code: data.assetCode, p_serial_number: data.serialNumber,
+-        p_team_id: asset.team_id, p_status: "available", p_active: true, p_user_notes: notes,
+-        p_ownership_type: "rented", p_rental_company: asset.rental_company ?? "",
+-        p_rental_start_date: asset.rental_start_date ?? undefined, p_rental_end_date: asset.rental_end_date ?? undefined,
++      const result = await client.rpc("replace_rented_equipment", {
++        p_asset_id: data.assetId, p_asset_code: data.assetCode,
++        p_serial_number: data.serialNumber, p_note: data.note,
+       });
++      replacementId = result.data ?? "";
++      return result;
+     },
+   });
+ }

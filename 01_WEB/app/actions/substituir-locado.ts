@@ -5,7 +5,7 @@ import { executeValidated, type OperationState } from "@/03_FUNCOES_E_LOGICA/exe
 
 export async function replaceRentedEquipment(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: rentalSwapSchema, capability: "admin:manage", formData,
-    paths: ["/equipamentos", "/equipes", "/dashboard", "/relatorios", "/movimentacoes"],
+    paths: ["/equipamentos", "/equipes", "/dashboard", "/relatorios", "/movimentacoes", "/obras"],
     destination: (data) => `/equipamentos/${data.assetId}?updated=1`,
     operation: async (client, data) => {
       const result = await client.from("assets").select("*,items(id,code,name)").eq("id", data.assetId).maybeSingle();
@@ -15,7 +15,8 @@ export async function replaceRentedEquipment(_previous: OperationState, formData
       if (asset.ownership_type !== "rented" || asset.asset_code === data.assetCode) return { error: { message: "invalid_replacement" } };
       const stamp = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Fortaleza" });
       const notes = [asset.user_notes, `Substituição em ${stamp}: patrimônio ${asset.asset_code} → ${data.assetCode} • ${data.note}`].filter(Boolean).join("\n");
-      // Same Mobile operation: retain the rental record and its history.
+      // Contrato efetivo auditado: preservar o ID da locação e registrar a troca nas notas.
+      // replace_rented_equipment pertence à migration local ainda não aplicada.
       return client.rpc("update_equipment_admin_v2", {
         p_item_id: asset.items.id, p_item_code: asset.items.code, p_item_name: asset.items.name,
         p_asset_id: asset.id, p_asset_code: data.assetCode, p_serial_number: data.serialNumber,

@@ -1,0 +1,33 @@
+﻿{
+    "at":  "2026-09-26T23:45:09.1061444Z",
+    "stack_running":  [
+
+                      ],
+    "lab_listeners":  [
+
+                      ],
+    "probe_containers":  [
+
+                         ],
+    "firewall":  [
+                     {
+                         "Name":  "Domain",
+                         "Enabled":  1
+                     },
+                     {
+                         "Name":  "Private",
+                         "Enabled":  1
+                     },
+                     {
+                         "Name":  "Public",
+                         "Enabled":  1
+                     }
+                 ],
+    "visual_preview_listeners":  [
+                                     {
+                                         "LocalAddress":  "127.0.0.1",
+                                         "LocalPort":  3101
+                                     }
+                                 ],
+    "passed":  true
+}

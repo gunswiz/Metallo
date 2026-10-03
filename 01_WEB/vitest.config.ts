@@ -8,8 +8,9 @@ export default defineConfig({
     },
   },
   test: {
+    server: { deps: { external: [/criar-contas-previa-1b\.mjs$/] } },
     environment: "jsdom",
-    include: ["**/*.test.ts", "**/*.test.tsx"],
+    include: process.env.METALLO_TEST_1B_AUTH === "1" ? ["10_TESTES/colaborador-auth-real.integration.tsx"] : ["**/*.test.ts", "**/*.test.tsx"],
     setupFiles: ["./10_TESTES/setup.ts"],
   },
 });

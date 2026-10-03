@@ -24,7 +24,7 @@ export default async function EpisPage({ searchParams }: { searchParams: SearchP
     <>
       <PageHeader eyebrow={kind === "uniform" ? "FARDAMENTO" : "PROTEÇÃO INDIVIDUAL"} title={kind === "uniform" ? "Fardamento" : "EPIs"} description={kind === "uniform" ? "Camisas e calças por cor e tamanho disponíveis na COSEM." : "Catálogo, C.A., variantes e estoque disponível na COSEM."} actions={<>
         <Link className="button secondary" href="/epis/solicitacoes">Solicitações</Link>
-        {can(profile, "epi:write") && <Link className="button secondary" href="/epis/entrega-em-lote">Entrega em lote</Link>}
+        {can(profile, "epi:write") && <Link className="button secondary" href="/epis/entrega-em-lote">{kind === "epi" ? "Nova entrega e kit" : "Entrega em lote"}</Link>}
         {can(profile, "admin:manage") && <Link className="button secondary" href={`/epis/novo?kind=${kind}`}><Plus size={16} />{kind === "uniform" ? "Novo fardamento" : "Novo EPI"}</Link>}
         {can(profile, "epi:write") && <Link className="button primary" href={`/epis/entrega?kind=${kind}`}><PackageCheck size={16} />Registrar entrega</Link>}
       </>} />

@@ -1,0 +1,243 @@
+{
+  "captured_at": "2026-09-26T23:44:46.646Z",
+  "source": "Docker Desktop local; PostgreSQL 17",
+  "remote_capture": "2026-09-26",
+  "summary": {
+    "relations": {
+      "remote": 31,
+      "local": 34,
+      "only_remote": 0,
+      "only_local": 3,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.employee_identity",
+          "private.employee_identity_audit",
+          "private.employee_portal_accounts"
+        ],
+        "differing": []
+      }
+    },
+    "columns": {
+      "remote": 274,
+      "local": 298,
+      "only_remote": 0,
+      "only_local": 24,
+      "differing": 1,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.employee_identity.id",
+          "private.employee_identity.auth_user_id",
+          "private.employee_identity.employee_id",
+          "private.employee_identity.status",
+          "private.employee_identity.verification_method",
+          "private.employee_identity.linked_by",
+          "private.employee_identity.created_at",
+          "private.employee_identity.activated_at",
+          "private.employee_identity.revoked_at",
+          "private.employee_identity.revoked_by",
+          "private.employee_identity.revocation_reason",
+          "private.employee_identity_audit.id"
+        ],
+        "differing": [
+          "public.epi_employees.team_id"
+        ]
+      }
+    },
+    "constraints": {
+      "remote": 169,
+      "local": 188,
+      "only_remote": 0,
+      "only_local": 19,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.employee_identity.employee_identity_auth_user_id_fkey",
+          "private.employee_identity.employee_identity_auth_user_id_key",
+          "private.employee_identity.employee_identity_employee_id_fkey",
+          "private.employee_identity.employee_identity_linked_by_fkey",
+          "private.employee_identity.employee_identity_pkey",
+          "private.employee_identity.employee_identity_revocation_complete",
+          "private.employee_identity.employee_identity_revocation_reason_check",
+          "private.employee_identity.employee_identity_revoked_by_fkey",
+          "private.employee_identity.employee_identity_status_check",
+          "private.employee_identity.employee_identity_verification_method_check",
+          "private.employee_identity_audit.employee_identity_audit_actor_id_fkey",
+          "private.employee_identity_audit.employee_identity_audit_event_shape"
+        ],
+        "differing": []
+      }
+    },
+    "indexes": {
+      "remote": 126,
+      "local": 136,
+      "only_remote": 0,
+      "only_local": 10,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.employee_identity.employee_identity_active_employee_uq",
+          "private.employee_identity.employee_identity_auth_user_id_key",
+          "private.employee_identity.employee_identity_employee_history_idx",
+          "private.employee_identity.employee_identity_linked_by_idx",
+          "private.employee_identity.employee_identity_pkey",
+          "private.employee_identity.employee_identity_revoked_by_idx",
+          "private.employee_identity_audit.employee_identity_audit_actor_idx",
+          "private.employee_identity_audit.employee_identity_audit_identity_idx",
+          "private.employee_identity_audit.employee_identity_audit_pkey",
+          "private.employee_portal_accounts.employee_portal_accounts_pkey"
+        ],
+        "differing": []
+      }
+    },
+    "policies": {
+      "remote": 70,
+      "local": 70,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 7,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": [
+          "public.employee_assignments.assignments_read",
+          "public.epi_deliveries.epi_deliveries_read",
+          "public.epi_employee_item_sets.epi_employee_item_sets_read",
+          "public.epi_employee_items.epi_employee_items_read",
+          "public.epi_employees.epi_employees_read",
+          "public.epi_monthly_acknowledgements.epi_ack_read",
+          "public.epi_monthly_acknowledgements.epi_ack_write"
+        ]
+      }
+    },
+    "triggers": {
+      "remote": 17,
+      "local": 23,
+      "only_remote": 0,
+      "only_local": 6,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.employee_identity.employee_identity_audit_event",
+          "private.employee_identity.employee_identity_guard_update",
+          "private.employee_identity_audit.employee_identity_audit_immutable",
+          "public.epi_deliveries.guard_unassigned_employee_operation",
+          "public.epi_requests.guard_unassigned_employee_operation",
+          "public.profiles.prevent_portal_management_activation"
+        ],
+        "differing": []
+      }
+    },
+    "functions": {
+      "remote": 57,
+      "local": 67,
+      "only_remote": 0,
+      "only_local": 10,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [
+          "private.audit_employee_identity",
+          "private.guard_employee_identity_history",
+          "private.guard_unassigned_employee_operation",
+          "private.is_portal_account.p_user_id uuid",
+          "private.prevent_employee_identity_audit_change",
+          "private.prevent_portal_management_activation",
+          "public.admin_link_employee_identity.p_auth_user_id uuid, p_employee_id uuid, p_expected_employee_name text, p_expected_registration_code text, p_verification_method text",
+          "public.admin_register_portal_account.p_auth_user_id uuid",
+          "public.admin_revoke_employee_identity.p_identity_id uuid, p_reason text",
+          "public.my_employee_profile"
+        ],
+        "differing": []
+      },
+      "body_fingerprint_different": 2,
+      "body_examples": [
+        "public.employee_work_team.p_employee_id uuid, p_at timestamp with time zone",
+        "public.stock_team.p_team_id uuid"
+      ]
+    },
+    "views": {
+      "remote": 0,
+      "local": 0,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "extensions": {
+      "remote": 5,
+      "local": 5,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "grants": {
+      "remote": 420,
+      "local": 420,
+      "only_remote": 0,
+      "only_local": 0,
+      "differing": 0,
+      "examples": {
+        "only_remote": [],
+        "only_local": [],
+        "differing": []
+      }
+    },
+    "schemas": {
+      "remote": 12,
+      "local": 12,
+      "only_remote": 3,
+      "only_local": 3,
+      "differing": 0,
+      "examples": {
+        "only_remote": [
+          "metallo_safe_20260903",
+          "metallo_safe_posttest_20260904",
+          "supabase_migrations"
+        ],
+        "only_local": [
+          "_realtime",
+          "pgbouncer",
+          "supabase_functions"
+        ],
+        "differing": []
+      }
+    },
+    "auth_fks": {
+      "remote": 21,
+      "local": 25,
+      "only_remote": 2,
+      "only_local": 6,
+      "differing": 0,
+      "examples": {
+        "only_remote": [
+          "auth.mfa_recovery_code_sets.mfa_recovery_code_sets_user_id_fkey",
+          "auth.scim_users.scim_users_user_id_fkey"
+        ],
+        "only_local": [
+          "private.employee_identity.employee_identity_auth_user_id_fkey",
+          "private.employee_identity.employee_identity_linked_by_fkey",
+          "private.employee_identity.employee_identity_revoked_by_fkey",
+          "private.employee_identity_audit.employee_identity_audit_actor_id_fkey",
+          "private.employee_portal_accounts.employee_portal_accounts_auth_user_id_fkey",
+          "private.employee_portal_accounts.employee_portal_accounts_registered_by_fkey"
+        ],
+        "differing": []
+      }
+    }
+  }
+}

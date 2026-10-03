@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-01T07:17:25.368Z",
+  "checks": [
+    {
+      "case": "390 CSS px, teclado",
+      "focus_outline": "rgb(255, 204, 88) solid 3px",
+      "focused": "Registrar ponto",
+      "height": 844,
+      "horizontal_overflow": false,
+      "width": 390
+    },
+    {
+      "case": "768 CSS px",
+      "height": 768,
+      "horizontal_overflow": false,
+      "width": 768
+    },
+    {
+      "button_label": "Registrar ponto",
+      "case": "1280 CSS px",
+      "height": 900,
+      "horizontal_overflow": false,
+      "width": 1280
+    },
+    {
+      "case": "Gestão 390 CSS px",
+      "height": 844,
+      "horizontal_overflow": false,
+      "table_scroll_container": {
+        "content": 911,
+        "width": 305
+      },
+      "width": 390
+    },
+    {
+      "case": "Gestão 1280 CSS px",
+      "height": 900,
+      "horizontal_overflow": false,
+      "width": 1280
+    }
+  ],
+  "zoom_menu_values": "Não comprovados pela automação; confirmar 100% e 200% na avaliação manual",
+  "geo_browser": "Não solicitada pela automação: não coletar localização real",
+  "manual_approval": "APROVADA pelo responsável em 01/10/2026; anexo AUTORIZO A PRÓXIMA ETAPA DO MARCO 4A"
+}

@@ -1,0 +1,579 @@
+{
+  "at": "2026-09-27T10:41:44.457Z",
+  "scope": "MARCO 1B — FUNCIONAL EM LABORATÓRIO; interface aprovada e fechamento expressamente autorizado pelo responsável; NÃO PUBLICAR",
+  "cycle": "formal_closure_approved",
+  "automatic_audits_sent": 2,
+  "last_local_delta_independently_reviewed": false,
+  "baseline": {
+    "id": "METALLO-1B-LAB-20260927-R1",
+    "status": "MARCO 1B — FUNCIONAL EM LABORATÓRIO",
+    "reference_commit": "eadd1f8cf9e62b85c4c62b9d2f2b83a970ecf77c",
+    "branch": "main",
+    "scope": "Snapshot sanitizado do escopo1B e dependências/evidências selecionadas; não é backup integral nem commit do checkout",
+    "manual_approval": {
+      "date": "2026-09-27",
+      "source": "Solicitação explícita do responsável nesta conversa",
+      "statement": "Considero a interface aprovada para o estado atual do Marco 1B. Faça agora o FECHAMENTO FORMAL DO MARCO 1B EM LABORATÓRIO.",
+      "includes": "Interface atual com paleta/logo Metallo; correções de troca entre abas e logout demorado validadas localmente"
+    },
+    "limits": [
+      "NÃO IMPLANTADO NO SUPABASE REMOTO",
+      "NÃO LIBERADO PARA FUNCIONÁRIOS REAIS",
+      "NÃO É PRODUÇÃO",
+      "NÃO É PONTO OFICIAL",
+      "NÃO É REP-P",
+      "NÃO AUTORIZA PUBLICAÇÃO"
+    ],
+    "pending": [
+      "Quatro falhas da Gestão G-WEB-01 a04",
+      "Guarda de logout posterior ao parecer2 sem nova revisão independente",
+      "Zoom real200% sem medição específica",
+      "Marcos futuros de implantação, recuperação integral, sessões produtivas e REP-P não executados",
+      "supabase_vector_laboratorio-marco-1a: docker_logs: Listing currently running containers failed; NetworkUnreachable"
+    ],
+    "checkout_inventory": [
+      {
+        "status": " M",
+        "path": ".gitignore"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/ObrasEPedidos/pedidos.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/brand.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/entrega-lote-form.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/epi-delivery-form.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/estoque-epi-obra.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/formulario-obra.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/obras-pedidos.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/pedido-obra-form.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/03_FUNCOES_E_LOGICA/fila-operacoes.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/03_FUNCOES_E_LOGICA/operacoesObra.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/04_SERVICOS/metallo-service.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/05_ACESSO_A_DADOS/Repositorios/metallo-repository.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/07_ESTILOS/globals.css"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/epis/[id]/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/epis/entrega-em-lote/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/epis/entrega/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/equipamentos/[id]/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/equipes/[id]/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/funcionarios/[id]/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/funcionarios/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/(02_SISTEMA)/movimentacoes/nova/page.tsx"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/app/actions/substituir-locado.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/next-env.d.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/next.config.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/proxy.ts"
+      },
+      {
+        "status": " M",
+        "path": "01_WEB/vitest.config.ts"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/02_INICIO/dashboard_view_data.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/03_ALMOXARIFADO/Equipamentos/dialogos_equipamentos.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/03_ALMOXARIFADO/Materiais/dialogos_materiais.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/04_EPIS_E_FUNCIONARIOS/entrega_epi.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/04_EPIS_E_FUNCIONARIOS/formularios_epi.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/04_EPIS_E_FUNCIONARIOS/items_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/calcular_consumo.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/consumption_graphs_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/consumption_materials_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/consumption_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/consumption_teams_compare_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/09_OBRAS_E_PEDIDOS/order_composer.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/01_TELAS/09_OBRAS_E_PEDIDOS/site_operations_page.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/06_ACESSO_A_DADOS/catalog_repository.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/06_ACESSO_A_DADOS/dashboard_repository.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/06_ACESSO_A_DADOS/epi_repository.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/06_ACESSO_A_DADOS/site_operations_repository.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/07_TIPOS_E_MODELOS/material_stock.dart"
+      },
+      {
+        "status": " M",
+        "path": "02_MOBILE/lib/07_TIPOS_E_MODELOS/team.dart"
+      },
+      {
+        "status": " M",
+        "path": "03_COMPARTILHADO/01_TIPOS/src/database.ts"
+      },
+      {
+        "status": " M",
+        "path": "05_DOCUMENTACAO/08_REFERENCIAS_TECNICAS/architecture.md"
+      },
+      {
+        "status": " M",
+        "path": "05_DOCUMENTACAO/08_REFERENCIAS_TECNICAS/database.md"
+      },
+      {
+        "status": " M",
+        "path": "05_DOCUMENTACAO/08_REFERENCIAS_TECNICAS/security.md"
+      },
+      {
+        "status": " M",
+        "path": "05_DOCUMENTACAO/09_BACKUP_E_RECUPERACAO.md"
+      },
+      {
+        "status": " M",
+        "path": "AGENTS.md"
+      },
+      {
+        "status": " M",
+        "path": "package.json"
+      },
+      {
+        "status": " M",
+        "path": "pnpm-lock.yaml"
+      },
+      {
+        "status": "??",
+        "path": ".pnpm-store/"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/estoque-integrado.tsx"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/operacoes-integradas.tsx"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/02_COMPONENTES_VISUAIS/revisar-pendente.tsx"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session.ts"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/05_ACESSO_A_DADOS/Supabase/colaborador-local.ts"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/09_CONFIGURACOES/colaborador-laboratorio.ts"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/10_TESTES/colaborador-auth-real.integration.tsx"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/10_TESTES/colaborador-preview.test.tsx"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/10_TESTES/colaborador-seguranca.test.ts"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/app/colaborador/"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/app/previa/correcoes-metallo/"
+      },
+      {
+        "status": "??",
+        "path": "01_WEB/app/previa/revisao-metallo/"
+      },
+      {
+        "status": "??",
+        "path": "02_MOBILE/lib/01_TELAS/07_CONSUMO/medidas_consumo.dart"
+      },
+      {
+        "status": "??",
+        "path": "02_MOBILE/lib/01_TELAS/09_OBRAS_E_PEDIDOS/receber_itens.dart"
+      },
+      {
+        "status": "??",
+        "path": "02_MOBILE/lib/01_TELAS/09_OBRAS_E_PEDIDOS/revisar_pendente.dart"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260912190000_unify_existing_operations.sql"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260925120000_employee_identity_foundation.sql"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926213000_portal_profile_optional_team.sql"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926224000_unassigned_employee_management_scope.sql"
+      },
+      {
+        "status": "??",
+        "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926233500_personal_epi_explicit_team_scope.sql"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/16_VARREDURA_E_LIMPEZA_0.10.0.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/17_MARCO_0_COLABORADOR_REP_P.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/18_PACOTE_REVISAO_MARCO_0.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/19_IDENTIDADE_COLABORADOR_MARCO_1A.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/20_RECONCILIACAO_MIGRATIONS_E_TIPOS.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/21_AUDITORIA_SECURITY_DEFINER.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/22_AMBIENTE_REP_P_E_ROADMAP.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/23_FECHAMENTO_PENDENCIAS_MARCO_0.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/24_TRATAMENTO_AUDITORIA_SUPERGROK_MARCO_0.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/25_INVENTARIO_SUPERFICIE_PORTAL_MARCO_1A.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/26_LABORATORIO_SUPABASE_MARCO_1A.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/27_PREVIA_VISUAL_COLABORADOR_MARCO_1B.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/28_PACOTE_FINAL_AUDITORIA_MARCOS_0_1A_1B.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/29_PROMPT_SUPERGROK_SOMENTE_LEITURA.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/30_CONFRONTO_AUDITORIA_FINAL_E_FECHAMENTO_1A.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/31_BACKLOG_GESTAO_QUATRO_FALHAS_WEB.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/CONTRATO_GESTAO_REP_P.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/MATRIZ_DE_CONFORMIDADE_REP_P.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/PLANO_DE_BACKUP_E_RECUPERACAO.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/REGISTRO_DE_RISCOS_JURIDICOS.md"
+      },
+      {
+        "status": "??",
+        "path": "05_DOCUMENTACAO/THREAT_MODEL_COLABORADOR_REP_P.md"
+      },
+      {
+        "status": "??",
+        "path": "06_TESTES_E_QUALIDADE/comparar-schema-remoto-local.mjs"
+      },
+      {
+        "status": "??",
+        "path": "06_TESTES_E_QUALIDADE/ensaio-restauracao-sintetica.test.mjs"
+      },
+      {
+        "status": "??",
+        "path": "06_TESTES_E_QUALIDADE/fixtures/supabase-remoto-catalogo-20260926.json"
+      },
+      {
+        "status": "??",
+        "path": "06_TESTES_E_QUALIDADE/gestao-equipe-opcional-banco.test.mjs"
+      },
+      {
+        "status": "??",
+        "path": "06_TESTES_E_QUALIDADE/identidade-colaborador-banco.test.mjs"
+      }
+    ],
+    "inventory_note": "Inclui alterações anteriores e fora do1B; constar neste inventário não significa aprovação nem inclusão no ZIP. Arquivos incluídos constam individualmente no manifesto.",
+    "new_file_justifications": [
+      {
+        "group": "Portal: configuração, camada de dados, hook, rotas e testes",
+        "reason": "Responsabilidades do1B descritas no relatório27; isolamento do cliente da Gestão e provas de sessão pessoal"
+      },
+      {
+        "group": "auditoria-1b",
+        "reason": "Evidências e originais das duas auditorias; relatório vigente continua no documento27"
+      },
+      {
+        "group": "outputs/baseline-1b-aprovada-20260927 e ZIP/SHA-256",
+        "reason": "Fotografia imutável identificável do estado aprovado; nenhum novo documento de status duplicado"
+      }
+    ]
+  },
+  "audit_history": [
+    {
+      "cycle": 1,
+      "response_file": "parecer-grok-ciclo1-original.md",
+      "response_sha256": "5b533dfcce0c2b24a8e53d090f737d841d15b10f07fa12ced067b5e3cb4f118e",
+      "package": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo1.zip",
+      "package_sha256": "cee1e84d13136581fe8baea24551f903f067811d69092008cd9964ad8d72c9a4",
+      "confronted_in": "05_DOCUMENTACAO/27_PREVIA_VISUAL_COLABORADOR_MARCO_1B.md"
+    },
+    {
+      "cycle": 2,
+      "response_file": "parecer-grok-ciclo2-original.md",
+      "response_sha256": "3f7a7516fb56221163d9010aaefa4ced346089070a7472594cf2b75e096da9eb",
+      "package": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo2.zip",
+      "package_sha256": "93d59203ab815bb8f0c27971daf4684f7339a372637e4c118a9ce869580beb40",
+      "confronted_in": "05_DOCUMENTACAO/27_PREVIA_VISUAL_COLABORADOR_MARCO_1B.md"
+    }
+  ],
+  "suites": {
+    "auth_real": {
+      "passed": 18,
+      "total": 18,
+      "environment": "DOM jsdom, navegação e eventos de storage simulados; SDK/Auth/JWT/PostgREST/RPC reais; um logout com atraso controlado de transporte"
+    },
+    "browser": "navegador.json, com observação transitória preservada separadamente",
+    "mocks": {
+      "passed": 17,
+      "total": 17
+    },
+    "guards": {
+      "passed": 22,
+      "total": 22
+    },
+    "backend": {
+      "passed": 682,
+      "total": 682,
+      "t15_included": 135
+    },
+    "database": {
+      "passed": 31,
+      "total": 31
+    },
+    "quality": {
+      "passed": 44,
+      "total": 44,
+      "includes_database": true
+    },
+    "web": {
+      "passed": 93,
+      "total": 97,
+      "fail": 4,
+      "failed": [
+        "ações com serviços simulados, sem escrita remota substituição preserva locação e registra patrimônios antigo e novo",
+        "duplo envio não duplica lançamento e falha de resposta mantém o mesmo identificador",
+        "escala tipográfica e foco da interface web mantém os textos operacionais fora das escalas minúsculas",
+        "mostra apenas os direitos concedidos e reserva alertas para ADM"
+      ]
+    },
+    "network": {
+      "passed": 8,
+      "total": 8,
+      "preview_port": 3101
+    }
+  },
+  "migrations": [
+    {
+      "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260925120000_employee_identity_foundation.sql",
+      "sha256": "cc823519e7b9cb80b2c593757cc6b150ffbf5209a69a7b4a6fd9262a8085c302",
+      "unchanged": true,
+      "historical_zip_sha256": "cc823519e7b9cb80b2c593757cc6b150ffbf5209a69a7b4a6fd9262a8085c302"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926213000_portal_profile_optional_team.sql",
+      "sha256": "31edf5e9a1fc78fd138b46e83719c86afc6d68e8a6c8a4333ae5ad3cb387ba6f",
+      "unchanged": true,
+      "historical_zip_sha256": "31edf5e9a1fc78fd138b46e83719c86afc6d68e8a6c8a4333ae5ad3cb387ba6f"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926224000_unassigned_employee_management_scope.sql",
+      "sha256": "ef8fa075c46e9652dd5e7a6a4f31b97fd54e2138adaa6980c9360452b353c8c8",
+      "unchanged": true,
+      "historical_zip_sha256": "ef8fa075c46e9652dd5e7a6a4f31b97fd54e2138adaa6980c9360452b353c8c8"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/supabase/migrations/20260926233500_personal_epi_explicit_team_scope.sql",
+      "sha256": "b27a73581aa2ba3666dbc7420f5d64f3037752db04908b289c52fa40bc515dca",
+      "unchanged": true,
+      "historical_zip_sha256": "b27a73581aa2ba3666dbc7420f5d64f3037752db04908b289c52fa40bc515dca"
+    }
+  ],
+  "remote_reads": false,
+  "remote_writes": false,
+  "published": false,
+  "real_employees": false,
+  "official_time_tracking": false,
+  "jwt_expiry_restored": 3600,
+  "preview": "http://127.0.0.1:3101/colaborador/login",
+  "references": [
+    {
+      "name": "Metallo-T15-RevisaoFinal-20260926.zip",
+      "sha256": "b5ff61bb33750e1637b7c2913b836eeda324261eb3fdaa1eda97a54c1be4665a"
+    },
+    {
+      "name": "Metallo-EquipeOpcional-Pos1A-Auditoria-20260926.zip",
+      "sha256": "8f61ae82af9ce269d65ac6970b8d6a2a7580e44f356c9706caf041a987c579af"
+    },
+    {
+      "name": "Metallo-Marco1B-AuthLocal-20260927-Ciclo1.zip",
+      "sha256": "cee1e84d13136581fe8baea24551f903f067811d69092008cd9964ad8d72c9a4"
+    },
+    {
+      "name": "Metallo-Marco1B-AuthLocal-20260927-Ciclo2.zip",
+      "sha256": "93d59203ab815bb8f0c27971daf4684f7339a372637e4c118a9ce869580beb40"
+    },
+    {
+      "name": "Metallo-Marco1B-DeltaLogout-PendenteRevisao-20260927.zip",
+      "sha256": "8f4fabdaeb7355de0a516a6418a55bef1093a6bfa5729b0ee4a0c23a4ab66717"
+    }
+  ]
+}

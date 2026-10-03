@@ -1,0 +1,17 @@
+{
+  "sent_at": "2026-09-27T08:59:47.500Z",
+  "platform": "Grok",
+  "mode": "Expert (rótulo exibido; versão exata não informada)",
+  "conversation": "https://grok.com/c/1972efec-b6f5-46d3-9e77-8b9f0d9b50c2?rid=e16e167a-3883-43c5-81f8-bfa4bd5974af",
+  "cycle": 2,
+  "package": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo2.zip",
+  "package_sha256": "93d59203ab815bb8f0c27971daf4684f7339a372637e4c118a9ce869580beb40",
+  "prompt": "05_DOCUMENTACAO/29_PROMPT_SUPERGROK_SOMENTE_LEITURA.md",
+  "status": "resposta integral preservada",
+  "received_at": "2026-09-27T09:02:49.513Z",
+  "response_file": "parecer-grok-ciclo2-original.md",
+  "response_sha256": "3f7a7516fb56221163d9010aaefa4ced346089070a7472594cf2b75e096da9eb",
+  "response_chars": 11996,
+  "capture": "Texto renderizado integral do bloco final, sem edição",
+  "prompt_archive": "outputs/Metallo-Marco1B-AuthLocal-20260927-Ciclo2.zip :: PROMPT_REVISAO_SOMENTE_LEITURA.md"
+}

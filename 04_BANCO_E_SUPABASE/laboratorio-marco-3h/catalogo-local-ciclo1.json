@@ -1,0 +1,1545 @@
+{
+    "at": "2026-09-30T23:49:17.903506+00:00",
+    "scope": "catalogo estrutural local; sem linhas de usuarios, tokens ou credenciais",
+    "tables": [
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "communication_revisions_3h",
+            "schema": "private",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "bigint",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "communication_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "event",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "version",
+                    "type": "integer",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "actor_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "occurred_at",
+                    "type": "timestamp with time zone",
+                    "default": "clock_timestamp()",
+                    "not_null": true
+                },
+                {
+                    "name": "before_state",
+                    "type": "jsonb",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "after_state",
+                    "type": "jsonb",
+                    "default": null,
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX communication_revisions_3h_pkey ON private.communication_revisions_3h USING btree (id)",
+                "CREATE UNIQUE INDEX communication_revisions_3h_communication_id_version_key ON private.communication_revisions_3h USING btree (communication_id, version)"
+            ],
+            "policies": null,
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "communication_revisions_3h_actor_id_fkey",
+                    "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "communication_revisions_3h_communication_id_fkey",
+                    "definition": "FOREIGN KEY (communication_id) REFERENCES private.communications_3h(id)"
+                },
+                {
+                    "name": "communication_revisions_3h_communication_id_version_key",
+                    "definition": "UNIQUE (communication_id, version)"
+                },
+                {
+                    "name": "communication_revisions_3h_event_check",
+                    "definition": "CHECK ((event = ANY (ARRAY['CREATED'::text, 'PUBLISHED'::text, 'REVISED'::text, 'ARCHIVED'::text])))"
+                },
+                {
+                    "name": "communication_revisions_3h_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "communication_views_3h",
+            "schema": "private",
+            "columns": [
+                {
+                    "name": "communication_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "employee_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "first_viewed_at",
+                    "type": "timestamp with time zone",
+                    "default": "clock_timestamp()",
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX communication_views_3h_pkey ON private.communication_views_3h USING btree (communication_id, employee_id)",
+                "CREATE INDEX communication_views_3h_employee_idx ON private.communication_views_3h USING btree (employee_id, first_viewed_at DESC)"
+            ],
+            "policies": null,
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "communication_views_3h_communication_id_fkey",
+                    "definition": "FOREIGN KEY (communication_id) REFERENCES private.communications_3h(id)"
+                },
+                {
+                    "name": "communication_views_3h_employee_id_fkey",
+                    "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id)"
+                },
+                {
+                    "name": "communication_views_3h_pkey",
+                    "definition": "PRIMARY KEY (communication_id, employee_id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "communications_3h",
+            "schema": "private",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "idempotency_key",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "title",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "message",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "audience",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "team_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "work_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "pinned",
+                    "type": "boolean",
+                    "default": "false",
+                    "not_null": true
+                },
+                {
+                    "name": "expires_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "status",
+                    "type": "text",
+                    "default": "'DRAFT'::text",
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "clock_timestamp()",
+                    "not_null": true
+                },
+                {
+                    "name": "created_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "published_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "published_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "updated_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "archived_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "archived_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "version",
+                    "type": "integer",
+                    "default": "1",
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX communications_3h_pkey ON private.communications_3h USING btree (id)",
+                "CREATE UNIQUE INDEX communications_3h_idempotency_key_key ON private.communications_3h USING btree (idempotency_key)",
+                "CREATE INDEX communications_3h_visible_idx ON private.communications_3h USING btree (status, pinned DESC, published_at DESC) WHERE (status = 'PUBLISHED'::text)"
+            ],
+            "policies": null,
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "communications_3h_archived_by_fkey",
+                    "definition": "FOREIGN KEY (archived_by) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "communications_3h_audience_check",
+                    "definition": "CHECK ((audience = ANY (ARRAY['ALL'::text, 'TEAM'::text, 'WORK'::text])))"
+                },
+                {
+                    "name": "communications_3h_check",
+                    "definition": "CHECK ((((audience = 'ALL'::text) AND (team_id IS NULL) AND (work_id IS NULL)) OR ((audience = 'TEAM'::text) AND (team_id IS NOT NULL) AND (work_id IS NULL)) OR ((audience = 'WORK'::text) AND (work_id IS NOT NULL) AND (team_id IS NULL))))"
+                },
+                {
+                    "name": "communications_3h_created_by_fkey",
+                    "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "communications_3h_idempotency_key_key",
+                    "definition": "UNIQUE (idempotency_key)"
+                },
+                {
+                    "name": "communications_3h_message_check",
+                    "definition": "CHECK (((length(btrim(message)) >= 1) AND (length(btrim(message)) <= 4000)))"
+                },
+                {
+                    "name": "communications_3h_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "communications_3h_published_by_fkey",
+                    "definition": "FOREIGN KEY (published_by) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "communications_3h_status_check",
+                    "definition": "CHECK ((status = ANY (ARRAY['DRAFT'::text, 'PUBLISHED'::text, 'ARCHIVED'::text])))"
+                },
+                {
+                    "name": "communications_3h_team_id_fkey",
+                    "definition": "FOREIGN KEY (team_id) REFERENCES teams(id)"
+                },
+                {
+                    "name": "communications_3h_title_check",
+                    "definition": "CHECK (((length(btrim(title)) >= 1) AND (length(btrim(title)) <= 120)))"
+                },
+                {
+                    "name": "communications_3h_updated_by_fkey",
+                    "definition": "FOREIGN KEY (updated_by) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "communications_3h_version_check",
+                    "definition": "CHECK ((version > 0))"
+                },
+                {
+                    "name": "communications_3h_work_id_fkey",
+                    "definition": "FOREIGN KEY (work_id) REFERENCES worksites(id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "employee_identity",
+            "schema": "private",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "auth_user_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "employee_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "status",
+                    "type": "text",
+                    "default": "'active'::text",
+                    "not_null": true
+                },
+                {
+                    "name": "verification_method",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "linked_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "activated_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "revoked_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "revoked_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "revocation_reason",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX employee_identity_pkey ON private.employee_identity USING btree (id)",
+                "CREATE UNIQUE INDEX employee_identity_auth_user_id_key ON private.employee_identity USING btree (auth_user_id)",
+                "CREATE UNIQUE INDEX employee_identity_active_employee_uq ON private.employee_identity USING btree (employee_id) WHERE (status = 'active'::text)",
+                "CREATE INDEX employee_identity_employee_history_idx ON private.employee_identity USING btree (employee_id, created_at DESC)",
+                "CREATE INDEX employee_identity_linked_by_idx ON private.employee_identity USING btree (linked_by)",
+                "CREATE INDEX employee_identity_revoked_by_idx ON private.employee_identity USING btree (revoked_by)"
+            ],
+            "policies": null,
+            "triggers": [
+                "CREATE TRIGGER employee_identity_guard_update BEFORE DELETE OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.guard_employee_identity_history()",
+                "CREATE TRIGGER employee_identity_audit_event AFTER INSERT OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.audit_employee_identity()"
+            ],
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "employee_identity_auth_user_id_fkey",
+                    "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+                },
+                {
+                    "name": "employee_identity_auth_user_id_key",
+                    "definition": "UNIQUE (auth_user_id)"
+                },
+                {
+                    "name": "employee_identity_employee_id_fkey",
+                    "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT"
+                },
+                {
+                    "name": "employee_identity_linked_by_fkey",
+                    "definition": "FOREIGN KEY (linked_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+                },
+                {
+                    "name": "employee_identity_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "employee_identity_revocation_complete",
+                    "definition": "CHECK ((((status = 'active'::text) AND (revoked_at IS NULL) AND (revoked_by IS NULL) AND (revocation_reason IS NULL)) OR ((status = 'revoked'::text) AND (revoked_at IS NOT NULL) AND (revoked_by IS NOT NULL) AND (revocation_reason IS NOT NULL))))"
+                },
+                {
+                    "name": "employee_identity_revocation_reason_check",
+                    "definition": "CHECK ((revocation_reason = ANY (ARRAY['employment_ended'::text, 'wrong_association'::text, 'account_replaced'::text, 'other'::text])))"
+                },
+                {
+                    "name": "employee_identity_revoked_by_fkey",
+                    "definition": "FOREIGN KEY (revoked_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+                },
+                {
+                    "name": "employee_identity_status_check",
+                    "definition": "CHECK ((status = ANY (ARRAY['active'::text, 'revoked'::text])))"
+                },
+                {
+                    "name": "employee_identity_verification_method_check",
+                    "definition": "CHECK ((verification_method = ANY (ARRAY['in_person'::text, 'hr_record'::text])))"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "employee_portal_accounts",
+            "schema": "private",
+            "columns": [
+                {
+                    "name": "auth_user_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "registered_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "registered_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX employee_portal_accounts_pkey ON private.employee_portal_accounts USING btree (auth_user_id)"
+            ],
+            "policies": null,
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "employee_portal_accounts_auth_user_id_fkey",
+                    "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+                },
+                {
+                    "name": "employee_portal_accounts_pkey",
+                    "definition": "PRIMARY KEY (auth_user_id)"
+                },
+                {
+                    "name": "employee_portal_accounts_registered_by_fkey",
+                    "definition": "FOREIGN KEY (registered_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres",
+                "anon=rDxtm/postgres",
+                "authenticated=rDxtm/postgres",
+                "service_role=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "employee_assignments",
+            "schema": "public",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "employee_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "team_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "starts_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "ends_at",
+                    "type": "timestamp with time zone",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "note",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "created_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX employee_assignments_pkey ON public.employee_assignments USING btree (id)",
+                "CREATE INDEX employee_assignments_employee_idx ON public.employee_assignments USING btree (employee_id, starts_at DESC)",
+                "CREATE INDEX employee_assignments_team_idx ON public.employee_assignments USING btree (team_id)",
+                "CREATE INDEX employee_assignments_created_by_idx ON public.employee_assignments USING btree (created_by)"
+            ],
+            "policies": [
+                {
+                    "cmd": "SELECT",
+                    "qual": "(can_operate('epi:write'::text, team_id) OR ((employee_work_team(employee_id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(employee_id))))",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "employee_assignments",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "assignments_read",
+                    "schemaname": "public",
+                    "with_check": null
+                }
+            ],
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "employee_assignments_check",
+                    "definition": "CHECK (((ends_at IS NULL) OR (ends_at >= starts_at)))"
+                },
+                {
+                    "name": "employee_assignments_created_by_fkey",
+                    "definition": "FOREIGN KEY (created_by) REFERENCES profiles(id)"
+                },
+                {
+                    "name": "employee_assignments_employee_id_fkey",
+                    "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id)"
+                },
+                {
+                    "name": "employee_assignments_note_check",
+                    "definition": "CHECK ((length(note) <= 500))"
+                },
+                {
+                    "name": "employee_assignments_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "employee_assignments_team_id_fkey",
+                    "definition": "FOREIGN KEY (team_id) REFERENCES teams(id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres",
+                "anon=arwdDxtm/postgres",
+                "authenticated=arwdDxtm/postgres",
+                "service_role=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "epi_employees",
+            "schema": "public",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "full_name",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "registration_code",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "profession",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "team_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "shirt_size",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "pants_size",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "shoe_size",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "active",
+                    "type": "boolean",
+                    "default": "true",
+                    "not_null": true
+                },
+                {
+                    "name": "created_by",
+                    "type": "uuid",
+                    "default": "auth.uid()",
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "aso_exam_date",
+                    "type": "date",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "aso_expiry_date",
+                    "type": "date",
+                    "default": null,
+                    "not_null": false
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX epi_employees_pkey ON public.epi_employees USING btree (id)",
+                "CREATE UNIQUE INDEX epi_employees_registration_code_key ON public.epi_employees USING btree (lower(registration_code)) WHERE ((registration_code IS NOT NULL) AND (registration_code <> ''::text))",
+                "CREATE INDEX epi_employees_team_idx ON public.epi_employees USING btree (team_id) WHERE active",
+                "CREATE INDEX epi_employees_created_by_idx ON public.epi_employees USING btree (created_by)",
+                "CREATE INDEX epi_employees_active_name_idx ON public.epi_employees USING btree (full_name) WHERE active"
+            ],
+            "policies": [
+                {
+                    "cmd": "ALL",
+                    "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "epi_employees",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "epi_employees_admin_write",
+                    "schemaname": "public",
+                    "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+                },
+                {
+                    "cmd": "SELECT",
+                    "qual": "(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "epi_employees",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "epi_employees_read",
+                    "schemaname": "public",
+                    "with_check": null
+                }
+            ],
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "epi_employee_aso_dates",
+                    "definition": "CHECK (((aso_expiry_date IS NULL) OR ((aso_exam_date IS NOT NULL) AND (aso_expiry_date >= aso_exam_date))))"
+                },
+                {
+                    "name": "epi_employees_created_by_fkey",
+                    "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+                },
+                {
+                    "name": "epi_employees_full_name_check",
+                    "definition": "CHECK ((length(TRIM(BOTH FROM full_name)) >= 3))"
+                },
+                {
+                    "name": "epi_employees_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "epi_employees_team_id_fkey",
+                    "definition": "FOREIGN KEY (team_id) REFERENCES teams(id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres",
+                "service_role=arwdDxtm/postgres",
+                "authenticated=arwd/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "profiles",
+            "schema": "public",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "full_name",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "role",
+                    "type": "text",
+                    "default": "'collaborator'::text",
+                    "not_null": true
+                },
+                {
+                    "name": "team_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "active",
+                    "type": "boolean",
+                    "default": "false",
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "operation_permissions",
+                    "type": "text[]",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "operation_team_ids",
+                    "type": "uuid[]",
+                    "default": null,
+                    "not_null": false
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)",
+                "CREATE INDEX idx_profiles_team ON public.profiles USING btree (team_id)",
+                "CREATE INDEX idx_profiles_role_active ON public.profiles USING btree (role, active)"
+            ],
+            "policies": [
+                {
+                    "cmd": "INSERT",
+                    "qual": null,
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "profiles",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "profiles_admin_insert",
+                    "schemaname": "public",
+                    "with_check": "private.is_admin()"
+                },
+                {
+                    "cmd": "UPDATE",
+                    "qual": "private.is_admin()",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "profiles",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "profiles_admin_update",
+                    "schemaname": "public",
+                    "with_check": "private.is_admin()"
+                },
+                {
+                    "cmd": "DELETE",
+                    "qual": "private.is_admin()",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "profiles",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "profiles_admin_delete",
+                    "schemaname": "public",
+                    "with_check": null
+                },
+                {
+                    "cmd": "SELECT",
+                    "qual": "((id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.is_active_user() AS is_active_user))",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "profiles",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "profiles_read",
+                    "schemaname": "public",
+                    "with_check": null
+                }
+            ],
+            "triggers": [
+                "CREATE TRIGGER trg_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION set_updated_at()",
+                "CREATE TRIGGER validate_profile_access AFTER INSERT OR UPDATE OF role, active, team_id, operation_permissions, operation_team_ids ON public.profiles FOR EACH ROW EXECUTE FUNCTION validate_profile_access()",
+                "CREATE TRIGGER prevent_portal_management_activation BEFORE INSERT OR UPDATE OF active ON public.profiles FOR EACH ROW EXECUTE FUNCTION private.prevent_portal_management_activation()"
+            ],
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "profiles_id_fkey",
+                    "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+                },
+                {
+                    "name": "profiles_operation_permissions_valid",
+                    "definition": "CHECK (((operation_permissions IS NULL) OR ((operation_permissions <@ ARRAY['materials:write'::text, 'consumption:write'::text, 'equipment:write'::text, 'epi:write'::text, 'requests:write'::text, 'rentals:write'::text]) AND (array_position(operation_permissions, NULL::text) IS NULL) AND (cardinality(operation_permissions) <= 6))))"
+                },
+                {
+                    "name": "profiles_operation_teams_valid",
+                    "definition": "CHECK (((operation_team_ids IS NULL) OR ((array_position(operation_team_ids, NULL::uuid) IS NULL) AND (cardinality(operation_team_ids) <= 100))))"
+                },
+                {
+                    "name": "profiles_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "profiles_role_check",
+                    "definition": "CHECK ((role = ANY (ARRAY['admin'::text, 'engineer'::text, 'leader'::text, 'collaborator'::text])))"
+                },
+                {
+                    "name": "profiles_team_id_fkey",
+                    "definition": "FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres",
+                "service_role=arwdDxtm/postgres",
+                "authenticated=arwd/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "teams",
+            "schema": "public",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "name",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "description",
+                    "type": "text",
+                    "default": null,
+                    "not_null": false
+                },
+                {
+                    "name": "active",
+                    "type": "boolean",
+                    "default": "true",
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "location_type",
+                    "type": "text",
+                    "default": "'field'::text",
+                    "not_null": true
+                },
+                {
+                    "name": "worksite_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": false
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX teams_pkey ON public.teams USING btree (id)",
+                "CREATE UNIQUE INDEX teams_name_key ON public.teams USING btree (name)",
+                "CREATE UNIQUE INDEX one_active_central ON public.teams USING btree (location_type) WHERE ((location_type = 'central'::text) AND (active = true))",
+                "CREATE INDEX teams_worksite_idx ON public.teams USING btree (worksite_id)"
+            ],
+            "policies": [
+                {
+                    "cmd": "SELECT",
+                    "qual": "private.is_active_user()",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "teams",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "teams_read",
+                    "schemaname": "public",
+                    "with_check": null
+                },
+                {
+                    "cmd": "INSERT",
+                    "qual": null,
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "teams",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "teams_admin_insert",
+                    "schemaname": "public",
+                    "with_check": "private.is_admin()"
+                },
+                {
+                    "cmd": "UPDATE",
+                    "qual": "private.is_admin()",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "teams",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "teams_admin_update",
+                    "schemaname": "public",
+                    "with_check": "private.is_admin()"
+                },
+                {
+                    "cmd": "DELETE",
+                    "qual": "private.is_admin()",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "teams",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "teams_admin_delete",
+                    "schemaname": "public",
+                    "with_check": null
+                }
+            ],
+            "triggers": [
+                "CREATE TRIGGER trg_teams_updated_at BEFORE UPDATE ON public.teams FOR EACH ROW EXECUTE FUNCTION set_updated_at()"
+            ],
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "teams_location_type_check",
+                    "definition": "CHECK ((location_type = ANY (ARRAY['central'::text, 'field'::text])))"
+                },
+                {
+                    "name": "teams_name_key",
+                    "definition": "UNIQUE (name)"
+                },
+                {
+                    "name": "teams_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "teams_worksite_id_fkey",
+                    "definition": "FOREIGN KEY (worksite_id) REFERENCES worksites(id)"
+                }
+            ]
+        },
+        {
+            "acl": [
+                "postgres=arwdDxtm/postgres",
+                "anon=rDxtm/postgres",
+                "authenticated=rDxtm/postgres",
+                "service_role=arwdDxtm/postgres"
+            ],
+            "rls": true,
+            "owner": "postgres",
+            "table": "worksites",
+            "schema": "public",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "uuid",
+                    "default": "gen_random_uuid()",
+                    "not_null": true
+                },
+                {
+                    "name": "name",
+                    "type": "text",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "stock_team_id",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                },
+                {
+                    "name": "active",
+                    "type": "boolean",
+                    "default": "true",
+                    "not_null": true
+                },
+                {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "default": "now()",
+                    "not_null": true
+                },
+                {
+                    "name": "created_by",
+                    "type": "uuid",
+                    "default": null,
+                    "not_null": true
+                }
+            ],
+            "indexes": [
+                "CREATE UNIQUE INDEX worksites_pkey ON public.worksites USING btree (id)",
+                "CREATE UNIQUE INDEX worksites_stock_team_id_key ON public.worksites USING btree (stock_team_id)",
+                "CREATE INDEX works_created_by_idx ON public.worksites USING btree (created_by)"
+            ],
+            "policies": [
+                {
+                    "cmd": "SELECT",
+                    "qual": "( SELECT private.is_active_user() AS is_active_user)",
+                    "roles": [
+                        "authenticated"
+                    ],
+                    "tablename": "worksites",
+                    "permissive": "PERMISSIVE",
+                    "policyname": "works_read",
+                    "schemaname": "public",
+                    "with_check": null
+                }
+            ],
+            "triggers": null,
+            "force_rls": false,
+            "constraints": [
+                {
+                    "name": "worksites_created_by_fkey",
+                    "definition": "FOREIGN KEY (created_by) REFERENCES profiles(id)"
+                },
+                {
+                    "name": "worksites_name_check",
+                    "definition": "CHECK (((length(btrim(name)) >= 2) AND (length(btrim(name)) <= 140)))"
+                },
+                {
+                    "name": "worksites_pkey",
+                    "definition": "PRIMARY KEY (id)"
+                },
+                {
+                    "name": "worksites_stock_team_id_fkey",
+                    "definition": "FOREIGN KEY (stock_team_id) REFERENCES teams(id)"
+                },
+                {
+                    "name": "worksites_stock_team_id_key",
+                    "definition": "UNIQUE (stock_team_id)"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "acl": [
+                "postgres=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "private.communication_context_3h(uuid)",
+            "definition": "CREATE OR REPLACE FUNCTION private.communication_context_3h(p_auth_user_id uuid)\n RETURNS TABLE(employee_id uuid, team_id uuid, work_id uuid)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  with owner as (\n    select e.id employee_id,e.team_id home_team_id\n    from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id=i.auth_user_id\n    join public.profiles p on p.id=i.auth_user_id and not p.active\n    join public.epi_employees e on e.id=i.employee_id and e.active\n    where i.auth_user_id=p_auth_user_id and i.status='active'\n  ), chosen as (\n    select o.employee_id,case\n      when assignment.active_count=1 then assignment.active_team_id\n      when assignment.active_count=0 and not exists\n        (select 1 from public.employee_assignments history where history.employee_id=o.employee_id)\n        then o.home_team_id\n      else null::uuid end selected_team\n    from owner o cross join lateral (\n      select count(*) active_count,(array_agg(a.team_id))[1] active_team_id\n      from public.employee_assignments a where a.employee_id=o.employee_id\n        and a.starts_at<=now() and (a.ends_at is null or a.ends_at>now())\n    ) assignment\n  )\n  select c.employee_id,t.id,w.id from chosen c\n  left join public.teams t on t.id=c.selected_team and t.active\n  left join public.worksites w on w.id=t.worksite_id and w.active;\n$function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "private.is_portal_account(uuid)",
+            "definition": "CREATE OR REPLACE FUNCTION private.is_portal_account(p_user_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists (\n    select 1 from private.employee_portal_accounts a where a.auth_user_id = p_user_id\n  );\n$function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "admin_communications_3h(integer,integer)",
+            "definition": "CREATE OR REPLACE FUNCTION public.admin_communications_3h(p_limit integer DEFAULT 20, p_offset integer DEFAULT 0)\n RETURNS jsonb\n LANGUAGE plpgsql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_result jsonb;\nbegin\n  if auth.uid() is null or not public.is_active_admin() then raise exception 'forbidden_communication'; end if;\n  if p_limit is null or p_limit not between 1 and 30 or p_offset is null or p_offset not between 0 and 10000\n    then raise exception 'invalid_pagination'; end if;\n  with eligible as (\n    select context.* from private.employee_identity i\n    cross join lateral private.communication_context_3h(i.auth_user_id) context\n  ), selected as (\n    select c.* from private.communications_3h c order by c.created_at desc,c.id desc limit p_limit offset p_offset\n  ), rows as (\n    select c.id,c.title,c.message,c.audience,c.team_id,c.work_id,\n      case when c.audience='ALL' then 'Todos os colaboradores'\n        when c.audience='TEAM' then t.name else w.name end audience_name,\n      c.pinned,c.expires_at,c.status,c.created_at,c.published_at,c.updated_at,c.version,\n      count(e.employee_id)::integer recipient_count,\n      count(v.employee_id)::integer viewed_count\n    from selected c left join public.teams t on t.id=c.team_id\n    left join public.worksites w on w.id=c.work_id\n    left join eligible e on c.audience='ALL' or (c.audience='TEAM' and c.team_id=e.team_id)\n      or (c.audience='WORK' and c.work_id=e.work_id)\n    left join private.communication_views_3h v on v.communication_id=c.id and v.employee_id=e.employee_id\n    group by c.id,c.title,c.message,c.audience,c.team_id,c.work_id,t.name,w.name,c.pinned,\n      c.expires_at,c.status,c.created_at,c.published_at,c.updated_at,c.version\n  ) select coalesce(jsonb_agg(to_jsonb(rows) order by rows.created_at desc,rows.id desc),'[]'::jsonb)\n  into v_result from rows;\n  return v_result;\nend $function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "archive_communication_3h(uuid,integer)",
+            "definition": "CREATE OR REPLACE FUNCTION public.archive_communication_3h(p_id uuid, p_expected_version integer)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_actor uuid:=auth.uid(); v_row private.communications_3h%rowtype; v_before jsonb;\nbegin\n  if v_actor is null or not public.is_active_admin() then raise exception 'forbidden_communication'; end if;\n  select * into v_row from private.communications_3h where id=p_id for update;\n  if not found or v_row.status='ARCHIVED' or v_row.version is distinct from p_expected_version\n    then raise exception 'communication_version_conflict'; end if;\n  v_before:=to_jsonb(v_row);\n  update private.communications_3h set status='ARCHIVED',archived_at=clock_timestamp(),archived_by=v_actor,\n    version=version+1 where id=p_id returning * into v_row;\n  insert into private.communication_revisions_3h(communication_id,event,version,actor_id,before_state,after_state)\n  values(p_id,'ARCHIVED',v_row.version,v_actor,v_before,to_jsonb(v_row));\n  return p_id;\nend $function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres",
+                "service_role=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=public, pg_temp"
+            ],
+            "signature": "is_active_admin()",
+            "definition": "CREATE OR REPLACE FUNCTION public.is_active_admin()\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\n  select exists (\n    select 1 from public.profiles p\n    where p.id = auth.uid() and p.active = true and p.role = 'admin'\n  );\n$function$\n",
+            "security_definer": false
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "my_communications_3h(boolean,integer,integer)",
+            "definition": "CREATE OR REPLACE FUNCTION public.my_communications_3h(p_unread_only boolean DEFAULT false, p_limit integer DEFAULT 20, p_offset integer DEFAULT 0)\n RETURNS jsonb\n LANGUAGE plpgsql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_context record; v_result jsonb;\nbegin\n  select * into v_context from private.communication_context_3h(auth.uid());\n  if not found then raise exception 'portal_access_denied'; end if;\n  if p_limit is null or p_limit not between 1 and 30 or p_offset is null or p_offset not between 0 and 10000\n    then raise exception 'invalid_pagination'; end if;\n  select coalesce(jsonb_agg(to_jsonb(rows) order by rows.pinned desc,rows.published_at desc,rows.id desc),'[]'::jsonb)\n  into v_result from (\n    select c.id,c.title,c.audience,\n      case when c.audience='ALL' then 'Todos os colaboradores'\n        when c.audience='TEAM' then t.name else w.name end audience_name,\n      c.pinned,c.published_at,c.updated_at,c.expires_at,c.version,v.first_viewed_at\n    from private.communications_3h c\n    left join public.teams t on t.id=c.team_id\n    left join public.worksites w on w.id=c.work_id\n    left join private.communication_views_3h v on v.communication_id=c.id and v.employee_id=v_context.employee_id\n    where c.status='PUBLISHED' and (c.expires_at is null or c.expires_at>now())\n      and (c.audience='ALL' or (c.audience='TEAM' and c.team_id=v_context.team_id)\n        or (c.audience='WORK' and c.work_id=v_context.work_id))\n      and (not coalesce(p_unread_only,false) or v.first_viewed_at is null)\n    order by c.pinned desc,c.published_at desc,c.id desc limit p_limit offset p_offset\n  ) rows;\n  return v_result;\nend $function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "service_role=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "my_current_work()",
+            "definition": "CREATE OR REPLACE FUNCTION public.my_current_work()\n RETURNS TABLE(work_id uuid, work_name text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  with owner as (\n    select e.id as employee_id, e.team_id as home_team_id\n    from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id = i.auth_user_id\n    join public.profiles p on p.id = i.auth_user_id and not p.active\n    join public.epi_employees e on e.id = i.employee_id and e.active\n    where i.auth_user_id = (select auth.uid()) and i.status = 'active'\n  )\n  select w.id, w.name\n  from owner e\n  cross join lateral (\n    select count(*) as active_count, (array_agg(a.team_id))[1] as active_team_id\n    from public.employee_assignments a\n    where a.employee_id = e.employee_id and a.starts_at <= now()\n      and (a.ends_at is null or a.ends_at > now())\n  ) current_assignment\n  cross join lateral (\n    select case\n      when current_assignment.active_count = 1 then current_assignment.active_team_id\n      when current_assignment.active_count = 0 and not exists (\n        select 1 from public.employee_assignments history\n        where history.employee_id = e.employee_id\n      ) then e.home_team_id\n      else null::uuid\n    end as team_id\n  ) chosen\n  join public.teams t on t.id = chosen.team_id and t.active\n  join public.worksites w on w.id = t.worksite_id and w.active;\n$function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "service_role=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "my_employee_profile()",
+            "definition": "CREATE OR REPLACE FUNCTION public.my_employee_profile()\n RETURNS TABLE(employee_id uuid, full_name text, profession text, team_name text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select e.id, e.full_name, e.profession, t.name\n  from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id = i.auth_user_id\n    join public.profiles p on p.id = i.auth_user_id and not p.active\n    join public.epi_employees e on e.id = i.employee_id and e.active\n    left join public.teams t on t.id = e.team_id and t.active\n  where i.auth_user_id = (select auth.uid()) and i.status = 'active';\n$function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "service_role=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "my_team_summary()",
+            "definition": "CREATE OR REPLACE FUNCTION public.my_team_summary()\n RETURNS TABLE(team_name text, work_name text, member_count integer, members jsonb)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  with owner as (\n    select e.id as employee_id, e.team_id as home_team_id\n    from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id = i.auth_user_id\n    join public.profiles p on p.id = i.auth_user_id and not p.active\n    join public.epi_employees e on e.id = i.employee_id and e.active\n    where i.auth_user_id = (select auth.uid()) and i.status = 'active'\n  ), owner_team as (\n    select case\n      when assignments.active_count = 1 then assignments.active_team_id\n      when assignments.active_count = 0 and not exists (\n        select 1 from public.employee_assignments history\n        where history.employee_id = o.employee_id\n      ) then o.home_team_id\n      else null::uuid\n    end as team_id\n    from owner o\n    cross join lateral (\n      select count(*) as active_count, (array_agg(a.team_id))[1] as active_team_id\n      from public.employee_assignments a\n      where a.employee_id = o.employee_id and a.starts_at <= now()\n        and (a.ends_at is null or a.ends_at > now())\n    ) assignments\n  )\n  select t.name, w.name, roster.member_count, roster.members\n  from owner_team chosen\n  join public.teams t on t.id = chosen.team_id and t.active\n  left join public.worksites w on w.id = t.worksite_id and w.active\n  cross join lateral (\n    select count(*)::integer as member_count,\n      coalesce(jsonb_agg(\n        jsonb_build_object('name', member.full_name, 'profession',\n          coalesce(nullif(pg_catalog.btrim(member.profession), ''), 'Função não informada'))\n        order by member.full_name, member.id\n      ), '[]'::jsonb) as members\n    from public.epi_employees member\n    cross join lateral (\n      select count(*) as active_count, (array_agg(a.team_id))[1] as active_team_id\n      from public.employee_assignments a\n      where a.employee_id = member.id and a.starts_at <= now()\n        and (a.ends_at is null or a.ends_at > now())\n    ) member_assignments\n    where member.active and t.id = case\n      when member_assignments.active_count = 1 then member_assignments.active_team_id\n      when member_assignments.active_count = 0 and not exists (\n        select 1 from public.employee_assignments history\n        where history.employee_id = member.id\n      ) then member.team_id\n      else null::uuid\n    end\n  ) roster;\n$function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "open_communication_3h(uuid)",
+            "definition": "CREATE OR REPLACE FUNCTION public.open_communication_3h(p_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_context record; v_row record; v_viewed_at timestamptz;\nbegin\n  select * into v_context from private.communication_context_3h(auth.uid());\n  if not found then raise exception 'portal_access_denied'; end if;\n  select c.*,case when c.audience='ALL' then 'Todos os colaboradores'\n    when c.audience='TEAM' then t.name else w.name end audience_name\n  into v_row from private.communications_3h c\n  left join public.teams t on t.id=c.team_id left join public.worksites w on w.id=c.work_id\n  where c.id=p_id and c.status='PUBLISHED' and (c.expires_at is null or c.expires_at>now())\n    and (c.audience='ALL' or (c.audience='TEAM' and c.team_id=v_context.team_id)\n      or (c.audience='WORK' and c.work_id=v_context.work_id));\n  if not found then raise exception 'communication_unavailable'; end if;\n  insert into private.communication_views_3h(communication_id,employee_id) values(p_id,v_context.employee_id)\n  on conflict do nothing;\n  select first_viewed_at into v_viewed_at from private.communication_views_3h\n    where communication_id=p_id and employee_id=v_context.employee_id;\n  return jsonb_build_object('id',v_row.id,'title',v_row.title,'message',v_row.message,\n    'audience',v_row.audience,'audience_name',v_row.audience_name,'pinned',v_row.pinned,\n    'published_at',v_row.published_at,'updated_at',v_row.updated_at,'version',v_row.version,\n    'first_viewed_at',v_viewed_at);\nend $function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "publish_communication_3h(uuid,integer)",
+            "definition": "CREATE OR REPLACE FUNCTION public.publish_communication_3h(p_id uuid, p_expected_version integer)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_actor uuid:=auth.uid(); v_row private.communications_3h%rowtype; v_before jsonb;\nbegin\n  if v_actor is null or not public.is_active_admin() then raise exception 'forbidden_communication'; end if;\n  select * into v_row from private.communications_3h where id=p_id for update;\n  if not found then raise exception 'communication_unavailable'; end if;\n  if v_row.status='PUBLISHED' and v_row.version=p_expected_version+1 then return p_id; end if;\n  if v_row.status<>'DRAFT' or v_row.version is distinct from p_expected_version\n    then raise exception 'communication_version_conflict'; end if;\n  if v_row.expires_at is not null and v_row.expires_at<=clock_timestamp()\n    then raise exception 'invalid_communication_expiry'; end if;\n  v_before:=to_jsonb(v_row);\n  update private.communications_3h set status='PUBLISHED',published_at=clock_timestamp(),published_by=v_actor,\n    version=version+1 where id=p_id returning * into v_row;\n  insert into private.communication_revisions_3h(communication_id,event,version,actor_id,before_state,after_state)\n  values(p_id,'PUBLISHED',v_row.version,v_actor,v_before,to_jsonb(v_row));\n  return p_id;\nend $function$\n",
+            "security_definer": true
+        },
+        {
+            "acl": [
+                "postgres=X/postgres",
+                "authenticated=X/postgres"
+            ],
+            "owner": "postgres",
+            "settings": [
+                "search_path=\"\""
+            ],
+            "signature": "save_communication_3h(uuid,text,text,text,uuid,uuid,boolean,timestamp with time zone,uuid,integer)",
+            "definition": "CREATE OR REPLACE FUNCTION public.save_communication_3h(p_id uuid, p_title text, p_message text, p_audience text, p_team_id uuid, p_work_id uuid, p_pinned boolean, p_expires_at timestamp with time zone, p_idempotency_key uuid, p_expected_version integer)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_actor uuid:=auth.uid(); v_row private.communications_3h%rowtype; v_before jsonb; v_id uuid;\nbegin\n  if v_actor is null or not public.is_active_admin() then raise exception 'forbidden_communication'; end if;\n  p_title:=pg_catalog.btrim(p_title); p_message:=pg_catalog.btrim(p_message);\n  if p_title is null or length(p_title) not between 1 and 120 or p_title ~ '[[:cntrl:]]'\n    or p_message is null or length(p_message) not between 1 and 4000\n    or p_message ~ '[<>]' or pg_catalog.translate(p_message,E'\\n\\r\\t','') ~ '[[:cntrl:]]'\n    then raise exception 'invalid_communication_text'; end if;\n  if not ((p_audience='ALL' and p_team_id is null and p_work_id is null) or\n    (p_audience='TEAM' and p_team_id is not null and p_work_id is null) or\n    (p_audience='WORK' and p_work_id is not null and p_team_id is null))\n    then raise exception 'invalid_communication_audience'; end if;\n  if p_audience='TEAM' and not exists(select 1 from public.teams where id=p_team_id and active)\n    then raise exception 'invalid_communication_audience'; end if;\n  if p_audience='WORK' and not exists(select 1 from public.worksites where id=p_work_id and active)\n    then raise exception 'invalid_communication_audience'; end if;\n  if p_expires_at is not null and p_expires_at<=clock_timestamp() then raise exception 'invalid_communication_expiry'; end if;\n  if p_id is null then\n    if p_idempotency_key is null then raise exception 'missing_idempotency_key'; end if;\n    insert into private.communications_3h(idempotency_key,title,message,audience,team_id,work_id,pinned,expires_at,created_by)\n    values(p_idempotency_key,p_title,p_message,p_audience,p_team_id,p_work_id,coalesce(p_pinned,false),p_expires_at,v_actor)\n    on conflict (idempotency_key) do nothing returning id into v_id;\n    if v_id is null then\n      select * into v_row from private.communications_3h where idempotency_key=p_idempotency_key;\n      if v_row.created_by<>v_actor or v_row.title<>p_title or v_row.message<>p_message\n        or v_row.audience<>p_audience or v_row.team_id is distinct from p_team_id\n        or v_row.work_id is distinct from p_work_id or v_row.pinned<>coalesce(p_pinned,false)\n        or v_row.expires_at is distinct from p_expires_at then raise exception 'idempotency_conflict'; end if;\n      return v_row.id;\n    end if;\n    select * into v_row from private.communications_3h where id=v_id;\n    insert into private.communication_revisions_3h(communication_id,event,version,actor_id,after_state)\n    values(v_id,'CREATED',1,v_actor,to_jsonb(v_row));\n    return v_id;\n  end if;\n  select * into v_row from private.communications_3h where id=p_id for update;\n  if not found or v_row.status='ARCHIVED' then raise exception 'communication_unavailable'; end if;\n  if p_expected_version is distinct from v_row.version then raise exception 'communication_version_conflict'; end if;\n  if v_row.status='PUBLISHED' and\n    (v_row.audience<>p_audience or v_row.team_id is distinct from p_team_id or v_row.work_id is distinct from p_work_id)\n    then raise exception 'published_audience_immutable'; end if;\n  v_before:=to_jsonb(v_row);\n  update private.communications_3h set title=p_title,message=p_message,audience=p_audience,\n    team_id=p_team_id,work_id=p_work_id,pinned=coalesce(p_pinned,false),expires_at=p_expires_at,\n    updated_at=clock_timestamp(),updated_by=v_actor,version=version+1 where id=p_id returning * into v_row;\n  insert into private.communication_revisions_3h(communication_id,event,version,actor_id,before_state,after_state)\n  values(p_id,'REVISED',v_row.version,v_actor,v_before,to_jsonb(v_row));\n  return p_id;\nend $function$\n",
+            "security_definer": true
+        }
+    ],
+    "table_privileges": [
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "INSERT",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "SELECT",
+            "with_hierarchy": "YES"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "UPDATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "DELETE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRUNCATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "REFERENCES",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communications_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRIGGER",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "INSERT",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "SELECT",
+            "with_hierarchy": "YES"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "UPDATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "DELETE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRUNCATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "REFERENCES",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_revisions_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRIGGER",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "INSERT",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "SELECT",
+            "with_hierarchy": "YES"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "UPDATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "DELETE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRUNCATE",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "REFERENCES",
+            "with_hierarchy": "NO"
+        },
+        {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "table_name": "communication_views_3h",
+            "is_grantable": "YES",
+            "table_schema": "private",
+            "table_catalog": "postgres",
+            "privilege_type": "TRIGGER",
+            "with_hierarchy": "NO"
+        }
+    ],
+    "private_schema_acl": [
+        "postgres=UC/postgres",
+        "authenticated=U/postgres",
+        "supabase_auth_admin=U/postgres"
+    ]
+}

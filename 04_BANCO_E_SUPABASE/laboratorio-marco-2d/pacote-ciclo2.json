@@ -1,0 +1,432 @@
+{
+  "zip": "outputs/Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo2.zip",
+  "sha256": "731c1bed14d812b646427802b0b7ace6d786c44853188ad7a1183cdae1dedf63",
+  "entries": 254,
+  "delta": [
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/auditoria-1b/rede-auth-real.json",
+      "kind": "alterado",
+      "baseline_2b_sha256": "c3fd2ddba727f19277bc93980ab1ac135eff78f1d36f0bc51dbd23bf84f7923e",
+      "current_sha256": "96d6ec4bd4b98376ee2f074a5ebbbfd1b8d2db3c625eeeb78af6a80060521f64"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/executar-provas-complementares.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "860d6eb26777bd88fa85925e4508b03676f5b82d1bb9fbb481f3633345b08185",
+      "current_sha256": "69d45cf18e77cf3ccf2dc947c0f1a5a38c8e9453ec3bfa88228cf251a44e2477"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/executar-provas-gestao.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "05a98d6b753e1d99247aeacf30b0c9caeddac173112ed93cd62d2449ef06f9c2",
+      "current_sha256": "ed6f4baf88f94794b2754033a276854ebddec407ffbfa673f41abde14e6bad41"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/executar-provas-reais.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "d508a22e1fb71a0587b9ab9ed54ad0fddb2d5a16e6b17a536f3a82a838a30849",
+      "current_sha256": "22d10927af86758015ca5a8a771c4c369ea226c6cbfd7146f48bfab2c821f7f8"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/executar-provas-t15.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "5185cefef843eecc29d31796fc41cec0bbcaf8a2e36caff539b78e59db8380c9",
+      "current_sha256": "a8310ca2bda1f77d51936ca63b6f7e78690bb48cc5cc725353ed56bf0c854a15"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/marco-1c/executar-provas-1c.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "8371fb5b89cdb8db38276ccfa62e6d5ba498d43bf38a169420fb6a0852d1229f",
+      "current_sha256": "0821e9eea3642e6b56f65eca7eccb6ac16a414d1d5da2fb2da4d79eaaad3b648"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/saneamento-r2/executar-auth-real.ps1",
+      "kind": "alterado",
+      "baseline_2b_sha256": "d1eb9e74537d356148a73c59c673e64c06fa71ece3c36b8e0ea332f2fe4cc0a7",
+      "current_sha256": "c73a242bc2c855e7e741eb24ef709967702256c2a8d1a07003e8bbd2708f35c6"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-1a/verificar-rede-local.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "30f275cde365760cb4ec964174d0968080d0373f7facf2085f7e1a74ad67f22d",
+      "current_sha256": "065bee76fffe9bf05f79f657efc1ef9a1b6aa2e98573d58bc41c8038ba19efba"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/auth-local.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "ed1aff5f07b9fb6f02e4fa11f26c006049c3746cf228df9c7ce3a9d8a3dbfa4f",
+      "current_sha256": "f8eaa430b45eff6dd2cc7962f0039505dcbce91a494be6fa675d9a8816c1e75a"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/backup.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "671c59c608ef951071f241ae4a5201985b7a2034ecbbfa12f63750c9f14453b5"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/ferramentas-recuperacao.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "c78b9b7684853e00a0410403a719b8b71bb2bd4188b96fe7912fb92ada3eee70"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/http-lab.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "f00c2c1c4fddd0b1ea52153946163463f96bcee4184c48d68f285bbfc357e64d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/integridade.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "8c8f22235f0d442a9db291d52d009465a515276fb7974cba46bcc0dfcafbecb8"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/nucleo.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "fd20efe34d42df2be02b58405048c824e7a5af241e861f7d0f58b420d0697fcb",
+      "current_sha256": "340a7005db3c5bb23f3e89055b15b91bf9c93882b3826afa57d48b0f7289cc97"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-2b.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "56e4ecbd889ac0f06dec3b0ad37bef0f71eb2072ffddb2f22c3708e6ce173dcc",
+      "current_sha256": "0f3be95315ea703a99716f8ae268985316d37055c482245da2602a4aeec5a0a9"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-revogacao-concorrente-2b.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "8c4535c1977eaeb010ded9c143352c7c8f9f2d82bfdc2d5fff8341a787107ed1",
+      "current_sha256": "64cf5e9bbe23134ca1f2d10d095909ef92bd713e593217101876f84e50e87359"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-transporte-2b.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "58ed101d136da2e75641cc52b001155276b7fcd63f1d85fe0a9fb23bd968b91f",
+      "current_sha256": "46198374843b93e8b1791f2e29dfcdedd4cc7208d26c99910de00dbfecb2d9ed"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/recuperacao.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "e009796b38bbcce1a0387852852e1f9cf30d72230926acc6a0ecd176eed70e4c"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/resultado-segredos-2b.json",
+      "kind": "alterado",
+      "baseline_2b_sha256": "f55d4a4331c132044e894ad501dca714d4e84cbb8449a69387eebc399303a9a6",
+      "current_sha256": "c528b3e1c2f46040a810566fc328795da0ab358176501922a40ddc099380ac03"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/schema.sql",
+      "kind": "alterado",
+      "baseline_2b_sha256": "30d28ccc71443615885d9053cc78aa1633a968aaf3a30f01cb80c9198dc75c6c",
+      "current_sha256": "ec037568992d9688bae8407a2090f4dcfcdf001955c1ec91e2428080cb697179"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2b/servidor.mjs",
+      "kind": "alterado",
+      "baseline_2b_sha256": "73bfac923c7c1a2d64855e119a67abb0c249578a5c2b18ea715eb327f5b0b6f4",
+      "current_sha256": "7ba0a66ec48fce30a01ef6efdfc3e308d4e6a2cf9707a31c9747ce9800eca342"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/backup-sintetico-2d/database.tar.gz",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "99f599d2b7c6a49ffe23a1494c1bc3a0bb4255758ecba75c2dfc9e072529fc15"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/backup-sintetico-2d/manifesto.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "1132d729a1f7309f51735bc169f92c71c7e098e0bf711b44b8f6bf06537e0f96"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/banco.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "ba5fd524d459870aafa743ffa4f1be014305e54a969d26076dabac56b6ca845d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/base-real.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "736b0ac55b58f71a8d1f63e1cf287043557d2d445d8c0e8f0110272337f5a8cf"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/build.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "3969de616bd9340557269624794919f53d46eeff66f1cd9537465afb80ee7e8d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/estado-final.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "2bc8832cf8124ff251fe43ef5d37a7a4481599b72ee0b9c548675572384ef7d7"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/execucao-auth-real.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "7d49ab1d4af5fe2521fcbfc59c84ecd3f8fefd2703ba5615c7c5ab731b169067"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/execucao-storage.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "7bdfd091ee22969f4a562e56d8753d0b9bb33404722774ee4dcb6ec2745c2a78"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/gerar-pacote-2d.py",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "0f0a35111c5ea61316385dddd4286e4788b1d1ca4c78a7ed482abb3c6d69a906"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/grok-ciclo1.png",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "3a635596b16c2377e3505194373dbc79055826b876c30442e395cd8f75ca521d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/lint.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "b16fff7b82f5c3a6898d482451b4c004edc2f042f1dd790bea242f0c476e959d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/pacote-ciclo1.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "3666e9d03ebdcd93853d237572a0a143535d0a1ea822e7ea3a42722716b16d81"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/parecer-grok-ciclo1.md",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "e5175b5050de9f78408d2f615c5fcd764deffe875f130b65ce0e1424c734b3a0"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/plano-auth-real-2d.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "b3ed7ce43130b1f979da66896611a533dde8c42c1afa253aa654c1c430a057a8"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/plano-testes-2d.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "fd076ad7837976eba43f6437ef6759665a4f1f5a056584116a67bb9391608fff"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/processo-ensaio.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "8868fdcad0c1e1e8a52b58d9625331f4d8f28867e45239c3ca668dd01350c571"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-2d.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "689fe7a6dd65ba91295f318dcd50bb3597aa063b25dfc1bc27c5ddfdf759ffdb"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-auth-real-2d.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "d8633371ae1cce9745e19c17ce70dd15088229af79c2060e60d91402324fdf23"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/qualidade.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "9ceaa19b28714b8f76ec4af39bfc0d52094359454f88f4320785db65fdf24fcc"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/rede.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "743e6e5d5750499bdf621c9868a3c7ca353a152be7de994d113342a54a9d57f9"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/rede.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "c335546b2a6567dfe24731180c4175278ade926dc055b365911781c182c64559"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/regressao-1c.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "d66af40192b4750772e184ea31033ea754c79f19fede010b3b21c8fafce23b52"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/regressao-2b.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "814a1083725c8cece6a14cfa2b649e58892ecadbeec4d59d321425d36c23d2d4"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/regressao-base.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "6cce440c3af6819b5ff3e545b91b0c9c6d6084a31df0f93ec67b2cb7ed33c774"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/regressao-revogacao.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "fa9e3c6b0fc965425c371255f7243bc3316d4d27ab5dfd25d19a93123f856c5f"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/regressao-transporte.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "7ae56ade9bca3127e6e4b0874da571317c833bd418f920146d1bbe005f00d732"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-1c-regressao.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "4257cadc92510ffa514d5aa73ff3e28e77fe0a91bd89f946eef7a621d15645c8"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-2b.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "1cb35df3f540777bb187fd6717ffc5d47d067faa03efd3b3b9c99900ea68ac78"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-2d.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "fe6ce7e80ff04fdceb4db58bca2e46702eca2797c487c3a0038a999be3b7f89d"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-auth-real-2d.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "561ed6ff2488766b251a87030e617631d7ce18edc4d8f117a5a0fcd685a7916f"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-complementar.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "41bb69f8b788cf303ab07aca7d6c77b3bd4c38c75da26e0f77071e1ef2a92f1b"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-gestao-equipe-opcional.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "289cbdc5751beaf533a1cc307e6d0f3ca52d0afc6a1c208252df16fede8e4a48"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-indisponibilidade-2b.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "b88bd73fc9199e8efb6046d20854019709385516de964e747c624f7279ae07a2"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-revogacao-concorrente-2b.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "43054f29660262e6c536af2283ef0ab9ddad34ad60da41cd1dd38d625dd860e2"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-segredos-2d.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "40be08c483f39d59a764d2337e875def7b0f2da57690366158727f0fa34a4365"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-t15-after.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "618ff84279710b7df5dc962d789fdd061d044b3f1e3950396067d91d8b220762"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/resultado-transporte-2b.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "e356f4493f835d3ea6546e2985f38b1abdd9473f529aed805e7043ecc75c7aec"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/typecheck.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "042d21beb9c1703fdd56f7c5c5235ec8308817325205441770d24b14d2b057d7"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/verificacao-previa-parada.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "59798dee17a6aaf0f50e31bb38db22034fcc79ba6379b15c35e5f40c3c030a8e"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/verificar-segredos-2d.mjs",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "c6e0278186ef27a656b55691b86967945a74695bd06c8839b837b83183e4078f"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/web.json",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "8305b1cc611fdc3c44c1263b7bdfa64f974d2e2c1913cf383791e7c0a24f7adb"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-2d/web.log",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "a1ecd12c2af3a65379f141711f2619dafd477c959febd790e5d40f3b308298a7"
+    },
+    {
+      "path": "05_DOCUMENTACAO/22_AMBIENTE_REP_P_E_ROADMAP.md",
+      "kind": "alterado",
+      "baseline_2b_sha256": "e635d68005ebb2eab6e9d15a10a3f989196809c92aee4d711dbe8e37c1238a7b",
+      "current_sha256": "b57dd8c15f482305ed64efb91930f31a377db5d83cfd1b67ecab7f2a7b8e0ffe"
+    },
+    {
+      "path": "05_DOCUMENTACAO/34_MARCO_2B_PONTO_EXPERIMENTAL.md",
+      "kind": "alterado",
+      "baseline_2b_sha256": "3e3cd2e5dd4dc86bb02ebc72f5e4038a0b8ebd30193b2699c5473a9610028e87",
+      "current_sha256": "86cdaa8ac821a8d229b16a9ed03e61d87088362547a9868db8d05b16c125b4f8"
+    },
+    {
+      "path": "05_DOCUMENTACAO/35_MARCO_2C_REVOGACAO_RECUPERACAO_RESILIENCIA.md",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "9c4a2adee13b19311e45ff9b2112b7d3539dd839b591dad62a8913fbd5985346"
+    },
+    {
+      "path": "05_DOCUMENTACAO/36_MARCO_2D_RECUPERACAO_LOCAL_E_INTEGRIDADE.md",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "41d3b245032fe5704bc285ef3d26482e762272c5dea549d27132e5f12bcf386d"
+    },
+    {
+      "path": "LEIA-ME.md",
+      "kind": "novo",
+      "baseline_2b_sha256": null,
+      "current_sha256": "bfdc5a1b6a13d2e79906bf9230174778a8f5d87b5d622b3abd9fda073ec530ad"
+    }
+  ],
+  "results": {
+    "resultado-2d.json": "49/49",
+    "resultado-auth-real-2d.json": "17/17",
+    "base-real.json": "683/683",
+    "resultado-1c-regressao.json": "45/45",
+    "resultado-2b.json": "64/64",
+    "resultado-transporte-2b.json": "13/13",
+    "resultado-revogacao-concorrente-2b.json": "5/5",
+    "resultado-indisponibilidade-2b.json": "1/1",
+    "rede.json": "8/8",
+    "web": "114/114",
+    "banco": "31/31",
+    "qualidade": "44/44",
+    "typescript": "passou",
+    "lint": "passou",
+    "build": "passou"
+  }
+}

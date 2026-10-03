@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "files_scanned_including_nested": 1313,
+  "nested_entries": 1067,
+  "bytes": 80186591,
+  "findings": [],
+  "zip": {
+    "path": "outputs/Metallo-Marco3A-BaselineAprovada-20260928-R1.zip",
+    "sha256": "907e26c0b51fdd781a2233a03782c31349630ab3e9dc61e5f96ada0005d52c4a",
+    "entries": 75
+  },
+  "known_sensitive_values": 8,
+  "backup_decompressed": true,
+  "scope": "fontes/evidencias/bundles e ZIP com arquivos aninhados descompactados",
+  "at": "2026-09-28T11:02:28.699Z",
+  "previous_scans": [
+    {
+      "at": "2026-09-28T08:43:31.898Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T08:47:44.642Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T09:59:15.626Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T10:00:51.444Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo1.zip",
+        "sha256": "1f1831764795c8d67eaa2a436c081e9b6746ce541be4fc17e3a9d650b7dbf3dc",
+        "entries": 36
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T10:05:17.794Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo1.zip",
+        "sha256": "c65170cd270a7e093a55802357ac4d29bc33bcf15731f98a629ced95f449f1bc",
+        "entries": 44
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T10:06:37.976Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo1.zip",
+        "sha256": "ce4c22f74533fbf9353534d82269c663538e884ade0968025a64a45ba3e67a8b",
+        "entries": 42
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T10:43:22.516Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo2.zip",
+        "sha256": "21a634d04216de94e7e2fe8680800ebc9878ee7e8a936caf646e2d248f6d3c18",
+        "entries": 48
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T11:00:43.624Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco3A-BaselineAprovada-20260928-R1.zip",
+        "sha256": "8cddf95c8d67632d149b62a1f03675984e5f72c7ed1465632347d844727469fb",
+        "entries": 77
+      },
+      "findings": []
+    }
+  ]
+}

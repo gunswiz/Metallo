@@ -1,0 +1,221 @@
+{
+  "at": "2026-10-01T15:33:16.239Z",
+  "scope": "4B LOCAL — SIMULAÇÃO SEM VALOR OFICIAL",
+  "checks": [
+    {
+      "name": "Origem 4A imutável confere SHA",
+      "ok": true
+    },
+    {
+      "name": "JWT real e identidade pessoal leem só João",
+      "ok": true
+    },
+    {
+      "name": "Maria lê só Maria",
+      "ok": true
+    },
+    {
+      "name": "João → recibo de Maria negado",
+      "ok": true
+    },
+    {
+      "name": "Maria → recibo de João negado",
+      "ok": true
+    },
+    {
+      "name": "Manipulação de employee_id em corpo negada",
+      "ok": true
+    },
+    {
+      "name": "ID direto desconhecido/injetado negado UUID ou SQL",
+      "ok": true
+    },
+    {
+      "name": "ID direto desconhecido/injetado negado UUID ou SQL",
+      "ok": true
+    },
+    {
+      "name": "ID direto desconhecido/injetado negado formato",
+      "ok": true
+    },
+    {
+      "name": "ID direto desconhecido/injetado negado formato",
+      "ok": true
+    },
+    {
+      "name": "ID direto desconhecido/injetado negado UUID ou SQL",
+      "ok": true
+    },
+    {
+      "name": "Sem equipe continua lendo próprio histórico",
+      "ok": true
+    },
+    {
+      "name": "Recibo preserva marking_at e recorded_at originais",
+      "ok": true
+    },
+    {
+      "name": "DTO não expõe GPS, IDs de pessoas, hash nem snapshots mutáveis",
+      "ok": true
+    },
+    {
+      "name": "Filtro pessoal today",
+      "ok": true
+    },
+    {
+      "name": "Filtro pessoal 48h",
+      "ok": true
+    },
+    {
+      "name": "Filtro pessoal 7d",
+      "ok": true
+    },
+    {
+      "name": "Filtro pessoal 30d",
+      "ok": true
+    },
+    {
+      "name": "Filtro pessoal 60d",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 19",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 20",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 21",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 22",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 23",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 24",
+      "ok": true
+    },
+    {
+      "name": "Filtro inválido/injetado rejeitado 25",
+      "ok": true
+    },
+    {
+      "name": "48h só contém recibos de João",
+      "ok": true
+    },
+    {
+      "name": "Leituras simultâneas, retries e dois pacotes não alteram originais",
+      "ok": true
+    },
+    {
+      "name": "Nome/equipe atual alterados não reconstroem recibo histórico",
+      "ok": true
+    },
+    {
+      "name": "Funcionário inativo perde acesso no contrato HTTP autenticado",
+      "ok": true
+    },
+    {
+      "name": "Revogação durante leitura falha antes de devolver conteúdo",
+      "ok": true
+    },
+    {
+      "name": "Novo retry com sessão encerrada não devolve recibo",
+      "ok": true
+    },
+    {
+      "name": "60 dias e limite móvel de 48h selecionam datas pela marcação no servidor",
+      "ok": true
+    },
+    {
+      "name": "Gateway real permite POST pessoal e nega ID administrativo",
+      "ok": true
+    },
+    {
+      "name": "Gateway real Maria tem sua própria lista",
+      "ok": true
+    },
+    {
+      "name": "Download direto João → Maria/Maria → João negado",
+      "ok": true
+    },
+    {
+      "name": "PDF real autenticado é privado e repetível",
+      "ok": true
+    },
+    {
+      "name": "ZIP real 48h só contém eventos pessoais, sem misturar Maria",
+      "ok": true
+    },
+    {
+      "name": "Refresh real mantém leitura só após autenticação e sessão ativa",
+      "ok": true
+    },
+    {
+      "name": "Identidade revogada bloqueia download com access token antigo",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 40",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 41",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 42",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 43",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 44",
+      "ok": true
+    },
+    {
+      "name": "Gateway URL/query direta manipulada negada 45",
+      "ok": true
+    },
+    {
+      "name": "JWT inválido/expirado não baixa PDF; JWT assinado real expira no guard controlado",
+      "ok": true
+    },
+    {
+      "name": "Admin Gestão não recebe download pessoal",
+      "ok": true
+    },
+    {
+      "name": "Rota antiga de marcação continua bloqueada",
+      "ok": true
+    },
+    {
+      "name": "Logout real torna PDF e ZIP diretos inacessíveis com token antigo",
+      "ok": true
+    },
+    {
+      "name": "Originais descartáveis preservados ao fim dos ensaios",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "download_members": {
+    "count": 5,
+    "files": [
+      "recibo-laboratorio-42eb3cf0-e697-4b67-86b3-ea6fb9cbd36b.pdf",
+      "recibo-laboratorio-53690cb1-4105-4aec-86c8-4ce1b53a4d16.pdf",
+      "recibo-laboratorio-964c65b2-d5f8-4879-a379-032a6db38963.pdf",
+      "recibo-laboratorio-ce5a2a1f-457b-4815-b1a8-9a9aec3db7d9.pdf",
+      "recibo-laboratorio-e892a530-b19c-4d58-98a6-966dc4225e23.pdf"
+    ]
+  }
+}

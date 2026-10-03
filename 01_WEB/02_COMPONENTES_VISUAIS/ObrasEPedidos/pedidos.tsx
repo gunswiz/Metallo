@@ -1,13 +1,14 @@
 "use client";
 import type { SessionProfile } from "@metallo/types";
 import type { SiteSnapshot } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
-import type { SubmitOperation, OperationField } from "../formulario-obra";
-import { can, formatDateTime } from "@metallo/core";
+import type { SubmitOperation } from "../formulario-obra";
+import { can, canOperateTeam, formatDateTime } from "@metallo/core";
 import {
   orderStatusLabels,
   orderTransitions,
 } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
 import { SiteOperationForm } from "../formulario-obra";
+import { OrderReceipt } from "../operacoes-integradas";
 import { SiteOrderForm } from "../pedido-obra-form";
 import { siteFields } from "./campos";
 export function PedidosObra({
@@ -19,11 +20,11 @@ export function PedidosObra({
   profile: SessionProfile;
   submit: SubmitOperation;
 }) {
-  const { teamName, allowedTeams, note, quantity } = siteFields(data, profile);
+  const { teamName, allowedTeams, note } = siteFields(data, profile);
   const admin = profile.role === "admin";
   return (
     <>
-      {(can(profile, "requests:write") || can(profile, "rentals:write")) && (
+      {can(profile, "requests:write") && (
         <SiteOrderForm
           data={data}
           teams={allowedTeams}
@@ -31,6 +32,9 @@ export function PedidosObra({
           canPurchase={can(profile, "requests:write")}
           canRent={can(profile, "rentals:write")}
         />
+      )}
+      {!can(profile, "requests:write") && can(profile, "rentals:write") && (
+        <p className="muted">Registre as máquinas na área Máquinas alugadas quando a necessidade surgir.</p>
       )}
       {data.orders.map((order) => (
         <section className="panel" key={order.id}>
@@ -59,54 +63,11 @@ export function PedidosObra({
                 </p>
                 {["ordered", "partial"].includes(order.status) &&
                   line.received_quantity < line.quantity &&
-                  can(
+                  canOperateTeam(profile, order.team_id) && can(
                     profile,
                     line.kind === "rental" ? "rentals:write" : "requests:write",
                   ) && (
-                    <SiteOperationForm
-                      title="Confirmar o que chegou"
-                      command="receive_order"
-                      submit={submit}
-                      fixed={{ order_id: order.id, line_id: line.id }}
-                      fields={[
-                        {
-                          ...quantity,
-                          max: line.quantity - line.received_quantity,
-                        },
-                        ...(line.kind === "epi"
-                          ? ([
-                              {
-                                name: "ca_number",
-                                label: "C.A. (obrigatório para EPI)",
-                                required: false,
-                              },
-                              {
-                                name: "brand_model",
-                                label: "Marca / modelo",
-                                required: false,
-                              },
-                              {
-                                name: "lot_number",
-                                label: "Lote",
-                                required: false,
-                              },
-                            ] as OperationField[])
-                          : []),
-                        ...(line.kind === "rental"
-                          ? ([
-                              { name: "rental_company", label: "Locadora" },
-                              {
-                                name: "asset_codes",
-                                label: "Numeração das máquinas (uma por linha)",
-                                type: "textarea",
-                                required: true,
-                              },
-                            ] as OperationField[])
-                          : []),
-                        note,
-                      ]}
-                    />
-                  )}
+                    <OrderReceipt order={order} line={line} submit={submit} />                  )}
               </div>
             ))}
             {admin && (orderTransitions[order.status]?.length ?? 0) > 0 && (

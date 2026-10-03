@@ -12,14 +12,18 @@ import {
 import type { SubmitOperation } from "./formulario-obra";
 
 import { createOperationQueue } from "@/03_FUNCOES_E_LOGICA/fila-operacoes";
+import { PendingReview } from "./revisar-pendente";
 
-import { EstoqueObra } from "./ObrasEPedidos/estoque";
+import { MaterialOperations, EquipmentOperations, IntegratedDelivery, IntegratedBatchDelivery, ReceivingForm } from "./operacoes-integradas";
+import { StockWorkspace as EstoqueObra } from "./estoque-integrado";
 import { PedidosObra } from "./ObrasEPedidos/pedidos";
 import { LocacoesObra } from "./ObrasEPedidos/locacoes";
 import { FuncionariosObra } from "./ObrasEPedidos/funcionarios";
 import { CadastroObras } from "./ObrasEPedidos/cadastro";
 
 const commandLabels: Record<string, string> = {
+  material_movement: "Movimentação de material",
+  asset_movement: "Movimentação de equipamento",
   epi_entry: "Entrada de EPI",
   epi_transfer: "Transferência de EPI",
   set_worksite_status: "Situação da obra",
@@ -42,10 +46,13 @@ export function SiteOperations({
   initial,
   profile,
   initialSection = "stock",
+  mode = "all", initialItem, initialAsset, initialEmployee, initialType,
 }: {
   initial: SiteSnapshot;
   profile: SessionProfile;
   initialSection?: string;
+  mode?: "all" | "movement" | "delivery" | "batch" | "receiving";
+  initialItem?: string; initialAsset?: string; initialEmployee?: string; initialType?: string;
 }) {
   const [data, setData] = useState(initial);
   const [section, setSection] = useState(initialSection);
@@ -71,6 +78,7 @@ export function SiteOperations({
     setSyncing(true);
     try {
       for (const entry of [...queue.read().entries]) {
+        if (entry.failure === "rejected") continue;
         if (!navigator.onLine) {
           setMessage(
             "Sem conexão. Os lançamentos estão guardados neste navegador e ainda não alteraram o estoque.",
@@ -94,16 +102,19 @@ export function SiteOperations({
           await queue.update((rows) => rows.filter((x) => x.id !== entry.id));
           setMessage("Lançamento confirmado no Metallo.");
         } catch (error) {
+          const code = String((error as {code?:string})?.code ?? "");
+          const rawMessage = String((error as {message?:string})?.message ?? "");
+          const failure = ["P0001","23505","23514","42501","22P02"].includes(code) && !rawMessage.includes("operation_id_conflict") && !rawMessage.includes("operation_actor_mismatch") ? "rejected" as const : "uncertain" as const;
           const detail = operationErrorMessage(
             error instanceof Error
               ? error.message
               : String((error as { message?: string })?.message ?? error),
           );
           await queue.update((rows) =>
-            rows.map((x) => (x.id === entry.id ? { ...x, error: detail } : x)),
+            rows.map((x) => (x.id === entry.id ? { ...x, error: detail, failure } : x)),
           );
           setMessage(detail);
-          break;
+          if (failure === "uncertain") break;
         }
       }
       try {
@@ -149,7 +160,7 @@ export function SiteOperations({
   ];
   return (
     <>
-      <div className="module-tabs">
+      {mode === "all" && <div className="module-tabs">
         {navigation.map(([id, label]) => (
           <button
             key={id}
@@ -159,7 +170,7 @@ export function SiteOperations({
             {label}
           </button>
         ))}
-      </div>
+      </div>}
       <p className="muted">
         Uma obra pode reunir várias equipes com um estoque único. Os lançamentos
         continuam identificando a equipe e o funcionário.
@@ -198,8 +209,12 @@ export function SiteOperations({
                   {formatDateTime(entry.occurredAt)}
                 </strong>
                 {entry.error && <p>{entry.error}</p>}
+                {entry.failure === "rejected" && <PendingReview entry={entry} data={data} busy={syncing} onSave={async corrected=>{await queue.update(rows=>rows.map(row=>row.id===entry.id?corrected:row));await sync();}}/>}
+                <p className="muted">{entry.failure === "rejected" ? "Recusado pelo banco: os demais lançamentos podem continuar. Confira os dados antes de reenviar." : "Aguardando confirmação. Em caso de resposta incerta, reenvie o mesmo lançamento; não crie outro."}</p>
+                <details><summary>Conferir dados do lançamento</summary><pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{JSON.stringify(entry.data,null,2)}</pre></details>
+                {entry.failure === "rejected" && <button className="button secondary" disabled={syncing} onClick={async()=>{await queue.update(rows=>rows.map(row=>row.id===entry.id?{...row,failure:undefined,error:undefined}:row)); await sync();}}>Conferi os dados: reenviar</button>}
                 <button
-                  disabled={syncing}
+                  disabled={syncing || entry.failure !== "rejected"}
                   className="button ghost"
                   onClick={async () => {
                     try {
@@ -223,22 +238,26 @@ export function SiteOperations({
           </div>
         </section>
       )}
-      {section === "stock" && (
+      {mode === "movement" && <>{can(profile,"consumption:write")||can(profile,"materials:write")?<MaterialOperations data={data} profile={profile} submit={submit} initialItem={initialItem} initialType={initialType}/>:null}{can(profile,"equipment:write")&&<EquipmentOperations data={data} profile={profile} submit={submit} initialAsset={initialAsset}/>}<ReceivingForm data={data} profile={profile} submit={submit} initialItem={initialItem}/></>}
+      {mode === "batch" && can(profile,"epi:write") && <IntegratedBatchDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee}/>}
+      {mode === "delivery" && can(profile,"epi:write") && <IntegratedDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee} initialItem={initialItem}/>}
+      {mode === "receiving" && <ReceivingForm data={data} profile={profile} submit={submit} initialItem={initialItem}/>}
+      {mode === "all" && section === "stock" && (
         <EstoqueObra data={data} profile={profile} submit={submit} />
       )}
-      {section === "orders" && (
+      {mode === "all" && section === "orders" && (
         <PedidosObra data={data} profile={profile} submit={submit} />
       )}
-      {section === "rentals" && (
+      {mode === "all" && section === "rentals" && (
         <LocacoesObra data={data} profile={profile} submit={submit} />
       )}
-      {section === "people" && (
+      {mode === "all" && section === "people" && (
         <FuncionariosObra data={data} profile={profile} submit={submit} />
       )}
-      {section === "works" && admin && (
+      {mode === "all" && section === "works" && admin && (
         <CadastroObras data={data} profile={profile} submit={submit} />
       )}
-      {section === "alerts" && admin && (
+      {mode === "all" && section === "alerts" && admin && (
         <section className="panel">
           <header className="panel-header">
             <h2>Alertas da ADM</h2>

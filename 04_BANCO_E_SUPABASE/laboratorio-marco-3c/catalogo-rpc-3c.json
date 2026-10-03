@@ -1,0 +1,104 @@
+{
+  "rpc": [
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "",
+      "name": "admin_epi_exchange_requests",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_request_id uuid",
+      "name": "cancel_epi_exchange_request",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_delivery_id uuid, p_reason text, p_note text, p_idempotency_key uuid",
+      "name": "create_epi_exchange_request",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_request_id uuid, p_action text, p_public_message text, p_internal_note text",
+      "name": "manage_epi_exchange_request",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "",
+      "name": "my_epi_exchange_requests",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "",
+      "name": "my_exchangeable_epi",
+      "owner": "postgres",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    }
+  ],
+  "tables": [
+    {
+      "rls": true,
+      "name": "epi_exchange_events",
+      "anon_select": false,
+      "service_role_delete": false,
+      "service_role_update": false,
+      "authenticated_insert": false,
+      "authenticated_select": false
+    },
+    {
+      "rls": true,
+      "name": "epi_exchange_requests",
+      "anon_select": false,
+      "service_role_delete": false,
+      "service_role_update": false,
+      "authenticated_insert": false,
+      "authenticated_select": false
+    }
+  ],
+  "event_guard": 1,
+  "admin_return_type": "TABLE(request_id uuid, employee_name text, item_name text, ca_number text, reason text, note text, request_status text, requested_at timestamp with time zone, updated_at timestamp with time zone, public_decision text, internal_note text, timeline jsonb)"
+}

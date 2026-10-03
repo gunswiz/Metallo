@@ -9,6 +9,7 @@ const queueSchema = z
       data: z.record(z.string(), z.unknown()),
       occurredAt: z.iso.datetime(),
       error: z.string().optional(),
+      failure: z.enum(["rejected", "uncertain"]).optional(),
     }),
   )
   .max(200);

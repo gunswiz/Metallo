@@ -3,6 +3,8 @@ import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'package:metallo/04_FUNCOES_E_LOGICA/user_access.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/site_operations_repository.dart';
 import 'operation_form.dart';
+import 'receber_itens.dart';
+import 'revisar_pendente.dart';
 import 'order_composer.dart';
 
 const orderStatusLabels = {
@@ -208,14 +210,8 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                   ]));
                 }
                 if (access.can('materials:write')) {
-                  content.add(operation(
-                      'Compra entregue direto na obra', 'material_entry', [
-                    teamField,
-                    SiteField('item_id', 'Material recebido',
-                        options: materials),
-                    quantity,
-                    note
-                  ]));
+                  content.add(OutlinedButton.icon(icon: const Icon(Icons.inventory_2_outlined),
+                    label: const Text('Receber materiais'), onPressed: () => showReceiveItems(context, widget.repo, onSaved: reload)));
                 }
                 if (access.can('equipment:write')) {
                   content.add(operation(
@@ -236,19 +232,8 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                   ]));
                 }
                 if (access.can('epi:write')) {
-                  content.add(operation(
-                      'Compra de EPI entregue direto na obra', 'epi_entry', [
-                    teamField,
-                    SiteField('item_id', 'Item recebido', options: epis),
-                    quantity,
-                    const SiteField('variant', 'Tamanho / variante do catálogo',
-                        required: false),
-                    const SiteField('ca_number', 'C.A. (obrigatório para EPI)',
-                        required: false),
-                    const SiteField('brand_model', 'Marca / modelo',
-                        required: false),
-                    const SiteField('lot_number', 'Lote', required: false)
-                  ]));
+                  content.add(OutlinedButton.icon(icon: const Icon(Icons.inventory_2_outlined),
+                    label: const Text('Receber EPI'), onPressed: () => showReceiveItems(context, widget.repo, kind: 'epi', onSaved: reload)));
                   content.add(operation(
                       'Transferir EPI da COSEM ou entre obras',
                       'epi_transfer', [
@@ -300,8 +285,7 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                 }
               }
               if (section == 'orders') {
-                if (access.can('requests:write') ||
-                    access.can('rentals:write')) {
+                if (access.can('requests:write')) {
                   content.add(FilledButton.icon(
                       onPressed: () => Navigator.push(
                           context,
@@ -315,6 +299,11 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                                   onSaved: reload))),
                       icon: const Icon(Icons.add),
                       label: const Text('Novo pedido à ADM')));
+                }
+                if (!access.can('requests:write') && access.can('rentals:write')) {
+                  content.add(const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text('Registre as máquinas na área Máquinas alugadas quando a necessidade surgir.')));
                 }
                 for (final order in rowsOf(data, 'orders')) {
                   final children = <Widget>[
@@ -509,6 +498,7 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                             'Guardados neste aparelho. Envie antes de apagar os dados do aplicativo.'),
                         for (final entry in pending)
                           ListTile(
+                              onTap: !syncing && entry['failure']=='rejected' ? ()=>showPendingReview(context,widget.repo,entry,reload) : null,
                               title: Text(
                                   '${siteCommandLabels[entry['command']] ?? 'Lançamento'} · ${date(entry['occurred_at'])}'),
                               subtitle: Text(entry['error']?.toString() ??
@@ -516,7 +506,7 @@ class _SiteOperationsPageState extends State<SiteOperationsPage>
                               trailing: IconButton(
                                   tooltip: 'Retirar da fila local',
                                   icon: const Icon(Icons.close),
-                                  onPressed: syncing
+                                  onPressed: syncing || entry['failure']!='rejected'
                                       ? null
                                       : () async {
                                           await widget.repo.removePending(

@@ -1,0 +1,316 @@
+{
+  "at": "2026-09-29T08:43:32.904Z",
+  "scope": "Marco 3D local sintético",
+  "checks": [
+    {
+      "name": "kit por função é só sugestão configurada",
+      "ok": true
+    },
+    {
+      "name": "funcionário não consulta sugestão administrativa",
+      "ok": true
+    },
+    {
+      "name": "RPCs novas só para authenticated",
+      "ok": true
+    },
+    {
+      "name": "tabelas novas sem DML para browser",
+      "ok": true
+    },
+    {
+      "name": "João não prepara entrega",
+      "ok": true
+    },
+    {
+      "name": "Maria não prepara entrega",
+      "ok": true
+    },
+    {
+      "name": "anon não prepara",
+      "ok": true
+    },
+    {
+      "name": "Gestão prepara kit",
+      "ok": true
+    },
+    {
+      "name": "mesma preparação é idempotente",
+      "ok": true
+    },
+    {
+      "name": "chave da preparação não pode mudar conteúdo",
+      "ok": true
+    },
+    {
+      "name": "preparação não baixa estoque",
+      "ok": true
+    },
+    {
+      "name": "preparação não cria entrega",
+      "ok": true
+    },
+    {
+      "name": "Gestão autorizada vê kit preparado; funcionário não vê fila",
+      "ok": true
+    },
+    {
+      "name": "João não registra entrega",
+      "ok": true
+    },
+    {
+      "name": "Gestão registra entrega explícita",
+      "ok": true
+    },
+    {
+      "name": "nova entrega preserva snapshot do funcionário",
+      "ok": true
+    },
+    {
+      "name": "mudança cadastral não reescreve nome da entrega",
+      "ok": true
+    },
+    {
+      "name": "dois itens no mesmo agrupamento",
+      "ok": true
+    },
+    {
+      "name": "estoque só baixa na entrega",
+      "ok": true
+    },
+    {
+      "name": "entrega tem snapshot de nome, unidade, CA e variante",
+      "ok": true
+    },
+    {
+      "name": "retry devolve mesmo grupo",
+      "ok": true
+    },
+    {
+      "name": "nova chave não duplica entrega",
+      "ok": true
+    },
+    {
+      "name": "João vê próprio kit registrado",
+      "ok": true
+    },
+    {
+      "name": "Maria não vê kit de João",
+      "ok": true
+    },
+    {
+      "name": "tabela não expõe detalhes diretamente",
+      "ok": true
+    },
+    {
+      "name": "Maria não confirma João",
+      "ok": true
+    },
+    {
+      "name": "Maria não relata divergência em João",
+      "ok": true
+    },
+    {
+      "name": "cinco cliques retornam mesmo evento",
+      "ok": true
+    },
+    {
+      "name": "um único acknowledgement",
+      "ok": true
+    },
+    {
+      "name": "confirmação não cria entrega",
+      "ok": true
+    },
+    {
+      "name": "manifestação divergente após confirmação negada",
+      "ok": true
+    },
+    {
+      "name": "pedido 3C nasce sem nova entrega",
+      "ok": true
+    },
+    {
+      "name": "Gestão aprova 3C após análise",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê pedido 3C aprovado",
+      "ok": true
+    },
+    {
+      "name": "troca 3C rejeita EPI diferente",
+      "ok": true
+    },
+    {
+      "name": "kit de troca 3C é preparado sem nova entrega",
+      "ok": true
+    },
+    {
+      "name": "pedido 3C não permite segundo kit preparado",
+      "ok": true
+    },
+    {
+      "name": "entrega real vincula solicitação 3C",
+      "ok": true
+    },
+    {
+      "name": "EPI anterior e pedido 3C não são encerrados automaticamente",
+      "ok": true
+    },
+    {
+      "name": "kit para cenário de mudança é preparado",
+      "ok": true
+    },
+    {
+      "name": "preparação preserva lote e marca do estoque",
+      "ok": true
+    },
+    {
+      "name": "registro revalida CA mudado entre tela e envio",
+      "ok": true
+    },
+    {
+      "name": "registro nega lote alterado após preparo",
+      "ok": true
+    },
+    {
+      "name": "registro nega marca alterada após preparo",
+      "ok": true
+    },
+    {
+      "name": "Gestão prepara kit Maria",
+      "ok": true
+    },
+    {
+      "name": "Gestão registra entrega Maria",
+      "ok": true
+    },
+    {
+      "name": "João não diverge Maria",
+      "ok": true
+    },
+    {
+      "name": "João não confirma Maria",
+      "ok": true
+    },
+    {
+      "name": "body não escolhe employee_id ou acknowledgement_id",
+      "ok": true
+    },
+    {
+      "name": "querystring não revela grupos de João",
+      "ok": true
+    },
+    {
+      "name": "ID de item João em grupo Maria é negado",
+      "ok": true
+    },
+    {
+      "name": "Maria informa divergência por item",
+      "ok": true
+    },
+    {
+      "name": "tela antiga não confirma após divergência",
+      "ok": true
+    },
+    {
+      "name": "divergência preserva entrega original",
+      "ok": true
+    },
+    {
+      "name": "nova divergência igual é negada",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê divergência, portal não recebe nota interna",
+      "ok": true
+    },
+    {
+      "name": "Gestão sem epi:write não vê feedback",
+      "ok": true
+    },
+    {
+      "name": "Gestão sem epi:write não trata divergência",
+      "ok": true
+    },
+    {
+      "name": "Gestão coloca divergência em análise",
+      "ok": true
+    },
+    {
+      "name": "Gestão resolve com mensagem pública",
+      "ok": true
+    },
+    {
+      "name": "Gestão preserva item e motivo após resolver",
+      "ok": true
+    },
+    {
+      "name": "Maria vê horário e mensagem pública da resolução sem nota interna",
+      "ok": true
+    },
+    {
+      "name": "histórico de feedback não pode ser apagado",
+      "ok": true
+    },
+    {
+      "name": "snapshot de entrega não pode ser editado",
+      "ok": true
+    },
+    {
+      "name": "Maria sem equipe vê própria entrega",
+      "ok": true
+    },
+    {
+      "name": "gestor restrito não prepara funcionário sem equipe",
+      "ok": true
+    },
+    {
+      "name": "admin registra entrega sem equipe/obra",
+      "ok": true
+    },
+    {
+      "name": "engenheiro restrito não encerra entrega sem equipe pela RPC legada",
+      "ok": true
+    },
+    {
+      "name": "Maria sem equipe/obra confirma entrega própria",
+      "ok": true
+    },
+    {
+      "name": "Maria sem equipe pode relatar nova divergência após resolução",
+      "ok": true
+    },
+    {
+      "name": "nova divergência conserva evento anterior no histórico",
+      "ok": true
+    },
+    {
+      "name": "Gestão pode tratar segunda divergência",
+      "ok": true
+    },
+    {
+      "name": "Maria pode confirmar após divergência resolvida",
+      "ok": true
+    },
+    {
+      "name": "renomear catálogo não muda grupo histórico 3D",
+      "ok": true
+    },
+    {
+      "name": "inativo não confirma",
+      "ok": true
+    },
+    {
+      "name": "token antigo revogado não consulta",
+      "ok": true
+    },
+    {
+      "name": "token antigo revogado não confirma",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "count": 77
+}

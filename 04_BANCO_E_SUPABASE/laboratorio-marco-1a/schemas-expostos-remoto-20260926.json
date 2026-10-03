@@ -1,0 +1,12 @@
+{
+  "captured_at": "2026-09-26",
+  "method": "GET /rest/v1/teams?select=id&limit=0 with public publishable key and Accept-Profile; read only; no rows requested",
+  "checks": [
+    { "schema": "codex_probe_absent", "status": 406, "code": "PGRST106", "hint": "Only the following schemas are exposed: public, graphql_public" },
+    { "schema": "public", "status": 401, "code": "42501", "observation": "Schema accepted; anon lacks SELECT on public.teams." },
+    { "schema": "graphql_public", "status": 404, "code": "PGRST205", "observation": "Schema accepted; graphql_public.teams is absent." },
+    { "schema": "private", "status": 406, "code": "PGRST106" },
+    { "schema": "auth", "status": 406, "code": "PGRST106" },
+    { "schema": "storage", "status": 406, "code": "PGRST106" }
+  ]
+}

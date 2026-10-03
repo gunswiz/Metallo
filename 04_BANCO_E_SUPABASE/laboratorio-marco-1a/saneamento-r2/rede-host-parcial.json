@@ -1,0 +1,105 @@
+{
+  "at": "2026-09-27T11:34:43.0161751Z",
+  "scope": "Sonda parcial do host Windows; não substitui a prova Docker/rede separada",
+  "ports": [
+    3101,
+    3102,
+    54321,
+    54322,
+    54323,
+    54324,
+    54327
+  ],
+  "listeners": [
+    {
+      "address": "127.0.0.1",
+      "port": 3101
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 3102
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54321
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54322
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54323
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54324
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54327
+    }
+  ],
+  "loopback": [
+    {
+      "port": 3101,
+      "loopback": true
+    },
+    {
+      "port": 3102,
+      "loopback": true
+    },
+    {
+      "port": 54321,
+      "loopback": true
+    },
+    {
+      "port": 54322,
+      "loopback": true
+    },
+    {
+      "port": 54323,
+      "loopback": true
+    },
+    {
+      "port": 54324,
+      "loopback": true
+    },
+    {
+      "port": 54327,
+      "loopback": true
+    }
+  ],
+  "ethernet_ip_assigned": true,
+  "non_loopback_listeners": [],
+  "ethernet": [
+    {
+      "port": 3101,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 3102,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 54321,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 54322,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 54323,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 54324,
+      "ethernet_reachable": false
+    },
+    {
+      "port": 54327,
+      "ethernet_reachable": false
+    }
+  ]
+}

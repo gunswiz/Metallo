@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'medidas_consumo.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/componentes_consumo.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/graficos_consumo.dart';
@@ -16,13 +17,16 @@ class ConsumptionGraphsPage extends StatefulWidget {
 
 class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
   late String? teamId = widget.initialTeamId;
+  String? selectedUnit;
   int tab = 0;
   int periodDays = 180;
   String? materialId;
   @override
   Widget build(BuildContext context) {
+    final unit = effectiveConsumptionUnit(widget.rows, selectedUnit);
+    final unitRows = filterConsumptionUnit(widget.rows, unit);
     final graph = consumptionGraphData(
-      widget.rows,
+      unitRows,
       teamId,
       periodDays,
       materialId,
@@ -35,6 +39,8 @@ class _ConsumptionGraphsPageState extends State<ConsumptionGraphsPage> {
       body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
           children: [
+            ConsumptionUnitPicker(rows: widget.rows, value: unit, onChanged: (value) => setState(() => selectedUnit = value)),
+            ConsumptionMaterialDonut(rows: graph.filteredRows, unit: unit),
             Row(children: [
               Expanded(
                   child: teamConsumptionDropdown(

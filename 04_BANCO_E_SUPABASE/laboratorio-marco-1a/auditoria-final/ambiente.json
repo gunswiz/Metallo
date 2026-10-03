@@ -1,0 +1,14 @@
+{
+  "at": "2026-09-26T18:13:07.4484691Z",
+  "WSL": "2.7.14.0",
+  "WSLDefault": "docker-desktop / WSL2",
+  "DockerDesktop": "4.92.0",
+  "DockerEngine": "29.8.0",
+  "OSType": "linux",
+  "MemTotal": 8277094400,
+  "NCPU": 16,
+  "WindowsTotalKiB": 16686172,
+  "WindowsFreeKiB": 3733144,
+  "SupabaseCLI": "2.117.0",
+  "PortBindingBehavior": "local-only-port-binding"
+}

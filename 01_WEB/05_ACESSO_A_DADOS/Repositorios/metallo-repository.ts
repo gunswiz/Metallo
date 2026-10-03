@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, PageResult, Tables } from "@metallo/types";
 
+import { siteSnapshotSchema, type SiteSnapshot } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
+
 type Client = SupabaseClient<Database>;
 type PageInput = { page: number; pageSize: number; q: string };
 export type AnalyticsFilter = { from: string; to: string; teamId?: string; itemId?: string };
@@ -27,10 +29,12 @@ export type AssetMovementWithRelations = Tables<"asset_movements"> & {
   profiles: Pick<Tables<"profiles">, "full_name"> | null;
 };
 export type EpiItemWithStock = Tables<"epi_items"> & {
-  epi_stock_batches: Array<Pick<Tables<"epi_stock_batches">, "id" | "quantity" | "variant" | "ca_number" | "brand_model">>;
+  epi_stock_batches: Array<Pick<Tables<"epi_stock_batches">, "id" | "quantity" | "variant" | "ca_number" | "brand_model"> & { worksite_id: string | null }>;
   epi_item_variants: Array<Pick<Tables<"epi_item_variants">, "value" | "label" | "sort_order">>;
 };
 export type EmployeeWithTeam = Tables<"epi_employees"> & {
+  working_team_id: string | null;
+  working_team_name: string;
   teams: Pick<Tables<"teams">, "id" | "name"> | null;
 };
 export type ProfileWithTeam = Tables<"profiles"> & {
@@ -83,6 +87,21 @@ function unwrap<T>(data: T | null, error: { message: string } | null): T {
 
 export class MetalloRepository {
   constructor(private readonly client: Client) {}
+  private snapshotPromise?: Promise<SiteSnapshot>;
+  siteSnapshot() {
+    return this.snapshotPromise ??= (async () => {
+      const { data, error } = await this.client.rpc("site_dashboard");
+      if (error) throw new Error(error.message);
+      return siteSnapshotSchema.parse(data);
+    })();
+  }
+  private async workingEmployees(rows: EmployeeWithTeam[]) {
+    const snapshot = await this.siteSnapshot();
+    return rows.map(employee => {
+      const teamId = snapshot.employees.find(person => person.id === employee.id)?.team_id ?? employee.team_id;
+      return { ...employee, working_team_id: teamId, working_team_name: snapshot.teams.find(team => team.id === teamId)?.name ?? employee.teams?.name ?? "Sem equipe" };
+    });
+  }
 
   async dashboard(includeEpi: boolean) {
     const base = [
@@ -194,7 +213,7 @@ export class MetalloRepository {
     const { from, to } = range(input);
     let query = this.client
       .from("epi_items")
-      .select("*,epi_stock_batches(id,quantity,variant,ca_number,brand_model),epi_item_variants(value,label,sort_order)", { count: "exact" })
+      .select("*,epi_stock_batches(id,quantity,variant,ca_number,brand_model,worksite_id),epi_item_variants(value,label,sort_order)", { count: "exact" })
       .eq("active", true)
       .order("name")
       .range(from, to);
@@ -209,7 +228,7 @@ export class MetalloRepository {
     const [item, deliveries] = await Promise.all([
       this.client
         .from("epi_items")
-        .select("*,epi_stock_batches(id,quantity,variant,ca_number,brand_model,lot_number,received_at),epi_item_variants(value,label,sort_order)")
+        .select("*,epi_stock_batches(id,quantity,variant,ca_number,brand_model,lot_number,received_at,worksite_id),epi_item_variants(value,label,sort_order)")
         .eq("id", id)
         .maybeSingle(),
       this.client
@@ -221,7 +240,7 @@ export class MetalloRepository {
     ]);
     return {
       item: unwrap(item.data, item.error) as unknown as Omit<EpiItemWithStock, "epi_stock_batches"> & {
-        epi_stock_batches: Array<Pick<Tables<"epi_stock_batches">, "id" | "quantity" | "variant" | "ca_number" | "brand_model" | "lot_number" | "received_at">>;
+        epi_stock_batches: Array<Pick<Tables<"epi_stock_batches">, "id" | "quantity" | "variant" | "ca_number" | "brand_model" | "lot_number" | "received_at"> & { worksite_id: string | null }>;
       },
       deliveries: unwrap(deliveries.data, deliveries.error),
     };
@@ -238,18 +257,25 @@ export class MetalloRepository {
   }
 
   async getTeam(id: string) {
+    const snapshot = await this.siteSnapshot();
+    const teamContext = snapshot.teams.find(team => team.id === id);
+    const work = snapshot.works.find(work => work.id === teamContext?.worksite_id);
+    const stockTeamId = work?.stock_team_id ?? id;
+    const employeeIds = snapshot.employees.filter(person => person.team_id === id || person.home_team_id === id).map(person => person.id);
     const [team, inventory, assets, employees, movements] = await Promise.all([
       this.client.from("teams").select("*").eq("id", id).maybeSingle(),
-      this.client.from("inventory").select("*,items(name,code,unit)").eq("team_id", id).gt("quantity", 0).order("quantity", { ascending: false }),
+      this.client.from("inventory").select("*,items(name,code,unit)").eq("team_id", stockTeamId).gt("quantity", 0).order("quantity", { ascending: false }),
       this.client.from("assets").select("*,items(name,code,category)").eq("team_id", id).eq("active", true),
-      this.client.from("epi_employees").select("*").eq("team_id", id).eq("active", true).order("full_name"),
+      this.client.from("epi_employees").select("*,teams(id,name)").in("id", employeeIds.length ? employeeIds : ["00000000-0000-0000-0000-000000000000"]).eq("active", true).order("full_name"),
       this.client.from("movements").select("id,item_id,origin_team_id,destination_team_id,quantity,movement_type,note,performed_by,created_at,occurred_at,items(name,code,unit),origin:teams!movements_origin_team_id_fkey(id,name),destination:teams!movements_destination_team_id_fkey(id,name),profiles(full_name)").or(`origin_team_id.eq.${id},destination_team_id.eq.${id}`).order("created_at", { ascending: false }).limit(12),
     ]);
     return {
+      workName: work?.name ?? teamContext?.name ?? "Local",
+      stockTeamId,
       team: unwrap(team.data, team.error),
       inventory: unwrap(inventory.data, inventory.error),
       assets: unwrap(assets.data, assets.error),
-      employees: unwrap(employees.data, employees.error),
+      employees: await this.workingEmployees(unwrap(employees.data, employees.error) as unknown as EmployeeWithTeam[]),
       movements: unwrap(movements.data, movements.error) as unknown as MovementWithRelations[],
     };
   }
@@ -260,7 +286,7 @@ export class MetalloRepository {
     const term = safeTerm(input.q);
     if (term) query = query.or(`full_name.ilike.%${term}%,registration_code.ilike.%${term}%,profession.ilike.%${term}%`);
     const { data, count, error } = await query;
-    return { data: unwrap(data, error) as unknown as EmployeeWithTeam[], count: count ?? 0, ...input };
+    return { data: await this.workingEmployees(unwrap(data, error) as unknown as EmployeeWithTeam[]), count: count ?? 0, ...input };
   }
 
   async getEmployee(id: string) {
@@ -270,7 +296,7 @@ export class MetalloRepository {
       this.client.from("epi_requests").select("*,epi_items(name,code,item_kind,unit)").eq("employee_id", id).order("created_at", { ascending: false }).limit(50),
     ]);
     return {
-      employee: unwrap(employee.data, employee.error) as unknown as EmployeeWithTeam,
+      employee: (await this.workingEmployees([unwrap(employee.data, employee.error) as unknown as EmployeeWithTeam]))[0],
       deliveries: unwrap(deliveries.data, deliveries.error),
       requests: unwrap(requests.data, requests.error),
     };

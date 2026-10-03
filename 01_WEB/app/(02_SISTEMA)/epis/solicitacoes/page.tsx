@@ -9,7 +9,7 @@ import { RequestEpiForm } from "@/02_COMPONENTES_VISUAIS/solicitar-epi-form";
 import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { compatibleRequestBatches } from "@/03_FUNCOES_E_LOGICA/kitDoFuncionario";
-import { fulfillEpi } from "@/app/actions/epi-completo";
+import { fulfillEpi, manageExchangeRequest } from "@/app/actions/epi-completo";
 import { parsePage, type SearchParams } from "@/03_FUNCOES_E_LOGICA/lerFiltrosEPaginacao";
 
 export default async function RequestsPage({ searchParams }: { searchParams: SearchParams }) {
@@ -24,6 +24,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Sea
   const repo = await getEpiOperations();
   const [result, choices] = await Promise.all([repo.requests(input.page, status, employeeId), repo.choices()]);
   const canWrite = can(profile, "epi:write");
+  const exchanges = canWrite ? await repo.exchangeRequests() : [];
   return <>
     <PageHeader eyebrow="COSEM" title="Solicitações de EPI e itens" description="Acompanhe pendências e entregue o tamanho solicitado a partir do estoque disponível." actions={<Link className="button ghost" href="/epis">Voltar aos EPIs</Link>} />
     {raw.success && <div className="alert success" role="status">Operação concluída. A lista foi atualizada.</div>}
@@ -42,6 +43,27 @@ export default async function RequestsPage({ searchParams }: { searchParams: Sea
       </tbody></table></div>}
       <Pagination {...result} q="" extra={{ status, employee: employeeId ?? "" }} />
     </section>
+    {canWrite && <section className="panel" aria-labelledby="exchange-management-heading"><header className="panel-header"><div><h2 id="exchange-management-heading">Solicitações de troca de EPI</h2><p>Análise local. Aprovar não registra entrega nem altera estoque.</p></div></header>
+      {exchanges.length === 0 ? <div className="panel-body"><p>Nenhuma solicitação de troca visível para sua permissão.</p></div> :
+        <div className="panel-body list">{exchanges.map(exchange => <article className="list-row" key={exchange.request_id}>
+          <div className="list-row-main"><strong>{exchange.employee_name} · {exchange.item_name}</strong>
+            <span>{exchange.ca_number ? `CA ${exchange.ca_number} · ` : ""}{exchange.reason} · {formatDateTime(exchange.requested_at)}</span>
+            {exchange.note && <span>Observação do funcionário: {exchange.note}</span>}
+            <span>Estado: {exchange.request_status === "APROVADA" ? "Aguardando entrega" : exchange.request_status}</span>
+            {exchange.public_decision && <span>Mensagem ao funcionário: {exchange.public_decision}</span>}
+            {exchange.internal_note && <span>Nota interna da Gestão: {exchange.internal_note}</span>}
+            <span>Histórico: {exchange.timeline.map(event => `${event.status} (${formatDateTime(event.at)})`).join(" → ")}</span>
+          </div>
+          {(exchange.request_status === "SOLICITADA" || exchange.request_status === "EM_ANALISE") &&
+            <OperationForm action={manageExchangeRequest} label={exchange.request_status === "SOLICITADA" ? "Colocar em análise" : "Registrar decisão"}>
+              <input type="hidden" name="requestId" value={exchange.request_id}/>
+              {exchange.request_status === "SOLICITADA" ? <input type="hidden" name="action" value="EM_ANALISE"/> :
+                <label>Decisão<select name="action" required defaultValue=""><option value="" disabled>Selecione</option><option value="APROVADA">Aprovar — aguardar entrega</option><option value="RECUSADA">Recusar</option></select></label>}
+              {exchange.request_status === "EM_ANALISE" && <label>Motivo público da recusa<textarea name="publicMessage" maxLength={240} rows={2} placeholder="Obrigatório se recusar"/></label>}
+              <label>Nota interna opcional<textarea name="internalNote" maxLength={240} rows={2}/></label>
+            </OperationForm>}
+        </article>)}</div>}
+    </section>}
     {canWrite && <section className="panel"><header className="panel-header"><h2>Nova solicitação</h2></header><div className="panel-body"><RequestEpiForm items={choices.items} employees={choices.employees} initialEmployee={employeeId} initialItem={item.success ? item.data : undefined} initialQuantity={quantity} /></div></section>}
   </>;
 }

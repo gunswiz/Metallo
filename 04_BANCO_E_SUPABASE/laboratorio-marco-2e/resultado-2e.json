@@ -1,0 +1,1340 @@
+{
+  "at": "2026-09-28T07:31:44.343Z",
+  "scope": "Exclusivamente local e sintético — SIMULAÇÃO SEM VALOR OFICIAL",
+  "checks": [
+    {
+      "name": "Base 2D imutável confere por SHA-256",
+      "ok": true
+    },
+    {
+      "name": "Contas e sessões sintéticas locais preparadas",
+      "ok": true
+    },
+    {
+      "name": "JWT real assinado e duas sessões independentes de João",
+      "ok": true
+    },
+    {
+      "name": "Duas abas com a mesma sessão de João consultam somente João",
+      "ok": true
+    },
+    {
+      "name": "João confirma intenção K uma única vez",
+      "ok": true
+    },
+    {
+      "name": "Maria confirma evento próprio",
+      "ok": true
+    },
+    {
+      "name": "ID de funcionário fornecido pelo cliente é recusado",
+      "ok": true
+    },
+    {
+      "name": "João e Maria não leem intenção um do outro",
+      "ok": true
+    },
+    {
+      "name": "RPC interna de sessão recusa JWT do portal",
+      "ok": true
+    },
+    {
+      "name": "Admin da Gestão não ganha titularidade nem marca por João",
+      "ok": true
+    },
+    {
+      "name": "Funcionário inativo não recebe autorização 2E",
+      "ok": true
+    },
+    {
+      "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+      "ok": true
+    },
+    {
+      "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+      "ok": true
+    },
+    {
+      "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+      "ok": true
+    },
+    {
+      "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+      "ok": true
+    },
+    {
+      "name": "A segunda aba da mesma sessão encerrada também é negada",
+      "ok": true
+    },
+    {
+      "name": "Segunda sessão de João continua após SAIR local",
+      "ok": true
+    },
+    {
+      "name": "Versão alterada durante a transação desfaz intenção da sessão ainda ativa",
+      "ok": true
+    },
+    {
+      "name": "Refresh da sessão local encerrada falha",
+      "ok": true
+    },
+    {
+      "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+      "ok": true
+    },
+    {
+      "name": "Todas as sessões anteriores ao corte global são negadas",
+      "ok": true
+    },
+    {
+      "name": "Refresh da segunda sessão após logout global falha",
+      "ok": true
+    },
+    {
+      "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+      "ok": true
+    },
+    {
+      "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+      "ok": true
+    },
+    {
+      "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+      "ok": true
+    },
+    {
+      "name": "Token residual criptograficamente válido não cria evento",
+      "ok": true
+    },
+    {
+      "name": "Retry de K revogada preserva original sem nova marcação",
+      "ok": true
+    },
+    {
+      "name": "Refresh e novo login após revogação falham",
+      "ok": true
+    },
+    {
+      "name": "Restart preserva versão e nega token residual",
+      "ok": true
+    },
+    {
+      "name": "Maria mantém somente seus dados após corte de João",
+      "ok": true
+    },
+    {
+      "name": "Falha no logout global mantém corte pendente para token com iat futuro e após restart",
+      "ok": true
+    },
+    {
+      "name": "Revogação na origem entre INSERT e commit faz rollback",
+      "ok": true
+    },
+    {
+      "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+      "ok": true
+    },
+    {
+      "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "plan_sha256": "ecac2e58d02ebde119f8f7748c5920f37887840bdde3e182877cbe01820882a1",
+  "expected": 34,
+  "origin_sha256": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+  "disposable_environment_removed": true,
+  "previous_runs": [
+    {
+      "at": "2026-09-27T23:10:31.154Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T23:33:24.686Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T23:41:06.960Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T23:42:16.046Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T23:44:40.737Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T23:48:14.572Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Versão alterada durante a transação desfaz intenção da sessão ainda ativa",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-28T00:18:42.794Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Versão alterada durante a transação desfaz intenção da sessão ainda ativa",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Falha no logout global mantém corte pendente para token com iat futuro e após restart",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-28T01:28:07.122Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Versão alterada durante a transação desfaz intenção da sessão ainda ativa",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Falha no logout global mantém corte pendente para token com iat futuro e após restart",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-28T01:40:21.280Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Base 2D imutável confere por SHA-256",
+          "ok": true
+        },
+        {
+          "name": "Contas e sessões sintéticas locais preparadas",
+          "ok": true
+        },
+        {
+          "name": "JWT real assinado e duas sessões independentes de João",
+          "ok": true
+        },
+        {
+          "name": "Duas abas com a mesma sessão de João consultam somente João",
+          "ok": true
+        },
+        {
+          "name": "João confirma intenção K uma única vez",
+          "ok": true
+        },
+        {
+          "name": "Maria confirma evento próprio",
+          "ok": true
+        },
+        {
+          "name": "ID de funcionário fornecido pelo cliente é recusado",
+          "ok": true
+        },
+        {
+          "name": "João e Maria não leem intenção um do outro",
+          "ok": true
+        },
+        {
+          "name": "RPC interna de sessão recusa JWT do portal",
+          "ok": true
+        },
+        {
+          "name": "Admin da Gestão não ganha titularidade nem marca por João",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não recebe autorização 2E",
+          "ok": true
+        },
+        {
+          "name": "Backup anterior ao corte conserva apenas os eventos confirmados",
+          "ok": true
+        },
+        {
+          "name": "Auth indisponível nega nova marcação sem usar snapshot permissivo",
+          "ok": true
+        },
+        {
+          "name": "SAIR encerra somente a sessão atual no núcleo e no Auth",
+          "ok": true
+        },
+        {
+          "name": "JWT antigo da sessão encerrada não marca nem lê histórico",
+          "ok": true
+        },
+        {
+          "name": "A segunda aba da mesma sessão encerrada também é negada",
+          "ok": true
+        },
+        {
+          "name": "Segunda sessão de João continua após SAIR local",
+          "ok": true
+        },
+        {
+          "name": "Versão alterada durante a transação desfaz intenção da sessão ainda ativa",
+          "ok": true
+        },
+        {
+          "name": "Refresh da sessão local encerrada falha",
+          "ok": true
+        },
+        {
+          "name": "SAIR DE TODOS encerra a segunda sessão e retorna escopo global",
+          "ok": true
+        },
+        {
+          "name": "Todas as sessões anteriores ao corte global são negadas",
+          "ok": true
+        },
+        {
+          "name": "Refresh da segunda sessão após logout global falha",
+          "ok": true
+        },
+        {
+          "name": "Nova sessão após logout global volta somente se vínculo segue ativo",
+          "ok": true
+        },
+        {
+          "name": "Retry de K já confirmado recupera o mesmo original antes da revogação",
+          "ok": true
+        },
+        {
+          "name": "Revogação pessoal avança authorization_version e bloqueia o núcleo",
+          "ok": true
+        },
+        {
+          "name": "Token residual criptograficamente válido não cria evento",
+          "ok": true
+        },
+        {
+          "name": "Retry de K revogada preserva original sem nova marcação",
+          "ok": true
+        },
+        {
+          "name": "Refresh e novo login após revogação falham",
+          "ok": true
+        },
+        {
+          "name": "Restart preserva versão e nega token residual",
+          "ok": true
+        },
+        {
+          "name": "Maria mantém somente seus dados após corte de João",
+          "ok": true
+        },
+        {
+          "name": "Falha no logout global mantém corte pendente para token com iat futuro e após restart",
+          "ok": true
+        },
+        {
+          "name": "Revogação na origem entre INSERT e commit faz rollback",
+          "ok": true
+        },
+        {
+          "name": "Restore antigo com âncora atual entra em RECOVERY_REQUIRED",
+          "ok": true
+        },
+        {
+          "name": "Contexto STALE e UNKNOWN falha fechado para Maria",
+          "ok": true
+        }
+      ],
+      "error": null
+    }
+  ]
+}

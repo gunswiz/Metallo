@@ -1,0 +1,601 @@
+{
+  "at": "2026-09-27T23:29:10.988Z",
+  "scope": "Marco 1C exclusivo; não soma ao gate 682",
+  "baseline": "METALLO-1B-LAB-20260927-R2",
+  "checks": [
+    {
+      "name": "fixtures João e Maria têm obras distintas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João JWT real do titular",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João recebe só a própria obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João DTO whitelist exata",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João não recebe obra do outro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João filtro por ID alheio vazio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João parâmetro employee_id recusado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João parâmetro work_id recusado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João tabela administrativa não expõe obra alheia",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João JWT portal não lista worksites sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João JWT portal não lista teams sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João JWT portal não lista employee_assignments sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João refresh session real",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João refresh mantém titular e obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "João nova requisição sem cache mantém titular",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria JWT real do titular",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria recebe só a própria obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria DTO whitelist exata",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria não recebe obra do outro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria filtro por ID alheio vazio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria parâmetro employee_id recusado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria parâmetro work_id recusado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria tabela administrativa não expõe obra alheia",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria JWT portal não lista worksites sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria JWT portal não lista teams sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria JWT portal não lista employee_assignments sem filtro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria refresh session real",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria refresh mantém titular e obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Maria nova requisição sem cache mantém titular",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "com equipe e sem obra preserva sessão, retorna vazio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sem equipe e sem obra retorna vazio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sem equipe no cadastro mas com alocação de obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "alocação histórica encerrada não reaparece pelo time de cadastro",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "alocações vigentes concorrentes não escolhem obra arbitrária",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "equipe operacional inativa suprime obra sem revogar portal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "obra inativa não é exibida",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "funcionário inativo não recebe DTO mesmo com vínculo de obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conta nova para fallback não tem alocação anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sem histórico de alocação, equipe de cadastro ativa fornece obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conta sintética antes da revogação tem vínculo de obra",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "identidade revogada bloqueia token de acesso antigo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "identidade revogada não renova sessão",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "identidade revogada não faz novo login",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "anon não executa my_current_work",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "todas as chamadas do ensaio usam origem loopback",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "network": [
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/worksites",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/worksites",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/teams",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/employee_assignments",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 404
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/worksites",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/worksites",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/teams",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/employee_assignments",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 200
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_current_work",
+      "status": 401
+    }
+  ],
+  "remote_writes": false,
+  "passed": true,
+  "at_end": "2026-09-27T23:29:21.820Z",
+  "previous_runs": [
+    {
+      "at": "2026-09-27T23:28:20.963Z",
+      "passed": false,
+      "error": "Falha de execução; consultar console local sem divulgar segredos.",
+      "checks": [
+        {
+          "name": "fixtures João e Maria têm obras distintas",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João JWT real do titular",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João recebe só a própria obra",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João DTO whitelist exata",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João não recebe obra do outro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João filtro por ID alheio vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João parâmetro employee_id recusado",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João parâmetro work_id recusado",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João tabela administrativa não expõe obra alheia",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João JWT portal não lista worksites sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João JWT portal não lista teams sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João JWT portal não lista employee_assignments sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João refresh session real",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João refresh mantém titular e obra",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "João nova requisição sem cache mantém titular",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria JWT real do titular",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria recebe só a própria obra",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria DTO whitelist exata",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria não recebe obra do outro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria filtro por ID alheio vazio",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria parâmetro employee_id recusado",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria parâmetro work_id recusado",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria tabela administrativa não expõe obra alheia",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria JWT portal não lista worksites sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria JWT portal não lista teams sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria JWT portal não lista employee_assignments sem filtro",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria refresh session real",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria refresh mantém titular e obra",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Maria nova requisição sem cache mantém titular",
+          "ok": true,
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}

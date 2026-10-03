@@ -1,0 +1,22 @@
+{
+  "at": "2026-09-27T18:27:50.457Z",
+  "url": "http://127.0.0.1:3101/colaborador/ponto",
+  "browser": "Edge",
+  "metrics": {
+    "clientWidth": 453,
+    "dpr": 2,
+    "scrollWidth": 453,
+    "width": 460
+  },
+  "observation": "Aviso e botão legíveis; sem overflow horizontal na leitura DOM; histórico acessível por rolagem vertical.",
+  "zoom200Confirmed": true,
+  "confirmationMethod": "manual pelo responsável; não aferido automaticamente",
+  "manualConfirmation": {
+    "recordedAt": "2026-09-27T18:33:32Z",
+    "userMessage": "ta tudo ok, ja vi",
+    "context": "Resposta direta à pendência selecionada: Falta confirmar o valor 200% no menu do Edge para registrar essa prova com precisão.",
+    "scope": "Confirmação manual do zoom de 200% e da avaliação visual; complementa a observação automatizada anterior.",
+    "afterGrokCycle2": true
+  },
+  "limitation": "Ctrl+0/atalhos não alteram escala por esta API; política bloqueou página interna de zoom. O valor de 200% foi confirmado manualmente pelo responsável; as métricas anteriores não são prova automática desse valor. A confirmação posterior não integrou o ZIP nem o parecer do ciclo 2."
+}

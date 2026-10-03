@@ -20,9 +20,17 @@ class DashboardRepository {
   Future<DashboardSnapshot> fetchDashboard() async {
     final teamsRaw = await client
         .from('teams')
-        .select('id,name,description,location_type')
+        .select('id,name,description,location_type,worksite_id')
         .eq('active', true)
         .order('created_at');
+
+    final worksRaw = await client.from('worksites').select('id,name,stock_team_id');
+    final teams = (teamsRaw as List).map((raw) {
+      final row = Map<String, dynamic>.from(raw as Map);
+      final work = worksRaw.where((w) => w['id'] == row['worksite_id']).firstOrNull;
+      return Team.fromMap({...row, 'worksite_name': work?['name'],
+        'stock_team_id': work?['stock_team_id']});
+    }).toList();
 
     final inventoryRaw = await client
         .from('inventory')
@@ -46,12 +54,15 @@ class DashboardRepository {
         .order('created_at');
 
     return DashboardSnapshot(
-      teams: (teamsRaw as List)
-          .map((e) => Team.fromMap(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      teams: teams,
       materials: (inventoryRaw as List)
-          .map(
-              (e) => MaterialStock.fromMap(Map<String, dynamic>.from(e as Map)))
+          .map((e) {
+            final row = Map<String, dynamic>.from(e as Map);
+            final served = teams.where((t) => t.physicalStockTeamId == row['team_id']).toList();
+            return MaterialStock.fromMap({...row,
+              'served_team_ids': served.map((t) => t.id).toList(),
+              'location_name': served.firstOrNull?.stockLocationLabel});
+          })
           .toList(),
       equipment: (assetsRaw as List)
           .map((e) =>
@@ -82,6 +93,9 @@ class DashboardRepository {
 
       _channel = client
           .channel('metallo-dashboard-v3')
+          .onPostgresChanges(
+              event: PostgresChangeEvent.all, schema: 'public',
+              table: 'worksites', callback: (_) => schedule())
           .onPostgresChanges(
               event: PostgresChangeEvent.all,
               schema: 'public',

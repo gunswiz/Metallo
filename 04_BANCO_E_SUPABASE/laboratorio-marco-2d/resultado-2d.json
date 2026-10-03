@@ -1,0 +1,1559 @@
+{
+  "at": "2026-09-28T01:28:51.183Z",
+  "scope": "2D: processos reais, PGlite persistente, HTTP loopback; Auth simplificado somente nos ensaios de storage. Auth/JWT reais em suíte separada.",
+  "checks": [
+    {
+      "category": "A",
+      "name": "Banco novo explícito passa validação",
+      "ok": true,
+      "ms": 2535
+    },
+    {
+      "category": "A",
+      "name": "Banco ausente não é criado pelo startup",
+      "ok": true,
+      "ms": 1
+    },
+    {
+      "category": "A",
+      "name": "Segundo processo não abre diretório em uso",
+      "ok": true,
+      "ms": 2241
+    },
+    {
+      "category": "A",
+      "name": "Schema version desconhecida bloqueia",
+      "ok": true,
+      "ms": 2362
+    },
+    {
+      "category": "A",
+      "name": "Tabela idempotente ausente bloqueia sem recriar",
+      "ok": true,
+      "ms": 2331
+    },
+    {
+      "category": "A",
+      "name": "Constraint de vínculo removida bloqueia",
+      "ok": true,
+      "ms": 2336
+    },
+    {
+      "category": "B",
+      "name": "Health READY expõe somente campos técnicos",
+      "ok": true,
+      "ms": 2732
+    },
+    {
+      "category": "B",
+      "name": "Health distingue banco read-only e recusa POST",
+      "ok": true,
+      "ms": 2679
+    },
+    {
+      "category": "B",
+      "name": "Health não chama processo online de banco pronto",
+      "ok": true,
+      "ms": 2837
+    },
+    {
+      "category": "C",
+      "name": "Kill real em before_insert; retry preserva atomicidade",
+      "ok": true,
+      "ms": 3438
+    },
+    {
+      "category": "C",
+      "name": "Kill real em after_insert; retry preserva atomicidade",
+      "ok": true,
+      "ms": 4262
+    },
+    {
+      "category": "C",
+      "name": "Kill real em after_result; retry preserva atomicidade",
+      "ok": true,
+      "ms": 6350
+    },
+    {
+      "category": "C",
+      "name": "Kill real em after_anchor_before_commit; retry preserva atomicidade",
+      "ok": true,
+      "ms": 3829
+    },
+    {
+      "category": "C",
+      "name": "Kill real em after_database_commit; retry preserva atomicidade",
+      "ok": true,
+      "ms": 3245
+    },
+    {
+      "category": "C",
+      "name": "Kill real em after_commit; retry preserva atomicidade",
+      "ok": true,
+      "ms": 3298
+    },
+    {
+      "category": "D",
+      "name": "Cinco requests mesma chave depois de restart criam um original",
+      "ok": true,
+      "ms": 3210
+    },
+    {
+      "category": "D",
+      "name": "Timestamp/hash e event_id iguais no retry pós-restart",
+      "ok": true,
+      "ms": 2204
+    },
+    {
+      "category": "D",
+      "name": "Chave igual com conteúdo diferente não sobrescreve",
+      "ok": true,
+      "ms": 2244
+    },
+    {
+      "category": "E",
+      "name": "Shutdown gracioso drena transação aceita e encerra listener",
+      "ok": true,
+      "ms": 5900
+    },
+    {
+      "category": "F",
+      "name": "Backup sob exclusão possui manifesto, baseline e SHA verificáveis",
+      "ok": true,
+      "ms": 2813
+    },
+    {
+      "category": "F",
+      "name": "Backup registra pares, timestamps, contexto e geração",
+      "ok": true,
+      "ms": 0
+    },
+    {
+      "category": "F",
+      "name": "Exportação fica entre gravações na fila exclusiva",
+      "ok": true,
+      "ms": 735
+    },
+    {
+      "category": "G",
+      "name": "Restore descartável reproduz exatamente inventário do corte",
+      "ok": true,
+      "ms": 1602
+    },
+    {
+      "category": "G",
+      "name": "Evento do backup é recuperado com mesma chave e hash",
+      "ok": true,
+      "ms": 141
+    },
+    {
+      "category": "G",
+      "name": "Backup com bytes adulterados é recusado antes do restore",
+      "ok": true,
+      "ms": 13
+    },
+    {
+      "category": "H",
+      "name": "A/B/C restaurados após D/E são detectados pela âncora atual",
+      "ok": true,
+      "ms": 1533
+    },
+    {
+      "category": "H",
+      "name": "Chave pós-backup não é tratada como nova em restore antigo",
+      "ok": true,
+      "ms": 142
+    },
+    {
+      "category": "H",
+      "name": "Chave nunca usada é negada enquanto recovery required",
+      "ok": true,
+      "ms": 137
+    },
+    {
+      "category": "H",
+      "name": "Restore sem referência externa não inventa âncora",
+      "ok": true,
+      "ms": 1492
+    },
+    {
+      "category": "I",
+      "name": "Verificador v1 calcula mesmo hash do original",
+      "ok": true,
+      "ms": 2191
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: timestamp",
+      "ok": true,
+      "ms": 2620
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: timestamp sub-milissegundo",
+      "ok": true,
+      "ms": 2485
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: hash",
+      "ok": true,
+      "ms": 2424
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: versão desconhecida",
+      "ok": true,
+      "ms": 2409
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: mapping original-resultado",
+      "ok": true,
+      "ms": 2407
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: geração",
+      "ok": true,
+      "ms": 2606
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: trigger removido",
+      "ok": true,
+      "ms": 3626
+    },
+    {
+      "category": "J",
+      "name": "Adulteração descartável detectada: trigger desabilitado",
+      "ok": true,
+      "ms": 4642
+    },
+    {
+      "category": "I",
+      "name": "UPDATE e DELETE ordinários continuam negados",
+      "ok": true,
+      "ms": 2251
+    },
+    {
+      "category": "I",
+      "name": "Verificador somente leitura não corrige adulteração",
+      "ok": true,
+      "ms": 2410
+    },
+    {
+      "category": "K",
+      "name": "Revogação de contexto persiste após restart",
+      "ok": true,
+      "ms": 2169
+    },
+    {
+      "category": "K",
+      "name": "Revogação percebida antes do commit reverte evento e resultado",
+      "ok": true,
+      "ms": 2093
+    },
+    {
+      "category": "L",
+      "name": "João e Maria isolados por HTTP depois do restart",
+      "ok": true,
+      "ms": 2746
+    },
+    {
+      "category": "L",
+      "name": "Intenção de Maria não é devolvida a João pós-restart",
+      "ok": true,
+      "ms": 2640
+    },
+    {
+      "category": "L",
+      "name": "Intenção de João não é devolvida a Maria pós-restart",
+      "ok": true,
+      "ms": 2638
+    },
+    {
+      "category": "M",
+      "name": "Dependência fora nega nova marcação sem snapshot permissivo",
+      "ok": true,
+      "ms": 2627
+    },
+    {
+      "category": "M",
+      "name": "Núcleo parado não confirma HTTP",
+      "ok": true,
+      "ms": 2741
+    },
+    {
+      "category": "N",
+      "name": "Listener do processo descartável é somente loopback",
+      "ok": true,
+      "ms": 5159
+    },
+    {
+      "category": "N",
+      "name": "Âncora só contém versão, UUID técnico, contagem e digest",
+      "ok": true,
+      "ms": 1
+    }
+  ],
+  "passed": true,
+  "crashes": [
+    {
+      "phase": "before_insert",
+      "hard_process_kill": true,
+      "after_restart_count": 0,
+      "retry_status": 201,
+      "same_confirmed_event": true,
+      "final_count": 1
+    },
+    {
+      "phase": "after_insert",
+      "hard_process_kill": true,
+      "after_restart_count": 0,
+      "retry_status": 201,
+      "same_confirmed_event": true,
+      "final_count": 1
+    },
+    {
+      "phase": "after_result",
+      "hard_process_kill": true,
+      "after_restart_count": 0,
+      "retry_status": 201,
+      "same_confirmed_event": true,
+      "final_count": 1
+    },
+    {
+      "phase": "after_anchor_before_commit",
+      "hard_process_kill": true,
+      "after_restart_count": 0,
+      "retry_status": 201,
+      "same_confirmed_event": true,
+      "final_count": 1
+    },
+    {
+      "phase": "after_database_commit",
+      "hard_process_kill": true,
+      "after_restart_count": 1,
+      "retry_status": 200,
+      "same_confirmed_event": true,
+      "final_count": 1
+    },
+    {
+      "phase": "after_commit",
+      "hard_process_kill": true,
+      "after_restart_count": 1,
+      "retry_status": 200,
+      "same_confirmed_event": true,
+      "final_count": 1
+    }
+  ],
+  "plan_sha256": "fd076ad7837976eba43f6437ef6759665a4f1f5a056584116a67bb9391608fff",
+  "plan_read_only_during_execution": true,
+  "expected": 49,
+  "temporal_rollback": {
+    "expected_epoch": 5,
+    "observed_epoch": 3,
+    "expected_event_ids": [
+      "33f03e10-2875-49db-b13c-26719830982a",
+      "6aa7d802-a0ae-44e5-8a1d-3afa5d3db60c",
+      "78a940dd-e0d0-434b-b06f-c0f121484959",
+      "d8abce50-2c71-4a19-bff0-21e2e42c2d73",
+      "fa6218ef-da0c-465e-ade0-7aa3a3191923"
+    ],
+    "observed_event_ids": [
+      "6aa7d802-a0ae-44e5-8a1d-3afa5d3db60c",
+      "78a940dd-e0d0-434b-b06f-c0f121484959",
+      "d8abce50-2c71-4a19-bff0-21e2e42c2d73"
+    ],
+    "missing_event_ids": [
+      "33f03e10-2875-49db-b13c-26719830982a",
+      "fa6218ef-da0c-465e-ade0-7aa3a3191923"
+    ],
+    "writes_blocked": true
+  },
+  "delivered_backup_sha256": "99f599d2b7c6a49ffe23a1494c1bc3a0bb4255758ecba75c2dfc9e072529fc15",
+  "this_run_backup_sha256": "256f2438326227ee470340e47a7df01828de02160402c0408530cf744f836aa2",
+  "at_end": "2026-09-28T01:30:50.751Z",
+  "disposable_environment_removed": true,
+  "previous_runs": [
+    {
+      "at": "2026-09-27T21:25:00.978Z",
+      "expected": 47,
+      "passed": true,
+      "checks": [
+        {
+          "category": "A",
+          "name": "Banco novo explícito passa validação",
+          "ok": true,
+          "ms": 2544
+        },
+        {
+          "category": "A",
+          "name": "Banco ausente não é criado pelo startup",
+          "ok": true,
+          "ms": 1
+        },
+        {
+          "category": "A",
+          "name": "Segundo processo não abre diretório em uso",
+          "ok": true,
+          "ms": 2243
+        },
+        {
+          "category": "A",
+          "name": "Schema version desconhecida bloqueia",
+          "ok": true,
+          "ms": 2401
+        },
+        {
+          "category": "A",
+          "name": "Tabela idempotente ausente bloqueia sem recriar",
+          "ok": true,
+          "ms": 2373
+        },
+        {
+          "category": "A",
+          "name": "Constraint de vínculo removida bloqueia",
+          "ok": true,
+          "ms": 2346
+        },
+        {
+          "category": "B",
+          "name": "Health READY expõe somente campos técnicos",
+          "ok": true,
+          "ms": 2701
+        },
+        {
+          "category": "B",
+          "name": "Health distingue banco read-only e recusa POST",
+          "ok": true,
+          "ms": 2709
+        },
+        {
+          "category": "B",
+          "name": "Health não chama processo online de banco pronto",
+          "ok": true,
+          "ms": 2836
+        },
+        {
+          "category": "C",
+          "name": "Kill real em before_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3292
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3357
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_result; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3309
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_anchor_before_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3228
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3319
+        },
+        {
+          "category": "D",
+          "name": "Cinco requests mesma chave depois de restart criam um original",
+          "ok": true,
+          "ms": 3329
+        },
+        {
+          "category": "D",
+          "name": "Timestamp/hash e event_id iguais no retry pós-restart",
+          "ok": true,
+          "ms": 2258
+        },
+        {
+          "category": "D",
+          "name": "Chave igual com conteúdo diferente não sobrescreve",
+          "ok": true,
+          "ms": 2279
+        },
+        {
+          "category": "E",
+          "name": "Shutdown gracioso drena transação aceita e encerra listener",
+          "ok": true,
+          "ms": 8813
+        },
+        {
+          "category": "F",
+          "name": "Backup sob exclusão possui manifesto, baseline e SHA verificáveis",
+          "ok": true,
+          "ms": 2804
+        },
+        {
+          "category": "F",
+          "name": "Backup registra pares, timestamps, contexto e geração",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "F",
+          "name": "Exportação fica entre gravações na fila exclusiva",
+          "ok": true,
+          "ms": 712
+        },
+        {
+          "category": "G",
+          "name": "Restore descartável reproduz exatamente inventário do corte",
+          "ok": true,
+          "ms": 1479
+        },
+        {
+          "category": "G",
+          "name": "Evento do backup é recuperado com mesma chave e hash",
+          "ok": true,
+          "ms": 145
+        },
+        {
+          "category": "G",
+          "name": "Backup com bytes adulterados é recusado antes do restore",
+          "ok": true,
+          "ms": 15
+        },
+        {
+          "category": "H",
+          "name": "A/B/C restaurados após D/E são detectados pela âncora atual",
+          "ok": true,
+          "ms": 1499
+        },
+        {
+          "category": "H",
+          "name": "Chave pós-backup não é tratada como nova em restore antigo",
+          "ok": true,
+          "ms": 140
+        },
+        {
+          "category": "H",
+          "name": "Chave nunca usada é negada enquanto recovery required",
+          "ok": true,
+          "ms": 141
+        },
+        {
+          "category": "H",
+          "name": "Restore sem referência externa não inventa âncora",
+          "ok": true,
+          "ms": 1496
+        },
+        {
+          "category": "I",
+          "name": "Verificador v1 calcula mesmo hash do original",
+          "ok": true,
+          "ms": 2031
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: timestamp",
+          "ok": true,
+          "ms": 2476
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: hash",
+          "ok": true,
+          "ms": 2448
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: versão desconhecida",
+          "ok": true,
+          "ms": 2444
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: mapping original-resultado",
+          "ok": true,
+          "ms": 2422
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: geração",
+          "ok": true,
+          "ms": 2420
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger removido",
+          "ok": true,
+          "ms": 2440
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger desabilitado",
+          "ok": true,
+          "ms": 2465
+        },
+        {
+          "category": "I",
+          "name": "UPDATE e DELETE ordinários continuam negados",
+          "ok": true,
+          "ms": 2052
+        },
+        {
+          "category": "I",
+          "name": "Verificador somente leitura não corrige adulteração",
+          "ok": true,
+          "ms": 2451
+        },
+        {
+          "category": "K",
+          "name": "Revogação de contexto persiste após restart",
+          "ok": true,
+          "ms": 2233
+        },
+        {
+          "category": "K",
+          "name": "Revogação percebida antes do commit reverte evento e resultado",
+          "ok": true,
+          "ms": 2128
+        },
+        {
+          "category": "L",
+          "name": "João e Maria isolados por HTTP depois do restart",
+          "ok": true,
+          "ms": 2791
+        },
+        {
+          "category": "L",
+          "name": "Intenção de Maria não é devolvida a João pós-restart",
+          "ok": true,
+          "ms": 2745
+        },
+        {
+          "category": "L",
+          "name": "Intenção de João não é devolvida a Maria pós-restart",
+          "ok": true,
+          "ms": 2749
+        },
+        {
+          "category": "M",
+          "name": "Dependência fora nega nova marcação sem snapshot permissivo",
+          "ok": true,
+          "ms": 2684
+        },
+        {
+          "category": "M",
+          "name": "Núcleo parado não confirma HTTP",
+          "ok": true,
+          "ms": 2599
+        },
+        {
+          "category": "N",
+          "name": "Listener do processo descartável é somente loopback",
+          "ok": true,
+          "ms": 4968
+        },
+        {
+          "category": "N",
+          "name": "Âncora só contém versão, UUID técnico, contagem e digest",
+          "ok": true,
+          "ms": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T21:32:52.131Z",
+      "expected": 47,
+      "passed": true,
+      "checks": [
+        {
+          "category": "A",
+          "name": "Banco novo explícito passa validação",
+          "ok": true,
+          "ms": 2476
+        },
+        {
+          "category": "A",
+          "name": "Banco ausente não é criado pelo startup",
+          "ok": true,
+          "ms": 1
+        },
+        {
+          "category": "A",
+          "name": "Segundo processo não abre diretório em uso",
+          "ok": true,
+          "ms": 2205
+        },
+        {
+          "category": "A",
+          "name": "Schema version desconhecida bloqueia",
+          "ok": true,
+          "ms": 2332
+        },
+        {
+          "category": "A",
+          "name": "Tabela idempotente ausente bloqueia sem recriar",
+          "ok": true,
+          "ms": 2335
+        },
+        {
+          "category": "A",
+          "name": "Constraint de vínculo removida bloqueia",
+          "ok": true,
+          "ms": 2340
+        },
+        {
+          "category": "B",
+          "name": "Health READY expõe somente campos técnicos",
+          "ok": true,
+          "ms": 2627
+        },
+        {
+          "category": "B",
+          "name": "Health distingue banco read-only e recusa POST",
+          "ok": true,
+          "ms": 2614
+        },
+        {
+          "category": "B",
+          "name": "Health não chama processo online de banco pronto",
+          "ok": true,
+          "ms": 2720
+        },
+        {
+          "category": "C",
+          "name": "Kill real em before_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3273
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3294
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_result; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3226
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_anchor_before_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3254
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3242
+        },
+        {
+          "category": "D",
+          "name": "Cinco requests mesma chave depois de restart criam um original",
+          "ok": true,
+          "ms": 3247
+        },
+        {
+          "category": "D",
+          "name": "Timestamp/hash e event_id iguais no retry pós-restart",
+          "ok": true,
+          "ms": 2198
+        },
+        {
+          "category": "D",
+          "name": "Chave igual com conteúdo diferente não sobrescreve",
+          "ok": true,
+          "ms": 2224
+        },
+        {
+          "category": "E",
+          "name": "Shutdown gracioso drena transação aceita e encerra listener",
+          "ok": true,
+          "ms": 5873
+        },
+        {
+          "category": "F",
+          "name": "Backup sob exclusão possui manifesto, baseline e SHA verificáveis",
+          "ok": true,
+          "ms": 2935
+        },
+        {
+          "category": "F",
+          "name": "Backup registra pares, timestamps, contexto e geração",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "F",
+          "name": "Exportação fica entre gravações na fila exclusiva",
+          "ok": true,
+          "ms": 705
+        },
+        {
+          "category": "G",
+          "name": "Restore descartável reproduz exatamente inventário do corte",
+          "ok": true,
+          "ms": 1448
+        },
+        {
+          "category": "G",
+          "name": "Evento do backup é recuperado com mesma chave e hash",
+          "ok": true,
+          "ms": 141
+        },
+        {
+          "category": "G",
+          "name": "Backup com bytes adulterados é recusado antes do restore",
+          "ok": true,
+          "ms": 12
+        },
+        {
+          "category": "H",
+          "name": "A/B/C restaurados após D/E são detectados pela âncora atual",
+          "ok": true,
+          "ms": 1461
+        },
+        {
+          "category": "H",
+          "name": "Chave pós-backup não é tratada como nova em restore antigo",
+          "ok": true,
+          "ms": 137
+        },
+        {
+          "category": "H",
+          "name": "Chave nunca usada é negada enquanto recovery required",
+          "ok": true,
+          "ms": 136
+        },
+        {
+          "category": "H",
+          "name": "Restore sem referência externa não inventa âncora",
+          "ok": true,
+          "ms": 1454
+        },
+        {
+          "category": "I",
+          "name": "Verificador v1 calcula mesmo hash do original",
+          "ok": true,
+          "ms": 2006
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: timestamp",
+          "ok": true,
+          "ms": 2441
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: hash",
+          "ok": true,
+          "ms": 2389
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: versão desconhecida",
+          "ok": true,
+          "ms": 2382
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: mapping original-resultado",
+          "ok": true,
+          "ms": 2398
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: geração",
+          "ok": true,
+          "ms": 2414
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger removido",
+          "ok": true,
+          "ms": 2376
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger desabilitado",
+          "ok": true,
+          "ms": 2389
+        },
+        {
+          "category": "I",
+          "name": "UPDATE e DELETE ordinários continuam negados",
+          "ok": true,
+          "ms": 2020
+        },
+        {
+          "category": "I",
+          "name": "Verificador somente leitura não corrige adulteração",
+          "ok": true,
+          "ms": 2423
+        },
+        {
+          "category": "K",
+          "name": "Revogação de contexto persiste após restart",
+          "ok": true,
+          "ms": 2175
+        },
+        {
+          "category": "K",
+          "name": "Revogação percebida antes do commit reverte evento e resultado",
+          "ok": true,
+          "ms": 2062
+        },
+        {
+          "category": "L",
+          "name": "João e Maria isolados por HTTP depois do restart",
+          "ok": true,
+          "ms": 2649
+        },
+        {
+          "category": "L",
+          "name": "Intenção de Maria não é devolvida a João pós-restart",
+          "ok": true,
+          "ms": 2666
+        },
+        {
+          "category": "L",
+          "name": "Intenção de João não é devolvida a Maria pós-restart",
+          "ok": true,
+          "ms": 2633
+        },
+        {
+          "category": "M",
+          "name": "Dependência fora nega nova marcação sem snapshot permissivo",
+          "ok": true,
+          "ms": 2682
+        },
+        {
+          "category": "M",
+          "name": "Núcleo parado não confirma HTTP",
+          "ok": true,
+          "ms": 2831
+        },
+        {
+          "category": "N",
+          "name": "Listener do processo descartável é somente loopback",
+          "ok": true,
+          "ms": 5208
+        },
+        {
+          "category": "N",
+          "name": "Âncora só contém versão, UUID técnico, contagem e digest",
+          "ok": true,
+          "ms": 1
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T21:44:45.252Z",
+      "expected": 48,
+      "passed": true,
+      "checks": [
+        {
+          "category": "A",
+          "name": "Banco novo explícito passa validação",
+          "ok": true,
+          "ms": 2611
+        },
+        {
+          "category": "A",
+          "name": "Banco ausente não é criado pelo startup",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "A",
+          "name": "Segundo processo não abre diretório em uso",
+          "ok": true,
+          "ms": 2318
+        },
+        {
+          "category": "A",
+          "name": "Schema version desconhecida bloqueia",
+          "ok": true,
+          "ms": 2367
+        },
+        {
+          "category": "A",
+          "name": "Tabela idempotente ausente bloqueia sem recriar",
+          "ok": true,
+          "ms": 2340
+        },
+        {
+          "category": "A",
+          "name": "Constraint de vínculo removida bloqueia",
+          "ok": true,
+          "ms": 2442
+        },
+        {
+          "category": "B",
+          "name": "Health READY expõe somente campos técnicos",
+          "ok": true,
+          "ms": 2679
+        },
+        {
+          "category": "B",
+          "name": "Health distingue banco read-only e recusa POST",
+          "ok": true,
+          "ms": 2637
+        },
+        {
+          "category": "B",
+          "name": "Health não chama processo online de banco pronto",
+          "ok": true,
+          "ms": 2764
+        },
+        {
+          "category": "C",
+          "name": "Kill real em before_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3325
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3334
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_result; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3261
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_anchor_before_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3279
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_database_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3345
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3412
+        },
+        {
+          "category": "D",
+          "name": "Cinco requests mesma chave depois de restart criam um original",
+          "ok": true,
+          "ms": 3506
+        },
+        {
+          "category": "D",
+          "name": "Timestamp/hash e event_id iguais no retry pós-restart",
+          "ok": true,
+          "ms": 2250
+        },
+        {
+          "category": "D",
+          "name": "Chave igual com conteúdo diferente não sobrescreve",
+          "ok": true,
+          "ms": 2284
+        },
+        {
+          "category": "E",
+          "name": "Shutdown gracioso drena transação aceita e encerra listener",
+          "ok": true,
+          "ms": 5886
+        },
+        {
+          "category": "F",
+          "name": "Backup sob exclusão possui manifesto, baseline e SHA verificáveis",
+          "ok": true,
+          "ms": 2924
+        },
+        {
+          "category": "F",
+          "name": "Backup registra pares, timestamps, contexto e geração",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "F",
+          "name": "Exportação fica entre gravações na fila exclusiva",
+          "ok": true,
+          "ms": 715
+        },
+        {
+          "category": "G",
+          "name": "Restore descartável reproduz exatamente inventário do corte",
+          "ok": true,
+          "ms": 1587
+        },
+        {
+          "category": "G",
+          "name": "Evento do backup é recuperado com mesma chave e hash",
+          "ok": true,
+          "ms": 152
+        },
+        {
+          "category": "G",
+          "name": "Backup com bytes adulterados é recusado antes do restore",
+          "ok": true,
+          "ms": 14
+        },
+        {
+          "category": "H",
+          "name": "A/B/C restaurados após D/E são detectados pela âncora atual",
+          "ok": true,
+          "ms": 1535
+        },
+        {
+          "category": "H",
+          "name": "Chave pós-backup não é tratada como nova em restore antigo",
+          "ok": true,
+          "ms": 132
+        },
+        {
+          "category": "H",
+          "name": "Chave nunca usada é negada enquanto recovery required",
+          "ok": true,
+          "ms": 135
+        },
+        {
+          "category": "H",
+          "name": "Restore sem referência externa não inventa âncora",
+          "ok": true,
+          "ms": 1616
+        },
+        {
+          "category": "I",
+          "name": "Verificador v1 calcula mesmo hash do original",
+          "ok": true,
+          "ms": 2139
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: timestamp",
+          "ok": true,
+          "ms": 2576
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: hash",
+          "ok": true,
+          "ms": 2503
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: versão desconhecida",
+          "ok": true,
+          "ms": 2615
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: mapping original-resultado",
+          "ok": true,
+          "ms": 2859
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: geração",
+          "ok": true,
+          "ms": 2518
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger removido",
+          "ok": true,
+          "ms": 2484
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger desabilitado",
+          "ok": true,
+          "ms": 2509
+        },
+        {
+          "category": "I",
+          "name": "UPDATE e DELETE ordinários continuam negados",
+          "ok": true,
+          "ms": 2090
+        },
+        {
+          "category": "I",
+          "name": "Verificador somente leitura não corrige adulteração",
+          "ok": true,
+          "ms": 2468
+        },
+        {
+          "category": "K",
+          "name": "Revogação de contexto persiste após restart",
+          "ok": true,
+          "ms": 2206
+        },
+        {
+          "category": "K",
+          "name": "Revogação percebida antes do commit reverte evento e resultado",
+          "ok": true,
+          "ms": 2140
+        },
+        {
+          "category": "L",
+          "name": "João e Maria isolados por HTTP depois do restart",
+          "ok": true,
+          "ms": 2726
+        },
+        {
+          "category": "L",
+          "name": "Intenção de Maria não é devolvida a João pós-restart",
+          "ok": true,
+          "ms": 2739
+        },
+        {
+          "category": "L",
+          "name": "Intenção de João não é devolvida a Maria pós-restart",
+          "ok": true,
+          "ms": 2719
+        },
+        {
+          "category": "M",
+          "name": "Dependência fora nega nova marcação sem snapshot permissivo",
+          "ok": true,
+          "ms": 2657
+        },
+        {
+          "category": "M",
+          "name": "Núcleo parado não confirma HTTP",
+          "ok": true,
+          "ms": 2599
+        },
+        {
+          "category": "N",
+          "name": "Listener do processo descartável é somente loopback",
+          "ok": true,
+          "ms": 4889
+        },
+        {
+          "category": "N",
+          "name": "Âncora só contém versão, UUID técnico, contagem e digest",
+          "ok": true,
+          "ms": 0
+        }
+      ],
+      "error": null
+    },
+    {
+      "at": "2026-09-27T21:55:47.349Z",
+      "expected": 49,
+      "passed": true,
+      "checks": [
+        {
+          "category": "A",
+          "name": "Banco novo explícito passa validação",
+          "ok": true,
+          "ms": 2602
+        },
+        {
+          "category": "A",
+          "name": "Banco ausente não é criado pelo startup",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "A",
+          "name": "Segundo processo não abre diretório em uso",
+          "ok": true,
+          "ms": 2236
+        },
+        {
+          "category": "A",
+          "name": "Schema version desconhecida bloqueia",
+          "ok": true,
+          "ms": 2342
+        },
+        {
+          "category": "A",
+          "name": "Tabela idempotente ausente bloqueia sem recriar",
+          "ok": true,
+          "ms": 2331
+        },
+        {
+          "category": "A",
+          "name": "Constraint de vínculo removida bloqueia",
+          "ok": true,
+          "ms": 2327
+        },
+        {
+          "category": "B",
+          "name": "Health READY expõe somente campos técnicos",
+          "ok": true,
+          "ms": 2644
+        },
+        {
+          "category": "B",
+          "name": "Health distingue banco read-only e recusa POST",
+          "ok": true,
+          "ms": 2704
+        },
+        {
+          "category": "B",
+          "name": "Health não chama processo online de banco pronto",
+          "ok": true,
+          "ms": 2901
+        },
+        {
+          "category": "C",
+          "name": "Kill real em before_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3741
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_insert; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3914
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_result; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3311
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_anchor_before_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3271
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_database_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3267
+        },
+        {
+          "category": "C",
+          "name": "Kill real em after_commit; retry preserva atomicidade",
+          "ok": true,
+          "ms": 3430
+        },
+        {
+          "category": "D",
+          "name": "Cinco requests mesma chave depois de restart criam um original",
+          "ok": true,
+          "ms": 3227
+        },
+        {
+          "category": "D",
+          "name": "Timestamp/hash e event_id iguais no retry pós-restart",
+          "ok": true,
+          "ms": 2177
+        },
+        {
+          "category": "D",
+          "name": "Chave igual com conteúdo diferente não sobrescreve",
+          "ok": true,
+          "ms": 2227
+        },
+        {
+          "category": "E",
+          "name": "Shutdown gracioso drena transação aceita e encerra listener",
+          "ok": true,
+          "ms": 5900
+        },
+        {
+          "category": "F",
+          "name": "Backup sob exclusão possui manifesto, baseline e SHA verificáveis",
+          "ok": true,
+          "ms": 2734
+        },
+        {
+          "category": "F",
+          "name": "Backup registra pares, timestamps, contexto e geração",
+          "ok": true,
+          "ms": 0
+        },
+        {
+          "category": "F",
+          "name": "Exportação fica entre gravações na fila exclusiva",
+          "ok": true,
+          "ms": 732
+        },
+        {
+          "category": "G",
+          "name": "Restore descartável reproduz exatamente inventário do corte",
+          "ok": true,
+          "ms": 1452
+        },
+        {
+          "category": "G",
+          "name": "Evento do backup é recuperado com mesma chave e hash",
+          "ok": true,
+          "ms": 143
+        },
+        {
+          "category": "G",
+          "name": "Backup com bytes adulterados é recusado antes do restore",
+          "ok": true,
+          "ms": 12
+        },
+        {
+          "category": "H",
+          "name": "A/B/C restaurados após D/E são detectados pela âncora atual",
+          "ok": true,
+          "ms": 1489
+        },
+        {
+          "category": "H",
+          "name": "Chave pós-backup não é tratada como nova em restore antigo",
+          "ok": true,
+          "ms": 143
+        },
+        {
+          "category": "H",
+          "name": "Chave nunca usada é negada enquanto recovery required",
+          "ok": true,
+          "ms": 142
+        },
+        {
+          "category": "H",
+          "name": "Restore sem referência externa não inventa âncora",
+          "ok": true,
+          "ms": 1452
+        },
+        {
+          "category": "I",
+          "name": "Verificador v1 calcula mesmo hash do original",
+          "ok": true,
+          "ms": 2029
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: timestamp",
+          "ok": true,
+          "ms": 2414
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: timestamp sub-milissegundo",
+          "ok": true,
+          "ms": 2398
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: hash",
+          "ok": true,
+          "ms": 2385
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: versão desconhecida",
+          "ok": true,
+          "ms": 2418
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: mapping original-resultado",
+          "ok": true,
+          "ms": 2360
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: geração",
+          "ok": true,
+          "ms": 2399
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger removido",
+          "ok": true,
+          "ms": 2385
+        },
+        {
+          "category": "J",
+          "name": "Adulteração descartável detectada: trigger desabilitado",
+          "ok": true,
+          "ms": 2387
+        },
+        {
+          "category": "I",
+          "name": "UPDATE e DELETE ordinários continuam negados",
+          "ok": true,
+          "ms": 2040
+        },
+        {
+          "category": "I",
+          "name": "Verificador somente leitura não corrige adulteração",
+          "ok": true,
+          "ms": 2464
+        },
+        {
+          "category": "K",
+          "name": "Revogação de contexto persiste após restart",
+          "ok": true,
+          "ms": 2191
+        },
+        {
+          "category": "K",
+          "name": "Revogação percebida antes do commit reverte evento e resultado",
+          "ok": true,
+          "ms": 2153
+        },
+        {
+          "category": "L",
+          "name": "João e Maria isolados por HTTP depois do restart",
+          "ok": true,
+          "ms": 2731
+        },
+        {
+          "category": "L",
+          "name": "Intenção de Maria não é devolvida a João pós-restart",
+          "ok": true,
+          "ms": 2681
+        },
+        {
+          "category": "L",
+          "name": "Intenção de João não é devolvida a Maria pós-restart",
+          "ok": true,
+          "ms": 2743
+        },
+        {
+          "category": "M",
+          "name": "Dependência fora nega nova marcação sem snapshot permissivo",
+          "ok": true,
+          "ms": 2635
+        },
+        {
+          "category": "M",
+          "name": "Núcleo parado não confirma HTTP",
+          "ok": true,
+          "ms": 3032
+        },
+        {
+          "category": "N",
+          "name": "Listener do processo descartável é somente loopback",
+          "ok": true,
+          "ms": 4941
+        },
+        {
+          "category": "N",
+          "name": "Âncora só contém versão, UUID técnico, contagem e digest",
+          "ok": true,
+          "ms": 0
+        }
+      ],
+      "error": null
+    }
+  ]
+}

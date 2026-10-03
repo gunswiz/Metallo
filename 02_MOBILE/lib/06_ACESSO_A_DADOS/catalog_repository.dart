@@ -95,6 +95,14 @@ class CatalogRepository {
     await dashboardRepository.refreshDashboard();
   }
 
+  Future<void> replaceRentedEquipment({required String assetId, required String assetCode, String? serialNumber, required String note}) async {
+    await client.rpc('replace_rented_equipment', params: {
+      'p_asset_id': assetId, 'p_asset_code': assetCode.trim(),
+      'p_serial_number': nullableText(serialNumber), 'p_note': note.trim(),
+    });
+    await dashboardRepository.refreshDashboard();
+  }
+
   Future<void> updateEquipmentAsset({
     required String assetId,
     required String assetCode,

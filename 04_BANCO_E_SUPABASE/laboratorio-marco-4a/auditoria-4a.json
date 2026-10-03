@@ -1,0 +1,110 @@
+{
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL; proveniência dos pareceres e pacotes, não baseline",
+  "manual_approval": "APROVADA pelo responsável em 01/10/2026",
+  "maximum_cycles": 2,
+  "cycles": [
+    {
+      "cycle": 1,
+      "package": "outputs/Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo1.zip",
+      "package_sha256": "75c64e38022ad175a1648aeee42aaafbb8cfaf9478ea0a46f82eda4378c015c3",
+      "files": 72,
+      "entries": 73,
+      "direct_zip_scan": "ZERO ACHADOS; manifesto/tamanhos/hashes conferidos",
+      "upload_confirmed_before_prompt": true,
+      "auditor_confirmed_package_hash_and_72_manifest_hashes": true,
+      "model": "Expert",
+      "conversation_url": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1",
+      "response_url": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1?rid=f19eea89-5481-449f-a7e6-8705e5ce027e",
+      "original": "parecer-grok-ciclo1-original.md",
+      "original_sha256": "d68decf352cf09b3615dfeac03dac95348299fb0c87862ddce235050a7dc5249",
+      "captured_date": "2026-10-01",
+      "capture_method": "Botão Copiar resposta do Grok; texto integral da área de transferência salvo UTF-8 sem edição",
+      "original_counts": {
+        "critical": 0,
+        "high": 1,
+        "medium": 0,
+        "low": 4,
+        "informational": 5
+      },
+      "confrontation": "Documento vigente 47, seção 13; provas antes/depois e catálogo do ZIP original",
+      "status": "PRESERVADO E CONFRONTADO; alto reproduzido/corrigido; segundo ciclo necessário"
+    },
+    {
+      "cycle": 2,
+      "package": "outputs/Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo2.zip",
+      "package_sha256": "f130eb6d95585078d5c98b7bf12dcf002dbc34d6500d2267add32860ea4d64f2",
+      "files": 77,
+      "entries": 78,
+      "direct_zip_scan": "ZERO ACHADOS; manifesto/tamanhos/hashes conferidos",
+      "upload_confirmed_before_prompt": true,
+      "conversation_url": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1",
+      "response_url": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1?rid=07798063-909e-4342-a79e-93c94f8cc0b9",
+      "status": "PRESERVADO E CONFRONTADO; segundo e último ciclo concluído",
+      "original": "parecer-grok-ciclo2-original.md",
+      "original_sha256": "de686a49096b63977ee0bbc4eea1f21a01a37c2d7ec91ea7cc0adca68d14b874",
+      "capture_method": "Botão Copiar resposta do Grok; parecer integral UTF-8 sem edição",
+      "captured_at_utc": "2026-10-01T08:44:53.7727222Z",
+      "auditor_confirmed_package_hash_and_77_manifest_hashes": true,
+      "original_final_counts": {
+        "critical_open": 0,
+        "informational": 5,
+        "withdrawn": 2,
+        "low_residual": 2,
+        "high_open": 0,
+        "previous_high_fixed": 1,
+        "medium": 0
+      },
+      "screenshot": "grok-ciclo2-final.jpg",
+      "screenshot_sha256": "eb792afb4ef32c43aee554f1d928d6d3c685d6234f15a61cea25854c21ef82fa"
+    }
+  ],
+  "remote_actions": "NENHUMA",
+  "baseline_4a": "NÃO CRIADA",
+  "next_milestone_started": false,
+  "verified_at_utc": "2026-10-01T08:39:55.7722795Z",
+  "live_listeners": [
+    {
+      "address": "127.0.0.1",
+      "ports": [
+        3101,
+        3102,
+        3105,
+        3106,
+        54321,
+        54322,
+        54323,
+        54324,
+        54327
+      ]
+    },
+    {
+      "address": "::1",
+      "ports": [
+        54321,
+        54322,
+        54323,
+        54324,
+        54327
+      ]
+    }
+  ],
+  "live_health": {
+    "official": false,
+    "ready_for_new_events": true,
+    "status": "READY"
+  },
+  "frozen_core_source_count_identical": 25,
+  "tests_rerun": {
+    "specific_4a": "80/80",
+    "audit_delta": "13/13"
+  },
+  "final_state": "AUDITORIA CONFRONTADA; PARADO PARA REVISÃO; sem baseline/4B/publicação",
+  "confrontation": "05_DOCUMENTACAO/47_MARCO_4A_MEU_PONTO_ONLINE_GEOLOCALIZACAO.md, seções 13 e 14",
+  "local_classifications": {
+    "invalid": 2,
+    "not_verifiable": 0,
+    "partial": 3,
+    "valid": 5
+  },
+  "final_confirmed_critical_high_open": 0
+}

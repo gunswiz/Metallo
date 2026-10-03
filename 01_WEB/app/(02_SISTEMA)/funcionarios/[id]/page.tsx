@@ -30,22 +30,23 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
   const service = await getMetalloService();
   const [{ employee, deliveries, requests }, teams, professions] = await Promise.all([service.getEmployee(id), service.listTeams(), service.listProfessions()]);
   const professionName = professions.find((profession) => profession.code === employee.profession)?.name ?? employee.profession;
-  const activeDeliveries = deliveries.filter((delivery) => delivery.current_status === "active");
-  const history = deliveries.filter((delivery) => delivery.current_status !== "active");
+  const legacyPersonalItems = deliveries.filter((delivery) => delivery.epi_items?.item_kind === "personal_tool");
+  const activeDeliveries = deliveries.filter((delivery) => delivery.epi_items?.item_kind !== "personal_tool" && delivery.current_status === "active");
+  const history = deliveries.filter((delivery) => delivery.epi_items?.item_kind !== "personal_tool" && delivery.current_status !== "active");
   const canWrite = can(profile, "epi:write");
   const canAdmin = can(profile, "admin:manage");
 
   return <>
-    <PageHeader eyebrow="PERFIL DO FUNCIONÁRIO" title={employee.full_name} description={`${professionName} · ${employee.teams?.name ?? "Sem equipe"}`} actions={canWrite ? <>
-      <Link className="button primary" href={`/epis/entrega?employee=${employee.id}&kind=personal_tool`}><PackageCheck size={16} />Adicionar item pessoal</Link>
+    <PageHeader eyebrow="PERFIL DO FUNCIONÁRIO" title={employee.full_name} description={`${professionName} · Origem: ${employee.teams?.name ?? "Sem equipe"} · Trabalhando com: ${employee.working_team_name}`} actions={canWrite ? <>
+      <Link className="button primary" href={`/funcionarios/${employee.id}/itens`}><PackageCheck size={16} />Itens pessoais</Link>
       {canAdmin && <Link className="button secondary" href="/epis/novo?kind=personal_tool"><Plus size={16} />Cadastrar novo item</Link>}
     </> : undefined} />
     {query.updated && <div className="alert success" role="status">Funcionário e datas do ASO atualizados.</div>}
     {query.delivered && <div className="alert success" role="status">Entrega registrada e vinculada ao funcionário.</div>}
     {query.closed && <div className="alert success" role="status">Situação do item atualizada no histórico.</div>}
     {query.error && <div className="alert error" role="alert">Não foi possível salvar. Confira os campos e as datas informadas.</div>}
-    <div className="module-tabs"><Link href={`/funcionarios/${employee.id}/kit`}>Kit e itens faltantes</Link><Link href={`/epis/solicitacoes?employee=${employee.id}`}>Solicitações</Link>{canWrite && <Link href={`/epis/entrega-em-lote?employee=${employee.id}`}>Entrega em lote</Link>}</div>
-    <a className="button primary" href={`/funcionarios/${employee.id}/epi/pdf`} target="_blank" rel="noreferrer">PDF individual de EPI para assinatura</a>
+    <div className="module-tabs"><Link href={`/funcionarios/${employee.id}/kit`}>Kit e itens faltantes</Link><Link href={`/epis/solicitacoes?employee=${employee.id}`}>Solicitações</Link>{canWrite && <><Link href={`/epis/entrega-em-lote?employee=${employee.id}`}>Nova entrega de EPI</Link><Link href={`/funcionarios/${employee.id}/itens`}>Itens pessoais</Link></>}</div>
+    {canWrite && <Link className="button primary" href={`/funcionarios/${employee.id}/epi`}>Ficha e histórico de EPI</Link>}
     {canAdmin && <AsoNotice expiry={employee.aso_expiry_date} />}
     <section className="detail-hero"><dl className="definition-grid">
       <div className="definition-item"><dt>Matrícula</dt><dd>{employee.registration_code ?? "Não informada"}</dd></div>
@@ -56,12 +57,14 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
       <div className="definition-item"><dt>Situação</dt><dd><StatusBadge value={employee.active ? "active" : "retired"} /></dd></div>
     </dl></section>
 
-    <section className="panel"><header className="panel-header"><div><h2>Itens atualmente atribuídos</h2><p>EPIs, fardamento e itens pessoais permanecem separados por tipo</p></div></header>
+    <section className="panel"><header className="panel-header"><div><h2>EPIs e fardamento ativos</h2><p>Itens pessoais de trabalho possuem registro próprio no Marco 3G.</p></div></header>
       {activeDeliveries.length === 0 ? <div className="panel-body"><p className="muted">Nenhum item ativo para este funcionário.</p></div> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Tipo</th><th>Item</th><th>Entrega</th><th>Quantidade</th><th>Variante / C.A.</th><th>Situação</th>{canWrite && <th>Ação</th>}</tr></thead><tbody>{activeDeliveries.map((delivery) => <tr key={delivery.id}>
         <td>{itemKindLabel(delivery.epi_items?.item_kind)}</td><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{delivery.epi_items?.code}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"} · {delivery.ca_snapshot ?? "sem C.A."}</td><td><StatusBadge value={delivery.current_status} /></td>
         {canWrite && <td><form action={closeEpiDelivery} className="inline-action"><input type="hidden" name="deliveryId" value={delivery.id} /><input type="hidden" name="employeeId" value={employee.id} /><label className="quantity-field">Qtd.<input name="quantity" type="number" min="1" max={delivery.quantity} defaultValue="1" required aria-label={`Quantidade de ${delivery.epi_items?.name} a atualizar, de ${delivery.quantity}`} title={`Escolha de 1 a ${delivery.quantity} ${delivery.epi_items?.unit}`} /></label><select name="status" aria-label={`Situação de ${delivery.epi_items?.name}`} defaultValue="returned"><option value="returned">Devolvido</option><option value="replaced">Substituído</option><option value="damaged">Danificado</option><option value="lost">Perdido</option><option value="consumed">Consumido</option></select><SubmitButton pendingLabel="Salvando…">Registrar</SubmitButton></form></td>}
       </tr>)}</tbody></table></div>}
     </section>
+
+    {legacyPersonalItems.length > 0 && <section className="panel"><header className="panel-header"><div><h2>Itens pessoais de registros anteriores</h2><p>Registros anteriores ao 3G permanecem visíveis para conferência; não foram convertidos ou apagados automaticamente.</p></div></header><div className="panel-body list">{legacyPersonalItems.map(item => <div className="list-row" key={item.id}><strong>{item.epi_items?.name}</strong><span>{formatDateTime(item.delivered_at)} · {item.quantity} {item.epi_items?.unit} · {item.current_status}</span></div>)}</div></section>}
 
     <section className="content-grid">
       <div className="panel"><header className="panel-header"><div><h2>Histórico de itens</h2><p>Devoluções, substituições, perdas, danos e consumos</p></div></header><div className="data-table-wrap"><table className="data-table"><thead><tr><th>Item</th><th>Entrega</th><th>Quantidade</th><th>Variante</th><th>Situação</th></tr></thead><tbody>{history.map((delivery) => <tr key={delivery.id}><td><span className="primary-cell">{delivery.epi_items?.name}</span><span className="secondary-cell">{itemKindLabel(delivery.epi_items?.item_kind)}</span></td><td>{formatDateTime(delivery.delivered_at)}</td><td>{delivery.quantity} {delivery.epi_items?.unit}</td><td>{delivery.variant_snapshot ?? "—"}</td><td><StatusBadge value={delivery.current_status} /></td></tr>)}</tbody></table></div></div>

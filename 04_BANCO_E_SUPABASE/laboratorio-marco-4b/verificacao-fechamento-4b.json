@@ -1,0 +1,394 @@
+{
+  "id": "METALLO-4B-LAB-20261001-R1",
+  "origin": {
+    "id": "METALLO-4A-LAB-20261001-R1",
+    "zip": "Metallo-Marco4A-BaselineAprovada-20261001-R1.zip",
+    "sha256": "50a9c1c87f362f621d6fbe66f3a95a563b787a6145e5fcc918840a162177909d"
+  },
+  "baseline_chain_verified": [
+    {
+      "id": "METALLO-1B-LAB-20260927-R1",
+      "zip": "Metallo-Marco1B-BaselineAprovada-20260927.zip",
+      "sha256": "41cc99f9eb38cbd895ec8e9555ce9c9e2d3ca1ead7b757c6f5dbffe89863a162",
+      "at": "2026-09-27T10:41:44.457Z",
+      "files": 114,
+      "entries": 115
+    },
+    {
+      "id": "METALLO-1B-LAB-20260927-R2",
+      "zip": "Metallo-Marco1B-BaselineSaneada-20260927-R2.zip",
+      "sha256": "f44ca13e4a1096f855f0fc566f19b7aa670c28047094636ac61c61b3493e60be",
+      "at": "2026-09-27T12:30:38.872Z",
+      "files": 146,
+      "entries": 147
+    },
+    {
+      "id": "METALLO-1C-LAB-20260927-R1",
+      "zip": "Metallo-Marco1C-BaselineAprovada-20260927-R1.zip",
+      "sha256": "ea672a8c90c0f1b4de6c5e739404508b1fc68523e0d8c6d91bcd24f8621f70ae",
+      "at": "2026-09-27T15:59:08.546Z",
+      "files": 163,
+      "entries": 164
+    },
+    {
+      "id": "METALLO-2B-LAB-20260927-R1",
+      "zip": "Metallo-Marco2B-BaselineAprovada-20260927-R1.zip",
+      "sha256": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+      "at": "2026-09-27T18:49:53.128Z",
+      "files": 204,
+      "entries": 205
+    },
+    {
+      "id": "METALLO-2D-LAB-20260927-R1",
+      "zip": "Metallo-Marco2D-BaselineAprovada-20260927-R1.zip",
+      "sha256": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+      "at": "2026-09-27T22:41:23.728355+00:00",
+      "files": 258,
+      "entries": 259
+    },
+    {
+      "id": "METALLO-2E-LAB-20260927-R1",
+      "zip": "Metallo-Marco2E-BaselineAprovada-20260927-R1.zip",
+      "sha256": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+      "at": "2026-09-28T01:02:36.040543+00:00",
+      "files": 66,
+      "entries": 67
+    },
+    {
+      "id": "METALLO-2F-LAB-20260928-R1",
+      "zip": "Metallo-Marco2F-BaselineAprovada-20260928-R1.zip",
+      "sha256": "5b7b50ddf9385b58731b84852d54626c9893d0a812151e4e7cd157b568b34097",
+      "at": "2026-09-28T07:55:00.647432+00:00",
+      "files": 101,
+      "entries": 102
+    },
+    {
+      "id": "METALLO-3A-LAB-20260928-R1",
+      "zip": "Metallo-Marco3A-BaselineAprovada-20260928-R1.zip",
+      "sha256": "907e26c0b51fdd781a2233a03782c31349630ab3e9dc61e5f96ada0005d52c4a",
+      "at": "2026-09-28T11:02:24.270196+00:00",
+      "files": 74,
+      "entries": 75
+    },
+    {
+      "id": "METALLO-3B-LAB-20260928-R1",
+      "zip": "Metallo-Marco3B-BaselineAprovada-20260928-R1.zip",
+      "sha256": "b8f6e5955b3cc9f4a670212fd24451c30d0fac9e7dba4acd544186f180356148",
+      "at": "2026-09-28T16:13:25.918123+00:00",
+      "files": 103,
+      "entries": 104
+    },
+    {
+      "id": "METALLO-3C-LAB-20260928-R1",
+      "zip": "Metallo-Marco3C-BaselineAprovada-20260928-R1.zip",
+      "sha256": "bf3f1bb34813f03afaa9fac613ef4ede24a0f35f3ca3292670dda230cc63c3a6",
+      "at": "2026-09-28T21:48:39.560003+00:00",
+      "files": 136,
+      "entries": 137
+    },
+    {
+      "id": "METALLO-3D-LAB-20260929-R1",
+      "zip": "Metallo-Marco3D-BaselineAprovada-20260929-R1.zip",
+      "sha256": "4246426837e90324b1e2242ca2162dd0d2b0d3cd49c72abb8c209283ec6b9516",
+      "at": "2026-09-29T07:47:36.013061+00:00",
+      "files": 162,
+      "entries": 163
+    },
+    {
+      "id": "METALLO-3E-LAB-20260929-R1",
+      "zip": "Metallo-Marco3E-BaselineAprovada-20260929-R1.zip",
+      "sha256": "7ffb4707ae0a6bd2c12cd5756284582cba8c4f31673569207b0a0552a3d86c8c",
+      "at": "2026-09-29T16:14:20.247312+00:00",
+      "files": 235,
+      "entries": 236
+    },
+    {
+      "id": "METALLO-3F-LAB-20260929-R1",
+      "zip": "Metallo-Marco3F-BaselineAprovada-20260929-R1.zip",
+      "sha256": "76e964041e3f4a06ce4c11cc0fdc58fa8a3429bb68d8db2a4a248918356ea3d4",
+      "at": "2026-09-29T22:09:05.157031+00:00",
+      "files": 260,
+      "entries": 261
+    },
+    {
+      "id": "METALLO-3G-LAB-20260930-R1",
+      "zip": "Metallo-Marco3G-BaselineAprovada-20260930-R1.zip",
+      "sha256": "36d40d4eb85f594b75f904b899b13c02cd3283efa451bb25cdc4ed3c4b00323f",
+      "at": "2026-09-30T21:15:34.069135+00:00",
+      "files": 302,
+      "entries": 303
+    },
+    {
+      "id": "METALLO-3H-LAB-20261001-R1",
+      "zip": "Metallo-Marco3H-BaselineAprovada-20261001-R1.zip",
+      "sha256": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd",
+      "at": "2026-10-01T05:12:31.360745+00:00",
+      "files": 341,
+      "entries": 342
+    },
+    {
+      "id": "METALLO-4A-LAB-20261001-R1",
+      "at": "2026-10-01T09:30:09.376747+00:00",
+      "zip": "Metallo-Marco4A-BaselineAprovada-20261001-R1.zip",
+      "sha256": "50a9c1c87f362f621d6fbe66f3a95a563b787a6145e5fcc918840a162177909d",
+      "files": 382,
+      "entries": 383
+    }
+  ],
+  "previous_packages_preserved": {
+    "Metallo-EquipeOpcional-Pos1A-Auditoria-20260926.zip": "8f61ae82af9ce269d65ac6970b8d6a2a7580e44f356c9706caf041a987c579af",
+    "Metallo-Marco1A-ConfrontoFinal-20260926.zip": "c4fc4f7a42f34cecd3b59b1f7ee60e02fef93b1f56e426b51d821a178a0a5d78",
+    "Metallo-Marco1B-AuthLocal-20260927-Ciclo1.zip": "cee1e84d13136581fe8baea24551f903f067811d69092008cd9964ad8d72c9a4",
+    "Metallo-Marco1B-AuthLocal-20260927-Ciclo2.zip": "93d59203ab815bb8f0c27971daf4684f7339a372637e4c118a9ce869580beb40",
+    "Metallo-Marco1B-BaselineAprovada-20260927.zip": "41cc99f9eb38cbd895ec8e9555ce9c9e2d3ca1ead7b757c6f5dbffe89863a162",
+    "Metallo-Marco1B-BaselineSaneada-20260927-R2.zip": "f44ca13e4a1096f855f0fc566f19b7aa670c28047094636ac61c61b3493e60be",
+    "Metallo-Marco1B-DeltaLogout-PendenteRevisao-20260927.zip": "8f4fabdaeb7355de0a516a6418a55bef1093a6bfa5729b0ee4a0c23a4ab66717",
+    "Metallo-Marco1C-BaselineAprovada-20260927-R1.zip": "ea672a8c90c0f1b4de6c5e739404508b1fc68523e0d8c6d91bcd24f8621f70ae",
+    "Metallo-Marco1C-MinhaObra-Auditoria-20260927-R2.zip": "6518f5bb0069e5ce71b94ebe27c269913c3b6f9e2c2907eef50bb8c537ad58da",
+    "Metallo-Marco1C-MinhaObra-Auditoria-20260927-R3.zip": "48f650192709297178e7070d6be46708eaadd252e04c1ad4e51d39812ae7ca00",
+    "Metallo-Marco1C-MinhaObra-Auditoria-20260927.zip": "5b25a0aa00ad431b152a2f51c625026a634d0c7a4e682d3c513b6595c6cef3a2",
+    "Metallo-Marco2B-BaselineAprovada-20260927-R1.zip": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+    "Metallo-Marco2B-PontoExperimental-Auditoria-20260927-Ciclo1.zip": "0fd2111e86edfacc7c9998f7aaa3becf32c37ad015f6364c6f97322969ff6436",
+    "Metallo-Marco2B-PontoExperimental-Auditoria-20260927-Ciclo2.zip": "3ce816b021dcfa6087d14cfa2d7306edeb35e6f62afc009f70f81ecab1429bd2",
+    "Metallo-Marco2D-BaselineAprovada-20260927-R1.zip": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+    "Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo1.zip": "edc90b89e9aabad242197cbcb0a4ad156d1f5552239132406dcc36a4d9cde395",
+    "Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo2.zip": "731c1bed14d812b646427802b0b7ace6d786c44853188ad7a1183cdae1dedf63",
+    "Metallo-Marco2E-BaselineAprovada-20260927-R1.zip": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+    "Metallo-Marco2E-Revogacao-Auditoria-20260927-Ciclo1.zip": "34208c2b8a9557903274779120e119e5ecc4734d1da3ad2c6084b6d14a22fc12",
+    "Metallo-Marco2E-Revogacao-Auditoria-20260927-Ciclo2.zip": "2eb9dea5e270d86f891190de3e9f7b8c91b803eae84bb59cb90defc5528ad451",
+    "Metallo-Marco2F-BaselineAprovada-20260928-R1.zip": "5b7b50ddf9385b58731b84852d54626c9893d0a812151e4e7cd157b568b34097",
+    "Metallo-Marco2F-Reconciliacao-Auditoria-20260928-Ciclo1.zip": "3a2df3452c9e1d9dcf3d71da0e36e3b01bc8c232c0e6a80aa898beff8aa58169",
+    "Metallo-Marco2F-Reconciliacao-Auditoria-20260928-Ciclo2.zip": "3d9178e8e549d79d37ab66d5186b438665cb18da7575e96cb7cc7c4279bae9d0",
+    "Metallo-Marco3A-BaselineAprovada-20260928-R1.zip": "907e26c0b51fdd781a2233a03782c31349630ab3e9dc61e5f96ada0005d52c4a",
+    "Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo1.zip": "ce4c22f74533fbf9353534d82269c663538e884ade0968025a64a45ba3e67a8b",
+    "Metallo-Marco3A-PerfilEquipe-Auditoria-20260928-Ciclo2.zip": "21a634d04216de94e7e2fe8680800ebc9878ee7e8a936caf646e2d248f6d3c18",
+    "Metallo-Marco3B-BaselineAprovada-20260928-R1.zip": "b8f6e5955b3cc9f4a670212fd24451c30d0fac9e7dba4acd544186f180356148",
+    "Metallo-Marco3B-MeusEPIs-Auditoria-20260928-Ciclo1.zip": "4a6c28843655bbf6ddce8f885c63995ea1faac954c4954d74cd8a1e39d8d58a9",
+    "Metallo-Marco3B-MeusEPIs-Auditoria-20260928-Ciclo2.zip": "5f1530ae05644bd267ba99692b0eddc6915d336fbe9546587d19e9dc083f4f79",
+    "Metallo-Marco3C-BaselineAprovada-20260928-R1.zip": "bf3f1bb34813f03afaa9fac613ef4ede24a0f35f3ca3292670dda230cc63c3a6",
+    "Metallo-Marco3C-TrocaEPI-Auditoria-20260928-Ciclo1.zip": "f1b2083d96c07e2e081fd271c8b6af54c829375e5ba91471c63057651b55bded",
+    "Metallo-Marco3C-TrocaEPI-Auditoria-20260928-Ciclo2.zip": "8f39505a03fab270dbae3faffcf98f157e7d5205b74e53126b5209c3d0d1df87",
+    "Metallo-Marco3D-BaselineAprovada-20260929-R1.zip": "4246426837e90324b1e2242ca2162dd0d2b0d3cd49c72abb8c209283ec6b9516",
+    "Metallo-Marco3D-EntregaConfirmacao-Auditoria-20260929-Ciclo1.zip": "1f5ef6b268f9eafc215b0d11547fdf18e2ad6b0c90d166d8badf6bd55d2879cc",
+    "Metallo-Marco3D-EntregaConfirmacao-Auditoria-20260929-Ciclo2.zip": "7d4e62ddb17aa8cbc43fd5dd2f360391ffa332be9b664df9ac543750da65fb06",
+    "Metallo-Marco3E-BaselineAprovada-20260929-R1.zip": "7ffb4707ae0a6bd2c12cd5756284582cba8c4f31673569207b0a0552a3d86c8c",
+    "Metallo-Marco3E-FichaHistorico-Auditoria-20260929-Ciclo1.zip": "aa0d72bd950cb7eefe1c93afcbfd315da65cf8c769de17ccd0e08bf212a68570",
+    "Metallo-Marco3E-FichaHistorico-Auditoria-20260929-Ciclo2-PreTriagem.zip": "4cb6c3baecb93611523a4884215c2dfef10636c74e09b2672f44964775f57e99",
+    "Metallo-Marco3E-FichaHistorico-Auditoria-20260929-Ciclo2-PreTriagemScanner.zip": "f884ad7e38879aa2fba83bbaa4a6e6d947494472ee04c99a44496fcd3887a9dc",
+    "Metallo-Marco3E-FichaHistorico-Auditoria-20260929-Ciclo2.zip": "d2ea506abafa677f5d87b9df69e63bf05a99893e2223ee8ae41a917ecdf0011f",
+    "Metallo-Marco3F-AssinaturaAuditoria-20260929-Ciclo1.zip": "3b56137011c56c43e3b97a0891d878082fa6a4a5a79328770faa0d9b982c2579",
+    "Metallo-Marco3F-AssinaturaAuditoria-20260929-Ciclo2.zip": "043c0d4177862e5d9ba091c9aa051ddf37f248518e17e5c2b5118f72c012cf54",
+    "Metallo-Marco3F-BaselineAprovada-20260929-R1.zip": "76e964041e3f4a06ce4c11cc0fdc58fa8a3429bb68d8db2a4a248918356ea3d4",
+    "Metallo-Marco3G-BaselineAprovada-20260930-R1.zip": "36d40d4eb85f594b75f904b899b13c02cd3283efa451bb25cdc4ed3c4b00323f",
+    "Metallo-Marco3G-ItensPessoais-Auditoria-20260930-Ciclo1.zip": "f8a7cb2af2eb2e4bf077b0cb610b9fe41015ddd73cc17ea41ebdaec544d91cd5",
+    "Metallo-Marco3G-ItensPessoais-Auditoria-20260930-Ciclo2.zip": "0a515284042bfed92583dd9a7b5d1f70052733f26044d94834ab0f6c4bc56039",
+    "Metallo-Marco3H-BaselineAprovada-20261001-R1.zip": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd",
+    "Metallo-Marco3H-Comunicados-Auditoria-20260930-Ciclo1.zip": "ad1b26e18c8ba5cf4e1a0516cf94510f184164ce89bd43f524213a3a5b22e382",
+    "Metallo-Marco3H-Comunicados-Auditoria-20260930-Ciclo2.zip": "eb5530dc86382c180129c6dedcaf6607803617cfbb43e162d433205633942d8b",
+    "Metallo-Marco4A-BaselineAprovada-20261001-R1.zip": "50a9c1c87f362f621d6fbe66f3a95a563b787a6145e5fcc918840a162177909d",
+    "Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo1.zip": "75c64e38022ad175a1648aeee42aaafbb8cfaf9478ea0a46f82eda4378c015c3",
+    "Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo2.zip": "f130eb6d95585078d5c98b7bf12dcf002dbc34d6500d2267add32860ea4d64f2",
+    "Metallo-Marco4B-RegistrosComprovantes-Auditoria-20261001-Ciclo1-Final.zip": "9781552cba3062b07aec753a8f91ef3f8539638468fc02d604ae2d04ef509e47",
+    "Metallo-Marco4B-RegistrosComprovantes-Auditoria-20261001-Ciclo1.zip": "12d3e6d97331bb80dc606998c7d1fc14826e2f199459fc44a0c9494570e5b94e",
+    "Metallo-SuperGrok-Marcos-0-1A-1B-20260926.zip": "5770feb14cdd555a8ea7466f9510a1a11a76bbf00822f071fa189a2ea6b28624",
+    "Metallo-T15-RevisaoFinal-20260926.zip": "b5ff61bb33750e1637b7c2913b836eeda324261eb3fdaa1eda97a54c1be4665a"
+  },
+  "audited_functional_sources_identical": true,
+  "post_audit_documentation_changes": [
+    "05_DOCUMENTACAO/48_MARCO_4B_MEUS_REGISTROS_E_COMPROVANTES.md"
+  ],
+  "frozen_core_sources_verified_unchanged": [
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/auth-local.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/autorizacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/backup.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/http-lab.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/integridade.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/nucleo.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-revogacao-concorrente-2b.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-transporte-2b.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/recuperacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/schema.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/sessao-local-2e.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/processo-ensaio.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-auth-real-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/verificar-segredos-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/preparar-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/provas-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/servidor-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/origem-local-2f.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/preparar-2f.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/provas-2f.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/reconciliacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/servidor-2f.mjs"
+  ],
+  "results_preserved": {
+    "4B_real": "51/51",
+    "Web": "286/286",
+    "afetados": "43/43",
+    "agendamento": "2/2",
+    "4A": "80/80",
+    "confronto_4A": "13/13",
+    "2F": "28/28",
+    "banco": "31/31",
+    "qualidade": "44/44",
+    "rede": "8/8",
+    "TypeScript": "APROVADO",
+    "lint": "APROVADO",
+    "build": "APROVADO",
+    "parser": "60 PDFs/60 ZIPs",
+    "overlapping_suites_do_not_sum": true,
+    "full_suite_or_load_not_rerun_for_documentation_closure": true
+  },
+  "load_run": "7b71f740-6697-4e38-9768-891a4254f0dc",
+  "load_integrity": {
+    "expected_new_intents": 70,
+    "persisted_new_events": 70,
+    "old_count": 1100,
+    "after_count": 1170,
+    "old_sha256_after": "e273ec2c2d4fc23e42a1aaf848ba75addcabdad551d7ec077bff7ae9cd4328fb",
+    "originals_unchanged": true,
+    "duplicates": 0,
+    "lost_confirmed": 0,
+    "cross_user": 0,
+    "ready": true,
+    "receipts_verified": 70
+  },
+  "audit_completed_cycles": 1,
+  "cycle2_executed": false,
+  "manual_approval": "APROVADA",
+  "critical_high_confirmed_open": 0,
+  "residual_risks": [
+    "MÉDIO ABERTO: disponibilidade/latência; um writer, p95 ~61s, p99 ~64s, duas respostas 503 recuperadas e throughput reduzido",
+    "revogação de cinco contas; janela observada inclui intervalo de consulta e latência, sem prova instantânea",
+    "Grok inspecionou amostras; parser local conferiu todos os 60 PDFs/60 ZIPs",
+    "Home de carga mediu marcações pessoais; não 50 browsers completos nem três RPCs de pendências simultâneos",
+    "arquivo já baixado não é revogável pelo servidor; não é falha de sessão",
+    "janela futura autorização → envio completo dos bytes",
+    "administrador/controlador do host é limite de confiança",
+    "RLS/visão Gestão e privilégios precisam revisão própria para eventual remoto",
+    "sem produção, cluster, HA, múltiplos writers, energia/disco real ou segundo computador físico comprovados"
+  ],
+  "limits": [
+    "SIMULAÇÃO SEM VALOR OFICIAL",
+    "NÃO IMPLANTADO NO SUPABASE REMOTO",
+    "NÃO LIBERADO PARA FUNCIONÁRIOS REAIS",
+    "NÃO É PRODUÇÃO",
+    "NÃO É CONFORMIDADE REP-P",
+    "NÃO É AUTORIZAÇÃO DE PONTO OFICIAL",
+    "NÃO AUTORIZA PUBLICAÇÃO",
+    "SEM MARCO 4C",
+    "SEM SEGUNDO CICLO GROK",
+    "ZERO MIGRATION/RPC/RLS/GRANT NOVOS NO FECHAMENTO"
+  ],
+  "blocked_scan_attempt": {
+    "zip": "tmp/4b-candidato-nao-aprovado-01.zip",
+    "sha256": "300647703d64b1a2b6244560a0e5f983202beba461e8c6921c335916ad5716cd",
+    "receipt": "tmp/4b-candidato-nao-aprovado-01.zip.verificacao.json",
+    "receipt_sha256": "80bd51c51b36a2afa1b0c776bb3f3b27e410783dc4ac27ef4d0d1151ffd34ce4",
+    "classification": "NOT_SECRET; literal de mock, não é JWT; fonte atual corresponde ao pacote auditado, mas mudou em relação a 4A",
+    "approved_baseline_overwritten": false
+  },
+  "interrupted_packaging_attempt": {
+    "zip": "tmp/4b-candidato-nao-aprovado-02.zip",
+    "sha256": "57a573966cc84fe720f05709c9ed537591dc99620d79a1a888885db0967735a6",
+    "reason": "KeyError no gerador de pacote: dois mocks herdados pertencem à origem 4A, ausentes do ZIP seletivo de auditoria; resolvido pela origem de hash exata",
+    "final_scan_completed": false,
+    "approved_baseline_overwritten": false,
+    "functional_sources_modified": false
+  },
+  "at": "2026-10-01T18:23:41.925689+00:00",
+  "passed": true,
+  "listeners": [
+    {
+      "address": "127.0.0.1",
+      "port": 3101,
+      "pid": 22368
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 3102,
+      "pid": 33636
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 3105,
+      "pid": 29172
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 3106,
+      "pid": 29172
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54321,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54322,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54323,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54324,
+      "pid": 20504
+    },
+    {
+      "address": "127.0.0.1",
+      "port": 54327,
+      "pid": 20504
+    },
+    {
+      "address": "::1",
+      "port": 54321,
+      "pid": 20504
+    },
+    {
+      "address": "::1",
+      "port": 54322,
+      "pid": 20504
+    },
+    {
+      "address": "::1",
+      "port": 54323,
+      "pid": 20504
+    },
+    {
+      "address": "::1",
+      "port": 54324,
+      "pid": 20504
+    },
+    {
+      "address": "::1",
+      "port": 54327,
+      "pid": 20504
+    }
+  ],
+  "loopback_only": true,
+  "load_ports_stopped": true,
+  "health": {
+    "status": "READY",
+    "official": false,
+    "process_online": true,
+    "database_ok": true,
+    "schema_ok": true,
+    "append_only_ok": true,
+    "recovery_state": "MATCH",
+    "auth_dependency": "AVAILABLE",
+    "context_state": "AVAILABLE",
+    "ready_for_new_events": true
+  },
+  "local_authorization_catalog_unchanged": true,
+  "method": "netstat -ano; health HTTP local somente leitura; SELECT estrutural local auditado; hashes",
+  "no_login_or_new_mark": true,
+  "no_database_write": true,
+  "remote_not_touched": true,
+  "published": false
+}

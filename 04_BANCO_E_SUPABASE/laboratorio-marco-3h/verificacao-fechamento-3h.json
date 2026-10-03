@@ -1,0 +1,91 @@
+{
+  "at": "2026-10-01T05:09:53.715001+00:00",
+  "id": "METALLO-3H-LAB-20261001-R1",
+  "passed": true,
+  "scope": "conferência rápida local; SQL somente leitura, sem Auth/deploy/migration/Grok",
+  "functions_identical_to_audited_catalog": 12,
+  "private_tables_rls_acl_identical": [
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "communication_revisions_3h",
+      "policies": 0,
+      "force_rls": false
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "communication_views_3h",
+      "policies": 0,
+      "force_rls": false
+    },
+    {
+      "acl": [
+        "postgres=arwdDxtm/postgres"
+      ],
+      "rls": true,
+      "owner": "postgres",
+      "table": "communications_3h",
+      "policies": 0,
+      "force_rls": false
+    }
+  ],
+  "audited_sources_identical_except_updated_document": true,
+  "old_f14_test_identical_to_3g": "aa1831c6dc46a713bae3353bb7989e6d37114b2501d2b0fb2ea9fab1c0d99f8f",
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3102
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101
+    }
+  ],
+  "http": [
+    {
+      "url": "http://127.0.0.1:3101/colaborador/comunicados",
+      "status": 200,
+      "final_url": "http://127.0.0.1:3101/colaborador/comunicados",
+      "authentication_not_retested": true
+    },
+    {
+      "url": "http://127.0.0.1:3102/comunicados",
+      "status": 200,
+      "final_url": "http://127.0.0.1:3102/login",
+      "authentication_not_retested": true
+    }
+  ],
+  "audited_results_preserved": {
+    "real_auth_rpc": "70/70",
+    "web": "223/223"
+  },
+  "quick_web_tests": {
+    "result": "37/37",
+    "source": "exec_command desta rodada; três arquivos existentes, exit 0, sem alterar assertions"
+  },
+  "remote_not_touched": true,
+  "published": false
+}

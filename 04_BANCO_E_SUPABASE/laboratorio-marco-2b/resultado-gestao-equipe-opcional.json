@@ -1,0 +1,811 @@
+{
+  "started_at": "2026-09-27T17:21:06.594Z",
+  "checks": [
+    {
+      "name": "engineer: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "global_engineer: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader_default: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator_default: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "empty_scope: Auth real e perfil operacional sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "admin: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "admin: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "admin: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "engineer: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "engineer: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engineer: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "global_engineer: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "global_engineer: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "global_engineer: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "global_engineer: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "global_engineer: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "leader: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader_default: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader_default: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader_default: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "leader_default: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "leader_default: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=1"
+    },
+    {
+      "name": "collaborator: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator_default: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator_default: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator_default: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "collaborator_default: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "collaborator_default: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "empty_scope: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "empty_scope: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "empty_scope: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "empty_scope: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "empty_scope: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal: leitura own",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal: leitura other",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal: leitura unassigned",
+      "ok": true,
+      "detail": "HTTP 200; linhas=0"
+    },
+    {
+      "name": "portal: dashboard respeita mesmo recorte",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "portal: can_operate NULL preserva capacidade anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sem equipe nao amplia historico epi_deliveries",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "sem equipe nao amplia historico employee_assignments",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "historico com equipe explicita conserva permissao anterior",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "register_epi_delivery: exige admin para funcionario sem equipe",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "register_epi_delivery: estoque e historico inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "register_epi_delivery_batch: exige admin para funcionario sem equipe",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "register_epi_delivery_batch: estoque e historico inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "request_epi_item: exige admin para funcionario sem equipe",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "request_epi_item: estoque e historico inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "fulfill_epi_request: exige admin para funcionario sem equipe",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "fulfill_epi_request: estoque e historico inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "close_epi_delivery_quantity: exige admin para funcionario sem equipe",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "close_epi_delivery_quantity: estoque e historico inalterados",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "admin continua podendo fechar historico sem equipe",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "engenheiro continua entregando EPI na propria equipe",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "T10 DELETE de equipe com movimento falha por FK e preserva historico",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "matrix": [
+    {
+      "actor": "admin",
+      "state": "own",
+      "expected_ids": [
+        "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+            "full_name": "T05 own muk33vhj",
+            "team_id": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "other",
+      "expected_ids": [
+        "1f78f141-ee8e-4132-b919-c9ae2e1f4a0b"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "1f78f141-ee8e-4132-b919-c9ae2e1f4a0b",
+            "full_name": "T05 other muk33vhj",
+            "team_id": "b93030d7-7371-40e6-9faa-4f4ff8f98ab4",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "admin",
+      "state": "unassigned",
+      "expected_ids": [
+        "58074524-e7bd-4579-a455-fce14d66983e"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "58074524-e7bd-4579-a455-fce14d66983e",
+            "full_name": "T05 unassigned muk33vhj",
+            "team_id": null,
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "own",
+      "expected_ids": [
+        "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+            "full_name": "T05 own muk33vhj",
+            "team_id": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "engineer",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "global_engineer",
+      "state": "own",
+      "expected_ids": [
+        "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+            "full_name": "T05 own muk33vhj",
+            "team_id": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "global_engineer",
+      "state": "other",
+      "expected_ids": [
+        "1f78f141-ee8e-4132-b919-c9ae2e1f4a0b"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "1f78f141-ee8e-4132-b919-c9ae2e1f4a0b",
+            "full_name": "T05 other muk33vhj",
+            "team_id": "b93030d7-7371-40e6-9faa-4f4ff8f98ab4",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "global_engineer",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "own",
+      "expected_ids": [
+        "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+            "full_name": "T05 own muk33vhj",
+            "team_id": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader_default",
+      "state": "own",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader_default",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "leader_default",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "own",
+      "expected_ids": [
+        "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3"
+      ],
+      "response": {
+        "status": 200,
+        "data": [
+          {
+            "id": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+            "full_name": "T05 own muk33vhj",
+            "team_id": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+            "aso_expiry_date": "2026-12-01"
+          }
+        ]
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator_default",
+      "state": "own",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator_default",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "collaborator_default",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "empty_scope",
+      "state": "own",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "empty_scope",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "empty_scope",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "own",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "other",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    },
+    {
+      "actor": "portal",
+      "state": "unassigned",
+      "expected_ids": [],
+      "response": {
+        "status": 200,
+        "data": []
+      }
+    }
+  ],
+  "rpc_attempts": [
+    {
+      "name": "register_epi_delivery",
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "register_epi_delivery_batch",
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "request_epi_item",
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "fulfill_epi_request",
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    },
+    {
+      "name": "close_epi_delivery_quantity",
+      "response": {
+        "status": 403,
+        "data": {
+          "code": "42501",
+          "details": null,
+          "hint": null,
+          "message": "unassigned_employee_admin_required"
+        }
+      }
+    }
+  ],
+  "write_fingerprints": {
+    "before": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061",
+    "after": [
+      {
+        "name": "register_epi_delivery",
+        "sha256": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061"
+      },
+      {
+        "name": "register_epi_delivery_batch",
+        "sha256": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061"
+      },
+      {
+        "name": "request_epi_item",
+        "sha256": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061"
+      },
+      {
+        "name": "fulfill_epi_request",
+        "sha256": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061"
+      },
+      {
+        "name": "close_epi_delivery_quantity",
+        "sha256": "f3796d6aa7435ea18556ed9b0f76a005818652702940a1cccbe02f1ac554a061"
+      }
+    ]
+  },
+  "team_history": {
+    "team_exists": true,
+    "movement_exists": true
+  },
+  "fixtures": {
+    "teams": {
+      "own": "478145a4-20f8-46c2-9f84-f7ef1ccddd7d",
+      "other": "b93030d7-7371-40e6-9faa-4f4ff8f98ab4",
+      "historyTeam": "fbe42883-86fe-405f-87c9-d05aa65b723d"
+    },
+    "employees": {
+      "own": "8e0c2f23-130e-40ae-8afa-b36ec5d5c3e3",
+      "other": "1f78f141-ee8e-4132-b919-c9ae2e1f4a0b",
+      "unassigned": "58074524-e7bd-4579-a455-fce14d66983e"
+    },
+    "item": "719911bb-8f58-426c-a150-66b395e52a55",
+    "batch": "2dc0efe3-5d9c-4b0e-96cb-4e4c2aa12ede",
+    "delivery": "c3c77659-a440-4a05-978d-8bb0014b1888",
+    "pending": "decd919b-313f-486b-b79c-4dc334870e37"
+  },
+  "finished_at": "2026-09-27T17:21:46.319Z",
+  "passed": true
+}

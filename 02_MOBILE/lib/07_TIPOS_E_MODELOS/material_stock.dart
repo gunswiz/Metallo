@@ -7,6 +7,8 @@ class MaterialStock {
   final String unit;
   final int quantity;
   final String status;
+  final List<String> servedTeamIds;
+  final String? locationName;
 
   const MaterialStock({
     required this.inventoryId,
@@ -17,7 +19,11 @@ class MaterialStock {
     required this.unit,
     required this.quantity,
     required this.status,
+    this.servedTeamIds = const [],
+    this.locationName,
   });
+
+  bool servesTeam(String id) => teamId == id || servedTeamIds.contains(id);
 
   factory MaterialStock.fromMap(Map<String, dynamic> m) {
     final item = Map<String, dynamic>.from(m['items'] as Map);
@@ -30,6 +36,8 @@ class MaterialStock {
       unit: (item['unit'] as String?) ?? 'un',
       quantity: (m['quantity'] as num?)?.toInt() ?? 0,
       status: (m['status'] as String?) ?? 'available',
+      servedTeamIds: (m['served_team_ids'] as List?)?.cast<String>() ?? const [],
+      locationName: m['location_name'] as String?,
     );
   }
 }

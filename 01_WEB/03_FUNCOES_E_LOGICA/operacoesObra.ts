@@ -20,6 +20,7 @@ export const siteSnapshotSchema = z.object({
     option.extend({
       code: z.string(),
       kind: z.string(),
+      unit: z.string().default("un"),
       variants: z.array(z.string()),
     }),
   ),
@@ -30,11 +31,12 @@ export const siteSnapshotSchema = z.object({
       quantity: z.number(),
       variant: nullable,
       ca_number: nullable,
+      lot_number: nullable.optional(),
       worksite_id: nullable,
     }),
   ),
   employees: z.array(
-    option.extend({ team_id: z.string(), home_team_id: z.string() }),
+    option.extend({ team_id: nullable, home_team_id: nullable }),
   ),
   assignments: z.array(
     z.object({
@@ -142,6 +144,7 @@ export type PendingOperation = {
   data: Record<string, unknown>;
   occurredAt: string;
   error?: string;
+  failure?: "rejected" | "uncertain";
 };
 export function eventTime(value: string): string {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value))

@@ -1,0 +1,99 @@
+{
+  "at": "2026-09-27T22:04:00.886098+00:00",
+  "health": {
+    "status": "READY",
+    "official": false,
+    "process_online": true,
+    "database_ok": true,
+    "schema_ok": true,
+    "append_only_ok": true,
+    "recovery_state": "MATCH",
+    "auth_dependency": "AVAILABLE",
+    "context_state": "AVAILABLE",
+    "ready_for_new_events": true
+  },
+  "web_files_compared": 37,
+  "web_unchanged_from_2b": true,
+  "baseline_2b_sha256": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+  "adoption": {
+    "source": "backups/metallo-ponto-lab-pglite",
+    "destination": "backups/metallo-ponto-lab-pglite-2d",
+    "inherited_events": 29,
+    "old_event_hashes_and_results_preserved": true,
+    "cold_copy_after_old_process_stopped": true,
+    "transition_not_claimed_as_consistent_backup": true
+  },
+  "preview_shutdown": {
+    "signal": "SIGINT",
+    "graceful_shutdown_log_observed": true,
+    "listener_3103_absent_after_stop": true,
+    "stopped_integrity": {
+      "status": "PASS",
+      "passed": true,
+      "reasons": [],
+      "event_count": 38,
+      "digest": "c3784a61a9c46732140af316670a81b14166dc63ec3ba58a6db384a35d83377b",
+      "anchor": {
+        "ok": true,
+        "comparison": "MATCH"
+      },
+      "logical_read_only": true
+    },
+    "restarted_final_source": true
+  },
+  "remote_touched": false,
+  "baseline_2d_created": true,
+  "visual_change": false,
+  "audited_package": {
+    "path": "outputs/Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo2.zip",
+    "sha256": "731c1bed14d812b646427802b0b7ace6d786c44853188ad7a1183cdae1dedf63",
+    "source_files_compared": 84,
+    "changed_sources": []
+  },
+  "protected_baselines_unchanged": {
+    "Metallo-Marco1B-BaselineAprovada-20260927.zip": true,
+    "Metallo-Marco1B-BaselineSaneada-20260927-R2.zip": true,
+    "Metallo-Marco1C-BaselineAprovada-20260927-R1.zip": true,
+    "Metallo-Marco2B-BaselineAprovada-20260927-R1.zip": true
+  },
+  "suites": {
+    "resultado-2d.json": "49/49",
+    "resultado-auth-real-2d.json": "17/17",
+    "base-real.json": "683/683",
+    "resultado-1c-regressao.json": "45/45",
+    "resultado-2b.json": "64/64",
+    "resultado-transporte-2b.json": "13/13",
+    "resultado-revogacao-concorrente-2b.json": "5/5",
+    "resultado-indisponibilidade-2b.json": "1/1",
+    "rede.json": "8/8",
+    "web": "114/114",
+    "banco": "31/31",
+    "qualidade": "44/44",
+    "typescript": "passou",
+    "lint": "passou",
+    "build": "passou"
+  },
+  "declared_plans_match_executed_sha256": true,
+  "audit": {
+    "conversation": "https://grok.com/c/31a58ef4-f018-4d10-9ef0-8c8d31de6366",
+    "cycles_completed": 2,
+    "cycle_limit_reached": true,
+    "critical_or_high_open_local": false,
+    "source_files_unchanged_after_cycle2": 84,
+    "docs_updated_after_package": "apenas estado e confronto editorial",
+    "final_docs_generic_secret_patterns": 0
+  },
+  "pre_baseline_snapshot_in_approved_zip": "Estado antes da autorização formal; baseline_2d_created=false é histórico neste snapshot.",
+  "baseline_2d": {
+    "id": "METALLO-2D-LAB-20260927-R1",
+    "zip": "outputs/Metallo-Marco2D-BaselineAprovada-20260927-R1.zip",
+    "sha256": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+    "zip_entries": 259,
+    "inventory_files": 258,
+    "delta_from_2b": 73,
+    "final_scan_passed": true,
+    "final_scan_findings": 0,
+    "scan_receipt": "outputs/Metallo-Marco2D-BaselineAprovada-20260927-R1.zip.verificacao.json",
+    "closed_at": "2026-09-27T22:42:21.204992+00:00"
+  }
+}

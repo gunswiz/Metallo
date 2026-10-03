@@ -1,0 +1,510 @@
+PARTE word/document.xml
+PARECER DE AUDITORIA INDEPENDENTE — SOMENTE LEITURA
+Metallo Colaborador + REP-P · Marcos 0, 1A e prévia 1B
+Data do parecer: 26/09/2026 · Pacote: Metallo-SuperGrok-Marcos-0-1A-1B-20260926.zip · Manifesto SHA-256: 361 arquivos, 0 divergências
+Método. Análise adversarial de fontes, SQL, configurações sanitizadas, relatórios e JSON de evidência. Nenhum script, migration, container, API, conta ou arquivo do pacote foi executado ou alterado nesta auditoria. Hipóteses sem prova dinâmica estão marcadas como tal.
+1. Resumo executivo
+O pacote não sustenta a frase “tudo passou”. Sustenta, com evidência local, um gate funcional de identidade 1A em laboratório descartável, isolamento de publicação A neste host, e uma prévia 1B apenas visual. A suíte Web da Gestão está 63/67. Nada disto autoriza implantação remota, ponto oficial ou avanço funcional do Colaborador.
+Tentei refutar o isolamento João↔Maria, o vazamento de ASO/CPF, a equivalência da baseline e o isolamento A. Não encontrei caminho concreto João→Maria ou Maria→João nas superfícies REST/RPC/Edge exercitadas no laboratório após a migration 1A. Também não encontrei prova de que a prévia visual, com as flags usadas, alcance o Supabase remoto. Encontrei asserções permissivas, classes de ataque não exercitadas, residual de revogação se a Edge for contornada, deriva Gestão não commitada, e documentos históricos em contradição.
+Veredito resumido
+Alvo
+Veredito
+Condição
+Marco 0 técnico
+Mantido fechado tecnicamente
+Sem atestado legal REP-P; AFD/AEJ/ICP/restore integral fora deste marco
+1A laboratório
+Gate funcional local aceitável após confronto
+Não é encerramento de produto nem de remoto; lacunas A-02/A-03 agendadas
+1A remoto
+Não encerrar · não implantar
+Catálogo compartilhado ainda é Gestão pré-1A
+Rede A
+Aceito neste host
+Bind loopback comprovado; sem 2ª máquina física
+Prévia 1B
+Aceita como visual
+Flags visuais; script Auth local não executar
+Web Gestão
+63/67 · backlog
+Não mistura com gate 1A
+Recomendação ao responsável: confrontar este parecer, corrigir a contradição documental A-08, registrar A-02 e A-03 como provas pendentes (não como incidentes abertos de identidade), e só então declarar 1A laboratorialmente encerrado no sentido estreito de “fundação local + isolamento A neste computador”. Não publicar, não aplicar migration no remoto, não ligar a prévia Auth, não iniciar ponto.
+2. Tabela-resumo dos achados
+ID
+Sev.
+Status
+Título
+A-01
+Alta
+Confirmado
+1A e revogação Auth existem só no laboratório; remoto permanece Gestão pré-1A
+A-02
+Média
+Lacuna
+194 checks não cobrem escrita REST, GraphQL nem Storage
+A-03
+Média
+Lacuna
+Falha parcial Auth após SQL de revogação não foi injetada
+A-04
+Baixa
+Lacuna
+Asserção de site_dashboard e manipulação de ID são permissivas
+A-05
+Informativa
+Confirmado
+Isolamento A é bind de loopback neste host, não perímetro de LAN física
+A-06
+Média
+Confirmado
+Quatro falhas Web são reais; três vêm de fontes Gestão ≠ HEAD, uma já commitada
+A-07
+Baixa
+Confirmado
+Prévia 1B visual está isolada por flag; caminho Auth local permanece no mesmo binário
+A-08
+Baixa
+Confirmado
+Documentos históricos contradizem o relatório 28 no fechamento de rede
+A-09
+Média
+Confirmado
+create-employee e admin-invite-user seguem provisionando collaborator ativo da Gestão
+A-10
+Média
+Confirmado
+ASO permanece em epi_employees; DTO e REST locais não o expuseram
+A-11
+Informativa
+Confirmado
+HTTP 300 em create_team_admin e set_updated_at 404 foram aceitos sem executar o corpo
+A-12
+Baixa
+Hipótese
+delete-employee administrativo vs FK ON DELETE RESTRICT da identidade
+A-13
+Baixa
+Confirmado
+my_employee_profile exige equipe ativa; token antigo ainda autentica o gateway
+A-14
+Média
+Confirmado
+Identidade civil, dual control, AFD/AEJ/ICP e restore integral permanecem fora de 1A
+3. Achados detalhados
+A-01 — 1A e revogação Auth existem só no laboratório; remoto permanece Gestão pré-1A
+Severidade
+Alta
+Status
+Confirmado
+Arquivo / chave
+comparacao-laboratorio-post1a.json (only_local: private.employee_* + 9 funções); 26_LABORATORIO §Decisão; 28 §Identidade
+Precondições
+Acesso ao Supabase compartilhado sem a migration 20260925120000 e sem a Edge revoke-portal-account implantada.
+Caminho de ataque ou falha
+Conta authenticated remota ainda pode chamar stock_team/employee_work_team com UUID arbitrário (corpo remoto sem guarda is_portal_account). Não há my_employee_profile nem vínculo 1A no remoto. create-employee/admin-invite-user remotos continuam ativando perfil Gestão.
+Evidência / contraprova
+Pós-1A: 3 relações, 24 colunas, 9 funções e 2 corpos (stock_team, employee_work_team) só locais. Pacote declara zero mutações remotas nesta rodada. Manifesto SHA-256 361/361 conferido.
+Impacto
+Qualquer ‘fechamento 1A’ não se estende ao projeto compartilhado. Reutilizar o remoto como portal pessoal reproduziria o achado 1 original.
+Correção mínima
+Não aplicar 1A no remoto neste parecer. Plano próprio de implantação: migration + Edge de revogação + testes João/Maria no destino isolado, depois no compartilhado.
+Teste de aceitação
+Catálogo remoto passa a listar os três objetos private e as RPCs 1A; João/Maria remotos isolados; helpers com guarda.
+A-02 — 194 checks não cobrem escrita REST, GraphQL nem Storage
+Severidade
+Média
+Status
+Lacuna
+Arquivo / chave
+executar-provas-reais.mjs L169–247; resultado-provas-reais.json table_matrix/rpc_matrix; schemas-expostos-*.json
+Precondições
+JWT de portal válido; GRANT de tabela a authenticated; schema graphql_public exposto (PGRST106).
+Caminho de ataque ou falha
+As 60 leituras usam GET select=*&limit=100. Não há POST/PATCH/DELETE REST. graphql_public aceito em ambos os ambientes (HTTP 404 só porque teams não existe ali). Storage: zero buckets.
+Evidência / contraprova
+rpc_matrix=43; table_matrix=60 apenas GET. Fingerprint MD5 só após RPCs dummy, não após escrita REST. Inventário 25 admite Storage vazio.
+Impacto
+Isolamento de leitura está comprovado; isolamento de mutação REST/GraphQL é inferido das policies e das RPCs, não exercitado na mesma classe de prova.
+Correção mínima
+Acrescentar matriz negativa: PATCH/POST/DELETE nas 30 tabelas públicas + POST /graphql/v1 com o mesmo JWT, esperando 401/403/0 linhas afetadas.
+Teste de aceitação
+Relatório com status/corpo de cada escrita e de uma query GraphQL equivalente a epi_employees{aso_expiry_date}.
+A-03 — Falha parcial Auth após SQL de revogação não foi injetada
+Severidade
+Média
+Status
+Lacuna
+Arquivo / chave
+revoke-portal-account/index.ts L38–45; admin_revoke_employee_identity L258–266; 28 §Identidade
+Precondições
+Admin ativo chama a Edge; RPC SQL conclui; PUT /auth/v1/admin/users/{id} com ban_duration falha (rede, 5xx, chave).
+Caminho de ataque ou falha
+Código devolve HTTP 502 auth_ban_pending. Retry idempotente com o mesmo motivo existe. Sem ensaio, não se sabe se o operador marca desligamento concluído, se o access token segue em outras superfícies, nem se retry com motivo diferente quebra (active_identity_not_found).
+Evidência / contraprova
+resultado-provas-reais: revogação 200, retry 200 sem novo audit, refresh/login 400. Comentário explícito no relatório 26: falha Auth não ensaiada. Prova anterior (resultado-revogacao-antes-correcao.json) mostrava refresh/login vivos só com SQL.
+Impacto
+Desligamento ‘completo’ depende da Edge. Chamar só a RPC pública deixa sessão Auth viva — residual do achado 4.
+Correção mínima
+Ensaio obrigatório: abortar o PUT de ban após SQL; verificar 502; DTO vazio; refresh ainda possível; retry conclui ban. Proibir UI que chame só a RPC.
+Teste de aceitação
+Log 502 + retry 200 + refresh 400 após a segunda chamada; motivo diferente em identidade já revogada permanece erro controlado.
+A-04 — Asserção de site_dashboard e manipulação de ID são permissivas
+Severidade
+Baixa
+Status
+Lacuna
+Arquivo / chave
+executar-provas-reais.mjs L236–250; unify_existing_operations.sql L330–354; resultado-provas-reais.json
+Precondições
+João autenticado chama site_dashboard() e my_employee_profile com p_employee_id=Maria.
+Caminho de ataque ou falha
+site_dashboard é SECURITY INVOKER e agrega obras, estoque, funcionários e alerta de ASO se admin. O teste aceita HTTP 200 desde que o JSON não contenha o UUID de Maria — não exige arrays vazios. Extra arg na RPC pessoal resultou HTTP 404 (PGRST202), guarda de roteamento PostgREST, não do SQL.
+Evidência / contraprova
+Portal RPC site_dashboard() HTTP 200; Manipulação de ID HTTP 404. Leituras REST de epi_employees/teams = 0 linhas, o que torna vazamento via invoker improvável, mas não medido no corpo do dashboard.
+Impacto
+Não refuta o isolamento; enfraquece a afirmação de cobertura ‘exaustiva’ das 194.
+Correção mínima
+Asserir works/teams/employees/alerts = []. Tratar 404 de argumento extra como limite PostgREST, não como guarda SQL.
+Teste de aceitação
+JSON do dashboard com chaves presentes e arrays vazios; corpo de my_employee_profile sem parâmetro documentado.
+A-05 — Isolamento A é bind de loopback neste host, não perímetro de LAN física
+Severidade
+Informativa
+Status
+Confirmado
+Arquivo / chave
+rede-depois.json; docker-settings-depois.json PortBindingBehavior=local-only-port-binding; estado-final.json; 28 §Rede
+Precondições
+Docker Desktop 4.92.0 com Localhost only; cinco portas publicadas.
+Caminho de ataque ou falha
+Listeners e bindings só 127.0.0.1/::1; Ethernet IPv4 e IPv6 globais ECONNREFUSED; sonda em outra rede Docker com controle positivo. Sem segunda máquina física, sem Internet, sem host.docker.internal, sem invasor admin do Docker.
+Evidência / contraprova
+8/8 no JSON; guarda-inicio.txt bloqueou partida antes da opção; após stop, zero listeners 54320–54329. Prévia visual permaneceu em 127.0.0.1:3101.
+Impacto
+A é sustentável para este computador. Processo local privilegiado e outro host físico continuam fora do envelope da prova.
+Correção mínima
+Manter a guarda de início. Se o envelope exigir LAN, repetir de um segundo equipamento. Não tratar firewall como prova A.
+Teste de aceitação
+passed=true em rede-depois.json + estado-final.json após cada mudança de Desktop/CLI.
+A-06 — Quatro falhas Web são reais; três vêm de fontes Gestão ≠ HEAD, uma já commitada
+Severidade
+Média
+Status
+Confirmado
+Arquivo / chave
+proveniencia-web.json; web-antes.json; web-final.json; web-controle-head.json 14/15; gestao-diff-preexistente.patch
+Precondições
+Checkout fotografado no manifesto, HEAD eadd1f8…
+Caminho de ataque ou falha
+obras-telas não acha ‘Registrar consumo diário’ / rótulo de equipe (StockWorkspace/movement). paridade-actions espera update_equipment_admin_v2 e a ação chama replace_rented_equipment. typography: font-size 12px em globals.css.
+Evidência / contraprova
+Hashes: testes = HEAD; obras-pedidos.tsx, substituir-locado.ts e globals.css ≠ HEAD e inalterados ‘nesta rodada’. Controle HEAD: só tipografia falha. replace_rented_equipment ausente dos catálogos pre/post1a (0 hits) — a ação local aponta RPC que o laboratório/remoto reconstruído não tem.
+Impacto
+Não é regressão do código 1A/1B. Quebra cobertura de permissões/idempotência de obras e contrato de locado da Gestão. Não bloqueia identidade 1A.
+Correção mínima
+Backlog Gestão: alinhar testes à tela nova ou restaurar contrato; validar replace_rented_equipment no SQL efetivo; corrigir 12px com prévia.
+Teste de aceitação
+Os quatro casos passam ou ficam explicitamente aceitos pela Gestão com dono e prazo, sem contar como gate 1A.
+A-07 — Prévia 1B visual está isolada por flag; caminho Auth local permanece no mesmo binário
+Severidade
+Baixa
+Status
+Confirmado
+Arquivo / chave
+page.tsx L11–17; colaborador-app.tsx L10–32; proxy.ts L7–9; iniciar-previa-1b.ps1; iniciar-previa-visual-1b.ps1
+Precondições
+METALLO_COLABORADOR_VISUAL_PREVIEW=1 (usado) ou METALLO_COLABORADOR_PREVIEW=1 (script preparado).
+Caminho de ataque ou falha
+Visual: demo=true, createClient não é chamado, João sintético, LAB_URL hardcoded 127.0.0.1:54321 no modo Auth. Proxy ignora updateSession em /colaborador. Sem as flags, notFound(). Script Auth usaria ANON_KEY do laboratório local, não o remoto, se alguém o executar.
+Evidência / contraprova
+Teste ‘prévia visual… sem consultar Auth ou RPC’ 9/9 mocks. estado-final: listener 127.0.0.1:3101. Pacote pede para não executar o script Auth.
+Impacto
+Não há caminho estático da prévia visual ao Supabase remoto. Há caminho funcional local se a flag Auth for ligada. Bypass do proxy é intencional e aceitável só enquanto a rota estiver gated.
+Correção mínima
+Não ligar METALLO_COLABORADOR_PREVIEW até o confronto. Em produção, flags off. Distinguir selo visual de telas Auth.
+Teste de aceitação
+Rotas /colaborador/* = 404 sem flag; modo visual sem fetch Auth; modo Auth só contra 127.0.0.1.
+A-08 — Documentos históricos contradizem o relatório 28 no fechamento de rede
+Severidade
+Baixa
+Status
+Confirmado
+Arquivo / chave
+24_TRATAMENTO_AUDITORIA_SUPERGROK_MARCO_0.md L106–108 vs L1–3 e vs 28
+Precondições
+Leitor usa o doc 24 como decisão vigente.
+Caminho de ataque ou falha
+O parágrafo final de 24 ainda diz ‘FECHAMENTO FORMAL PENDENTE DA REDE’ e ‘restrição de portas ainda não está comprovadamente mitigada’, enquanto o cabeçalho do mesmo arquivo e o doc 28 declaram isolamento A comprovado.
+Evidência / contraprova
+Texto citado no final de 24; evidências de rede em auditoria-final/ são posteriores.
+Impacto
+Risco de processo: revisor pode reabrir rede ou, no extremo oposto, ignorar limites reais da prova A.
+Correção mínima
+Marcar o parágrafo final de 24 como histórico superado pelo 28, ou removê-lo.
+Teste de aceitação
+Um único parágrafo de decisão vigente, apontando ao 28.
+A-09 — create-employee e admin-invite-user seguem provisionando collaborator ativo da Gestão
+Severidade
+Média
+Status
+Confirmado
+Arquivo / chave
+create-employee/index.ts L58–136; admin-invite-user/index.ts L57–106; migration 1A L119–135 e L168–184
+Precondições
+Admin Gestão ativo; Edge servida (lab ou remoto).
+Caminho de ataque ou falha
+Ambas criam Auth e põem profiles.active=true com role collaborator|leader|admin. Não gravam metallo_account_type=employee_portal. admin_register_portal_account recusa conta sem marcador e com perfil ativo. Trigger impede ativar perfil de conta já registrada no portal.
+Evidência / contraprova
+194: João 403 nas quatro Edges. Fluxo de portal no executor usa Admin API + marcador + RPC, não create-employee.
+Impacto
+Reaproveitar as Edges da Gestão como ‘alta de colaborador pessoal’ reabre o achado 2. No remoto isso ainda é o único provisionamento existente.
+Correção mínima
+Manter Edges da Gestão intocadas no remoto por agora. Provisionamento portal só por fluxo servidor dedicado, já exigido pelo SQL.
+Teste de aceitação
+Tentativa de registrar conta criada por create-employee como portal falha com dedicated_portal_account_required.
+A-10 — ASO permanece em epi_employees; DTO e REST locais não o expuseram
+Severidade
+Média
+Status
+Confirmado
+Arquivo / chave
+migration 1A my_employee_profile L280–290; executar-provas-reais.mjs L164–166; site_dashboard L351
+Precondições
+Linha epi_employees com aso_*; conta portal ou futura policy ampla.
+Caminho de ataque ou falha
+REST select aso_* João/Maria: HTTP 200 e 0 linhas. DTO sem as chaves. Alerta ASO no dashboard só se is_active_admin(). Risco residual: SELECT * futuro ou policy operacional reaberta para a conta pessoal.
+Evidência / contraprova
+Sem ASO no DTO (3 contas). Contraprova do achado 3 original permanece: collaborator sozinho não lia ASO; epi_employees_read exige can_operate.
+Impacto
+Não há vazamento comprovado no lab 1A. Segregação SST ainda é dívida de desenho antes de módulos pessoais sobre a mesma tabela.
+Correção mínima
+Não criar API pessoal com SELECT * em epi_employees. Separar saúde antes de EPI pessoal.
+Teste de aceitação
+Qualquer rota pessoal futura com lista explícita de colunas sem ASO/CPF, coberta por teste REST.
+A-11 — HTTP 300 em create_team_admin e set_updated_at 404 foram aceitos sem executar o corpo
+Severidade
+Informativa
+Status
+Confirmado
+Arquivo / chave
+resultado-provas-reais.json rpc_matrix; executar-provas-reais.mjs L237–240
+Precondições
+PostgREST com sobrecarga de create_team_admin; set_updated_at é trigger.
+Caminho de ataque ou falha
+A sobrecarga de 2 args devolve PGRST203 HTTP 300 e conta como pass. A de 3 args devolveu admin_required. Trigger não é rota.
+Evidência / contraprova
+Histogram rpc: 30×P0001, 5×42501, 1×300, 1×404, 6×200.
+Impacto
+Não é falha de segurança; é limite declarado de cobertura, coerente com o relatório 26.
+Correção mínima
+Chamar a assinatura não ambígua (já feita) e não somar a de 2 args como ‘RPC exercitada’.
+Teste de aceitação
+Inventário distingue ‘executada’ vs ‘somente roteamento’.
+A-12 — delete-employee administrativo vs FK ON DELETE RESTRICT da identidade
+Severidade
+Baixa
+Status
+Hipótese
+Arquivo / chave
+delete-employee/index.ts L17–20; migration 1A L5–15
+Precondições
+Admin chama delete-employee com user_id de conta portal que já tem linha em employee_identity/portal_accounts.
+Caminho de ataque ou falha
+A Edge tenta auth.admin.deleteUser. FKs são ON DELETE RESTRICT. Resultado esperado: falha Auth ou usuário Auth apagado com identidade órfã, conforme ordem interna do Auth. Não ensaiado nas 194 (só 403 para João e 401 para token banido).
+Evidência / contraprova
+Fonte da Edge não consulta private.employee_identity. Comentário no inventário 25: ‘futura FK impede apagar histórico’ — é hipótese operacional, não prova.
+Impacto
+Risco de inconsistência admin/histórico, não de João ler Maria.
+Correção mínima
+Ensaio: delete-employee em conta vinculada deve falhar de forma fechada ou revogar 1A antes de apagar Auth.
+Teste de aceitação
+Resposta controlada; identidade e audit intactos.
+A-13 — my_employee_profile exige equipe ativa; token antigo ainda autentica o gateway
+Severidade
+Baixa
+Status
+Confirmado
+Arquivo / chave
+migration 1A L284–290; resultado-provas-reais (token antigo → DTO vazio HTTP 200)
+Precondições
+Vínculo ativo e team/employee inativos; ou identidade revogada com access token ainda não expirado.
+Caminho de ataque ou falha
+DTO some se team.active é falso (join). Token banido ainda chega ao PostgREST até exp; DTO vazio e RPCs administrativas 403/400. Refresh e novo login 400 após ban.
+Evidência / contraprova
+‘Token antigo perde acesso pessoal imediato’ HTTP 200 length=0. Docs 19 já descreviam access token residual.
+Impacto
+Trabalhador sem equipe some do portal sem revogação formal. Superfícies não inventariadas poderiam honrar o JWT até exp — mitigado nas 30 tabelas + 43 RPCs + 4 Edges locais.
+Correção mínima
+Definir regra de desligamento/troca de equipe. Continuar inventariando rotas novas.
+Teste de aceitação
+Caso de equipe inativa documentado e testado; lista de rotas atualizada a cada função nova.
+A-14 — Identidade civil, dual control, AFD/AEJ/ICP e restore integral permanecem fora de 1A
+Severidade
+Média
+Status
+Confirmado
+Arquivo / chave
+19 §Associação; CONTRATO_GESTAO_REP_P.md; MATRIZ_DE_CONFORMIDADE_REP_P.md; ensaio-restauracao-sintetica.test.mjs
+Precondições
+Produto apresentado como REP-P ou conta pessoal em produção.
+Caminho de ataque ou falha
+verification_method é alegação do operador. Sem CPF no vínculo. Restore só PGlite. AFD/AEJ/ICP/INPI não iniciados. Decisão de recontratação pendente.
+Evidência / contraprova
+Matriz e docs 22/14 classificam itens como não iniciados. Relatório 28 não alega conformidade legal.
+Impacto
+Não bloqueia o gate técnico local 1A. Bloqueia qualquer atestado legal ou operação oficial de ponto.
+Correção mínima
+Encaminhar aos marcos próprios. Não gerar artefatos simulados para ‘fechar’ estes itens.
+Teste de aceitação
+Fora do escopo 1A; checklist legal só quando o marco correspondente existir.
+4. (a) Confronto dos 17 achados anteriores
+Severidades abaixo são as originais. A classificação “válido na época” do doc 24 foi reavaliada; não foi herdada automaticamente.
+Nº
+Original
+Confronto 26/09
+Decisão agora
+1
+collaborator lê cruzado
+No lab, perfil portal inativo + trigger + DTO próprio; 30 tabelas GET sem linhas alheias; profiles só a própria. Remoto inalterado.
+Válido na época; mitigado no lab; aberto no remoto (A-01)
+2
+create-employee sem identidade
+Edges Gestão intactas (A-09). Provisionamento 1A no executor é Admin API + marcador + RPC, não create-employee.
+Válido como residual de Gestão; portal local não usa esse fluxo
+3
+ASO em epi_employees
+DTO e REST não expuseram ASO. Coluna permanece (A-10).
+Parcialmente válido; sem vazamento lab; dívida de desenho
+4
+Revogação sem Auth
+Edge lab faz SQL+ban; token perde DTO; refresh/login 400; retry idempotente. Falha Auth não injetada (A-03). RPC direta ainda não bane.
+Válido; mitigado no fluxo Edge lab; residual se a RPC for usada sozinha
+5
+Associação civil
+UUID+nome+matrícula no SQL. verification_method segue alegação. Recontratação pendente (A-14).
+Parcialmente válido; suficiente p/ 1A técnico, não p/ identidade trabalhista
+6
+Helpers UUID arbitrário
+Corpos locais com is_portal_account; João recebe null. Remoto sem guarda.
+Válido; resolvido no lab; aberto no remoto
+7
+run_site_operation p/ ponto
+Portal: authentication_required. Ponto inexistente.
+Válido só como risco de reutilização futura
+8
+Histórico mutável Gestão
+RPCs admin_* recusadas ao portal (admin_required). Originais REP-P inexistentes.
+Válido como fronteira de domínio; não é bug 1A
+9
+Migrations divergentes
+Pré-1A: 31 relações/274 colunas/70 policies/57 funções/420 grants públicos iguais; 0 corpos diferentes. Schemas infra e 2 FKs Auth (MFA/SCIM) só remotas. Comparador limita-se a public/private.
+Válido e agora delimitado: baseline de aplicação reproduzida; infra Auth não idêntica
+10
+Contrato entre projetos
+Documento existe; integração não implementada.
+Válido como pendência futura
+11
+Restore real
+Só ensaio PGlite. Fora do gate 1A.
+Válido futuro; informativo agora
+12
+SECURITY DEFINER tentável
+43 assinaturas com JWT João; 30 negadas por guarda nomeada; helpers null/false; fingerprint sem mudança. site_dashboard 200 (A-04). replace_rented_equipment nem está no catálogo lab/remoto.
+Parcialmente válido; superfície lab exercitada com lacunas A-02/A-04/A-11
+13
+Offline/GPS/replay
+Fora de 1A; ponto inexistente.
+Requisito futuro
+14
+AFD/AEJ/ICP/INPI
+Não iniciados. Não bloqueia Marco 0 técnico.
+Gate futuro (A-14)
+15
+LGPD/RIPD/BYOD
+Sem coleta real de ponto/GPS/foto.
+Processo futuro
+16
+Ameaça interna admin
+Admin 1A é single control. Dual control ausente.
+Risco arquitetural futuro; não exploração lab
+17
+Testes superestimavam
+TODO PGlite sumiram; 194 reais existem. 194 ≠ cobertura total (A-02, A-03, A-04, A-11).
+Válido na época; parcialmente corrigido; não aceitar 194 como exaustivo
+5. (b) Análise das quatro falhas Web
+web-antes.json e web-final.json: 63/67, as mesmas quatro falhas, zero pending. Conclusão do pacote (“preexistente neste checkout, independente desta rodada”) é sustentada para a rodada 1A/1B, com o reparo: três implementações não estão no HEAD. Não se pode dizer que “já estavam commitadas”.
+Falha
+Causa no checkout
+HEAD
+Gate 1A?
+obras-telas direitos/alertas
+Texto ‘Registrar consumo diário’ ausente; StockWorkspace/modo movement. Teste aborta antes das asserções de permissão.
+Passa no HEAD; fonte obras-pedidos.tsx ≠ HEAD
+Não. Backlog Gestão. Permissões de UI desta tela ficam sem prova.
+obras-telas idempotência
+Rótulo ‘Equipe que está executando o serviço’ ausente. Nenhum POST ocorreu.
+Passa no HEAD; mesma fonte ≠ HEAD
+Não. Não prova que idempotência quebrou; prova que o teste não exercita a tela atual.
+paridade-actions locado
+Ação chama replace_rented_equipment; teste espera update_equipment_admin_v2. Função nova ausente dos catálogos pre/post1a.
+Passa no HEAD; substituir-locado.ts ≠ HEAD
+Não. Contrato Gestão divergente inclusive do SQL lab/remoto.
+typography 12px
+globals.css contém font-size 12px (donut legend).
+Também falha no HEAD eadd1f8
+Não. Acessibilidade Gestão já commitada.
+Os três arquivos de teste são byte-a-byte iguais ao HEAD. Nenhuma expectativa foi enfraquecida. Tipografia é o único defeito commitado. As outras três são deriva local da Gestão presente no checkout fotografado pelo manifesto, anterior a esta rodada segundo hashes “unchanged_this_round”.
+6. (c) Vereditos separados
+Rede A
+Comprovado para este host: opção oficial Localhost only persistida, guarda de início, bindings Docker e listeners Windows só em 127.0.0.1/::1 nas portas 54321/54322/54323/54324/54327, loopback IPv4/IPv6 positivo, Ethernet negativo no host e em namespace Docker separado com controle positivo, cleanup sem listeners do laboratório. Firewall não foi a prova. Limites declarados e não executados: segunda máquina física, Internet, host.docker.internal, administrador local do Docker. A prévia visual em :3101 é outro processo, também em loopback, e permaneceu após o stop da pilha.
+Identidade 1A em laboratório
+A migration é coerente com o desenho declarado: tabelas private sem grant/policy permissiva; search_path vazio; SECURITY DEFINER nas RPCs 1A; admin_required; marcador Auth employee_portal; perfil Gestão inativo com trigger; unicidade histórica de auth_user_id e índice parcial de funcionário ativo; DTO mínimo sem employee_id de entrada, sem ASO/CPF; helpers Gestão com guarda de portal; audit imutável; revoke SQL idempotente por mesmo motivo. As 194 verificações usam Auth real (signup 422, JWT ES256+JWKS, JWT com sub trocado → 401), fixtures sintéticos .invalid, João/Maria cruzados, 4 Edges servidas (João 403; token banido 401/403), ban 876000h. Não encerro como produto: faltam escritas REST/GraphQL e o ensaio de falha Auth (A-02, A-03).
+Implantação remota
+Não recomendada e não autorizada por este parecer. Schemas Data API coincidem (public, graphql_public). A aplicação pré-1A coincide nas classes comparadas. 1A, a Edge de revogação e os corpos novos dos helpers não estão no compartilhado. create-employee remoto continua o caminho antigo.
+Prévia visual 1B
+Modo visual: flag própria, dados sintéticos, sem createClient, rotas limitadas a login/inicio/perfil/equipe/obra, selo explícito, ponto só “em desenvolvimento”. Cliente Auth do mesmo arquivo aponta só a 127.0.0.1:54321 e exige outra flag + ANON_KEY do lab. Não vi caminho estático ao projeto remoto. O script iniciar-previa-1b.ps1 é avanço funcional disfarçado de prévia — permanece fora do autorizado.
+7. (d) Bloqueadores reais versus riscos futuros
+Bloqueiam implantação remota / produto agora
+Migration 1A e Edge revoke-portal-account ausentes do compartilhado (A-01). Fluxo Gestão create-employee/admin-invite-user ainda ativa collaborator (A-09). Qualquer uso de RPC de revogação sem a etapa Auth (A-03). Flags de Colaborador ligadas fora do laboratório (A-07).
+Não bloqueiam o encerramento estreito de 1A laboratorial
+Web 63/67 (A-06). Tipografia 12px. Deriva replace_rented_equipment (Gestão). AFD/AEJ/ICP/INPI, RIPD, dual control, restore integral, ponto offline (A-14). Segunda máquina física (A-05), desde que o envelope A seja “este host”.
+Riscos futuros a registrar, sem congelar 1A local
+Segregação ASO (A-10). Equipe inativa esconde DTO (A-13). delete-employee vs FK (A-12). Contratos outbox/inbox entre Gestão e REP-P. Amenaça interna de admin único no vínculo.
+8. (e) Provas adicionais — especificação, sem execução
+ID
+Prova
+Quem / onde
+Resultado esperado
+P1
+Matriz REST POST/PATCH/DELETE João/Maria nas 30 tabelas públicas e PATCH profiles.active=true
+Lab local, executor novo
+403/42501/0 linhas; trigger portal_account_cannot_be_management_active se o PATCH chegar ao BEFORE
+P2
+POST /graphql/v1 listando epi_employees { id aso_expiry_date full_name }
+Lab + JWT portal
+Vazio ou erro de autorização; nenhum ASO
+P3
+Abortar ban Auth após SQL; ler 502; refresh; retry; motivo distinto
+Edge lab com falha injetada
+502 → DTO vazio → refresh ainda 200 ou 400 documentado → retry 200 → refresh 400
+P4
+Corpo completo de site_dashboard() de João
+Já capturável no lab
+Arrays vazios, inclusive employees e alerts
+P5
+delete-employee admin sobre conta vinculada
+Lab
+Falha fechada ou pré-revogação; audit intacto
+P6
+Opcional: sonda de um segundo host físico às cinco portas
+LAN
+Recusa; só se o envelope A for redefinido
+9. Encerramento de 1A em laboratório
+Recomendo encerrar 1A em laboratório apenas neste sentido: fundação SQL local + provas Auth/JWT/PostgREST/RPC/Edge de leitura e de revogação feliz + isolamento A neste host foram demonstrados e não foram refutados por caminho concreto João↔Maria ou ASO no DTO/REST. Não recomendo encerrar 1A como produto, como equivalência remota, como suíte Web verde, nem como autorização de 1B funcional.
+Condições: (1) responsável confronta este parecer; (2) A-08 corrigido nos documentos vigentes; (3) P1–P3 entram no backlog imediato do laboratório, sem bloquear o carimbo estreito se o responsável aceitar o risco residual documentado; (4) migration/Edge/remoto continuam proibidos; (5) prévia permanece visual.
+A decisão final é do responsável após esse confronto e eventuais retestes. Nenhuma publicação ou avanço funcional está autorizado por este parecer.
+10. Integridade do pacote
+MANIFESTO_SHA256.json: created_at 2026-09-26T18:21:20.008Z, head eadd1f8cf9e62b85c4c62b9d2f2b83a970ecf77c, 361 arquivos, secret_scan.matches=0. Recalculei SHA-256 de todos os arquivos extraídos: 361 coincidências, 0 ausentes, 0 divergentes. O próprio manifesto é o único extra. Relatórios 17–27 trazem cabeçalhos alinhados ao 28, exceto o parágrafo final obsoleto de 24 (A-08).
+PARTE word/footnotes.xml
+PARTE word/endnotes.xml
+PARTE word/comments.xml

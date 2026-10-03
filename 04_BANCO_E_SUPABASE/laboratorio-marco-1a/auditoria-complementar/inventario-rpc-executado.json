@@ -1,0 +1,443 @@
+{
+  "at": "2026-09-26T22:51:36.107Z",
+  "total_signatures": 43,
+  "counts": {
+    "bloqueada_por_guarda_SQL": 33,
+    "executada": 6,
+    "somente_roteamento_PostgREST": 1,
+    "bloqueada_por_privilegio_SQL": 2,
+    "trigger_nao_chamavel": 1
+  },
+  "rows": [
+    {
+      "name": "add_epi_stock_batch",
+      "args": "p_item_id uuid, p_quantity integer, p_variant text, p_ca_number text, p_brand_model text, p_lot_number text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "not authorized",
+      "ok": true
+    },
+    {
+      "name": "admin_delete_asset_movement",
+      "args": "p_movement_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_delete_material_movement",
+      "args": "p_movement_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_link_employee_identity",
+      "args": "p_auth_user_id uuid, p_employee_id uuid, p_expected_employee_name text, p_expected_registration_code text, p_verification_method text",
+      "status": 403,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_register_portal_account",
+      "args": "p_auth_user_id uuid",
+      "status": 403,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_revoke_employee_identity",
+      "args": "p_identity_id uuid, p_reason text",
+      "status": 403,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "42501",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_asset_movement",
+      "args": "p_movement_id uuid, p_destination_team_id uuid, p_new_status text, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_material_movement",
+      "args": "p_movement_id uuid, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_profile",
+      "args": "p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "admin_update_profile_access",
+      "args": "p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean, p_operation_permissions text[], p_operation_team_ids uuid[]",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "can_operate",
+      "args": "p_permission text, p_team_id uuid",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "close_epi_delivery_quantity",
+      "args": "p_delivery_id uuid, p_quantity integer, p_status text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "consume_material",
+      "args": "p_item_id uuid, p_team_id uuid, p_quantity numeric, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "create_epi_item_with_stock",
+      "args": "p_code text, p_name text, p_item_kind text, p_unit text, p_ca_number text, p_brand_model text, p_minimum_stock integer, p_return_policy text, p_initial_quantity integer, p_variant text, p_lot_number text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "create_equipment_for_team",
+      "args": "p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_notes text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_equipment_for_team_v2",
+      "args": "p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_material_for_team",
+      "args": "p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock integer, p_team_id uuid, p_quantity integer",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "create_team_admin",
+      "args": "p_name text, p_description text",
+      "status": 300,
+      "coverage": "somente_roteamento_PostgREST",
+      "body_exercised": false,
+      "code": "PGRST203",
+      "message": "Could not choose the best candidate function between: public.create_team_admin(p_name => text, p_description => text), public.create_team_admin(p_name => text, p_description => text, p_location_type => text)",
+      "ok": true
+    },
+    {
+      "name": "create_team_admin",
+      "args": "p_name text, p_description text, p_location_type text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "deactivate_asset_admin",
+      "args": "p_asset_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "deactivate_item_admin",
+      "args": "p_item_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "delete_team_admin",
+      "args": "p_team_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "employee_work_team",
+      "args": "p_employee_id uuid, p_at timestamp with time zone",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "fulfill_epi_request",
+      "args": "p_request_id uuid, p_stock_batch_id uuid",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "is_active_admin",
+      "args": "",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "my_employee_profile",
+      "args": "",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "register_asset_movement",
+      "args": "p_asset_id uuid, p_movement_type text, p_destination_team_id uuid, p_new_status text, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "register_epi_delivery",
+      "args": "p_employee_id uuid, p_item_id uuid, p_stock_batch_id uuid, p_quantity integer, p_delivery_reason text, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "register_epi_delivery_batch",
+      "args": "p_employee_id uuid, p_lines jsonb, p_delivery_reason text, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "register_movement",
+      "args": "p_item_id uuid, p_movement_type text, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "inactive_or_missing_profile",
+      "ok": true
+    },
+    {
+      "name": "replenish_material",
+      "args": "p_item_id uuid, p_origin_team_id uuid, p_destination_team_id uuid, p_quantity numeric, p_note text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden_role",
+      "ok": true
+    },
+    {
+      "name": "request_epi_item",
+      "args": "p_employee_id uuid, p_item_id uuid, p_quantity integer, p_requested_variant text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "forbidden",
+      "ok": true
+    },
+    {
+      "name": "return_rented_equipment",
+      "args": "p_asset_id uuid, p_note text",
+      "status": 403,
+      "coverage": "bloqueada_por_privilegio_SQL",
+      "body_exercised": false,
+      "code": "42501",
+      "message": "permission denied for function asset_visible_notes",
+      "ok": true
+    },
+    {
+      "name": "run_site_operation",
+      "args": "p_command text, p_data jsonb, p_operation_id uuid, p_occurred_at timestamp with time zone",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "authentication_required",
+      "ok": true
+    },
+    {
+      "name": "set_epi_employee_items",
+      "args": "p_employee_id uuid, p_lines jsonb",
+      "status": 403,
+      "coverage": "bloqueada_por_privilegio_SQL",
+      "body_exercised": false,
+      "code": "42501",
+      "message": "new row violates row-level security policy for table \"epi_employee_item_sets\"",
+      "ok": true
+    },
+    {
+      "name": "set_updated_at",
+      "args": "",
+      "status": 404,
+      "coverage": "trigger_nao_chamavel",
+      "body_exercised": false,
+      "code": "PGRST202",
+      "message": "Could not find the function public.set_updated_at without parameters in the schema cache",
+      "ok": true
+    },
+    {
+      "name": "site_dashboard",
+      "args": "",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "stock_team",
+      "args": "p_team_id uuid",
+      "status": 200,
+      "coverage": "executada",
+      "body_exercised": true,
+      "code": null,
+      "message": null,
+      "ok": true
+    },
+    {
+      "name": "update_asset_admin",
+      "args": "p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_equipment_admin",
+      "args": "p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_equipment_admin_v2",
+      "args": "p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date, p_active boolean",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_item_admin",
+      "args": "p_item_id uuid, p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock numeric, p_active boolean",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    },
+    {
+      "name": "update_team_admin",
+      "args": "p_team_id uuid, p_name text, p_description text",
+      "status": 400,
+      "coverage": "bloqueada_por_guarda_SQL",
+      "body_exercised": true,
+      "code": "P0001",
+      "message": "admin_required",
+      "ok": true
+    }
+  ]
+}

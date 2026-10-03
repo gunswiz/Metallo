@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'medidas_consumo.dart';
 import 'package:metallo/07_TIPOS_E_MODELOS/team.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/componentes_consumo.dart';
 import 'package:metallo/01_TELAS/07_CONSUMO/calcular_consumo.dart';
@@ -16,17 +17,21 @@ class ConsumptionMaterialsPage extends StatefulWidget {
 
 class _ConsumptionMaterialsPageState extends State<ConsumptionMaterialsPage> {
   late String? teamId = widget.initialTeamId;
+  String? selectedUnit;
   DateTime anchor = DateTime.now();
   int periodDays = 7;
   @override
   Widget build(BuildContext context) {
-    final range = consumptionRange(widget.rows, teamId, anchor, periodDays);
+    final unit = effectiveConsumptionUnit(widget.rows, selectedUnit);
+    final unitRows = filterConsumptionUnit(widget.rows, unit);
+    final range = consumptionRange(unitRows, teamId, anchor, periodDays);
     final periodLabel = consumptionPeriodLabel(periodDays);
     return Scaffold(
       appBar: AppBar(title: const Text('Consumo de materiais')),
       body: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
           children: [
+            ConsumptionUnitPicker(rows: widget.rows, value: unit, onChanged: (value) => setState(() => selectedUnit = value)),
             Row(children: [
               Expanded(
                   child: teamConsumptionDropdown(

@@ -1,0 +1,128 @@
+// @vitest-environment-options {"url":"http://127.0.0.1:3101"}
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import ColaboradorApp from "@/app/colaborador/[[...screen]]/colaborador-app";
+import { MeusEpis } from "@/app/colaborador/[[...screen]]/meus-epis";
+import { personalEpis, portalFetch } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
+import ColaboradorPage from "@/app/colaborador/[[...screen]]/page";
+
+const state = vi.hoisted(() => ({ actor: "joao" as string | null, rows: [] as unknown[], failure: false, replace: vi.fn(), signOut: vi.fn(), pointRequest: vi.fn(), rpc: vi.fn() }));
+vi.mock("next/headers", () => ({ headers: async () => ({ get: () => "127.0.0.1:3101" }) }));
+vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND"); }, useRouter: () => ({ replace: state.replace }) }));
+vi.mock("@/05_ACESSO_A_DADOS/Ponto/ponto-lab", async importOriginal => {
+  const actual = await importOriginal<typeof import("@/05_ACESSO_A_DADOS/Ponto/ponto-lab")>();
+  return { ...actual, pointRequest: state.pointRequest };
+});
+vi.mock("@supabase/supabase-js", () => ({ createClient: () => ({
+  auth: {
+    getUser: async () => ({ data: { user: state.actor ? { id: state.actor } : null }, error: null }),
+    getSession: async () => ({ data: { session: { access_token: "jwt-sintetico" } }, error: null }),
+    signOut: state.signOut, dispose: async () => {},
+  },
+  rpc: (name: string, ...args: unknown[]) => {
+    state.rpc(name, ...args);
+    if (name === "my_employee_profile") return Promise.resolve({ data: [{ employee_id: state.actor, full_name: state.actor === "joao" ? "João Sintético" : "Maria Sintética", profession: null, team_name: null }], error: null });
+    if (name === "my_personal_epi") return Promise.resolve(state.failure ? { data: null, error: new Error("Failed to fetch") } : { data: state.rows, error: null });
+    if (name === "my_exchangeable_epi" || name === "my_epi_exchange_requests") return Promise.resolve({ data: [], error: null });
+    throw new Error(`RPC inesperada: ${name}`);
+  },
+}) }));
+
+const entry = (item_name: string, current_status: "active" | "replaced" = "active") => ({
+  item_name, ca_number: "12345", quantity: 1, unit: "un", variant: "M",
+  delivered_at: "2026-08-12T12:00:00Z", delivery_reason: "initial",
+  current_status, closed_at: current_status === "active" ? null : "2026-09-01T12:00:00Z",
+});
+beforeEach(() => {
+  localStorage.clear(); state.actor = "joao"; state.rows = [entry("Capacete João"), entry("Luva anterior", "replaced")]; state.failure = false;
+  state.replace.mockReset(); state.signOut.mockReset(); state.rpc.mockReset(); state.pointRequest.mockReset();
+  state.signOut.mockResolvedValue({ error: null }); state.pointRequest.mockResolvedValue({ status: 200, body: { status: "SESSAO_ENCERRADA" } });
+});
+afterEach(cleanup);
+
+it("mostra somente entregas em uso e histórico encerrado, sem campos administrativos", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByRole("heading", { name: "Capacete João" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Luva anterior" })).toBeInTheDocument();
+  expect(screen.getByText("Substituído")).toBeInTheDocument();
+  expect(screen.getAllByText("CA registrado")).toHaveLength(2);
+  expect(screen.getAllByText("Registrado em")).toHaveLength(2);
+  expect(screen.getByRole("heading", { name: "Registros ativos" })).toBeInTheDocument();
+  expect(screen.queryByText("Recebido em")).not.toBeInTheDocument();
+  expect(within(screen.getByRole("region", { name: "Registros ativos" })).queryByText(/CPF|ASO|salário|estoque|fornecedor|hash/i)).not.toBeInTheDocument();
+  expect(state.rpc.mock.calls.filter(call => call[0] === "my_personal_epi").every(call => call.length === 1)).toBe(true);
+});
+it("sem EPI mantém portal e mostra vazio amigável mesmo sem equipe ou obra", async () => {
+  state.rows = [];
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Nenhuma entrega ativa registrada no momento.")).toBeInTheDocument();
+  expect(screen.getByText("Nenhuma entrega encerrada no histórico.")).toBeInTheDocument();
+  expect(state.signOut).not.toHaveBeenCalled();
+});
+it("troca de conta entre abas oculta EPIs anteriores antes da nova leitura", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  state.actor = "maria"; state.rows = [entry("Capacete Maria")];
+  fireEvent(window, new StorageEvent("storage", { key: "metallo-colaborador-laboratorio", newValue: "maria" }));
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  expect(await screen.findByText("Capacete Maria")).toBeInTheDocument();
+});
+it("atualização por foco substitui a lista sem manter o EPI anterior", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  state.rows = [entry("Capacete atualizado")];
+  fireEvent.focus(window);
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  expect(await screen.findByText("Capacete atualizado")).toBeInTheDocument();
+});
+it("sessão expirada esconde imediatamente os EPIs apresentados", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  state.actor = null;
+  fireEvent.focus(window);
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  await waitFor(() => expect(state.replace).toHaveBeenCalledWith("/colaborador/login"));
+});
+it("perda do laboratório remove EPIs antigos e oferece tentativa novamente", async () => {
+  const readEpis = async () => { if (state.failure) throw new Error("Failed to fetch"); return personalEpis(state.rows); };
+  render(<MeusEpis readEpis={readEpis} />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  state.failure = true; fireEvent.focus(window);
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  expect(await screen.findByRole("alert")).toHaveTextContent("Dados de EPIs temporariamente indisponíveis.");
+  state.failure = false; state.rows = [entry("Novo EPI")];
+  fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
+  expect(await screen.findByText("Novo EPI")).toBeInTheDocument();
+});
+it("logout elimina a lista antes de terminar a chamada ao servidor", async () => {
+  let finish!: (value: unknown) => void;
+  state.pointRequest.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+  fireEvent.click(screen.getByRole("button", { name: "Sair" }));
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  await waitFor(() => expect(finish).toBeTypeOf("function"));
+  finish({ status: 200, body: { status: "SESSAO_ENCERRADA" } });
+});
+it("parser rejeita IDs, segredos e campos extras", () => {
+  expect(personalEpis([entry("Capacete")])).toHaveLength(1);
+  for (const extra of [{ employee_id: "maria" }, { delivery_id: "segredo" }, { cpf: "000" }, { stock_batch_id: "interno" }])
+    expect(() => personalEpis([{ ...entry("Capacete"), ...extra }])).toThrow("Contrato pessoal de EPIs inválido.");
+  expect(() => personalEpis([{ ...entry("Capacete"), quantity: 0 }])).toThrow();
+});
+it("cliente só permite RPC pessoal local, recusando tabelas, IDs e remoto", async () => {
+  const fetcher = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("[]", { status: 200 }));
+  try {
+    await portalFetch("http://127.0.0.1:54321/rest/v1/rpc/my_personal_epi", { method: "POST", body: "{}" });
+    for (const url of ["http://127.0.0.1:54321/rest/v1/epi_deliveries", "http://127.0.0.1:54321/rest/v1/rpc/my_personal_epi/maria", "https://projeto.supabase.co/rest/v1/rpc/my_personal_epi"])
+      await expect(portalFetch(url)).rejects.toThrow();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  } finally { fetcher.mockRestore(); }
+});
+it("rota de EPIs existe somente na prévia local autorizada", async () => {
+  vi.stubEnv("METALLO_LOCAL_PREVIEW", "1"); vi.stubEnv("METALLO_COLABORADOR_VISUAL_PREVIEW", "1");
+  const page = await ColaboradorPage({ params: Promise.resolve({ screen: ["epis"] }) });
+  expect(page.props.screen).toBe("epis");
+  vi.unstubAllEnvs();
+});

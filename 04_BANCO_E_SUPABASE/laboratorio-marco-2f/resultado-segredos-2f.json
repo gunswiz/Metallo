@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "files_scanned_including_nested": 1364,
+  "nested_entries": 1161,
+  "bytes": 83665963,
+  "findings": [],
+  "zip": {
+    "path": "outputs/Metallo-Marco2F-BaselineAprovada-20260928-R1.zip",
+    "sha256": "5b7b50ddf9385b58731b84852d54626c9893d0a812151e4e7cd157b568b34097",
+    "entries": 102
+  },
+  "known_sensitive_values": 8,
+  "backup_decompressed": true,
+  "scope": "fontes/evidencias/bundles e ZIP com arquivos aninhados descompactados",
+  "at": "2026-09-28T07:55:05.202Z",
+  "previous_scans": [
+    {
+      "at": "2026-09-28T01:44:51.856Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T01:49:05.424Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T01:50:41.769Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T07:19:49.406Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2F-Reconciliacao-Auditoria-20260928-Ciclo1.zip",
+        "sha256": "3a2df3452c9e1d9dcf3d71da0e36e3b01bc8c232c0e6a80aa898beff8aa58169",
+        "entries": 94
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T07:36:04.319Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2F-Reconciliacao-Auditoria-20260928-Ciclo2.zip",
+        "sha256": "3d9178e8e549d79d37ab66d5186b438665cb18da7575e96cb7cc7c4279bae9d0",
+        "entries": 100
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T07:53:24.233Z",
+      "passed": false,
+      "zip": {
+        "path": "outputs/Metallo-Marco2F-BaselineAprovada-20260928-R1.zip",
+        "sha256": "4861fab852314a5d79f39c2e59245a270314ca714e5cdf942dbf3b530e8b2121",
+        "entries": 102
+      },
+      "findings": [
+        {
+          "file": "01_WEB/.next-local-preview/dev/static/chunks/1_mm_next_dist_client_0-1x4tk._.js",
+          "kind": "credencial literal possivel"
+        },
+        {
+          "file": "01_WEB/.next-local-preview/dev/static/chunks/main-app.js",
+          "kind": "credencial literal possivel"
+        }
+      ]
+    },
+    {
+      "at": "2026-09-28T07:54:33.014Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    }
+  ]
+}

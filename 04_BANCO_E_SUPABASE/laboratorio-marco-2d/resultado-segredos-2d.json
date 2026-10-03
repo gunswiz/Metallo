@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "files_scanned_including_nested": 2428,
+  "nested_entries": 2265,
+  "bytes": 135957441,
+  "findings": [],
+  "zip": {
+    "path": "outputs/Metallo-Marco2D-BaselineAprovada-20260927-R1.zip",
+    "sha256": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+    "entries": 259
+  },
+  "known_sensitive_values": 8,
+  "backup_decompressed": true,
+  "scope": "fontes/evidencias/bundles e ZIP com arquivos aninhados descompactados",
+  "at": "2026-09-27T22:41:37.322Z",
+  "previous_scans": [
+    {
+      "at": "2026-09-27T21:41:00.835Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T21:47:34.777Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo1.zip",
+        "sha256": "edc90b89e9aabad242197cbcb0a4ad156d1f5552239132406dcc36a4d9cde395",
+        "entries": 250
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T21:59:15.535Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T21:59:18.678Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2D-Recuperacao-Auditoria-20260927-Ciclo2.zip",
+        "sha256": "731c1bed14d812b646427802b0b7ace6d786c44853188ad7a1183cdae1dedf63",
+        "entries": 254
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T22:41:23.490Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    }
+  ]
+}

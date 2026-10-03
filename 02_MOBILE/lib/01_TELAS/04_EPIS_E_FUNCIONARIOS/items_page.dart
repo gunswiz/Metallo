@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:metallo/02_COMPONENTES/user_access_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/epi_repository.dart';
 import 'package:metallo/01_TELAS/04_EPIS_E_FUNCIONARIOS/formularios_epi.dart';
@@ -95,7 +96,7 @@ class ItemsPageState extends State<ItemsPage> {
               _CatalogItemCard(
                 item: item,
                 onRegisterStock:
-                    widget.role == 'admin' ? () => _registerStock(item) : null,
+                    UserAccessScope.of(context).can('epi:write') ? () => _registerStock(item) : null,
                 onLongPress: widget.role == 'admin'
                     ? () => showItemActions(context, widget.repo, item, reload)
                     : null,
@@ -108,7 +109,7 @@ class ItemsPageState extends State<ItemsPage> {
     final registered = await showStockForm(context, widget.repo, item);
     if (!mounted || !registered) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Entrada registrada na COSEM.')),
+      const SnackBar(content: Text('Consulte a confirmação do lançamento e os pendentes.')),
     );
   }
 }

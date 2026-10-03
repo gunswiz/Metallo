@@ -1,0 +1,332 @@
+{
+  "started_at": "2026-09-26T15:20:48.954Z",
+  "environment": "Supabase CLI 2.117.0 local",
+  "checks": [
+    {
+      "name": "Auth local saudavel",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket admin",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create admin",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Admin Gestao sintetico ativo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Admin Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Admin Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Gestao via PostgREST",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Perfil admin pela RLS",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Inscricao publica bloqueada",
+      "ok": true,
+      "detail": "HTTP 422"
+    },
+    {
+      "name": "ticket joao",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create joao",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket maria",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create maria",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "ticket revogada",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Auth create revogada",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Equipe sintetica disponivel",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Funcionarios EPI sinteticos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entregas EPI sinteticas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Registro de conta dedicada Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Registro de conta dedicada Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Registro de conta dedicada Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Vinculo identidade Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth login Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Auth login Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Auth JWKS local",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "JWT assinado Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DTO proprio Joao Sintetico",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Joao Sintetico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DTO proprio Maria Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Maria Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "DTO proprio Conta Revogada Sintetica",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Identidade propria Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Sem ASO no DTO Conta Revogada Sintetica",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Gestao le EPI via RLS",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Gestao encontra tres funcionarios",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Joao nao le epi_employees alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_deliveries alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_monthly_acknowledgements alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le epi_requests alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_employees alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_deliveries alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_monthly_acknowledgements alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao le epi_requests alheio",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao le ASO",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Joao nao acessa identidade privada",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Maria nao le ASO",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Maria nao acessa identidade privada",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Manipulacao de ID na RPC pessoal",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Joao nao chama RPC administrativa",
+      "ok": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "RPC employee_work_team nao vaza dados",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "RPC stock_team nao vaza dados",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Revogacao de identidade via admin",
+      "ok": true,
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "Token antigo perde acesso pessoal imediato",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Refresh da conta revogada bloqueado",
+      "ok": false,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Novo login da conta revogada bloqueado",
+      "ok": false,
+      "detail": "HTTP 200"
+    }
+  ],
+  "finished_at": "2026-09-26T15:20:52.292Z"
+}

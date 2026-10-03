@@ -2,6 +2,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@metallo/types";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
+
+export type ExchangeManagementRow = { request_id: string; employee_name: string; item_name: string; ca_number: string | null; reason: string; note: string | null; request_status: string; requested_at: string; updated_at: string; public_decision: string | null; internal_note: string | null; timeline: { status: string; at: string }[] };
+export type PreparedKit3d = { preparation_id: string; employee_id: string; employee_name: string; prepared_at: string; lines: { item_id: string; stock_batch_id: string; quantity: number; item_name: string; unit: string; variant: string | null; ca: string | null }[]; exchange_request_id: string | null; delivery_group_id: string | null };
+export type ApprovedExchange3d = { request_id: string; employee_id: string; employee_name: string; item_id: string; item_name: string; source_delivery_id: string; delivery_group_id: string | null };
+export type DeliveryFeedback3d = { group_id: string; employee_name: string; delivered_at: string; feedback_status: string | null; item_name: string | null; category: string | null; details: string | null; public_message: string | null; internal_note: string | null };
 
 export type EpiChoice = Tables<"epi_items"> & { epi_item_variants: Array<{ value: string; label: string; sort_order: number }> };
 export type EmployeeChoice = Tables<"epi_employees"> & { teams: { name: string } | null };
@@ -22,6 +29,32 @@ async function readAll<T>(fetchPage: (from: number, to: number) => PromiseLike<{
 }
 export class EpiOperationsRepository {
   constructor(private client: SupabaseClient<Database>) {}
+  async report3e(employeeId: string) {
+    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Relatórios 3E disponíveis somente no laboratório local.");
+    const result = await this.client.rpc("admin_epi_report_3e" as never, { p_employee_id: employeeId } as never);
+    if (result.error) throw new Error(result.error.message);
+    return epiReportPayloadSchema.parse(result.data);
+  }
+  async delivery3d() {
+    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Entregas 3D disponíveis somente no laboratório local.");
+    const names = ["admin_epi_prepared_kits_3d", "admin_epi_approved_exchanges_3d", "admin_epi_delivery_feedback_3d"] as const;
+    const [prepared, approved, feedback] = await Promise.all(names.map(name => this.client.rpc(name as never)));
+    if (prepared.error || approved.error || feedback.error || !Array.isArray(prepared.data) || !Array.isArray(approved.data) || !Array.isArray(feedback.data))
+      throw new Error("Não foi possível consultar o fluxo local de entrega.");
+    return { prepared: prepared.data as PreparedKit3d[], approved: approved.data as ApprovedExchange3d[], feedback: feedback.data as DeliveryFeedback3d[] };
+  }
+  async kitSuggestion3d(employeeId: string) {
+    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Sugestão disponível somente no laboratório local.");
+    const result = await this.client.rpc("admin_epi_kit_suggestion_3d" as never, { p_employee_id: employeeId } as never);
+    if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar a sugestão do kit.");
+    return result.data as { item_id: string; item_name: string; unit: string; recommended_quantity: number }[];
+  }
+  async exchangeRequests(): Promise<ExchangeManagementRow[]> {
+    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Trocas de EPI disponíveis somente no laboratório local.");
+    const result = await this.client.rpc("admin_epi_exchange_requests" as never);
+    if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar as solicitações locais.");
+    return result.data as ExchangeManagementRow[];
+  }
   async choices() {
     const [items, employees, batches] = await Promise.all([
       readAll((from, to) => this.client.from("epi_items").select("*,epi_item_variants(value,label,sort_order)").eq("active", true).order("name").order("id").range(from, to)),

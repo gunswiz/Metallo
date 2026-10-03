@@ -74,6 +74,10 @@ describe("ações com serviços simulados, sem escrita remota", () => {
     mocks.from.mockReturnValue(query);
     await expect(replaceRentedEquipment({}, form({ assetId: id, assetCode: "NOVO", note: "Troca por defeito" }))).rejects.toThrow("REDIRECT");
     expect(mocks.rpc).toHaveBeenCalledWith("update_equipment_admin_v2", expect.objectContaining({ p_asset_id: id, p_team_id: id, p_rental_company: "Locadora", p_rental_start_date: "2026-01-01", p_status: "available", p_user_notes: expect.stringContaining("ANTIGO → NOVO") }));
+    expect(mocks.rpc).toHaveBeenCalledTimes(1);
+    expect(mocks.rpc.mock.calls[0][1].p_user_notes).toContain("Nota anterior");
+    expect(mocks.authorize).toHaveBeenCalledWith("admin:manage");
+    expect(mocks.redirect).toHaveBeenCalledWith(`/equipamentos/${id}?updated=1`);
     asset.ownership_type = "owned"; mocks.rpc.mockClear();
     expect(await replaceRentedEquipment({}, form({ assetId: id, assetCode: "NOVO", note: "Troca por defeito" }))).toHaveProperty("error");
     expect(mocks.rpc).not.toHaveBeenCalled();

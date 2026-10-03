@@ -1,0 +1,392 @@
+{
+  "at": "2026-09-27T21:41:26.797Z",
+  "scope": "Marco 2B real local; separado dos 683 checks históricos",
+  "checks": [
+    {
+      "category": "A",
+      "name": "João autentica no Auth local",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Maria autentica no Auth local",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Conta de revogação autentica inicialmente",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "chave anon não autentica pessoa",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "JWT adulterado negado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Origin externo negado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "admin Gestão não acessa histórico pessoal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "admin Gestão não marca por trabalhador",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "B",
+      "name": "João registra evento próprio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "B",
+      "name": "Maria registra evento próprio",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "B",
+      "name": "eventos diferentes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "timestamp deriva do servidor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "timestamp UTC",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "João vê seu evento",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Maria vê seu evento",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "João não vê Maria",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Maria não vê João",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "João não consulta intenção de Maria",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Maria não consulta intenção de João",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "campo cliente employee_id rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "campo cliente worker_id rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "campo cliente server_received_at_utc rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "campo cliente client_time rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "querystring não escolhe titular",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "URL com ID de Maria rejeitada",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "C",
+      "name": "mesma chave retorna duplicado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "C",
+      "name": "duplicado devolve mesmo evento",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "C",
+      "name": "chave de João não transfere para Maria",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "C",
+      "name": "mesma chave e versão alterada conflita",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "cinco requests concorrentes têm um create",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "cinco requests retornam o mesmo evento",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "chaves distintas concorrentes geram eventos distintos",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "cinco requests criaram só uma linha",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "resposta perdida após commit é recuperável",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "consulta da intenção retorna original",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "horário cliente +2h rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "horário cliente -2h rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "horário cliente dia-errado rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "G",
+      "name": "horário cliente fuso-diferente rejeitado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "I",
+      "name": "rota inexistente não faz fallback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha before_insert gera rollback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha before_insert não deixa evento parcial",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha after_insert gera rollback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha after_insert não deixa evento parcial",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha before_commit gera rollback",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "D",
+      "name": "falha before_commit não deixa evento parcial",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "revogação percebida após insert bloqueia commit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "revogação entre insert e commit não deixa original",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "C",
+      "name": "core devolve evento confirmado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "J",
+      "name": "hash SHA-256 canônico confere",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "F",
+      "name": "UPDATE original negado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "F",
+      "name": "DELETE original negado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "F",
+      "name": "original preservado após negativas",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "contexto revogado impede nova marcação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "contexto revogado impede histórico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "snapshot stale falha fechado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "snapshot ambíguo falha fechado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "employee ID divergente não passa",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "conta de ensaio ativa antes da revogação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "revogação local concluída",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "token antigo não grava após revogação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "token antigo não lê histórico",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "refresh revogado negado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "E",
+      "name": "novo login revogado negado",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "passed": true,
+  "count": 64
+}

@@ -1,0 +1,261 @@
+{
+  "status": "AUDITORIA_CONFRONTADA_PARADA_SEM_BASELINE",
+  "cycles_sent": 1,
+  "max_cycles": 2,
+  "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d",
+  "package": "outputs/Metallo-Marco4B-RegistrosComprovantes-Auditoria-20261001-Ciclo1-Final.zip",
+  "sha256": "9781552cba3062b07aec753a8f91ef3f8539638468fc02d604ae2d04ef509e47",
+  "zip_entries": 183,
+  "direct_zip_scan": "ZERO ACHADOS",
+  "attachment_confirmed_before_message": true,
+  "prompt_sha256": "b1134deed0677d2fb7c14fcfd37d58c04138866395d71bb6533db3f6c5a5bbf9",
+  "baseline4b_created": false,
+  "remote_accessed": false,
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL",
+  "completed_verdicts": 1,
+  "submissions_including_retry": 2,
+  "retry_reason": "Grok não conseguiu concluir a primeira resposta; nenhum parecer entregue. Mesmo ZIP/prompt, botão Tentar novamente.",
+  "first_failure_evidence": "grok-ciclo1-falha-servico.txt; grok-ciclo1-falha-servico.png",
+  "retry_at": "2026-10-01T16:13:22.5664306Z",
+  "cycle_count_basis": "Ciclos de revisão de conteúdo: a primeira tentativa falhou sem parecer; retentativa idêntica continua ciclo 1. Tentativas de serviço separadas.",
+  "cycle2_required": false,
+  "service_attempts": {
+    "work_send_actions": 2,
+    "observed_ui_variants": 4,
+    "complete_verdicts": 1,
+    "history": "grok-ciclo1-versoes.json",
+    "note": "Mesmo prompt/ZIP. Falhas e variante interrompida não são ciclos de revisão concluídos; origem das variantes adicionais não atribuída."
+  },
+  "verdict": {
+    "path": "parecer-grok-ciclo1-original.md",
+    "sha256": "62c6869a19dd798005b666d5d90ce01d232fc29badf6856569608a948be070df",
+    "url": "https://grok.com/c/6c4ea377-cc82-47f6-885f-091b2d9c668d?rid=580b1bbb-8609-4c8e-ad29-7ef9072c6057",
+    "visible_capture_sha256": "25f1262d2651dc44a6fbcdc155af2088a27fb787ecf7bb661567229b6d8e29f0",
+    "versions_sha256": "0bf059ad43ec0ac63de98d9fb35bf54789a586469e73f9545c58d9aad87d98bf",
+    "screenshot": "grok-ciclo1-parecer.png",
+    "auditor_passive_inspection_only": true,
+    "screenshot_sha256": "3b5f60e1409dfe13bc9e46cff467209c95aefb76b7083d8b6c9f47f0168139b5"
+  },
+  "quality_execution": {
+    "typescript": {
+      "name": "TypeScript",
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "started_at": "2026-10-01T16:32:05.4902649Z",
+      "finished_at": "2026-10-01T16:32:08.2421069Z",
+      "exit_code": 0,
+      "log": "auditoria-typescript.log",
+      "log_bytes": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "name": "lint",
+      "command": "node node_modules/eslint/bin/eslint.js . --max-warnings=0",
+      "started_at": "2026-10-01T16:32:05.9510863Z",
+      "finished_at": "2026-10-01T16:32:16.507603Z",
+      "exit_code": 0,
+      "log": "auditoria-lint.log",
+      "log_bytes": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "parser_recheck": {
+    "exit_code": 0,
+    "passed": true,
+    "pdfs": 60,
+    "zips": 60,
+    "errors": [],
+    "resources": {
+      "samples": 165,
+      "cpu_max_percent": 50,
+      "free_ram_min_bytes": 2669584384,
+      "pg_connections_max": 46
+    }
+  },
+  "local_read_only_postconfront": {
+    "at": "2026-10-01T16:47:46.919Z",
+    "run": "7b71f740-6697-4e38-9768-891a4254f0dc",
+    "read_only_sql_transaction": true,
+    "scope": "Núcleo descartável da carga, sem Auth/rede/remoto",
+    "event_count": 1170,
+    "originals": 1100,
+    "original_sha256": "e273ec2c2d4fc23e42a1aaf848ba75addcabdad551d7ec077bff7ae9cd4328fb",
+    "originals_unchanged": true,
+    "new_events": 70,
+    "new_4a_receipts": 70,
+    "missing_new_receipts": 0,
+    "orphan_receipts": 0,
+    "legacy_fixture_without_4a_physical_receipt": 1100,
+    "begin_503_recovered": [
+      {
+        "user": 5,
+        "key": "8c3ffc8b-4fff-4c50-9483-bdb7a8084d34",
+        "event_id": "37396c0b-dc03-40da-96a4-e9bdd51bb856",
+        "events": 1,
+        "receipt_matches": true,
+        "owner_matches": true
+      },
+      {
+        "user": 9,
+        "key": "36472e19-8452-47d1-8811-eb06f187f1d6",
+        "event_id": "3ac9da84-0c3d-4ab5-a04a-dccef6bcca5f",
+        "events": 1,
+        "receipt_matches": true,
+        "owner_matches": true
+      }
+    ],
+    "sample_zip_sha256": "63326754310817addc3c0836478de0a470fed28224e9ff12473ca0c24c6c1ba4",
+    "sample_zip_matches_download_report": true
+  },
+  "supplemental_check_first_failure": {
+    "exit_code": 1,
+    "observed": "1100 eventos sem receipt físico 4A",
+    "invalid_expectation": "recibo físico 4A para todos os 1170, inclusive LEGACY de bootstrap",
+    "correction_basis": "carga-fixtures.mjs:40-48; registros.mjs DTO LEGACY",
+    "corrected_gate": "70 novos eventos/70 receipts; zero receipt órfão/novo ausente; 1100 originais inalterados",
+    "no_data_modified": true
+  },
+  "findings": [
+    {
+      "id": "4B-C1-01",
+      "classification": "VALID",
+      "nature": "Disponibilidade média observada",
+      "state": "RISCO_MEDIO_PRESERVADO",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-02",
+      "classification": "PARTIAL",
+      "nature": "Cobertura amostrada de revogação; baixa",
+      "state": "LIMITE_DE_EVIDENCIA_PRESERVADO",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-03",
+      "classification": "VALID",
+      "nature": "Grok inspecionou só amostras; baixa",
+      "state": "LIMITE_EXTERNO_PRESERVADO_PARSER_LOCAL_60_60",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-04",
+      "classification": "VALID",
+      "nature": "Logs silenciosos; informativo",
+      "state": "SANADO_COM_COMANDO_DATAS_E_EXIT_CODE_0",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-05",
+      "classification": "VALID",
+      "nature": "Janela autorização→bytes; risco futuro",
+      "state": "RISCO_FUTURO_SEM_VULNERABILIDADE_CONFIRMADA",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-06",
+      "classification": "PARTIAL",
+      "nature": "RLS/visão administrativa; risco futuro",
+      "state": "FRONTEIRA_LOCAL_EXPLICITA_REMOTO_NAO_APLICADO",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-07",
+      "classification": "VALID",
+      "nature": "Controle pessoal sustentado; não vulnerabilidade",
+      "state": "ISOLAMENTO_COMPROVADO_NAS_CONDICOES_LOCAIS",
+      "blocking_local_contract": false
+    },
+    {
+      "id": "4B-C1-08",
+      "classification": "VALID",
+      "nature": "Limite de capacidade; risco futuro",
+      "state": "SEM_EXTRAPOLACAO_DE_PRODUCAO",
+      "blocking_local_contract": false
+    }
+  ],
+  "critical_high_confirmed_open": 0,
+  "final_local_state": {
+    "method": "netstat -ano + Get-Process; Get-NetTCPConnection negou acesso e não foi usado como prova de ausência",
+    "listeners": [
+      {
+        "address": "127.0.0.1",
+        "port": 3101,
+        "pid": 22368
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 3102,
+        "pid": 33636
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 3105,
+        "pid": 29172
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 3106,
+        "pid": 29172
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 54321,
+        "pid": 20504
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 54322,
+        "pid": 20504
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 54323,
+        "pid": 20504
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 54324,
+        "pid": 20504
+      },
+      {
+        "address": "127.0.0.1",
+        "port": 54327,
+        "pid": 20504
+      },
+      {
+        "address": "::1",
+        "port": 54321,
+        "pid": 20504
+      },
+      {
+        "address": "::1",
+        "port": 54322,
+        "pid": 20504
+      },
+      {
+        "address": "::1",
+        "port": 54323,
+        "pid": 20504
+      },
+      {
+        "address": "::1",
+        "port": 54324,
+        "pid": 20504
+      },
+      {
+        "address": "::1",
+        "port": 54327,
+        "pid": 20504
+      }
+    ],
+    "loopback_only": true,
+    "load_ports_stopped": true,
+    "original_process_preserved": true,
+    "baseline4b_found": [],
+    "remote_accessed": false,
+    "publication": false
+  },
+  "recommendation": "ELEGIVEL_PARA_AUTORIZACAO_POSTERIOR_DE_FECHAMENTO_TECNICO_RESTRITO_AO_LABORATORIO_COM_RISCOS_PRESERVADOS",
+  "next_module_started": false,
+  "finished_at": "2026-10-01T16:53:21.286Z",
+  "document_sha256": "8f12099bbc4c2c0099715f78630c23dbc8829dc20632f0a25f1513884b4ad258"
+}

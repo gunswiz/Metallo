@@ -1,0 +1,171 @@
+{
+  "at": "2026-09-27T10:27:46.440Z",
+  "scope": "Ajuste visual local: cores e logo existentes do Metallo, posterior aos pacotes de auditoria preservados.",
+  "checks": [
+    {
+      "name": "Login móvel 390: sem rolagem horizontal, campos >=16px e botão >=44px",
+      "ok": true,
+      "metrics": {
+        "button": {
+          "background": "rgb(22, 140, 255)",
+          "color": "rgb(3, 9, 15)",
+          "height": 44
+        },
+        "focus": {
+          "color": "rgb(91, 178, 255)",
+          "style": "solid",
+          "tag": "INPUT",
+          "width": "3px"
+        },
+        "inputs": [
+          {
+            "font": "16px",
+            "height": 54
+          },
+          {
+            "font": "16px",
+            "height": 54
+          }
+        ],
+        "logo": [
+          {
+            "loaded": true,
+            "width": 132
+          }
+        ],
+        "scroll": 375,
+        "width": 375
+      }
+    },
+    {
+      "name": "Reflow em 320 e 1280px",
+      "ok": true,
+      "metrics": [
+        {
+          "logo": [
+            {
+              "loaded": true,
+              "width": 132
+            }
+          ],
+          "page": "inicio",
+          "requested": 320,
+          "scroll": 305,
+          "width": 305
+        },
+        {
+          "colors": {
+            "accent": "#168cff",
+            "background": "rgb(6, 17, 26)",
+            "buttonText": "#03090f",
+            "highlight": "rgb(91, 178, 255)",
+            "muted": "#8fa4b3",
+            "panel": "#0b1a26",
+            "text": "rgb(244, 247, 250)"
+          },
+          "logo": [
+            {
+              "loaded": true,
+              "width": 156
+            }
+          ],
+          "page": "inicio",
+          "requested": 1280,
+          "scroll": 1265,
+          "width": 1265
+        }
+      ]
+    },
+    {
+      "name": "Navegação móvel 390 e botão Sair >=44px",
+      "ok": true,
+      "metrics": {
+        "links": [
+          {
+            "font": "14px",
+            "height": 44,
+            "text": "Início"
+          },
+          {
+            "font": "14px",
+            "height": 44,
+            "text": "Perfil"
+          },
+          {
+            "font": "14px",
+            "height": 44,
+            "text": "Equipe"
+          },
+          {
+            "font": "14px",
+            "height": 44,
+            "text": "Obra"
+          }
+        ],
+        "logo": [
+          {
+            "height": 50.53125,
+            "loaded": true,
+            "src": "/_next/image?url=%2Fmetallo-logo.png&w=384&q=75",
+            "width": 132
+          }
+        ],
+        "logout": 44,
+        "page": "obra",
+        "requested": 390,
+        "scroll": 375,
+        "width": 375
+      }
+    },
+    {
+      "name": "Foco pelo teclado visível",
+      "ok": true,
+      "metrics": {
+        "color": "rgb(91, 178, 255)",
+        "style": "solid",
+        "tag": "INPUT",
+        "width": "3px"
+      }
+    },
+    {
+      "name": "Contraste dos pares principais >=4,5:1",
+      "ok": true,
+      "ratios": [
+        {
+          "name": "texto",
+          "foreground": "rgb(244, 247, 250)",
+          "background": "rgb(6, 17, 26)",
+          "ratio": 17.71005927463782
+        },
+        {
+          "name": "secundário no painel",
+          "foreground": "#8fa4b3",
+          "background": "#0b1a26",
+          "ratio": 6.831272701453201
+        },
+        {
+          "name": "destaque no extremo claro do gradiente",
+          "foreground": "rgb(91, 178, 255)",
+          "background": "#0b3e69",
+          "ratio": 4.853544088844345
+        },
+        {
+          "name": "botão",
+          "foreground": "rgb(3, 9, 15)",
+          "background": "rgb(22, 140, 255)",
+          "ratio": 5.933590794846912
+        }
+      ]
+    },
+    {
+      "name": "Logo oficial carregada nas telas verificadas",
+      "ok": true,
+      "source": "01_WEB/public/metallo-logo.png reutilizada pelo componente BrandLogo"
+    }
+  ],
+  "limitations": [
+    "Zoom real200% continua pendente na avaliação manual; não houve nova medição de zoom nesta rodada.",
+    "Não é certificação WCAG; leitor de tela e combinações completas não foram auditados.",
+    "As imagens e este JSON representam a prévia visual atual; os pacotes de auditoria anteriores preservam a aparência histórica."
+  ]
+}

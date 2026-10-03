@@ -12,7 +12,7 @@ List<MaterialStock> dashboardTeamMaterials(
   List<MaterialStock> materials,
   String teamId,
 ) =>
-    materials.where((material) => material.teamId == teamId).toList();
+    materials.where((material) => material.servesTeam(teamId)).toList();
 
 List<EquipmentAsset> dashboardTeamEquipment(
   List<EquipmentAsset> equipment,
@@ -56,7 +56,7 @@ List<Map<String, dynamic>> filterDashboardTeamPeople(
   final normalizedQuery = query.trim().toLowerCase();
   return people
       .where((person) =>
-          person['team_id']?.toString() == teamId &&
+          (person['current_team_id'] ?? person['team_id'])?.toString() == teamId &&
           (normalizedQuery.isEmpty ||
               (person['full_name']
                       ?.toString()

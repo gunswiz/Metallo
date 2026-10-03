@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-28T07:32:52.465Z",
+  "scope": "Marco 2B real local; separado dos 683 checks históricos",
+  "checks": [
+    {
+      "category": "A",
+      "name": "João autentica no Auth local",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Maria autentica no Auth local",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "category": "A",
+      "name": "Conta de revogação autentica inicialmente",
+      "ok": false,
+      "detail": ""
+    }
+  ],
+  "passed": false,
+  "error": "A Conta de revogação autentica inicialmente: ",
+  "count": 3
+}

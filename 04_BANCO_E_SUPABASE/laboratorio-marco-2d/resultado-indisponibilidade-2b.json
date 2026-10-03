@@ -1,0 +1,11 @@
+{
+  "at": "2026-09-27T21:36:10.539Z",
+  "scope": "Indisponibilidade isolada do núcleo 2B",
+  "checks": [
+    {
+      "name": "Núcleo desligado retorna indisponibilidade sem fallback",
+      "ok": true
+    }
+  ],
+  "passed": true
+}

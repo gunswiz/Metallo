@@ -1,0 +1,289 @@
+{
+  "at": "2026-09-29T08:44:09.039Z",
+  "scope": "Marco 3C local sintético",
+  "checks": [
+    {
+      "name": "sem DML direto para service_role nas novas tabelas",
+      "ok": true
+    },
+    {
+      "name": "EXECUTE das seis RPCs somente para authenticated",
+      "ok": true
+    },
+    {
+      "name": "João só seleciona sua entrega ativa",
+      "ok": true
+    },
+    {
+      "name": "Maria só seleciona sua entrega ativa",
+      "ok": true
+    },
+    {
+      "name": "inativo não seleciona EPI",
+      "ok": true
+    },
+    {
+      "name": "anon não consulta itens pessoais",
+      "ok": true
+    },
+    {
+      "name": "João cria solicitação própria",
+      "ok": true
+    },
+    {
+      "name": "mesma chave retorna mesmo pedido",
+      "ok": true
+    },
+    {
+      "name": "reuso divergente da chave é negado",
+      "ok": true
+    },
+    {
+      "name": "nova chave para entrega com pedido aberto é negada",
+      "ok": true
+    },
+    {
+      "name": "João não cria para Maria",
+      "ok": true
+    },
+    {
+      "name": "Maria não cria para João",
+      "ok": true
+    },
+    {
+      "name": "entrega encerrada é negada",
+      "ok": true
+    },
+    {
+      "name": "motivo ausente é negado",
+      "ok": true
+    },
+    {
+      "name": "motivo não controlado é negado",
+      "ok": true
+    },
+    {
+      "name": "OUTRO sem observação é negado",
+      "ok": true
+    },
+    {
+      "name": "nota longa é negada",
+      "ok": true
+    },
+    {
+      "name": "p_employee_id novo não altera titular",
+      "ok": true
+    },
+    {
+      "name": "admin Gestão não cria pedido pessoal",
+      "ok": true
+    },
+    {
+      "name": "João consulta somente próprio pedido",
+      "ok": true
+    },
+    {
+      "name": "consulta pessoal omite nota interna",
+      "ok": true
+    },
+    {
+      "name": "Maria não cancela pedido João",
+      "ok": true
+    },
+    {
+      "name": "tabela nova não expõe leitura direta ao portal",
+      "ok": true
+    },
+    {
+      "name": "eventos não expõem leitura direta",
+      "ok": true
+    },
+    {
+      "name": "Maria não faz análise Gestão",
+      "ok": true
+    },
+    {
+      "name": "admin autorizado enxerga pedido mínimo",
+      "ok": true
+    },
+    {
+      "name": "portal não recebe fila Gestão",
+      "ok": true
+    },
+    {
+      "name": "gestor autenticado sem epi:write não consulta fila",
+      "ok": true
+    },
+    {
+      "name": "gestor sem epi:write não analisa",
+      "ok": true
+    },
+    {
+      "name": "aprovação direta sem análise é negada",
+      "ok": true
+    },
+    {
+      "name": "colocar em análise",
+      "ok": true
+    },
+    {
+      "name": "nota interna é visível somente na fila da Gestão",
+      "ok": true
+    },
+    {
+      "name": "cancelamento após análise é negado",
+      "ok": true
+    },
+    {
+      "name": "recusa sem mensagem pública é negada",
+      "ok": true
+    },
+    {
+      "name": "aprovação após análise",
+      "ok": true
+    },
+    {
+      "name": "pedido aprovado aguarda entrega",
+      "ok": true
+    },
+    {
+      "name": "aprovação não cria entrega",
+      "ok": true
+    },
+    {
+      "name": "aprovação não muda estoque",
+      "ok": true
+    },
+    {
+      "name": "histórico registra três estados",
+      "ok": true
+    },
+    {
+      "name": "histórico não pode ser atualizado",
+      "ok": true
+    },
+    {
+      "name": "Maria cria OUTRO com observação aparada",
+      "ok": true
+    },
+    {
+      "name": "observação foi aparada",
+      "ok": true
+    },
+    {
+      "name": "João não cancela Maria",
+      "ok": true
+    },
+    {
+      "name": "Maria cancela própria SOLICITADA",
+      "ok": true
+    },
+    {
+      "name": "cancelar outra vez é idempotente",
+      "ok": true
+    },
+    {
+      "name": "histórico cancelamento preservado",
+      "ok": true
+    },
+    {
+      "name": "retry após cancelamento não recria",
+      "ok": true
+    },
+    {
+      "name": "cinco requisições concorrentes criam uma aberta",
+      "ok": true
+    },
+    {
+      "name": "índice preserva uma aberta",
+      "ok": true
+    },
+    {
+      "name": "entrega aparece ativa antes do envio",
+      "ok": true
+    },
+    {
+      "name": "encerrada entre tela e envio é negada no backend",
+      "ok": true
+    },
+    {
+      "name": "perda/extravio cria apenas solicitação",
+      "ok": true
+    },
+    {
+      "name": "Gestão coloca recusa em análise",
+      "ok": true
+    },
+    {
+      "name": "Gestão recusa com motivo público",
+      "ok": true
+    },
+    {
+      "name": "recusa exibe somente motivo público",
+      "ok": true
+    },
+    {
+      "name": "recusa não modifica entrega",
+      "ok": true
+    },
+    {
+      "name": "pedido antes do encerramento foi criado",
+      "ok": true
+    },
+    {
+      "name": "gestor inicia análise de EPI ativo",
+      "ok": true
+    },
+    {
+      "name": "gestor não aprova entrega encerrada durante análise",
+      "ok": true
+    },
+    {
+      "name": "gestor ainda pode recusar com explicação",
+      "ok": true
+    },
+    {
+      "name": "sem equipe mantém leitura pessoal",
+      "ok": true
+    },
+    {
+      "name": "sem equipe cria troca própria",
+      "ok": true
+    },
+    {
+      "name": "gestor com epi:write em outra equipe não ganha equipe nula",
+      "ok": true
+    },
+    {
+      "name": "gestor de outra equipe não analisa pedido sem equipe",
+      "ok": true
+    },
+    {
+      "name": "admin global mantém fila sem equipe",
+      "ok": true
+    },
+    {
+      "name": "inativo perde pedidos pessoais",
+      "ok": true
+    },
+    {
+      "name": "inativo não cria pedido",
+      "ok": true
+    },
+    {
+      "name": "revogado perde pedidos com token antigo",
+      "ok": true
+    },
+    {
+      "name": "revogado não cria com token antigo",
+      "ok": true
+    },
+    {
+      "name": "revogado não cancela com token antigo",
+      "ok": true
+    }
+  ],
+  "samples": [],
+  "passed": true,
+  "count": 70
+}

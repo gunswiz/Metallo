@@ -1,0 +1,123 @@
+{
+  "at": "2026-10-01T10:32:31.776Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL — laboratório local",
+  "checks": [
+    {
+      "name": "Baseline 2E imutável confere SHA-256",
+      "ok": true
+    },
+    {
+      "name": "Origem local e titulares sintéticos preparam núcleo 2F separado",
+      "ok": true
+    },
+    {
+      "name": "Origem usa audit atômico com versão inicial e acesso só service_role",
+      "ok": true
+    },
+    {
+      "name": "Reconciliação inicial é IN_SYNC e mantém titulares separados",
+      "ok": true
+    },
+    {
+      "name": "Evento repetido é idempotente e não eleva authorization_version",
+      "ok": true
+    },
+    {
+      "name": "Evento fora de ordem e origem anterior falham fechados",
+      "ok": true
+    },
+    {
+      "name": "Mesmo número de versão com estado divergente não autoriza",
+      "ok": true
+    },
+    {
+      "name": "JWT ES256 assinado com iat futuro é rejeitado",
+      "ok": true
+    },
+    {
+      "name": "João e Maria registram originais isolados",
+      "ok": true
+    },
+    {
+      "name": "Duas abas João veem só João e não a intenção Maria",
+      "ok": true
+    },
+    {
+      "name": "Maria não consulta a intenção João e admin não marca",
+      "ok": true
+    },
+    {
+      "name": "Backup anterior à revogação registra corte consistente",
+      "ok": true
+    },
+    {
+      "name": "Revogação na origem propaga sozinha e aumenta versão do núcleo",
+      "ok": true
+    },
+    {
+      "name": "Evento antigo não reduz versão nem reativa acesso",
+      "ok": true
+    },
+    {
+      "name": "Rollback da origem aparece como AHEAD_INVALID e não reativa João",
+      "ok": true
+    },
+    {
+      "name": "Token residual e retry POST não criam novo evento",
+      "ok": true
+    },
+    {
+      "name": "Resultado histórico confirmado permanece consultável apenas pelo titular revogado",
+      "ok": true
+    },
+    {
+      "name": "Refresh e novo login de João revogado não recuperam acesso",
+      "ok": true
+    },
+    {
+      "name": "Restart reaplica origem, mantém revogação e histórico sem duplicar",
+      "ok": true
+    },
+    {
+      "name": "Origem indisponível deixa o núcleo STALE e nega marcação",
+      "ok": true
+    },
+    {
+      "name": "Identidade ausente na origem deixa UNKNOWN e nega marcação",
+      "ok": true
+    },
+    {
+      "name": "Logout global encerra duas abas e duas sessões sem apagar histórico",
+      "ok": true
+    },
+    {
+      "name": "Refresh antigo falha e novo login ativo só funciona após corte",
+      "ok": true
+    },
+    {
+      "name": "F2E-09 reproduz pendência e recupera após Auth confirmar logout",
+      "ok": true
+    },
+    {
+      "name": "F2E-09 com Auth ainda ativo permite retry seguro do logout global",
+      "ok": true
+    },
+    {
+      "name": "Logout global só conclui após provar ausência de sessões anteriores",
+      "ok": true
+    },
+    {
+      "name": "Restore antigo com âncora atual não reativa identidade",
+      "ok": true
+    },
+    {
+      "name": "Sem segredos em evidência e endpoints restritos ao loopback",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "plan_sha256": "f6b2408214c9544e2041f15b15bd00d208ba1f73222c96939ff6430fcf19fcd2",
+  "expected": 28,
+  "origin_sha256": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+  "disposable_removed": true
+}

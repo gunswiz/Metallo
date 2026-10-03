@@ -1,0 +1,1006 @@
+{
+  "started_at": "2026-09-27T17:27:19.850Z",
+  "ports": [
+    54321,
+    54322,
+    54323,
+    54324,
+    54327,
+    3101,
+    3103
+  ],
+  "checks": [
+    {
+      "name": "Todos os listeners Windows sao loopback",
+      "ok": true,
+      "detail": [
+        {
+          "LocalAddress": "::1",
+          "LocalPort": 54327
+        },
+        {
+          "LocalAddress": "::1",
+          "LocalPort": 54324
+        },
+        {
+          "LocalAddress": "::1",
+          "LocalPort": 54323
+        },
+        {
+          "LocalAddress": "::1",
+          "LocalPort": 54322
+        },
+        {
+          "LocalAddress": "::1",
+          "LocalPort": 54321
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 54327
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 54324
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 54323
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 54322
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 54321
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 3103
+        },
+        {
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 3101
+        }
+      ]
+    },
+    {
+      "name": "Bindings efetivos Docker somente loopback",
+      "ok": true,
+      "detail": [
+        {
+          "HostIp": "::1",
+          "HostPort": "54323"
+        },
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "54323"
+        },
+        {
+          "HostIp": "::1",
+          "HostPort": "54324"
+        },
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "54324"
+        },
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "54321"
+        },
+        {
+          "HostIp": "::1",
+          "HostPort": "54321"
+        },
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "54327"
+        },
+        {
+          "HostIp": "::1",
+          "HostPort": "54327"
+        },
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "54322"
+        },
+        {
+          "HostIp": "::1",
+          "HostPort": "54322"
+        }
+      ]
+    },
+    {
+      "name": "Loopback conecta: Supabase IPv4/IPv6; previas opcionais IPv4",
+      "ok": true,
+      "detail": [
+        {
+          "host": "127.0.0.1",
+          "port": 54321,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 54322,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 54323,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 54324,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 54327,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 3101,
+          "connected": true
+        },
+        {
+          "host": "127.0.0.1",
+          "port": 3103,
+          "connected": true
+        },
+        {
+          "host": "::1",
+          "port": 54321,
+          "connected": true
+        },
+        {
+          "host": "::1",
+          "port": 54322,
+          "connected": true
+        },
+        {
+          "host": "::1",
+          "port": 54323,
+          "connected": true
+        },
+        {
+          "host": "::1",
+          "port": 54324,
+          "connected": true
+        },
+        {
+          "host": "::1",
+          "port": 54327,
+          "connected": true
+        }
+      ]
+    },
+    {
+      "name": "Auth responde por loopback",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Host nao alcanca laboratorio pelo IP Ethernet/rede",
+      "ok": true,
+      "detail": [
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54321,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54322,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54323,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54324,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54327,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 3101,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 3103,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54321,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54322,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54323,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54324,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54327,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 3101,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 3103,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54321,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54322,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54323,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54324,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54327,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 3101,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 3103,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        }
+      ]
+    },
+    {
+      "name": "Controle positivo: cliente alcanca servidor sintetico na rede separada",
+      "ok": true,
+      "detail": {
+        "host": "metallo-auditoria-controle-8be0da8e",
+        "port": 3000,
+        "connected": true
+      }
+    },
+    {
+      "name": "Rede separada nao alcanca IP Ethernet/rede nas portas ensaiadas",
+      "ok": true,
+      "detail": [
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54321,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54322,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54323,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54324,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 54327,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 3101,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+          "port": 3103,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54321,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54322,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54323,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54324,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 54327,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 3101,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+          "port": 3103,
+          "connected": false,
+          "reason": "ENETUNREACH"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54321,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54322,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54323,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54324,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 54327,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 3101,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        },
+        {
+          "host": "192.168.0.3",
+          "port": 3103,
+          "connected": false,
+          "reason": "ECONNREFUSED"
+        }
+      ]
+    },
+    {
+      "name": "Firewall continua habilitado em todos os perfis",
+      "ok": true,
+      "detail": [
+        {
+          "Name": "Domain",
+          "Enabled": 1
+        },
+        {
+          "Name": "Private",
+          "Enabled": 1
+        },
+        {
+          "Name": "Public",
+          "Enabled": 1
+        }
+      ]
+    }
+  ],
+  "probe_resources": {
+    "network": "metallo-auditoria-rede-8be0da8e",
+    "control": "metallo-auditoria-controle-8be0da8e",
+    "client": "metallo-auditoria-cliente-8be0da8e"
+  },
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3103
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101
+    }
+  ],
+  "bindings": [
+    {
+      "name": "supabase_studio_laboratorio-marco-1a",
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "::1",
+            "HostPort": "54323"
+          },
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54323"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supabase_pg_meta_laboratorio-marco-1a",
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "name": "supabase_edge_runtime_laboratorio-marco-1a",
+      "ports": {}
+    },
+    {
+      "name": "supabase_storage_laboratorio-marco-1a",
+      "ports": {
+        "5000/tcp": null
+      }
+    },
+    {
+      "name": "supabase_rest_laboratorio-marco-1a",
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "name": "supabase_realtime_laboratorio-marco-1a",
+      "ports": {
+        "4000/tcp": null
+      }
+    },
+    {
+      "name": "supabase_inbucket_laboratorio-marco-1a",
+      "ports": {
+        "8025/tcp": [
+          {
+            "HostIp": "::1",
+            "HostPort": "54324"
+          },
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54324"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supabase_auth_laboratorio-marco-1a",
+      "ports": {
+        "9999/tcp": null
+      }
+    },
+    {
+      "name": "supabase_kong_laboratorio-marco-1a",
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54321"
+          },
+          {
+            "HostIp": "::1",
+            "HostPort": "54321"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supabase_analytics_laboratorio-marco-1a",
+      "ports": {
+        "4000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54327"
+          },
+          {
+            "HostIp": "::1",
+            "HostPort": "54327"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supabase_db_laboratorio-marco-1a",
+      "ports": {
+        "5432/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54322"
+          },
+          {
+            "HostIp": "::1",
+            "HostPort": "54322"
+          }
+        ]
+      }
+    }
+  ],
+  "interfaces": [
+    {
+      "InterfaceAlias": "Ethernet",
+      "IPAddress": "fe80::f46c:dbb9:9c61:f01b%5",
+      "AddressFamily": 23
+    },
+    {
+      "InterfaceAlias": "Ethernet",
+      "IPAddress": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "AddressFamily": 23
+    },
+    {
+      "InterfaceAlias": "Ethernet",
+      "IPAddress": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "AddressFamily": 23
+    },
+    {
+      "InterfaceAlias": "Ethernet",
+      "IPAddress": "192.168.0.3",
+      "AddressFamily": 2
+    }
+  ],
+  "loopback": [
+    {
+      "host": "127.0.0.1",
+      "port": 54321,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 54322,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 54323,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 54324,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 54327,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 3101,
+      "connected": true
+    },
+    {
+      "host": "127.0.0.1",
+      "port": 3103,
+      "connected": true
+    },
+    {
+      "host": "::1",
+      "port": 54321,
+      "connected": true
+    },
+    {
+      "host": "::1",
+      "port": 54322,
+      "connected": true
+    },
+    {
+      "host": "::1",
+      "port": 54323,
+      "connected": true
+    },
+    {
+      "host": "::1",
+      "port": 54324,
+      "connected": true
+    },
+    {
+      "host": "::1",
+      "port": 54327,
+      "connected": true
+    }
+  ],
+  "host_to_network_ip": [
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 54321,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 54322,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 54323,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 54324,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 54327,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 3101,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+      "port": 3103,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 54321,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 54322,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 54323,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 54324,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 54327,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 3101,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+      "port": 3103,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 54321,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 54322,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 54323,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 54324,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 54327,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 3101,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    },
+    {
+      "host": "192.168.0.3",
+      "port": 3103,
+      "connected": false,
+      "reason": "ECONNREFUSED"
+    }
+  ],
+  "separate_network": {
+    "control": {
+      "host": "metallo-auditoria-controle-8be0da8e",
+      "port": 3000,
+      "connected": true
+    },
+    "attempts": [
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 54321,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 54322,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 54323,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 54324,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 54327,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 3101,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:995a:4219:8f1d:e545",
+        "port": 3103,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 54321,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 54322,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 54323,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 54324,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 54327,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 3101,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "2804:29b8:5147:be4:97e0:eaad:79:3eeb",
+        "port": 3103,
+        "connected": false,
+        "reason": "ENETUNREACH"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 54321,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 54322,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 54323,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 54324,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 54327,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 3101,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      },
+      {
+        "host": "192.168.0.3",
+        "port": 3103,
+        "connected": false,
+        "reason": "ECONNREFUSED"
+      }
+    ]
+  },
+  "firewall": [
+    {
+      "Name": "Domain",
+      "Enabled": 1
+    },
+    {
+      "Name": "Private",
+      "Enabled": 1
+    },
+    {
+      "Name": "Public",
+      "Enabled": 1
+    }
+  ],
+  "physical_lan_test": "Nao executado: nenhuma segunda maquina fisica disponivel. Evidencia A: bind real de loopback + sondas host e outra rede Docker.",
+  "finished_at": "2026-09-27T17:27:31.573Z",
+  "passed": true
+}

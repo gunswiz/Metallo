@@ -1,0 +1,142 @@
+psql:/tmp/metallo-20260831150748_initial_almoxarifado_schema.sql:1: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/tmp/metallo-20260831151331_auth_profile_and_individual_assets.sql:22: NOTICE:  trigger "on_auth_user_created" for relation "auth.users" does not exist, skipping
+psql:/tmp/metallo-20260901010548_marco4_locations_catalog_admin.sql:3: NOTICE:  constraint "teams_location_type_check" of relation "teams" does not exist, skipping
+psql:/tmp/metallo-20260902231312_epi_management.sql:2: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/tmp/metallo-20260903154000_epi_request_variants.sql:42: NOTICE:  trigger "reconcile_epi_request_after_delivery" for relation "public.epi_deliveries" does not exist, skipping
+psql:/tmp/metallo-20260903184203_aso_and_rental_return.sql:1: WARNING:  there is already a transaction in progress
+WARNING:  there is no transaction in progress
+psql:/tmp/metallo-20260904195747_secure_epi_mutations.sql:77: NOTICE:  trigger "enforce_epi_delivery_close" for relation "public.epi_deliveries" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:5: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:16: NOTICE:  relation "epi_professions" already exists, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:29: NOTICE:  relation "epi_profession_items" already exists, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:89: NOTICE:  constraint "epi_items_return_policy_check" of relation "epi_items" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:170: NOTICE:  policy "epi_item_variants_read" for relation "public.epi_item_variants" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:179: NOTICE:  policy "epi_item_variants_admin_write" for relation "public.epi_item_variants" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:193: NOTICE:  policy "operation_reasons_read" for relation "public.operation_reasons" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:202: NOTICE:  policy "operation_reasons_admin_write" for relation "public.operation_reasons" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:216: NOTICE:  policy "work_locations_read" for relation "public.work_locations" does not exist, skipping
+psql:/tmp/metallo-20260905032804_company_settings_phase_one.sql:225: NOTICE:  policy "work_locations_admin_write" for relation "public.work_locations" does not exist, skipping
+psql:/tmp/metallo-20260905191817_fix_confirmed_functional_bugs.sql:202: NOTICE:  trigger "preserve_epi_item_system_key" for relation "public.epi_items" does not exist, skipping
+psql:/tmp/metallo-20260906201809_web_mobile_parity.sql:1: WARNING:  there is already a transaction in progress
+psql:/tmp/metallo-20260906201809_web_mobile_parity.sql:24: NOTICE:  constraint "assets_ownership_type_check" of relation "assets" does not exist, skipping
+psql:/tmp/metallo-20260906201809_web_mobile_parity.sql:24: NOTICE:  constraint "assets_rental_dates_check" of relation "assets" does not exist, skipping
+psql:/tmp/metallo-20260906201809_web_mobile_parity.sql:160: NOTICE:  trigger "sync_asset_legacy_metadata" for relation "public.assets" does not exist, skipping
+WARNING:  there is no transaction in progress
+psql:/tmp/metallo-20260907011818_harden_rpc_and_close_public_signup.sql:1: WARNING:  there is already a transaction in progress
+psql:/tmp/metallo-20260907011818_harden_rpc_and_close_public_signup.sql:60: NOTICE:  trigger "enforce_metallo_user_provisioning" for relation "auth.users" does not exist, skipping
+WARNING:  there is no transaction in progress
+psql:/tmp/metallo-20260907221108_restore_auth_profile_trigger_execution.sql:1: WARNING:  there is already a transaction in progress
+WARNING:  there is no transaction in progress
+psql:/tmp/metallo-20260907222004_secure_admin_user_provisioning.sql:1: WARNING:  there is already a transaction in progress
+WARNING:  there is no transaction in progress
+psql:/tmp/metallo-20260907222411_strip_user_provisioning_token.sql:1: WARNING:  there is already a transaction in progress
+psql:/tmp/metallo-20260907222411_strip_user_provisioning_token.sql:21: NOTICE:  trigger "strip_metallo_provisioning_token" for relation "auth.users" does not exist, skipping
+WARNING:  there is no transaction in progress
+{
+  "started_at": "2026-09-27T14:20:13.305Z",
+  "database": "metallo_replay_1790518813305",
+  "method": "Banco local temporario com infraestrutura schema-only da pilha atual. Schemas public/private removidos somente na copia; baseline reconstruida dos 42 SQLs e ajustes catalogados. Nao e replay da instalacao de Auth/Storage nem restore de dados.",
+  "checks": [
+    {
+      "name": "schemas de aplicacao vazios antes da baseline",
+      "ok": true
+    },
+    {
+      "name": "42 migrations de baseline aplicadas",
+      "ok": true
+    },
+    {
+      "name": "baseline ainda exige equipe",
+      "ok": true
+    },
+    {
+      "name": "equipe nullable apos optional_team",
+      "ok": true
+    },
+    {
+      "name": "replay equivale a aplicacao vigente em colunas funcoes policies constraints triggers grants",
+      "ok": true
+    },
+    {
+      "name": "reaplicar deltas e idempotente",
+      "ok": true
+    }
+  ],
+  "applied": [
+    {
+      "name": "20260925120000_employee_identity_foundation.sql",
+      "sha256": "cc823519e7b9cb80b2c593757cc6b150ffbf5209a69a7b4a6fd9262a8085c302"
+    },
+    {
+      "name": "20260926213000_portal_profile_optional_team.sql",
+      "sha256": "31edf5e9a1fc78fd138b46e83719c86afc6d68e8a6c8a4333ae5ad3cb387ba6f"
+    },
+    {
+      "name": "20260926224000_unassigned_employee_management_scope.sql",
+      "sha256": "ef8fa075c46e9652dd5e7a6a4f31b97fd54e2138adaa6980c9360452b353c8c8"
+    },
+    {
+      "name": "20260926233500_personal_epi_explicit_team_scope.sql",
+      "sha256": "b27a73581aa2ba3666dbc7420f5d64f3037752db04908b289c52fa40bc515dca"
+    },
+    {
+      "name": "20260927124559_personal_current_work.sql",
+      "sha256": "55a9cb4d228a373e7e1d1630c8c4e195a9b008e47fce718bb9357778538b5ca8"
+    }
+  ],
+  "infrastructure_dump_sha256": "1508fafc79aa74d6be0c3fcb7d1973e2b4a68cf6d090891a8d80ab6aa6ee8281",
+  "infrastructure_default_privileges": "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO anon;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO authenticated;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO anon;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO authenticated;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO service_role;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO anon;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO authenticated;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO service_role;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO anon;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO authenticated;\nALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO service_role;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO postgres;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO anon;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO authenticated;\nALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO service_role;",
+  "baseline_function_default": "CLI auto-expose: EXECUTE anon/authenticated antes do historico; a migration 1A revoga esses defaults.",
+  "baseline_log": "Aplicada: 20260831150748_initial_almoxarifado_schema.sql\nAplicada: 20260831150949_lock_down_movement_rpc.sql\nAplicada: 20260831151027_index_movement_performed_by.sql\nAplicada: 20260831151331_auth_profile_and_individual_assets.sql\nAplicada: 20260831151419_index_asset_movement_teams.sql\nAplicada: 20260831151815_secure_initial_admin_bootstrap.sql\nAplicada: 20260831151934_support_admin_user_activation.sql\nAplicada: 20260831152721_remove_unused_admin_helper.sql\nAplicada: 20260831202340_fix_inventory_asset_writes_and_realtime.sql\nAplicada: 20260831203026_atomic_team_inventory_creation.sql\nAplicada: 20260831213111_reuse_material_catalog_code_across_teams.sql\nAplicada: 20260831213152_reuse_equipment_catalog_code_across_teams.sql\nAplicada: 20260831224431_marco3_admin_roles_history_teams.sql\nAplicada: 20260831224626_marco3_role_permissions.sql\nAplicada: 20260901010548_marco4_locations_catalog_admin.sql\nAplicada: 20260901014803_marco4_cosem_name.sql\nAplicada: 20260901021824_fix_material_movement_types.sql\nAplicada: 20260901024254_marco4_2_engineer_role.sql\nAplicada: 20260901024309_marco4_2_register_movement_engineer.sql\nAplicada: 20260902231312_epi_management.sql\nAplicada: 20260903001647_epi_profession_kits.sql\nAplicada: 20260903050000_epi_grouped_deliveries.sql\nAplicada: 20260903061000_epi_requests.sql\nAplicada: 20260903070000_epi_employee_item_sets.sql\nAplicada: 20260903133000_epi_stock_variants.sql\nAplicada: 20260903140500_close_epi_requests_on_delivery.sql\nAplicada: 20260903154000_epi_request_variants.sql\nAplicada: 20260903184203_aso_and_rental_return.sql\nAplicada: 20260904195747_secure_epi_mutations.sql\nAplicada: 20260905032804_company_settings_phase_one.sql\nAplicada: 20260905032907_company_settings_policy_cleanup.sql\nAplicada: 20260905191817_fix_confirmed_functional_bugs.sql\nAplicada: 20260906142601_web_platform_hardening.sql\nAplicada: 20260906201809_web_mobile_parity.sql\nAplicada: 20260906203232_allow_epi_stock_entries_for_operators.sql\nAplicada: 20260907011818_harden_rpc_and_close_public_signup.sql\nAplicada: 20260907060320_close_partial_epi_delivery.sql\nAplicada: 20260907221108_restore_auth_profile_trigger_execution.sql\nAplicada: 20260907222004_secure_admin_user_provisioning.sql\nAplicada: 20260907222411_strip_user_provisioning_token.sql\nAplicada: 20260912073507_user_operation_permissions.sql\nAplicada: 20260912073518_site_operations.sql\nDois ajustes do catalogo efetivo aplicados apenas no laboratorio.\nBaseline local aplicada; comparar com o catalogo remoto antes da migration 1A.\n",
+  "function_effective": {
+    "config": [
+      "search_path=\"\""
+    ],
+    "returns": "TABLE(employee_id uuid, full_name text, profession text, team_name text)",
+    "arguments": "",
+    "definition": "CREATE OR REPLACE FUNCTION public.my_employee_profile()\n RETURNS TABLE(employee_id uuid, full_name text, profession text, team_name text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select e.id, e.full_name, e.profession, t.name\n  from private.employee_identity i\n    join private.employee_portal_accounts a on a.auth_user_id = i.auth_user_id\n    join public.profiles p on p.id = i.auth_user_id and not p.active\n    join public.epi_employees e on e.id = i.employee_id and e.active\n    left join public.teams t on t.id = e.team_id and t.active\n  where i.auth_user_id = (select auth.uid()) and i.status = 'active';\n$function$\n",
+    "security_definer": true
+  },
+  "comparisons": [
+    {
+      "category": "columns",
+      "replay_sha256": "faca958f91f51b0ca819c971c08561d053355058c1913df64aab3732bef07d96",
+      "live_sha256": "faca958f91f51b0ca819c971c08561d053355058c1913df64aab3732bef07d96",
+      "equal": true
+    },
+    {
+      "category": "functions",
+      "replay_sha256": "1d8a104e20ac920549088d04db5a03ec985361b3d81e1b0a609554eea71069a1",
+      "live_sha256": "1d8a104e20ac920549088d04db5a03ec985361b3d81e1b0a609554eea71069a1",
+      "equal": true
+    },
+    {
+      "category": "policies",
+      "replay_sha256": "0a703fd9393bb6a96bb243e23225603b7d14aaad00e50a227738fec2d40acb9e",
+      "live_sha256": "0a703fd9393bb6a96bb243e23225603b7d14aaad00e50a227738fec2d40acb9e",
+      "equal": true
+    },
+    {
+      "category": "constraints",
+      "replay_sha256": "dd5551452bb1a6687027e95611d074128cbb818420279564804ae921c17415ce",
+      "live_sha256": "dd5551452bb1a6687027e95611d074128cbb818420279564804ae921c17415ce",
+      "equal": true
+    },
+    {
+      "category": "triggers",
+      "replay_sha256": "8f868c9d95896846f8e99dda7488dca466fad39e14c5a48f85b3c7b3d4fe04b7",
+      "live_sha256": "8f868c9d95896846f8e99dda7488dca466fad39e14c5a48f85b3c7b3d4fe04b7",
+      "equal": true
+    },
+    {
+      "category": "grants",
+      "replay_sha256": "537660ce968ede87d97dc832c0799020f952eb58a13f1c0bac9c42a06156b538",
+      "live_sha256": "537660ce968ede87d97dc832c0799020f952eb58a13f1c0bac9c42a06156b538",
+      "equal": true
+    }
+  ],
+  "differences": [],
+  "temporary_database_removed": true,
+  "finished_at": "2026-09-27T14:20:36.852Z",
+  "passed": true
+}

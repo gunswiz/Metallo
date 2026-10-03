@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'dashboard_repository.dart';
 import 'normalizar_texto_opcional.dart';
+import 'site_operations_repository.dart';
 
 class EpiRepository {
   EpiRepository(this.client, this.dashboardRepository);
@@ -38,9 +39,22 @@ class EpiRepository {
               'id,full_name,registration_code,profession,team_id,shirt_size,pants_size,shoe_size,aso_exam_date,aso_expiry_date,active,created_at,teams(name)')
           .eq('active', true)
           .order('full_name');
-      return (rows as List)
-          .map((e) => Map<String, dynamic>.from(e as Map))
-          .toList();
+      final assignments = await client.from('employee_assignments')
+          .select('employee_id,team_id,starts_at,ends_at').order('starts_at', ascending: false);
+      final teams = await client.from('teams').select('id,name,worksite_id');
+      final now = DateTime.now();
+      return (rows as List).map((e) {
+        final person = Map<String, dynamic>.from(e as Map);
+        final assignment = assignments.where((a) =>
+          a['employee_id'] == person['id'] &&
+          !(DateTime.tryParse(a['starts_at'].toString())?.isAfter(now) ?? true) &&
+          (a['ends_at'] == null || (DateTime.tryParse(a['ends_at'].toString())?.isAfter(now) ?? false))).firstOrNull;
+        final currentId = assignment?['team_id'] ?? person['team_id'];
+        final current = teams.where((t) => t['id'] == currentId).firstOrNull;
+        return {...person, 'current_team_id': currentId,
+          'current_team_name': current?['name'] ?? 'Sem equipe',
+          'current_worksite_id': current?['worksite_id']};
+      }).toList();
     } on PostgrestException catch (e) {
       if (e.code != 'PGRST205' && !e.message.contains('epi_employees')) rethrow;
       final dashboard = await dashboardRepository.fetchDashboard();
@@ -91,7 +105,7 @@ class EpiRepository {
     final rows = await client
         .from('epi_stock_batches')
         .select(
-            'id,item_id,quantity,variant,ca_number,brand_model,lot_number,expires_on,received_at,epi_items(code,system_key,name,item_kind,unit)')
+            'id,item_id,worksite_id,quantity,variant,ca_number,brand_model,lot_number,expires_on,received_at,worksites(name),epi_items(code,system_key,name,item_kind,unit)')
         .order('received_at', ascending: false);
     return (rows as List)
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -306,18 +320,14 @@ class EpiRepository {
     });
   }
 
-  Future<void> registerEpiDeliveryBatch({
-    required String employeeId,
-    required List<Map<String, dynamic>> lines,
-    String reason = 'initial',
-    String? note,
+  Future<String> registerEpiDeliveryBatch({
+    required String employeeId, required List<Map<String, dynamic>> lines,
+    String reason = 'initial', String? note, DateTime? occurredAt,
   }) async {
-    await client.rpc('register_epi_delivery_batch', params: {
-      'p_employee_id': employeeId,
-      'p_lines': lines,
-      'p_delivery_reason': reason,
-      'p_note': nullableText(note),
-    });
+    return SiteOperationsRepository(client).submit('deliver_epi', {
+      'employee_id': employeeId, 'lines': lines, 'reason': reason,
+      'note': nullableText(note),
+    }, occurredAt ?? DateTime.now());
   }
 
   Future<void> closeEpiDelivery(String id, String status,

@@ -1,0 +1,45 @@
+{
+  "at": "2026-09-27T11:39:48.1379967Z",
+  "method": "Cua DOM read-only em navegador integrado; largura CSS621px; NÃO é zoom real200%",
+  "portal": [
+    {
+      "scrollWidth": 606,
+      "buttonsOffscreen": 0,
+      "width": 621,
+      "route": "inicio"
+    },
+    {
+      "scrollWidth": 606,
+      "buttonsOffscreen": 0,
+      "width": 621,
+      "route": "perfil"
+    },
+    {
+      "scrollWidth": 606,
+      "buttonsOffscreen": 0,
+      "width": 621,
+      "route": "equipe"
+    },
+    {
+      "scrollWidth": 606,
+      "buttonsOffscreen": 0,
+      "width": 621,
+      "route": "obra"
+    }
+  ],
+  "gestao": [
+    {
+      "scrollWidth": 941,
+      "buttonsOffscreen": 0,
+      "width": 956,
+      "route": "previa/correcoes-metallo"
+    },
+    {
+      "legendFontPx": 14,
+      "scrollWidth": 941,
+      "buttonsOffscreen": 0,
+      "width": 956,
+      "route": "previa/consumo"
+    }
+  ]
+}

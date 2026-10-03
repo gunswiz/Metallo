@@ -1,0 +1,254 @@
+{
+  "at": "2026-09-29T15:55:53.184749+00:00",
+  "scope": "Apresentação humana 3E-LAB-v3; somente laboratório sintético; sem baseline/novo Grok/remoto",
+  "pdfs": [
+    {
+      "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+      "pages": 1,
+      "sha256": "f7ecea3849bf0969245afe51c304f8c2e6dabf011e740f4492591ee4984a2e60",
+      "a4": true,
+      "visible_technical_identifiers_or_hashes": false,
+      "metadata_retains_report_id": true,
+      "signature_pages": [],
+      "normal_supply_cards_not_split": true,
+      "all_text_inside_print_margins": true,
+      "audit_v2_pages": 1,
+      "audit_v2_sha256": "5917310c676b74ac8240f012983f5eb2d11547b9518e4b7c7126ffdaec80a5ac",
+      "ca_without_repeated_numeric_prefix": true,
+      "unchanged_for_semantic_review": true
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+      "pages": 1,
+      "sha256": "7c359a35300e1dc9f9604735ade09da7a52bc8908f4cf9f1519134b3d80ae3e2",
+      "a4": true,
+      "visible_technical_identifiers_or_hashes": false,
+      "metadata_retains_report_id": true,
+      "signature_pages": [
+        1
+      ],
+      "normal_supply_cards_not_split": true,
+      "all_text_inside_print_margins": true,
+      "audit_v2_pages": 2,
+      "audit_v2_sha256": "a514cdfd0c9918194f5debbc064fb9a4cb16184a49a83942d48269bf9c664078",
+      "ca_without_repeated_numeric_prefix": true,
+      "semantic_titles_match_active_source": true
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+      "pages": 1,
+      "sha256": "059dd88f804a156f63784efbe9c65849426b13b25c3420ffe0ef0bafd88d45a0",
+      "a4": true,
+      "visible_technical_identifiers_or_hashes": false,
+      "metadata_retains_report_id": true,
+      "signature_pages": [
+        1
+      ],
+      "normal_supply_cards_not_split": true,
+      "all_text_inside_print_margins": true,
+      "audit_v2_pages": 2,
+      "audit_v2_sha256": "bb3e520845f586fa4a6d78ff6103a1fa52885c39dbb5464fae43fbed27a7ca8d",
+      "ca_without_repeated_numeric_prefix": true,
+      "semantic_titles_match_active_source": true
+    },
+    {
+      "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+      "pages": 12,
+      "sha256": "759896650c45df5a4408aa4ce9cd663b5f28335aff318bdb57e8cd9463602d08",
+      "a4": true,
+      "visible_technical_identifiers_or_hashes": false,
+      "metadata_retains_report_id": true,
+      "signature_pages": [
+        12
+      ],
+      "normal_supply_cards_not_split": true,
+      "all_text_inside_print_margins": true,
+      "audit_v2_pages": 24,
+      "audit_v2_sha256": "b72848541b21c51042d84fb02cbb865b108100e453cbfa21df4abbcb3bb62c09",
+      "ca_without_repeated_numeric_prefix": true,
+      "semantic_titles_match_active_source": true
+    }
+  ],
+  "unchanged_security_files": [
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/contrato-ficha-historico.sql",
+      "sha256": "3206f7d4c31c053b9dccfdeb24a7e69eb11cdda73c1cf6cce63d5e19b3aca9e5"
+    },
+    {
+      "path": "04_BANCO_E_SUPABASE/laboratorio-marco-3e/provas-3e.mjs",
+      "sha256": "9e6583ba2ea31341548c2109e0b04c7ed4f461788d36be912fff073171626a6e"
+    },
+    {
+      "path": "01_WEB/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session.ts",
+      "sha256": "758699b3cc3af4d4a50f55809a6b2f54fcdf57cbf9a04bc206573feb9d4ff14d"
+    },
+    {
+      "path": "01_WEB/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository.ts",
+      "sha256": "e038adb7e5c8f3dd41b59e475604d156639237f821759a4966a547dc49f76f35"
+    },
+    {
+      "path": "01_WEB/app/(02_SISTEMA)/funcionarios/[id]/epi/pdf/route.ts",
+      "sha256": "819481bdaf1216de869e35a1f8151d9b35ee194b12576837419fe4156dff2f46"
+    }
+  ],
+  "secret_scan": {
+    "scope": "4 PDFs, bytes brutos + texto extraído + metadados; sem ZIP novo",
+    "patterns_reused_from": "laboratorio-marco-3d/gerar-baseline-3d.py",
+    "findings": [],
+    "passed": true
+  },
+  "immutable_origin_and_cycle2_hashes_verified": true,
+  "visual_inspection": {
+    "all_pages_rendered_dpi": [
+      72,
+      144
+    ],
+    "contact_sheet_all_pages_reviewed": true,
+    "first_filtered_current_last_and_dense_pages_reviewed_full_resolution": true,
+    "real_browser_zoom_or_physical_print_not_claimed": true,
+    "ca_revision_all_pages_contact_and_three_single_page_reports_reviewed": true,
+    "semantic_revision_three_histories_and_multipage_last_and_contact_reviewed": true
+  },
+  "validation_note": "A checagem inicial sem distinção de maiúsculas reconheceu Tamanho / variante como enum TAMANHO. A checagem final distingue o enum bruto do rótulo humano permitido na Ficha Atual; nenhum campo foi removido por esse falso positivo.",
+  "affected_tests": {
+    "unit_and_portal": {
+      "passed": 25,
+      "log": "unitarios-consistencia-final.log",
+      "final_at_local": "2026-09-29T12:54:33-03:00"
+    },
+    "real_auth_jwt_postgrest_http": {
+      "passed": 55,
+      "at": "2026-09-29T15:17:08.992Z",
+      "log": "provas-simplificacao.log",
+      "not_repeated_for_ca_presentation": true,
+      "not_repeated_for_semantic_presentation": true
+    },
+    "typecheck": {
+      "passed": true,
+      "log": "typecheck-consistencia-final.log"
+    },
+    "lint": {
+      "passed": true,
+      "log": "lint-consistencia-final.log"
+    },
+    "full_web_and_unrelated_modules_not_repeated": true
+  },
+  "presentation_updates": [
+    {
+      "kind": "CA sem prefixo repetido, somente apresentação",
+      "previous_at": "2026-09-29T15:30:13.239381+00:00",
+      "previous_pdf_hashes": [
+        {
+          "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+          "sha256": "38b8af1a8b9fe05584cfb365a55f6a7bf6431cd1005fc43b4429761c011097ed"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+          "sha256": "b60e65a41938ec26e9625cfa9ff5b75fdb519fdc89564d79ee0a3b14c6e8bb6d"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+          "sha256": "d72e5916586b318b745588bfcb683ce29ab48e348ab8ac07ceeda02bcea3865f"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+          "sha256": "63d64ce71489630e8cd635fe8080e3baf502e3db8870c4c85179a93240d00e4e"
+        }
+      ],
+      "previous_unit_tests": {
+        "passed": 22,
+        "log": "unitarios-simplificacao-final.log",
+        "final_at_local": "2026-09-29T12:28:59-03:00"
+      }
+    },
+    {
+      "kind": "Consistência semântica entre estado atual e entrega para troca",
+      "previous_at": "2026-09-29T15:39:38.634108+00:00",
+      "previous_pdf_hashes": [
+        {
+          "path": "outputs/marco-3e-previa-sintetica/ficha-atual-sintetica.pdf",
+          "sha256": "f7ecea3849bf0969245afe51c304f8c2e6dabf011e740f4492591ee4984a2e60"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-completo-sintetico.pdf",
+          "sha256": "de21ad3b8227a9b8b55a2817d1e0de4a44e349579cd3dc84081a68f799a14770"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-filtrado-sintetico.pdf",
+          "sha256": "18430be3a23e9f27d124e760c7ad43c757275c645b3a250645c5d434e595835a"
+        },
+        {
+          "path": "outputs/marco-3e-previa-sintetica/historico-multipagina-sintetico.pdf",
+          "sha256": "963841975948f32d3516876ba4d6e8915e887e899148f21b47d2a4363476694f"
+        }
+      ],
+      "previous_unit_tests": {
+        "passed": 23,
+        "log": "unitarios-ca-final.log",
+        "final_at_local": "2026-09-29T12:38:18-03:00"
+      }
+    }
+  ],
+  "semantic_consistency": {
+    "at": "2026-09-29T15:52:56.045194+00:00",
+    "source": "Somente leitura de catálogo/estados do Docker local; amostras provêm da fixture sintética de unidade, não de registros reais de funcionários",
+    "database_before": {
+      "at": "2026-09-29T15:52:55.923978+00:00",
+      "functions": [
+        {
+          "name": "register_epi_delivery_batch(uuid,jsonb,text,text)",
+          "definition": "CREATE OR REPLACE FUNCTION public.register_epi_delivery_batch(p_employee_id uuid, p_lines jsonb, p_delivery_reason text DEFAULT 'initial'::text, p_note text DEFAULT NULL::text)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  v_employee public.epi_employees%rowtype;\n  v_batch public.epi_stock_batches%rowtype;\n  v_line jsonb;\n  v_quantity integer;\n  v_group_id uuid := gen_random_uuid();\nbegin\n  perform pg_advisory_xact_lock_shared(73002,1);\n  if not public.can_operate('epi:write') then\n    raise exception 'forbidden';\n  end if;\n  if jsonb_typeof(p_lines) is distinct from 'array'\n     or jsonb_array_length(p_lines) = 0\n     or jsonb_array_length(p_lines) > 100 then\n    raise exception 'invalid_delivery_lines';\n  end if;\n\n  select * into v_employee\n  from public.epi_employees\n  where id = p_employee_id and active\n  for update;\n  if not found then raise exception 'employee_not_found'; end if;\n  v_employee.team_id := public.employee_work_team(v_employee.id, coalesce(nullif(current_setting('metallo.occurred_at',true),'')::timestamptz,now()));\n  if not public.can_operate('epi:write', v_employee.team_id) then raise exception 'forbidden_team'; end if;\n\n  for v_line in select value from jsonb_array_elements(p_lines)\n  loop\n    v_quantity := (v_line->>'quantity')::integer;\n    if v_quantity is null or v_quantity <= 0 then\n      raise exception 'invalid_quantity';\n    end if;\n\n    select * into v_batch\n    from public.epi_stock_batches\n    where id = (v_line->>'stock_batch_id')::uuid\n      and item_id = (v_line->>'item_id')::uuid\n    for update;\n    if not found then raise exception 'stock_batch_not_found'; end if;\n    if v_batch.worksite_id is not null and v_batch.worksite_id is distinct from (select worksite_id from public.teams where id=v_employee.team_id) then raise exception 'wrong_worksite_stock'; end if;\n    if v_batch.quantity < v_quantity then\n      raise exception 'insufficient_epi_stock';\n    end if;\n\n    update public.epi_stock_batches\n    set quantity = quantity - v_quantity\n    where id = v_batch.id;\n\n    insert into public.epi_deliveries (\n      employee_id, team_id, item_id, stock_batch_id, quantity,\n      delivery_reason, delivery_group_id, ca_snapshot,\n      brand_model_snapshot, lot_snapshot, variant_snapshot, note, delivered_by\n    ) values (\n      v_employee.id, v_employee.team_id, v_batch.item_id, v_batch.id,\n      v_quantity, p_delivery_reason, v_group_id, v_batch.ca_number,\n      v_batch.brand_model, v_batch.lot_number, v_batch.variant,\n      nullif(trim(p_note), ''), (select auth.uid())\n    );\n  end loop;\n\n  return v_group_id;\nend;\n$function$\n",
+          "sha256": "d6acbecafb1aa818bfbe3afc5b09d8bbc047bc67c28494aea904a35c28184939"
+        },
+        {
+          "name": "register_epi_delivery_3d(uuid,uuid)",
+          "definition": "CREATE OR REPLACE FUNCTION public.register_epi_delivery_3d(p_preparation_id uuid, p_idempotency_key uuid)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_prep public.epi_prepared_kits_3d%rowtype; v_employee public.epi_employees%rowtype;\n  v_existing public.epi_delivery_groups_3d%rowtype; v_group uuid; v_team_name text; v_work_name text;\n  v_line jsonb; v_batch public.epi_stock_batches%rowtype; v_item public.epi_items%rowtype;\nbegin\n  if (select auth.uid()) is null or p_preparation_id is null or p_idempotency_key is null\n  then raise exception 'invalid_delivery'; end if;\n  perform 1 from public.profiles p where p.id=(select auth.uid()) and p.active for share;\n  if not found then raise exception 'management_access_denied'; end if;\n  select * into v_prep from public.epi_prepared_kits_3d where id=p_preparation_id for share;\n  if not found then raise exception 'preparation_not_found'; end if;\n  select * into v_employee from public.epi_employees where id=v_prep.employee_id and active for update;\n  if not found then raise exception 'employee_not_found'; end if;\n  if not ((v_employee.team_id is not null and public.can_operate('epi:write',v_employee.team_id))\n    or (v_employee.team_id is null and exists(select 1 from public.profiles p\n      where p.id=(select auth.uid()) and p.active and p.role='admin')))\n  then raise exception 'management_access_denied'; end if;\n  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_preparation_id::text,8032));\n  select * into v_existing from public.epi_delivery_groups_3d\n    where prepared_kit_id=p_preparation_id or idempotency_key=p_idempotency_key;\n  if found then\n    if v_existing.prepared_kit_id<>p_preparation_id or v_existing.idempotency_key<>p_idempotency_key\n    then raise exception 'delivery_already_registered'; end if;\n    return v_existing.id;\n  end if;\n  if v_prep.exchange_request_id is not null then\n    perform 1 from public.epi_exchange_requests r where r.id=v_prep.exchange_request_id\n      and r.employee_id=v_prep.employee_id and r.status='APROVADA' for share;\n    if not found then raise exception 'exchange_not_approved'; end if;\n    perform 1 from public.epi_deliveries d join public.epi_exchange_requests r\n      on r.source_delivery_id=d.id where r.id=v_prep.exchange_request_id\n      and d.employee_id=v_prep.employee_id and d.current_status='active' for share of d;\n    if not found then raise exception 'source_epi_not_active'; end if;\n  end if;\n  -- A preparação é só uma foto da separação; alterações posteriores de catálogo/lote exigem nova revisão.\n  for v_line in select value from pg_catalog.jsonb_array_elements(v_prep.lines_snapshot) loop\n    select * into v_batch from public.epi_stock_batches\n      where id=(v_line->>'stock_batch_id')::uuid and item_id=(v_line->>'item_id')::uuid for share;\n    select * into v_item from public.epi_items where id=(v_line->>'item_id')::uuid and active and item_kind='epi' for share;\n    if v_batch.id is null or v_item.id is null or v_item.name is distinct from v_line->>'item_name'\n      or v_item.code is distinct from v_line->>'item_code' or v_item.unit is distinct from v_line->>'unit'\n      or v_batch.ca_number is distinct from v_line->>'ca'\n      or v_batch.variant is distinct from v_line->>'variant'\n      or (v_line ? 'lot_number' and v_batch.lot_number is distinct from v_line->>'lot_number')\n      or (v_line ? 'brand_model' and v_batch.brand_model is distinct from v_line->>'brand_model')\n    then raise exception 'prepared_kit_context_changed'; end if;\n  end loop;\n  -- Reusa a rotina existente de baixa de estoque e criação atômica de múltiplas entregas.\n  v_group:=public.register_epi_delivery_batch(v_employee.id,\n    (select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object('item_id',x->>'item_id',\n      'stock_batch_id',x->>'stock_batch_id','quantity',x->'quantity'))\n      from pg_catalog.jsonb_array_elements(v_prep.lines_snapshot) x),\n    case when v_prep.exchange_request_id is null then 'initial' else 'replacement' end,null);\n  select t.name,w.name into v_team_name,v_work_name from public.teams t\n    left join public.worksites w on w.id=t.worksite_id where t.id=v_employee.team_id;\n  insert into public.epi_delivery_groups_3d(id,employee_id,employee_name_snapshot,prepared_kit_id,exchange_request_id,\n    profession_snapshot,team_name_snapshot,work_name_snapshot,delivered_by,idempotency_key)\n  values(v_group,v_employee.id,v_employee.full_name,v_prep.id,v_prep.exchange_request_id,v_employee.profession,\n    v_team_name,v_work_name,(select auth.uid()),p_idempotency_key);\n  return v_group;\nend $function$\n",
+          "sha256": "a1556a1249bd65f9d9a7d5f5a81aeaf4b82467356444311cd6229b841fbdb425"
+        },
+        {
+          "name": "private.epi_report_payload_3e(uuid)",
+          "definition": "CREATE OR REPLACE FUNCTION private.epi_report_payload_3e(p_employee_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_result jsonb;\nbegin\n  if (select count(*) from public.epi_deliveries where employee_id=p_employee_id)>3000\n    or (select count(*) from public.epi_exchange_events x join public.epi_exchange_requests r on r.id=x.request_id where r.employee_id=p_employee_id)>3000\n    or (select count(*) from public.epi_delivery_feedback_events_3d x join public.epi_delivery_groups_3d g on g.id=x.group_id where g.employee_id=p_employee_id)>3000\n  then raise exception 'epi_report_too_large'; end if;\n\n  select pg_catalog.jsonb_build_object(\n    'employee',pg_catalog.jsonb_build_object('id',e.id,'name',e.full_name,\n      'registration',e.registration_code,'profession',e.profession,'team',t.name),\n    'generated_at',pg_catalog.now(),\n    'report_id',pg_catalog.gen_random_uuid(),\n    'deliveries',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',d.id,'item_id',d.item_id,'group_id',d.delivery_group_id,'item_name',coalesce(d.item_name_snapshot,i.name),\n      'legacy_name',d.item_name_snapshot is null,'ca',d.ca_snapshot,'quantity',d.quantity,\n      'unit',coalesce(d.unit_snapshot,i.unit),'legacy_unit',d.unit_snapshot is null,\n      'variant',d.variant_snapshot,'lot',d.lot_snapshot,'brand',d.brand_model_snapshot,\n      'delivered_at',d.delivered_at,'status',d.current_status,'closed_at',d.closed_at,\n      'reason',d.delivery_reason,'team',g.team_name_snapshot,'work',g.work_name_snapshot,\n      'responsible_id',coalesce(g.delivered_by,d.delivered_by),\n      'responsible_name_snapshot',null,\n      'exchange_request_id',g.exchange_request_id,\n      'employee_name_snapshot',g.employee_name_snapshot,'profession_snapshot',g.profession_snapshot)\n      order by d.delivered_at,d.id)\n      from public.epi_deliveries d join public.epi_items i on i.id=d.item_id\n      left join public.epi_delivery_groups_3d g on g.id=d.delivery_group_id\n      -- O grupo 3D só nasce de entrega de EPI validada no registro. A classificação\n      -- atual do catálogo não pode apagar esse fato histórico. Legado sem grupo\n      -- continua dependendo do catálogo, sem adivinhar sua classificação passada.\n      where d.employee_id=e.id and (i.item_kind='epi' or g.id is not null)),'[]'::jsonb),\n    'feedback',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',x.id,'group_id',x.group_id,'delivery_id',x.delivery_id,'type',x.event_type,\n      'category',x.category,\n      'at',x.occurred_at) order by x.occurred_at,x.id)\n      from public.epi_delivery_feedback_events_3d x\n      join public.epi_delivery_groups_3d g on g.id=x.group_id\n      where g.employee_id=e.id),'[]'::jsonb),\n    'exchanges',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',r.id,'source_delivery_id',r.source_delivery_id,'item_name',r.item_name_snapshot,\n      'ca',r.ca_snapshot,'reason',r.reason,'created_at',r.created_at,\n      'events',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n        'id',x.id,'status',x.to_status,'at',x.occurred_at)\n        order by x.occurred_at,x.id) from public.epi_exchange_events x\n        where x.request_id=r.id),'[]'::jsonb),\n      'new_group_id',(select g.id from public.epi_delivery_groups_3d g\n        where g.exchange_request_id=r.id)) order by r.created_at,r.id)\n      from public.epi_exchange_requests r where r.employee_id=e.id),'[]'::jsonb)\n  ) into v_result\n  from public.epi_employees e left join public.teams t on t.id=e.team_id and t.active\n  where e.id=p_employee_id;\n  if v_result is null then raise exception 'employee_not_found'; end if;\n  return v_result;\nend $function$\n",
+          "sha256": "0ee4c08df9f45f5d9791ebc3d901da8c1b8f84b75de27807c878ec245ea022c1"
+        }
+      ],
+      "linked_states": [
+        {
+          "pairs": 11,
+          "source_status": "active",
+          "delivery_reason": "replacement",
+          "source_has_closed_at": false
+        }
+      ],
+      "delivery_count": 393,
+      "state_fingerprint": "80e98730eb8b3b3ce4af942e6776000d"
+    },
+    "sample_source_states": [
+      {
+        "ca": "CA-12345",
+        "status": "active",
+        "closed_at": null
+      },
+      {
+        "ca": "CA-67890",
+        "status": "active",
+        "closed_at": null
+      }
+    ],
+    "sample_source": "01_WEB/10_TESTES/epi-report-3e.test.ts",
+    "no_database_writes": true,
+    "only_history_samples_regenerated": true,
+    "sample_current_item_count": 2,
+    "sample_history_titles": [
+      "ENTREGA",
+      "ENTREGA PARA TROCA"
+    ],
+    "valid_closure_case_tested_without_database_writes": true,
+    "database_after": {
+      "at": "2026-09-29T15:57:14.209489+00:00",
+      "delivery_count": 393,
+      "state_fingerprint": "80e98730eb8b3b3ce4af942e6776000d"
+    },
+    "database_state_unchanged": true,
+    "source_mapping_verified_in_live_catalog": true
+  }
+}

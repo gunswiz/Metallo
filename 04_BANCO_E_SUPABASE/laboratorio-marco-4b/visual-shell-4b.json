@@ -1,0 +1,149 @@
+{
+  "at": "2026-10-01T14:02:05.261Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL",
+  "responsive": [
+    {
+      "home": {
+        "controlsOutside": 0,
+        "headerSticky": true,
+        "height": 844,
+        "overflow": false,
+        "registerButtons": 1,
+        "width": 360
+      },
+      "drawer": {
+        "bodyLocked": true,
+        "focus": "Fechar menu",
+        "groups": 5,
+        "menuOverflow": false,
+        "modal": true,
+        "width": 360
+      }
+    },
+    {
+      "home": {
+        "controlsOutside": 0,
+        "headerSticky": true,
+        "height": 844,
+        "overflow": false,
+        "registerButtons": 1,
+        "width": 390
+      },
+      "drawer": {
+        "bodyLocked": true,
+        "focus": "Fechar menu",
+        "groups": 5,
+        "menuOverflow": false,
+        "modal": true,
+        "width": 390
+      }
+    },
+    {
+      "home": {
+        "controlsOutside": 0,
+        "headerSticky": true,
+        "height": 844,
+        "overflow": false,
+        "registerButtons": 1,
+        "width": 412
+      },
+      "drawer": {
+        "bodyLocked": true,
+        "focus": "Fechar menu",
+        "groups": 5,
+        "menuOverflow": false,
+        "modal": true,
+        "width": 412
+      }
+    },
+    {
+      "home": {
+        "controlsOutside": 0,
+        "headerSticky": true,
+        "height": 900,
+        "overflow": false,
+        "registerButtons": 1,
+        "width": 768
+      },
+      "drawer": {
+        "bodyLocked": true,
+        "focus": "Fechar menu",
+        "groups": 5,
+        "menuOverflow": false,
+        "modal": true,
+        "width": 768
+      }
+    },
+    {
+      "home": {
+        "controlsOutside": 0,
+        "headerSticky": true,
+        "height": 900,
+        "overflow": false,
+        "registerButtons": 1,
+        "width": 1280
+      },
+      "drawer": {
+        "bodyLocked": true,
+        "focus": "Fechar menu",
+        "groups": 5,
+        "menuOverflow": false,
+        "modal": true,
+        "width": 1280
+      }
+    }
+  ],
+  "keyboard": [
+    {
+      "width": 360,
+      "shiftTab": "Sair",
+      "tab": "Fechar menu",
+      "escape": "Abrir menu"
+    },
+    {
+      "width": 390,
+      "shiftTab": "Sair",
+      "tab": "Fechar menu",
+      "escape": "Abrir menu"
+    },
+    {
+      "width": 412,
+      "shiftTab": "Sair",
+      "tab": "Fechar menu",
+      "escape": "Abrir menu"
+    },
+    {
+      "width": 768,
+      "shiftTab": "Sair",
+      "tab": "Fechar menu",
+      "escape": "Abrir menu"
+    },
+    {
+      "width": 1280,
+      "shiftTab": "Sair",
+      "tab": "Fechar menu",
+      "escape": "Abrir menu"
+    }
+  ],
+  "links": {
+    "records60d": true,
+    "receiptOpened": true,
+    "receiptsUrl": "http://127.0.0.1:3101/colaborador/comprovantes",
+    "receiptsDefault": "48h",
+    "requests": {
+      "url": "http://127.0.0.1:3101/colaborador/epis#epi-solicitacoes",
+      "positionAfterFix": 100.21
+    },
+    "security": {
+      "exists": true,
+      "top": 99.8046875,
+      "url": "http://127.0.0.1:3101/colaborador/perfil#perfil-seguranca"
+    }
+  },
+  "temporaryViewportReset": true,
+  "realBrowserZoom": "PENDENTE DE CONFERÊNCIA MANUAL; não inferido de viewport ou devicePixelRatio",
+  "manualApproval": false,
+  "remoteAccessed": false,
+  "grokSent": false,
+  "baselineCreated": false
+}

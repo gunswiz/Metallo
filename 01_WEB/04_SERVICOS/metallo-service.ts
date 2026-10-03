@@ -18,6 +18,7 @@ export const getMetalloService = cache(async () => {
   };
 
   return {
+    siteSnapshot: () => safe(() => repository.siteSnapshot(), "Não foi possível carregar os locais e as operações."),
     dashboard: (includeEpi: boolean) => safe(() => repository.dashboard(includeEpi), "Não foi possível carregar o dashboard."),
     listMaterials: (input: { page: number; pageSize: number; q: string }) => safe(() => repository.listMaterials(input), "Não foi possível carregar os materiais."),
     getMaterial: (id: string) => safe(() => repository.getMaterial(id), "Material não encontrado."),

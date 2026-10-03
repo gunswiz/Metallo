@@ -1,0 +1,3244 @@
+{
+  "at": "2026-10-01T20:58:57.682Z",
+  "scope": "SIMULAÇÃO SEM VALOR OFICIAL; não SLA/capacidade de produção",
+  "origin_4b": {
+    "requests": 902,
+    "duration_ms": 426591.2751,
+    "rps": 2.1144361187147025,
+    "success": 495,
+    "http4xx": 405,
+    "http5xx": 2,
+    "timeouts": 0,
+    "transport_errors": 0,
+    "p50_ms": 11285.637999999977,
+    "p95_ms": 61257.41830000002,
+    "p99_ms": 63763.24080000003,
+    "max_ms": 64424.69560000001
+  },
+  "instrumented_before": {
+    "stage": "antes",
+    "run": "8ec65aaa-bdd2-4fd7-86c9-e96f5c349f52",
+    "passed": true,
+    "metrics": {
+      "requests": 1152,
+      "duration_ms": 462503.21050000004,
+      "rps": 2.4907935206646523,
+      "success": 745,
+      "http4xx": 405,
+      "http5xx": 2,
+      "timeouts": 0,
+      "transport_errors": 0,
+      "p50_ms": 6096.670699999995,
+      "p95_ms": 60053.01490000001,
+      "p99_ms": 62937.07210000005,
+      "max_ms": 64145.169999999984
+    },
+    "comparable_same_4b_operations": {
+      "requests": 902,
+      "count": 902,
+      "mean": 20174.703919844793,
+      "p50": 11124.135299999965,
+      "p95": 60629.11740000005,
+      "p99": 63072.601999999955,
+      "max": 64145.169999999984,
+      "total": 18197582.935700003,
+      "duration_ms": 421932.37690000003,
+      "rps": 2.137783325913807,
+      "http5xx": 2
+    },
+    "independent_files": {
+      "passed": true,
+      "pdfs": 60,
+      "zips": 60,
+      "errors": []
+    },
+    "comparison_method": "same original operations/validations; comparable throughput sums original request windows before/after the added Home/sustained/cooldown block; extensions reported separately; 900 vs 902 reflects only the two avoided 503 retries",
+    "phases": [
+      {
+        "name": "01-burst-50-begin",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 11799.171300000002,
+        "first_request_spread_ms": 5.974799999996321,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 11798.843399999998,
+          "rps": 4.237703502361936,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 6321.4251,
+          "p95_ms": 11349.245499999997,
+          "p99_ms": 11793.1613,
+          "max_ms": 11793.1613
+        }
+      },
+      {
+        "name": "02-burst-50-commit",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 34013.1043,
+        "first_request_spread_ms": 4.405800000000454,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 34012.8086,
+          "rps": 1.470034438732002,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 17064.827300000004,
+          "p95_ms": 32615.940399999992,
+          "p99_ms": 34008.483799999995,
+          "max_ms": 34008.483799999995
+        }
+      },
+      {
+        "name": "03-replay-retry",
+        "users": 50,
+        "requests": 75,
+        "duration_ms": 47183.19069999999,
+        "first_request_spread_ms": 3.9795000000012806,
+        "failures": 0,
+        "metrics": {
+          "requests": 75,
+          "duration_ms": 47182.7965,
+          "rps": 1.589562416038651,
+          "success": 75,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 29518.91380000001,
+          "p95_ms": 34016.3492,
+          "p99_ms": 34713.6905,
+          "max_ms": 34713.6905
+        }
+      },
+      {
+        "name": "04-home-60dias-paginacao",
+        "users": 50,
+        "requests": 150,
+        "duration_ms": 119254.6114,
+        "first_request_spread_ms": 3.326999999990221,
+        "failures": 0,
+        "metrics": {
+          "requests": 150,
+          "duration_ms": 119254.09779999999,
+          "rps": 1.2578184126768013,
+          "success": 150,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 39600.39769999997,
+          "p95_ms": 39988.7813,
+          "p99_ms": 40068.500900000014,
+          "max_ms": 40129.77349999998
+        }
+      },
+      {
+        "name": "05-50-pdfs",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 64147.28050000002,
+        "first_request_spread_ms": 2.5886999999929685,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 64145.71889999998,
+          "rps": 0.7794752456971843,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 60898.96820000003,
+          "p95_ms": 63880.160199999984,
+          "p99_ms": 64145.169999999984,
+          "max_ms": 64145.169999999984
+        }
+      },
+      {
+        "name": "06-50-zips48",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 63076.899399999995,
+        "first_request_spread_ms": 2.644800000009127,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 63074.828899999964,
+          "rps": 0.7927092450662205,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 59828.52309999999,
+          "p95_ms": 62937.07210000005,
+          "p99_ms": 63072.601999999955,
+          "max_ms": 63072.601999999955
+        }
+      },
+      {
+        "name": "06c-home-completa-50",
+        "users": 50,
+        "requests": 250,
+        "duration_ms": 40568.37440000003,
+        "first_request_spread_ms": 16.46929999999702,
+        "failures": 0,
+        "metrics": {
+          "requests": 250,
+          "duration_ms": 40567.899399999995,
+          "rps": 6.162507886715969,
+          "success": 250,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 400.5954999999958,
+          "p95_ms": 39070.72440000001,
+          "p99_ms": 40294.88679999998,
+          "max_ms": 40562.086499999976
+        }
+      },
+      {
+        "name": "07-mista-revogacao-ids",
+        "users": 50,
+        "requests": 467,
+        "duration_ms": 81678.67330000002,
+        "first_request_spread_ms": 2.512400000006892,
+        "failures": 0,
+        "metrics": {
+          "requests": 467,
+          "duration_ms": 81678.1055,
+          "rps": 5.717566502567815,
+          "success": 70,
+          "http4xx": 395,
+          "http5xx": 2,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 709.3870999999926,
+          "p95_ms": 43171.49959999998,
+          "p99_ms": 50912.54560000001,
+          "max_ms": 60053.34499999997
+        }
+      }
+    ],
+    "core_request_totals": {
+      "count": 1022,
+      "mean": 19346.36941682976,
+      "p50": 21741.200399999972,
+      "p95": 39709.4552,
+      "p99": 40739.397,
+      "max": 57951.27269999997,
+      "total": 19771989.544000015
+    },
+    "breakdown_inclusive_ms": {
+      "Auth": {
+        "count": 3196,
+        "mean": 158.38841285982426,
+        "p50": 133.36370000001625,
+        "p95": 455.00209999998333,
+        "p99": 605.7716999999975,
+        "max": 741.0913999999975,
+        "total": 506209.3674999983
+      },
+      "PGlite.catalog": {
+        "count": 11670,
+        "mean": 1.7987865124248297,
+        "p50": 1.104700000025332,
+        "p95": 4.195000000006985,
+        "p99": 5.472000000008848,
+        "max": 8.381300000008196,
+        "total": 20991.83859999776
+      },
+      "PGlite.inventory": {
+        "count": 12444,
+        "mean": 16.579079339440785,
+        "p50": 18.29819999996107,
+        "p95": 29.086799999990035,
+        "p99": 34.772500000020955,
+        "max": 56.45750000001863,
+        "total": 206310.06330000114
+      },
+      "PGlite.read": {
+        "count": 23076,
+        "mean": 0.8759976425725168,
+        "p50": 0.8232999999891035,
+        "p95": 2.362500000046566,
+        "p99": 2.678299999999581,
+        "max": 11.903799999970943,
+        "total": 20214.521600003398
+      },
+      "PGlite.syncToFs": {
+        "count": 50788,
+        "mean": 0.011156932740051827,
+        "p50": 0.01029999999445863,
+        "p95": 0.01600000000325963,
+        "p99": 0.025599999993573874,
+        "max": 2.815500000026077,
+        "total": 566.6383000017522
+      },
+      "PGlite.transaction": {
+        "count": 4040,
+        "mean": 3.379329554455168,
+        "p50": 0.7889000000432134,
+        "p95": 1.3166000000055647,
+        "p99": 145.4816000000137,
+        "max": 176.49989999999525,
+        "total": 13652.491399998878
+      },
+      "PGlite.write": {
+        "count": 4308,
+        "mean": 0.4085774373259233,
+        "p50": 0.3801999999850523,
+        "p95": 0.5696000000461936,
+        "p99": 0.7364000000015949,
+        "max": 5.818199999979697,
+        "total": 1760.1516000000775
+      },
+      "PostgREST": {
+        "count": 4964,
+        "mean": 80.74806091861397,
+        "p50": 28.53020000000106,
+        "p95": 259.844700000016,
+        "p99": 280.49360000001616,
+        "max": 387.1654999999955,
+        "total": 400833.37439999974
+      },
+      "filesystem.fsyncSync": {
+        "count": 144,
+        "mean": 1.0604847222216955,
+        "p50": 1.2257000000026892,
+        "p95": 1.331000000005588,
+        "p99": 1.4199999999982538,
+        "max": 3.236000000004424,
+        "total": 152.70979999992414
+      },
+      "filesystem.readFileSync": {
+        "count": 26524,
+        "mean": 0.11054407706228737,
+        "p50": 0.10629999998491257,
+        "p95": 0.16020000004209578,
+        "p99": 0.27109999999811407,
+        "max": 3.6313000000081956,
+        "total": 2932.07110000011
+      },
+      "filesystem.renameSync": {
+        "count": 144,
+        "mean": 0.5247368055574447,
+        "p50": 0.5164000000077067,
+        "p95": 0.632900000004156,
+        "p99": 0.7482000000018161,
+        "max": 0.7759000000005472,
+        "total": 75.56210000027204
+      },
+      "filesystem.writeFileSync": {
+        "count": 146,
+        "mean": 0.10312534246622818,
+        "p50": 0.09570000000530854,
+        "p95": 0.13800000003539026,
+        "p99": 0.41029999998863786,
+        "max": 0.4879999999975553,
+        "total": 15.056300000069314
+      },
+      "writer.checkpoint": {
+        "count": 2112,
+        "mean": 126.91797267992396,
+        "p50": 124.73159999999916,
+        "p95": 143.94519999995828,
+        "p99": 158.14750000002095,
+        "max": 223.29359999999724,
+        "total": 268050.7582999994
+      },
+      "writer.history": {
+        "count": 1648,
+        "mean": 93.75709629854404,
+        "p50": 92.57730000000447,
+        "p95": 107.19980000000214,
+        "p99": 126.61160000000382,
+        "max": 190.9475999999995,
+        "total": 154511.69470000057
+      },
+      "writer.record": {
+        "count": 80,
+        "mean": 304.82796875,
+        "p50": 323.90929999999935,
+        "p95": 359.2384000000311,
+        "p99": 366.7502000000022,
+        "max": 366.7502000000022,
+        "total": 24386.237500000003
+      }
+    },
+    "next_inclusive_ms": {
+      "PDF_generation": {
+        "count": 60,
+        "mean": 126.15973333332514,
+        "p50": 121.69229999999516,
+        "p95": 146.49059999996098,
+        "p99": 236.79649999999674,
+        "max": 236.79649999999674,
+        "total": 7569.583999999508
+      },
+      "ZIP_PDF_generation": {
+        "count": 60,
+        "mean": 143.54930333333033,
+        "p50": 123.05849999998463,
+        "p95": 245.60440000001108,
+        "p99": 254.37890000001062,
+        "max": 254.37890000001062,
+        "total": 8612.958199999819
+      },
+      "core_http": {
+        "count": 904,
+        "mean": 19246.20310243363,
+        "p50": 14439.800199999998,
+        "p95": 39893.18450000003,
+        "p99": 41208.432100000035,
+        "max": 60005.11819999997,
+        "total": 17398567.6046
+      },
+      "filesystem.logo": {
+        "count": 120,
+        "mean": 83.98329999999793,
+        "p50": 0.8162000000011176,
+        "p95": 501.5263000000268,
+        "p99": 662.5438999999897,
+        "max": 665.2682999999961,
+        "total": 10077.995999999752
+      },
+      "final_authorization_http": {
+        "count": 120,
+        "mean": 21476.6750725,
+        "p50": 22350.099800000025,
+        "p95": 23123.106099999975,
+        "p99": 23264.660999999964,
+        "max": 23289.308900000004,
+        "total": 2577201.0086999997
+      }
+    },
+    "comparable_inclusive_ms": {
+      "core": {
+        "Auth": {
+          "count": 2990,
+          "mean": 152.9624428093639,
+          "p50": 133.54180000000633,
+          "p95": 432.6883000000016,
+          "p99": 604.4299000000028,
+          "max": 741.0913999999975,
+          "total": 457357.70399999805
+        },
+        "PGlite.catalog": {
+          "count": 10587,
+          "mean": 1.8014648153394526,
+          "p50": 1.1057999999611638,
+          "p95": 4.214099999982864,
+          "p99": 5.5266000000119675,
+          "max": 8.381300000008196,
+          "total": 19072.107999998785
+        },
+        "PGlite.inventory": {
+          "count": 11308,
+          "mean": 16.583569853201436,
+          "p50": 18.29819999996107,
+          "p95": 29.145499999984168,
+          "p99": 34.82719999999972,
+          "max": 56.45750000001863,
+          "total": 187527.00790000183
+        },
+        "PGlite.read": {
+          "count": 21012,
+          "mean": 0.8749497144490012,
+          "p50": 0.8221000000485219,
+          "p95": 2.3588999999919906,
+          "p99": 2.675500000012107,
+          "max": 11.903799999970943,
+          "total": 18384.443400002412
+        },
+        "PGlite.syncToFs": {
+          "count": 46144,
+          "mean": 0.011175160367575755,
+          "p50": 0.01029999999445863,
+          "p95": 0.01600000000325963,
+          "p99": 0.025399999984074384,
+          "max": 2.815500000026077,
+          "total": 515.6666000014156
+        },
+        "PGlite.transaction": {
+          "count": 3679,
+          "mean": 3.63086300625124,
+          "p50": 0.7899000000325032,
+          "p95": 1.4178000000101747,
+          "p99": 147.37799999999697,
+          "max": 176.49989999999525,
+          "total": 13357.944999998312
+        },
+        "PGlite.write": {
+          "count": 3947,
+          "mean": 0.40977476564499105,
+          "p50": 0.3806999999942491,
+          "p95": 0.5727999999944586,
+          "p99": 0.744299999991199,
+          "max": 5.818199999979697,
+          "total": 1617.3810000007797
+        },
+        "PostgREST": {
+          "count": 4604,
+          "mean": 81.4216907254561,
+          "p50": 27.469899999996414,
+          "p95": 259.8631999999925,
+          "p99": 280.65320000000065,
+          "max": 387.1654999999955,
+          "total": 374865.46409999987
+        },
+        "filesystem.fsyncSync": {
+          "count": 144,
+          "mean": 1.0604847222216955,
+          "p50": 1.2257000000026892,
+          "p95": 1.331000000005588,
+          "p99": 1.4199999999982538,
+          "max": 3.236000000004424,
+          "total": 152.70979999992414
+        },
+        "filesystem.readFileSync": {
+          "count": 24209,
+          "mean": 0.11079766615720163,
+          "p50": 0.10629999998491257,
+          "p95": 0.16130000000703149,
+          "p99": 0.2740000000339933,
+          "max": 3.6313000000081956,
+          "total": 2682.300699999694
+        },
+        "filesystem.renameSync": {
+          "count": 144,
+          "mean": 0.5247368055574447,
+          "p50": 0.5164000000077067,
+          "p95": 0.632900000004156,
+          "p99": 0.7482000000018161,
+          "max": 0.7759000000005472,
+          "total": 75.56210000027204
+        },
+        "filesystem.writeFileSync": {
+          "count": 146,
+          "mean": 0.10312534246622818,
+          "p50": 0.09570000000530854,
+          "p95": 0.13800000003539026,
+          "p99": 0.41029999998863786,
+          "max": 0.4879999999975553,
+          "total": 15.056300000069314
+        },
+        "writer.checkpoint": {
+          "count": 1905,
+          "mean": 126.97588530183708,
+          "p50": 124.7725999999966,
+          "p95": 143.94519999995828,
+          "p99": 158.26010000001406,
+          "max": 223.29359999999724,
+          "total": 241889.06149999963
+        },
+        "writer.history": {
+          "count": 1494,
+          "mean": 93.73222777777792,
+          "p50": 92.5737000000081,
+          "p95": 107.58710000000428,
+          "p99": 127.23910000000615,
+          "max": 190.9475999999995,
+          "total": 140035.94830000022
+        },
+        "writer.record": {
+          "count": 80,
+          "mean": 304.82796875,
+          "p50": 323.90929999999935,
+          "p95": 359.2384000000311,
+          "p99": 366.7502000000022,
+          "max": 366.7502000000022,
+          "total": 24386.237500000003
+        }
+      },
+      "next": {
+        "PDF_generation": {
+          "count": 60,
+          "mean": 126.15973333332514,
+          "p50": 121.69229999999516,
+          "p95": 146.49059999996098,
+          "p99": 236.79649999999674,
+          "max": 236.79649999999674,
+          "total": 7569.583999999508
+        },
+        "ZIP_PDF_generation": {
+          "count": 60,
+          "mean": 143.54930333333033,
+          "p50": 123.05849999998463,
+          "p95": 245.60440000001108,
+          "p99": 254.37890000001062,
+          "max": 254.37890000001062,
+          "total": 8612.958199999819
+        },
+        "core_http": {
+          "count": 852,
+          "mean": 18236.221139906105,
+          "p50": 12916.148199999996,
+          "p95": 39877.318499999994,
+          "p99": 41415.07210000002,
+          "max": 60005.11819999997,
+          "total": 15537260.411200002
+        },
+        "filesystem.logo": {
+          "count": 120,
+          "mean": 83.98329999999793,
+          "p50": 0.8162000000011176,
+          "p95": 501.5263000000268,
+          "p99": 662.5438999999897,
+          "max": 665.2682999999961,
+          "total": 10077.995999999752
+        },
+        "final_authorization_http": {
+          "count": 120,
+          "mean": 21476.6750725,
+          "p50": 22350.099800000025,
+          "p95": 23123.106099999975,
+          "p99": 23264.660999999964,
+          "max": 23289.308900000004,
+          "total": 2577201.0086999997
+        }
+      },
+      "writer_wait_ms": {
+        "count": 3479,
+        "mean": 4039.6645300948485,
+        "p50": 4725.557199999981,
+        "p95": 6104.364499999996,
+        "p99": 6416.556099999987,
+        "max": 6798.210000000021,
+        "total": 14053992.900199978
+      }
+    },
+    "writer_wait_ms": {
+      "count": 3840,
+      "mean": 4114.383944791661,
+      "p50": 4767.941300000006,
+      "p95": 6116.516900000017,
+      "p99": 6416.556099999987,
+      "max": 6798.210000000021,
+      "total": 15799234.347999979
+    },
+    "writer_queue_depth_max": 50,
+    "postgres": {
+      "samples": 440,
+      "observer_errors": 0,
+      "connections_max": 51,
+      "lock_waiters_max": 0,
+      "new_deadlocks": 0,
+      "idle_max": 41,
+      "oldest_transaction_seconds_max": 0.484094
+    },
+    "process": {
+      "cpu_one_core_percent": {
+        "count": 468,
+        "mean": 94.32775158416922,
+        "p50": 100.49236666780179,
+        "p95": 111.49731334915396,
+        "p99": 121.19410810182167,
+        "max": 158.2367925913547,
+        "total": 44145.3877413912
+      },
+      "event_loop_p99_ms": {
+        "count": 468,
+        "mean": 148.3663623504274,
+        "p50": 136.314879,
+        "p95": 219.938815,
+        "p99": 242.745343,
+        "max": 3930.062847,
+        "total": 69435.45758000003
+      },
+      "event_loop_max_ms": 3930.062847,
+      "rss_before": 84189184,
+      "rss_peak": 637079552,
+      "rss_after": 553877504,
+      "heap_before": 10409624,
+      "heap_after": 87156736
+    },
+    "home": {
+      "name": "06c-home-completa-50",
+      "users": 50,
+      "requests": 250,
+      "duration_ms": 40568.37440000003,
+      "first_request_spread_ms": 16.46929999999702,
+      "failures": 0,
+      "metrics": {
+        "requests": 250,
+        "duration_ms": 40567.899399999995,
+        "rps": 6.162507886715969,
+        "success": 250,
+        "http4xx": 0,
+        "http5xx": 0,
+        "timeouts": 0,
+        "transport_errors": 0,
+        "p50_ms": 400.5954999999958,
+        "p95_ms": 39070.72440000001,
+        "p99_ms": 40294.88679999998,
+        "max_ms": 40562.086499999976
+      }
+    },
+    "home_personal_profiles": 50,
+    "integrity": {
+      "expected_new_intents": 70,
+      "persisted_new_events": 70,
+      "old_count": 1100,
+      "after_count": 1170,
+      "old_sha256_after": "b04f7328e26609e279e10e2fa7994d72c51d879737e18d812f733d2a182924f4",
+      "originals_unchanged": true,
+      "duplicates": 0,
+      "lost_confirmed": 0,
+      "cross_user": 0,
+      "ready": true,
+      "receipts_verified": 70
+    },
+    "retries": 7,
+    "revocations": [
+      {
+        "user": 45,
+        "start_ms": 422072.9509,
+        "complete_ms": 422393.0573,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 421755.9272,
+        "first_denied_request_after_complete_ms": 422631.3225,
+        "first_denied_response_after_complete_ms": 422870.0123,
+        "observed_block_delay_upper_ms": 476.9550000000163,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 46,
+        "start_ms": 422393.0671,
+        "complete_ms": 422756.0735,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 421755.9859,
+        "first_denied_request_after_complete_ms": 425858.9603,
+        "first_denied_response_after_complete_ms": 426166.9336,
+        "observed_block_delay_upper_ms": 3410.860099999991,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 47,
+        "start_ms": 422756.0799,
+        "complete_ms": 422981.1568,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 421756.0426,
+        "first_denied_request_after_complete_ms": 425501.633,
+        "first_denied_response_after_complete_ms": 425770.892,
+        "observed_block_delay_upper_ms": 2789.7351999999955,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 48,
+        "start_ms": 422981.164,
+        "complete_ms": 423194.7657,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 421756.1171,
+        "first_denied_request_after_complete_ms": 426287.1421,
+        "first_denied_response_after_complete_ms": 426712.9895,
+        "observed_block_delay_upper_ms": 3518.223800000036,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 49,
+        "start_ms": 423194.7722,
+        "complete_ms": 423419.3365,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 421756.1789,
+        "first_denied_request_after_complete_ms": 425951.3198,
+        "first_denied_response_after_complete_ms": 426567.8718,
+        "observed_block_delay_upper_ms": 3148.535300000047,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      }
+    ],
+    "trace_count": 1022,
+    "next_trace_count": 950,
+    "critical_path_example": {
+      "request_id": "b22c3c24-48e3-45aa-9744-b164f4128c14",
+      "operation": "/lab-point/v4a/events",
+      "start": "2026-10-01T20:07:36.951Z",
+      "milestones": {
+        "T0_received": 0,
+        "T1_signed_jwt_complete": 6.020400000001246,
+        "T2_identity_and_session_resolved": 127.18069999999716,
+        "T3_personal_authorization_complete": 127.18209999999817,
+        "T4_intention_validated": 519.8715999999986,
+        "T5_record_queue_entered": 519.892200000002,
+        "T6_core_transaction_start": 715.2929000000004,
+        "T7_core_commit_complete": 873.4631000000008,
+        "T8_technical_receipt_available": 1072.1734999999971,
+        "T9_response_prepared": 1072.177499999998,
+        "T10_node_response_finish": 1072.4735999999975
+      },
+      "spans": [
+        {
+          "name": "Auth",
+          "ms": 5.439299999998184,
+          "endpoint": "/auth/v1/.well-known/jwks.json"
+        },
+        {
+          "name": "Auth",
+          "ms": 61.48700000000099,
+          "endpoint": "/auth/v1/user"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 38.48819999999978,
+          "endpoint": "/rest/v1/rpc/my_employee_profile"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 20.6620000000039,
+          "endpoint": "/rest/v1/rpc/lab_active_session_2e"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.7200000000011642
+        },
+        {
+          "name": "PostgREST",
+          "ms": 9.023600000000442,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.17810000000463333
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.15389999999752035
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14800000000104774
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.15099999999802094
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1514999999999418
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1459000000031665
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.025500000003376044
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 5.5732999999963795
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018899999995483086
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 2.0848000000041793
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.021099999998114072
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.783900000002177
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.05219999999826541
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 46.509799999999814
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02299999999377178
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.7978999999977532
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.032400000003690366
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 14.443100000004051
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.03139999999984866
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.0472999999983585
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017100000004575122
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.6287000000011176
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2356999999974505
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.030599999998230487
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.969600000003993
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 1.8447000000014668
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.22639999999955762
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1665999999968335
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14680000000225846
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.020100000001548324
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.0357000000003609
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.022499999999126885
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.9276000000027125
+        },
+        {
+          "name": "writer.history",
+          "ms": 165.90619999999763,
+          "queue_wait_ms": 0.059600000000500586,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.019500000002153683
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 5.933100000002014
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.024099999995087273
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 2.128099999994447
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.021500000002561137
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.9715999999971245
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.07810000000608852
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 51.46549999999843
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02740000000630971
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.0469999999986612
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.026799999999639113
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 14.987099999998463
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.020400000001245644
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.2220000000015716
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.022700000001350418
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.8122999999977765
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2820999999967171
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02470000000175787
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.7413000000015018
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 1.6979999999966822
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.23150000000168802
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.16670000000158325
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.026400000002468005
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 37.4861000000019
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.015400000003864989
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.834900000001653
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.013099999996484257
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.1901999999972759
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014900000001944136
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.36389999999664724
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01419999999779975
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.053299999999581
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01299999999901047
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.44980000000214204
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.011899999997694977
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.35270000000309665
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.013200000001234002
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.8467000000018743
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.012799999996786937
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.4213000000017928
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014400000000023283
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.6604000000006636
+        },
+        {
+          "name": "writer.checkpoint",
+          "ms": 223.29359999999724,
+          "queue_wait_ms": 2.353000000002794,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2602000000042608
+        },
+        {
+          "name": "PostgREST",
+          "ms": 30.421000000002095,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.19190000000526197
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.13079999999899883
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1371999999973923
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.10599999999976717
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.13239999999495922
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1393000000025495
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017899999998917338
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 5.718000000000757
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.03209999999671709
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 1.2871000000013737
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.012900000001536682
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.596399999994901
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.013900000005378388
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 23.72950000000128
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01239999999961583
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.8466999999945983
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018300000003364403
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.74829999999929
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01269999999931315
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.2010000000009313
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.011100000003352761
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.34879999999975553
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2448000000003958
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.008600000001024455
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.3853999999992084
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 0.7740999999950873
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1124000000054366
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08709999999700813
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.0867999999973108
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014200000005075708
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 22.958800000000338
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014100000000325963
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.510699999998906
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.012900000001536682
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.1512000000002445
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.011200000000826549
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.3400000000037835
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.008900000000721775
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.45650000000023283
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.6416000000026543
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.043599999997241
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.970500000003085
+        },
+        {
+          "name": "Auth",
+          "ms": 8.94079999999667,
+          "endpoint": "/auth/v1/.well-known/jwks.json"
+        },
+        {
+          "name": "Auth",
+          "ms": 56.66089999999531,
+          "endpoint": "/auth/v1/user"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 5.994100000003527,
+          "endpoint": "/rest/v1/rpc/my_employee_profile"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 15.542099999998754,
+          "endpoint": "/rest/v1/rpc/lab_active_session_2e"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.25570000000152504
+        },
+        {
+          "name": "PostgREST",
+          "ms": 15.729699999996228,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.12889999999606516
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.09290000000328291
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08720000000175787
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08299999999871943
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08150000000023283
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.0812999999980093
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08550000000104774
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.7573000000047614
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 24.22370000000228
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.767699999996694
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.1656000000002678
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.33140000000275904
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2371999999959371
+        },
+        {
+          "name": "filesystem.writeFileSync",
+          "ms": 0.1143000000010943
+        },
+        {
+          "name": "filesystem.fsyncSync",
+          "ms": 0.7744000000020606
+        },
+        {
+          "name": "filesystem.renameSync",
+          "ms": 0.7759000000005472
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 158.38130000000092
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014100000000325963
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01999999999679858
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 31.490899999997055
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017299999999522697
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 7.543499999999767
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.015600000006088521
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.2206000000005588
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.013500000000931323
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.4389000000010128
+        },
+        {
+          "name": "filesystem.writeFileSync",
+          "ms": 0.06539999999949941
+        },
+        {
+          "name": "filesystem.fsyncSync",
+          "ms": 1.2582999999940512
+        },
+        {
+          "name": "filesystem.renameSync",
+          "ms": 0.5376000000032946
+        },
+        {
+          "name": "writer.record",
+          "ms": 366.7502000000022,
+          "queue_wait_ms": 40.03929999999673,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.019400000004679896
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 3.806700000001001
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018299999996088445
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 1.4849000000031083
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.016199999998207204
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.6774000000004889
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01870000000053551
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 28.199000000000524
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.016100000000733417
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.0184000000008382
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01720000000204891
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 7.749400000000605
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.015200000001641456
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.3839000000007218
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01479999999719439
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.4408000000039465
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.7413999999989755
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01929999999993015
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.6555000000007567
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 1.2612999999983003
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1382999999987078
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.11759999999776483
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.021300000000337604
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 24.933900000003632
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.016100000000733417
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.686799999995856
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.012800000004062895
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.2092000000047847
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01449999999749707
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.3698999999978696
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.016999999999825377
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.0377999999982421
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.013099999996484257
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.7022999999971944
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.007999999994353857
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.859600000003411
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.3877000000065891
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.7797000000064145
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.7806999999957043
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 4.3901999999943655
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014100000000325963
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.75
+        },
+        {
+          "name": "writer.checkpoint",
+          "ms": 144.8767000000007,
+          "queue_wait_ms": 0.49940000000060536,
+          "queue_depth": 1,
+          "failed": false
+        }
+      ],
+      "employee_synthetic_id": 0,
+      "core_transaction": false,
+      "status": 201,
+      "total_ms": 1072.4735999999975
+    },
+    "boundaries": [
+      "core T10 is Node finish, not client acknowledgment",
+      "Next is response prepared; client independently measures all bytes",
+      "database/network spans are inclusive and overlap writer; do not sum as disjoint components",
+      "SQL duration includes PGlite execution/queue, PostgreSQL server-only/pool acquisition is not directly exposed",
+      "PostgreSQL observer includes existing local services and one observer connection",
+      "no 50 DOM/hydration browsers; all actual Home data contracts are exercised"
+    ]
+  },
+  "optimized_after": {
+    "stage": "depois",
+    "run": "1933b0c7-5f3c-4a89-8354-7cd4e3a1e6a6",
+    "passed": true,
+    "metrics": {
+      "requests": 2400,
+      "duration_ms": 472111.9231,
+      "rps": 5.083540327134771,
+      "success": 1995,
+      "http4xx": 405,
+      "http5xx": 0,
+      "timeouts": 0,
+      "transport_errors": 0,
+      "p50_ms": 220.7564999999595,
+      "p95_ms": 29775.57209999999,
+      "p99_ms": 41754.6845,
+      "max_ms": 42649.7433
+    },
+    "comparable_same_4b_operations": {
+      "requests": 900,
+      "count": 900,
+      "mean": 13803.12446344443,
+      "p50": 8293.522100000002,
+      "p95": 40629.561799999996,
+      "p99": 42224.29860000001,
+      "max": 42649.7433,
+      "total": 12422812.017099988,
+      "duration_ms": 290632.7611,
+      "rps": 3.096691496834835,
+      "http5xx": 0
+    },
+    "independent_files": {
+      "passed": true,
+      "pdfs": 60,
+      "zips": 60,
+      "errors": []
+    },
+    "comparison_method": "same original operations/validations; comparable throughput sums original request windows before/after the added Home/sustained/cooldown block; extensions reported separately; 900 vs 902 reflects only the two avoided 503 retries",
+    "phases": [
+      {
+        "name": "01-burst-50-begin",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 7711.6054,
+        "first_request_spread_ms": 5.862399999998161,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 7711.252699999997,
+          "rps": 6.484030798264466,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 4171.948100000001,
+          "p95_ms": 7431.8197999999975,
+          "p99_ms": 7706.239300000001,
+          "max_ms": 7706.239300000001
+        }
+      },
+      {
+        "name": "02-burst-50-commit",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 26937.929299999996,
+        "first_request_spread_ms": 4.288200000002689,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 26937.612800000003,
+          "rps": 1.8561407193439203,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 13631.5599,
+          "p95_ms": 25884.605300000003,
+          "p99_ms": 26935.659399999997,
+          "max_ms": 26935.659399999997
+        }
+      },
+      {
+        "name": "03-replay-retry",
+        "users": 50,
+        "requests": 75,
+        "duration_ms": 33485.561,
+        "first_request_spread_ms": 3.7699999999895226,
+        "failures": 0,
+        "metrics": {
+          "requests": 75,
+          "duration_ms": 33485.16339999999,
+          "rps": 2.239797939884027,
+          "success": 75,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 20181.829099999988,
+          "p95_ms": 22852.0245,
+          "p99_ms": 23422.688500000004,
+          "max_ms": 23422.688500000004
+        }
+      },
+      {
+        "name": "04-home-60dias-paginacao",
+        "users": 50,
+        "requests": 150,
+        "duration_ms": 80018.8615,
+        "first_request_spread_ms": 3.4351000000024214,
+        "failures": 0,
+        "metrics": {
+          "requests": 150,
+          "duration_ms": 80018.2071,
+          "rps": 1.8745733681903503,
+          "success": 150,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 26405.713400000008,
+          "p95_ms": 26930.925300000003,
+          "p99_ms": 27204.247300000003,
+          "max_ms": 27280.795200000008
+        }
+      },
+      {
+        "name": "05-50-pdfs",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 42652.47220000002,
+        "first_request_spread_ms": 2.6775999999954365,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 42650.575899999996,
+          "rps": 1.1723171128387977,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 40556.05990000002,
+          "p95_ms": 42494.062799999985,
+          "p99_ms": 42649.7433,
+          "max_ms": 42649.7433
+        }
+      },
+      {
+        "name": "06-50-zips48",
+        "users": 50,
+        "requests": 50,
+        "duration_ms": 42444.48889999997,
+        "first_request_spread_ms": 4.311099999991711,
+        "failures": 0,
+        "metrics": {
+          "requests": 50,
+          "duration_ms": 42442.39929999999,
+          "rps": 1.1780672352328585,
+          "success": 50,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 39399.1887,
+          "p95_ms": 42298.45109999998,
+          "p99_ms": 42440.957799999975,
+          "max_ms": 42440.957799999975
+        }
+      },
+      {
+        "name": "06c-home-completa-50",
+        "users": 50,
+        "requests": 250,
+        "duration_ms": 27064.125900000043,
+        "first_request_spread_ms": 18.223899999982677,
+        "failures": 0,
+        "metrics": {
+          "requests": 250,
+          "duration_ms": 27063.587,
+          "rps": 9.237504252485083,
+          "success": 250,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 224.7371999999741,
+          "p95_ms": 26260.613199999963,
+          "p99_ms": 26973.816599999962,
+          "max_ms": 27046.586699999985
+        }
+      },
+      {
+        "name": "06d-duracao-moderada",
+        "users": 50,
+        "concurrent_users": 10,
+        "requests": 1250,
+        "duration_ms": 139399.8128,
+        "failures": 0,
+        "metrics": {
+          "requests": 1250,
+          "duration_ms": 138398.84979999997,
+          "rps": 9.03186696859384,
+          "success": 1250,
+          "http4xx": 0,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 32.211399999971036,
+          "p95_ms": 5271.153300000005,
+          "p99_ms": 5446.061099999992,
+          "max_ms": 5707.5309000000125
+        }
+      },
+      {
+        "name": "07-mista-revogacao-ids",
+        "users": 50,
+        "requests": 465,
+        "duration_ms": 56587.836100000015,
+        "first_request_spread_ms": 2.7131999999983236,
+        "failures": 0,
+        "metrics": {
+          "requests": 465,
+          "duration_ms": 56587.2255,
+          "rps": 8.217402353469335,
+          "success": 70,
+          "http4xx": 395,
+          "http5xx": 0,
+          "timeouts": 0,
+          "transport_errors": 0,
+          "p50_ms": 473.7076999999699,
+          "p95_ms": 29687.524800000014,
+          "p99_ms": 34514.456599999976,
+          "max_ms": 41732.03959999996
+        }
+      }
+    ],
+    "core_request_totals": {
+      "count": 1272,
+      "mean": 11512.459114779871,
+      "p50": 7388.744400000003,
+      "p95": 26662.285399999993,
+      "p99": 27151.483599999992,
+      "max": 41551.90269999998,
+      "total": 14643847.993999995
+    },
+    "breakdown_inclusive_ms": {
+      "Auth": {
+        "count": 4196,
+        "mean": 107.8609215204957,
+        "p50": 80.36850000001141,
+        "p95": 417.530299999984,
+        "p99": 491.99550000000454,
+        "max": 524.7606999999989,
+        "total": 452584.42669999995
+      },
+      "PGlite.catalog": {
+        "count": 16917,
+        "mean": 1.7677832180644661,
+        "p50": 1.0991999999969266,
+        "p95": 4.055000000022119,
+        "p99": 5.234600000025239,
+        "max": 9.208700000017416,
+        "total": 29905.588699996573
+      },
+      "PGlite.inventory": {
+        "count": 11718,
+        "mean": 16.982297968936816,
+        "p50": 20.071300000010524,
+        "p95": 30.030899999983376,
+        "p99": 36.21110000000044,
+        "max": 54.91640000001644,
+        "total": 198998.5676000016
+      },
+      "PGlite.read": {
+        "count": 26849,
+        "mean": 0.9045116317181546,
+        "p50": 0.8361999999906402,
+        "p95": 2.3918000000121538,
+        "p99": 2.7136000000173226,
+        "max": 9.201100000005681,
+        "total": 24285.232800000733
+      },
+      "PGlite.syncToFs": {
+        "count": 60833,
+        "mean": 0.010992114477142443,
+        "p50": 0.010099999999511056,
+        "p95": 0.016100000000733417,
+        "p99": 0.026400000002468005,
+        "max": 0.5297000000136904,
+        "total": 668.6832999880062
+      },
+      "PGlite.transaction": {
+        "count": 5789,
+        "mean": 2.577567144584399,
+        "p50": 0.7564000000129454,
+        "p95": 1.206000000005588,
+        "p99": 136.89949999999953,
+        "max": 189.16210000000137,
+        "total": 14921.536199999086
+      },
+      "PGlite.write": {
+        "count": 6059,
+        "mean": 0.39948245585055947,
+        "p50": 0.36360000001150183,
+        "p95": 0.5622999999905005,
+        "p99": 0.7569999999832362,
+        "max": 15.269199999980628,
+        "total": 2420.4641999985397
+      },
+      "PostgREST": {
+        "count": 6713,
+        "mean": 45.619117145836576,
+        "p50": 15.954700000002049,
+        "p95": 146.91440000000875,
+        "p99": 168.61599999997998,
+        "max": 284.31700000000274,
+        "total": 306241.1334000009
+      },
+      "filesystem.fsyncSync": {
+        "count": 143,
+        "mean": 1.054227972027821,
+        "p50": 1.128999999993539,
+        "p95": 1.3190000000031432,
+        "p99": 1.4574000000138767,
+        "max": 3.6363000000055763,
+        "total": 150.75459999997838
+      },
+      "filesystem.readFileSync": {
+        "count": 37763,
+        "mean": 0.10930772714036668,
+        "p50": 0.10560000000987202,
+        "p95": 0.15909999998984858,
+        "p99": 0.2705000000423752,
+        "max": 1.3105000000214204,
+        "total": 4127.787700001667
+      },
+      "filesystem.renameSync": {
+        "count": 143,
+        "mean": 0.5266090909096859,
+        "p50": 0.5209999999933643,
+        "p95": 0.6216000000131316,
+        "p99": 0.7131999999983236,
+        "max": 0.7299999999813735,
+        "total": 75.30510000008508
+      },
+      "filesystem.writeFileSync": {
+        "count": 145,
+        "mean": 0.10566137931078817,
+        "p50": 0.10219999999389984,
+        "p95": 0.14970000000903383,
+        "p99": 0.34870000000228174,
+        "max": 0.36389999999664724,
+        "total": 15.320900000064285
+      },
+      "writer.checkpoint": {
+        "count": 3112,
+        "mean": 68.84878737146501,
+        "p50": 66.82190000000992,
+        "p95": 81.01150000002235,
+        "p99": 93.75110000000859,
+        "max": 162.29980000003707,
+        "total": 214257.4262999991
+      },
+      "writer.history": {
+        "count": 2397,
+        "mean": 78.74310542344529,
+        "p50": 77.3638000000501,
+        "p95": 92.18650000001071,
+        "p99": 108.70980000001146,
+        "max": 157.34369999999763,
+        "total": 188747.22369999834
+      },
+      "writer.record": {
+        "count": 80,
+        "mean": 296.4059099999987,
+        "p50": 312.31350000000384,
+        "p95": 356.26140000000305,
+        "p99": 421.1880999999994,
+        "max": 421.1880999999994,
+        "total": 23712.472799999894
+      }
+    },
+    "next_inclusive_ms": {
+      "PDF_generation": {
+        "count": 60,
+        "mean": 124.79763833333514,
+        "p50": 120.26350000000093,
+        "p95": 146.925900000002,
+        "p99": 201.3469000000041,
+        "max": 201.3469000000041,
+        "total": 7487.858300000109
+      },
+      "ZIP_PDF_generation": {
+        "count": 60,
+        "mean": 144.93497166666444,
+        "p50": 124.45530000000144,
+        "p95": 247.5812000000151,
+        "p99": 282.992900000012,
+        "max": 282.992900000012,
+        "total": 8696.098299999867
+      },
+      "core_http": {
+        "count": 1152,
+        "mean": 11478.858323697918,
+        "p50": 5365.822800000024,
+        "p95": 26823.42989999999,
+        "p99": 28073.557,
+        "max": 41701.009900000005,
+        "total": 13223644.788900001
+      },
+      "filesystem.logo": {
+        "count": 120,
+        "mean": 556.822672499999,
+        "p50": 382.0362000000023,
+        "p95": 1607.0374999999767,
+        "p99": 1840.8095999999787,
+        "max": 1901.6995999999926,
+        "total": 66818.72069999989
+      },
+      "final_authorization_http": {
+        "count": 120,
+        "mean": 13045.639181666678,
+        "p50": 13307.309000000008,
+        "p95": 14145.772499999992,
+        "p99": 15964.819900000002,
+        "max": 16280.227499999979,
+        "total": 1565476.7018000013
+      }
+    },
+    "comparable_inclusive_ms": {
+      "core": {
+        "Auth": {
+          "count": 2990,
+          "mean": 116.86244709030075,
+          "p50": 82.39550000004238,
+          "p95": 422.4780000000028,
+          "p99": 495.0488000000041,
+          "max": 524.7606999999989,
+          "total": 349418.71679999924
+        },
+        "PGlite.catalog": {
+          "count": 10584,
+          "mean": 1.7936912981857434,
+          "p50": 1.1054000000003725,
+          "p95": 4.242500000022119,
+          "p99": 5.46750000002794,
+          "max": 7.7400999999954365,
+          "total": 18984.42869999791
+        },
+        "PGlite.inventory": {
+          "count": 7496,
+          "mean": 17.05359463713967,
+          "p50": 18.4487999999983,
+          "p95": 30.27990000002319,
+          "p99": 38.43630000000121,
+          "max": 54.91640000001644,
+          "total": 127833.74539999898
+        },
+        "PGlite.read": {
+          "count": 17199,
+          "mean": 0.8994924704924184,
+          "p50": 0.8355999999912456,
+          "p95": 2.383700000005774,
+          "p99": 2.7102000000013504,
+          "max": 9.201100000005681,
+          "total": 15470.370999999104
+        },
+        "PGlite.syncToFs": {
+          "count": 38517,
+          "mean": 0.01136453254406983,
+          "p50": 0.010399999970104545,
+          "p95": 0.016799999997601844,
+          "p99": 0.027800000003480818,
+          "max": 0.5297000000136904,
+          "total": 437.7276999999376
+        },
+        "PGlite.transaction": {
+          "count": 3678,
+          "mean": 3.604508673191585,
+          "p50": 0.7621999999973923,
+          "p95": 1.4852000000100816,
+          "p99": 144.12949999999546,
+          "max": 189.16210000000137,
+          "total": 13257.38289999865
+        },
+        "PGlite.write": {
+          "count": 3948,
+          "mean": 0.41051000506564816,
+          "p50": 0.36799999998766,
+          "p95": 0.5852000000013504,
+          "p99": 0.8251999999993131,
+          "max": 15.269199999980628,
+          "total": 1620.693499999179
+        },
+        "PostgREST": {
+          "count": 4603,
+          "mean": 49.94657983923523,
+          "p50": 18.759599999990314,
+          "p95": 149.83860000001732,
+          "p99": 172.52569999999832,
+          "max": 284.31700000000274,
+          "total": 229904.10699999976
+        },
+        "filesystem.fsyncSync": {
+          "count": 143,
+          "mean": 1.054227972027821,
+          "p50": 1.128999999993539,
+          "p95": 1.3190000000031432,
+          "p99": 1.4574000000138767,
+          "max": 3.6363000000055763,
+          "total": 150.75459999997838
+        },
+        "filesystem.readFileSync": {
+          "count": 24198,
+          "mean": 0.10990402512608263,
+          "p50": 0.10550000000512227,
+          "p95": 0.16119999999500578,
+          "p99": 0.27170000004116446,
+          "max": 1.3105000000214204,
+          "total": 2659.4576000009474
+        },
+        "filesystem.renameSync": {
+          "count": 143,
+          "mean": 0.5266090909096859,
+          "p50": 0.5209999999933643,
+          "p95": 0.6216000000131316,
+          "p99": 0.7131999999983236,
+          "max": 0.7299999999813735,
+          "total": 75.30510000008508
+        },
+        "filesystem.writeFileSync": {
+          "count": 145,
+          "mean": 0.10566137931078817,
+          "p50": 0.10219999999389984,
+          "p95": 0.14970000000903383,
+          "p99": 0.34870000000228174,
+          "max": 0.36389999999664724,
+          "total": 15.320900000064285
+        },
+        "writer.checkpoint": {
+          "count": 1905,
+          "mean": 69.41008230971129,
+          "p50": 67.3119000000006,
+          "p95": 82.18129999999655,
+          "p99": 97.6137999999919,
+          "max": 162.29980000003707,
+          "total": 132226.20679999999
+        },
+        "writer.history": {
+          "count": 1493,
+          "mean": 78.94208807769569,
+          "p50": 77.41749999999593,
+          "p95": 92.73750000000291,
+          "p99": 115.23559999995632,
+          "max": 157.34369999999763,
+          "total": 117860.53749999966
+        },
+        "writer.record": {
+          "count": 80,
+          "mean": 296.4059099999987,
+          "p50": 312.31350000000384,
+          "p95": 356.26140000000305,
+          "p99": 421.1880999999994,
+          "max": 421.1880999999994,
+          "total": 23712.472799999894
+        }
+      },
+      "next": {
+        "PDF_generation": {
+          "count": 60,
+          "mean": 124.79763833333514,
+          "p50": 120.26350000000093,
+          "p95": 146.925900000002,
+          "p99": 201.3469000000041,
+          "max": 201.3469000000041,
+          "total": 7487.858300000109
+        },
+        "ZIP_PDF_generation": {
+          "count": 60,
+          "mean": 144.93497166666444,
+          "p50": 124.45530000000144,
+          "p95": 247.5812000000151,
+          "p99": 282.992900000012,
+          "max": 282.992900000012,
+          "total": 8696.098299999867
+        },
+        "core_http": {
+          "count": 850,
+          "mean": 12621.745535529399,
+          "p50": 10223.936999999976,
+          "p95": 26926.1281,
+          "p99": 28401.506200000003,
+          "max": 41701.009900000005,
+          "total": 10728483.705199989
+        },
+        "filesystem.logo": {
+          "count": 120,
+          "mean": 556.822672499999,
+          "p50": 382.0362000000023,
+          "p95": 1607.0374999999767,
+          "p99": 1840.8095999999787,
+          "max": 1901.6995999999926,
+          "total": 66818.72069999989
+        },
+        "final_authorization_http": {
+          "count": 120,
+          "mean": 13045.639181666678,
+          "p50": 13307.309000000008,
+          "p95": 14145.772499999992,
+          "p99": 15964.819900000002,
+          "max": 16280.227499999979,
+          "total": 1565476.7018000013
+        }
+      },
+      "writer_wait_ms": {
+        "count": 3478,
+        "mean": 2672.930499511217,
+        "p50": 3301.228900000002,
+        "p95": 3911.087499999994,
+        "p99": 3966.0593000000226,
+        "max": 4060.2324999999983,
+        "total": 9296452.277300013
+      }
+    },
+    "writer_wait_ms": {
+      "count": 5589,
+      "mean": 2050.9475815709443,
+      "p50": 2490.3115000000107,
+      "p95": 3886.406099999993,
+      "p99": 3965.873000000007,
+      "max": 4060.2324999999983,
+      "total": 11462746.033400008
+    },
+    "writer_queue_depth_max": 50,
+    "postgres": {
+      "samples": 459,
+      "observer_errors": 0,
+      "connections_max": 46,
+      "lock_waiters_max": 0,
+      "new_deadlocks": 0,
+      "idle_max": 36,
+      "oldest_transaction_seconds_max": 0.984528
+    },
+    "process": {
+      "cpu_one_core_percent": {
+        "count": 486,
+        "mean": 94.59659153243999,
+        "p50": 102.95039493680895,
+        "p95": 119.47925649211614,
+        "p99": 126.54180102375703,
+        "max": 145.0054550532795,
+        "total": 45973.943484765834
+      },
+      "event_loop_p99_ms": {
+        "count": 486,
+        "mean": 108.44461727160491,
+        "p50": 90.243071,
+        "p95": 217.710591,
+        "p99": 243.924991,
+        "max": 3982.491647,
+        "total": 52704.083993999986
+      },
+      "event_loop_max_ms": 3982.491647,
+      "rss_before": 83394560,
+      "rss_peak": 690761728,
+      "rss_after": 690761728,
+      "heap_before": 9563168,
+      "heap_after": 89993408
+    },
+    "home": {
+      "name": "06c-home-completa-50",
+      "users": 50,
+      "requests": 250,
+      "duration_ms": 27064.125900000043,
+      "first_request_spread_ms": 18.223899999982677,
+      "failures": 0,
+      "metrics": {
+        "requests": 250,
+        "duration_ms": 27063.587,
+        "rps": 9.237504252485083,
+        "success": 250,
+        "http4xx": 0,
+        "http5xx": 0,
+        "timeouts": 0,
+        "transport_errors": 0,
+        "p50_ms": 224.7371999999741,
+        "p95_ms": 26260.613199999963,
+        "p99_ms": 26973.816599999962,
+        "max_ms": 27046.586699999985
+      }
+    },
+    "home_personal_profiles": 50,
+    "integrity": {
+      "expected_new_intents": 70,
+      "persisted_new_events": 70,
+      "old_count": 1100,
+      "after_count": 1170,
+      "old_sha256_after": "b6c7bbd9328cbeece0d7db08d751748b0119275b88a2dedf47b1bbc060632fd4",
+      "originals_unchanged": true,
+      "duplicates": 0,
+      "lost_confirmed": 0,
+      "cross_user": 0,
+      "ready": true,
+      "receipts_verified": 70
+    },
+    "retries": 5,
+    "revocations": [
+      {
+        "user": 45,
+        "start_ms": 454945.5096,
+        "complete_ms": 455562.7441,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 454774.7275,
+        "first_denied_request_after_complete_ms": 455828.4654,
+        "first_denied_response_after_complete_ms": 456065.6332,
+        "observed_block_delay_upper_ms": 502.8890999999712,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 46,
+        "start_ms": 455562.7637,
+        "complete_ms": 455735.0652,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 454774.7772,
+        "first_denied_request_after_complete_ms": 456166.1097,
+        "first_denied_response_after_complete_ms": 456361.4695,
+        "observed_block_delay_upper_ms": 626.4042999999947,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 47,
+        "start_ms": 455735.0699,
+        "complete_ms": 455944.1065,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 454774.8239,
+        "first_denied_request_after_complete_ms": 458404.0194,
+        "first_denied_response_after_complete_ms": 458782.6025,
+        "observed_block_delay_upper_ms": 2838.4959999999846,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 48,
+        "start_ms": 455944.1139,
+        "complete_ms": 456168.0537,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 454774.87,
+        "first_denied_request_after_complete_ms": 458479.7899,
+        "first_denied_response_after_complete_ms": 458783.8164,
+        "observed_block_delay_upper_ms": 2615.762700000021,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      },
+      {
+        "user": 49,
+        "start_ms": 456168.0602,
+        "complete_ms": 456358.9562,
+        "last_success_end_ms": 0,
+        "first_blocked_start_ms": 454774.9264,
+        "first_denied_request_after_complete_ms": 458116.8653,
+        "first_denied_response_after_complete_ms": 458334.3873,
+        "observed_block_delay_upper_ms": 1975.431099999987,
+        "not_instantaneous_measurement": true,
+        "successes_started_after_completion": 0
+      }
+    ],
+    "trace_count": 1272,
+    "next_trace_count": 1198,
+    "critical_path_example": {
+      "request_id": "cbdca8fb-4305-4b47-891d-b29154690e35",
+      "operation": "/lab-point/v4a/events",
+      "start": "2026-10-01T20:29:22.895Z",
+      "milestones": {
+        "T0_received": 0,
+        "T1_signed_jwt_complete": 4.827600000004168,
+        "T2_identity_and_session_resolved": 122.12939999999799,
+        "T3_personal_authorization_complete": 122.13120000000345,
+        "T4_intention_validated": 385.40639999999985,
+        "T5_record_queue_entered": 385.45590000000084,
+        "T6_core_transaction_start": 574.126400000001,
+        "T7_core_commit_complete": 763.0573000000004,
+        "T8_technical_receipt_available": 896.7618000000002,
+        "T9_response_prepared": 896.7654000000039,
+        "T10_node_response_finish": 896.985099999998
+      },
+      "spans": [
+        {
+          "name": "Auth",
+          "ms": 4.200899999996182,
+          "endpoint": "/auth/v1/.well-known/jwks.json"
+        },
+        {
+          "name": "Auth",
+          "ms": 64.82340000000113,
+          "endpoint": "/auth/v1/user"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 41.733399999997346,
+          "endpoint": "/rest/v1/rpc/my_employee_profile"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 10.341699999997218,
+          "endpoint": "/rest/v1/rpc/lab_active_session_2e"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2201000000059139
+        },
+        {
+          "name": "PostgREST",
+          "ms": 5.897400000001653,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.20049999999901047
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14790000000357395
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14359999999578577
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.16040000000066357
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.13809999999648426
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.13440000000264263
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.025199999996402767
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 6.14440000000468
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02419999999983702
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 1.8399999999965075
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02200000000448199
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.8777000000045518
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.08239999999932479
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 46.543900000004214
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.026499999999941792
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.8452000000033877
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.041799999999057036
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 14.412600000003295
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02440000000206055
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.3857000000061817
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.03229999999894062
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.7644000000000233
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.19519999999465654
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.026100000002770685
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.8319999999948777
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 1.7610999999960768
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.17259999999805586
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.15310000000317814
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.16040000000066357
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.019199999995180406
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.8534999999974389
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018900000002759043
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.8598000000056345
+        },
+        {
+          "name": "writer.history",
+          "ms": 131.7852999999959,
+          "queue_wait_ms": 0.06420000000071013,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.021399999997811392
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 6.308799999998882
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018600000003061723
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 2.029500000004191
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017999999996391125
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.8905000000013388
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.06440000000293367
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 43.25810000000638
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.034299999999348074
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.4519000000000233
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.032400000003690366
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 14.49840000000404
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02080000000569271
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.3933000000033644
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.019400000004679896
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.6460000000006403
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.2481000000043423
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02500000000145519
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.797999999995227
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 1.785200000005716
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.23339999999734573
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1673000000009779
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017099999997299165
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.9382000000041444
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.021500000002561137
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.6321000000025379
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017900000006193295
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.5480999999999767
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01900000000023283
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.3773999999975786
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014800000004470348
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.617500000000291
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01929999999993015
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 2.7157999999981257
+        },
+        {
+          "name": "writer.checkpoint",
+          "ms": 128.92659999999887,
+          "queue_wait_ms": 1.6321000000025379,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.20049999999901047
+        },
+        {
+          "name": "PostgREST",
+          "ms": 7.500899999999092,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1614999999947031
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.17379999999684514
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.13130000000091968
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14389999999548309
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.12999999999738066
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1301000000021304
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.03110000000015134
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 6.808600000003935
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.025200000003678724
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 2.6815000000060536
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017400000004272442
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.9009999999980209
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.049699999995937105
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 44.43649999999616
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.017599999999220017
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.1900000000023283
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02350000000296859
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 13.448599999996077
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.020300000003771856
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 2.834500000004482
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018199999998614658
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.6307999999989988
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1290000000008149
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01570000000356231
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 10.551299999999173
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 11.150099999998929
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.1331999999965774
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.09030000000348082
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.09079999999812571
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.019099999997706618
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 27.540000000000873
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01600000000325963
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.979499999994005
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014800000004470348
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.4981000000043423
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01359999999840511
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.3666000000011991
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.0102000000042608
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.5164000000004307
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.836699999999837
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.275999999998021
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.4610000000029686
+        },
+        {
+          "name": "Auth",
+          "ms": 39.421500000004016,
+          "endpoint": "/auth/v1/.well-known/jwks.json"
+        },
+        {
+          "name": "Auth",
+          "ms": 53.68189999999595,
+          "endpoint": "/auth/v1/user"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 19.265599999998813,
+          "endpoint": "/rest/v1/rpc/my_employee_profile"
+        },
+        {
+          "name": "PostgREST",
+          "ms": 14.950400000001537,
+          "endpoint": "/rest/v1/rpc/lab_active_session_2e"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.16589999999996508
+        },
+        {
+          "name": "PostgREST",
+          "ms": 2.751799999998184,
+          "endpoint": "/rest/v1/rpc/lab_authz_source_2f"
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.12340000000403961
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.09149999999499414
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08770000000367872
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08430000000225846
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08299999999871943
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08240000000660075
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.08430000000225846
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.8133000000016182
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 25.018300000003364
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.850200000000768
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.1774999999979627
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.3471999999965192
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.14579999999841675
+        },
+        {
+          "name": "filesystem.writeFileSync",
+          "ms": 0.12419999999838183
+        },
+        {
+          "name": "filesystem.fsyncSync",
+          "ms": 1.4019999999945867
+        },
+        {
+          "name": "filesystem.renameSync",
+          "ms": 0.7131999999983236
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 189.16210000000137
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.024099999995087273
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.02449999999953434
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 27.743799999996554
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01900000000023283
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 8.910200000005716
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.015800000001036096
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.3205999999991036
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01840000000083819
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.46480000000155997
+        },
+        {
+          "name": "filesystem.writeFileSync",
+          "ms": 0.06150000000343425
+        },
+        {
+          "name": "filesystem.fsyncSync",
+          "ms": 1.2713999999978114
+        },
+        {
+          "name": "filesystem.renameSync",
+          "ms": 0.5153000000063912
+        },
+        {
+          "name": "writer.record",
+          "ms": 421.1880999999994,
+          "queue_wait_ms": 8.596599999997125,
+          "queue_depth": 1,
+          "failed": false
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.016700000000128057
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 4.506999999997788
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.020900000003166497
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 1.7036999999982072
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.018199999998614658
+        },
+        {
+          "name": "PGlite.catalog",
+          "ms": 0.9002000000036787
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01870000000053551
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 26.431000000004133
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01449999999749707
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.0016000000032363
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01579999999376014
+        },
+        {
+          "name": "PGlite.inventory",
+          "ms": 6.845799999995506
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014300000002549496
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.3623000000006869
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.015800000001036096
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.4930999999996857
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.12260000000242144
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01389999999810243
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 0.47449999999662396
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 0.9542999999976018
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.11959999999817228
+        },
+        {
+          "name": "filesystem.readFileSync",
+          "ms": 0.09279999999853317
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01720000000204891
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.4290000000037253
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.014899999994668178
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.7730000000010477
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.0072000000000116415
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 1.0181999999986147
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.406699999999546
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.844199999999546
+        },
+        {
+          "name": "PGlite.write",
+          "ms": 1.6583000000027823
+        },
+        {
+          "name": "PGlite.transaction",
+          "ms": 4.4979999999995925
+        },
+        {
+          "name": "PGlite.syncToFs",
+          "ms": 0.01449999999749707
+        },
+        {
+          "name": "PGlite.read",
+          "ms": 0.7690999999977066
+        },
+        {
+          "name": "writer.checkpoint",
+          "ms": 81.27070000000094,
+          "queue_wait_ms": 0.14140000000043074,
+          "queue_depth": 1,
+          "failed": false
+        }
+      ],
+      "employee_synthetic_id": 0,
+      "core_transaction": false,
+      "status": 201,
+      "total_ms": 896.985099999998
+    },
+    "boundaries": [
+      "core T10 is Node finish, not client acknowledgment",
+      "Next is response prepared; client independently measures all bytes",
+      "database/network spans are inclusive and overlap writer; do not sum as disjoint components",
+      "SQL duration includes PGlite execution/queue, PostgreSQL server-only/pool acquisition is not directly exposed",
+      "PostgreSQL observer includes existing local services and one observer connection",
+      "no 50 DOM/hydration browsers; all actual Home data contracts are exercised"
+    ]
+  },
+  "integrity_absolute_gate": true,
+  "comparable_latency_reduction_percent": {
+    "p95": 33.67405462466252,
+    "p99": 33.77956002512346
+  },
+  "remote_accessed": false,
+  "baseline_created": false,
+  "grok": false
+}

@@ -1,0 +1,232 @@
+{
+  "at": "2026-09-29T16:07:58.171Z",
+  "scope": "Marco 3E, laboratório sintético local",
+  "checks": [
+    {
+      "name": "preparação sintética 3D criada",
+      "ok": true
+    },
+    {
+      "name": "entrega sintética 3D registrada",
+      "ok": true
+    },
+    {
+      "name": "confirmação posterior distinta",
+      "ok": true
+    },
+    {
+      "name": "pedido sintético de troca de Capacete é aprovado sem entrega",
+      "ok": true
+    },
+    {
+      "name": "Capacete → Luva é rejeitado explicitamente por item incompatível",
+      "ok": true
+    },
+    {
+      "name": "rejeição não cria preparação, grupo, entrega nem baixa estoque",
+      "ok": true
+    },
+    {
+      "name": "mesmo Capacete pode ser preparado, sem concluir troca ou entregar",
+      "ok": true
+    },
+    {
+      "name": "Gestão autorizada lê somente relatório solicitado",
+      "ok": true
+    },
+    {
+      "name": "CA, lote e marca vêm do snapshot da entrega",
+      "ok": true
+    },
+    {
+      "name": "IDs operacionais preservados sem inventar nome do responsável",
+      "ok": true
+    },
+    {
+      "name": "relatório não inclui nota interna ou dados médicos",
+      "ok": true
+    },
+    {
+      "name": "payload 3E minimiza relatos e mensagens livres",
+      "ok": true
+    },
+    {
+      "name": "cada emissão recebe report_id diferente",
+      "ok": true
+    },
+    {
+      "name": "geração usa horário do servidor",
+      "ok": true
+    },
+    {
+      "name": "João vê sua entrega e confirmação",
+      "ok": true
+    },
+    {
+      "name": "Maria não vê fatos de João",
+      "ok": true
+    },
+    {
+      "name": "reclassificação do catálogo preserva entrega e nome histórico 3D",
+      "ok": true
+    },
+    {
+      "name": "FK impede exclusão de item referenciado sem desabilitar controles",
+      "ok": true
+    },
+    {
+      "name": "uniforme sem grupo 3D não vira EPI no relatório pessoal",
+      "ok": true
+    },
+    {
+      "name": "Gestão autorizada conserva histórico de funcionário inativo",
+      "ok": true
+    },
+    {
+      "name": "equipe inativa não bloqueia relatório e preserva snapshot da entrega",
+      "ok": true
+    },
+    {
+      "name": "funcionário sem equipe continua acessando o próprio relatório",
+      "ok": true
+    },
+    {
+      "name": "Gestão global conserva relatório histórico de funcionário sem equipe",
+      "ok": true
+    },
+    {
+      "name": "João não escolhe Maria em RPC administrativa",
+      "ok": true
+    },
+    {
+      "name": "Maria não escolhe João em RPC administrativa",
+      "ok": true
+    },
+    {
+      "name": "João não escolhe outro titular em RPC pessoal",
+      "ok": true
+    },
+    {
+      "name": "RPC pessoal recusa parâmetro injetado report_id",
+      "ok": true
+    },
+    {
+      "name": "RPC pessoal recusa parâmetro injetado delivery_id",
+      "ok": true
+    },
+    {
+      "name": "RPC pessoal recusa parâmetro injetado batch_id",
+      "ok": true
+    },
+    {
+      "name": "RPC pessoal recusa parâmetro injetado employee_id",
+      "ok": true
+    },
+    {
+      "name": "report_id em querystring não seleciona outro documento",
+      "ok": true
+    },
+    {
+      "name": "funcionário inativo não recebe relatório pessoal",
+      "ok": true
+    },
+    {
+      "name": "anônimo não executa RPCs",
+      "ok": true
+    },
+    {
+      "name": "tabelas históricas continuam fechadas a acesso direto",
+      "ok": true
+    },
+    {
+      "name": "Gestão sem permissão não emite relatório de João",
+      "ok": true
+    },
+    {
+      "name": "equipe nula não amplia a permissão da Gestão",
+      "ok": true
+    },
+    {
+      "name": "engenheiro com equipe explícita lê somente equipe autorizada",
+      "ok": true
+    },
+    {
+      "name": "engenheiro restrito à equipe A não lê Maria da equipe B",
+      "ok": true
+    },
+    {
+      "name": "prévia Gestão sem escopo mostra indisponível sem relatório ou falsa queda",
+      "ok": true
+    },
+    {
+      "name": "PDF Gestão sem escopo responde 404 neutro e sem cache",
+      "ok": true
+    },
+    {
+      "name": "titular ausente e acesso negado produzem o mesmo 404 público",
+      "ok": true
+    },
+    {
+      "name": "engenheiro NULL conserva escopo global explicitamente herdado",
+      "ok": true
+    },
+    {
+      "name": "Gestão HTTP autenticada mostra prévia 3E",
+      "ok": true
+    },
+    {
+      "name": "Gestão HTTP gera PDF real sem cache",
+      "ok": true
+    },
+    {
+      "name": "URL de PDF sem sessão não revela documento",
+      "ok": true
+    },
+    {
+      "name": "URL de PDF Gestão sem permissão é recusada",
+      "ok": true
+    },
+    {
+      "name": "URL de PDF recusa filtro manipulado",
+      "ok": true
+    },
+    {
+      "name": "relatório não altera entregas",
+      "ok": true
+    },
+    {
+      "name": "relatório não altera feedback",
+      "ok": true
+    },
+    {
+      "name": "grants só para authenticated",
+      "ok": true
+    },
+    {
+      "name": "grupo de entrega tem unicidade aplicada por pedido de troca",
+      "ok": true
+    },
+    {
+      "name": "3001 entregas falham no limite controlado da extração SQL",
+      "ok": true
+    },
+    {
+      "name": "ensaio do limite não persiste entregas nem muda estoque",
+      "ok": true
+    },
+    {
+      "name": "JWT residual revogado não emite relatório",
+      "ok": true
+    },
+    {
+      "name": "revogação pessoal não apaga história da Gestão autorizada",
+      "ok": true
+    }
+  ],
+  "denied_preview": {
+    "status": 200,
+    "not_found_marker": true,
+    "false_offline_message": false,
+    "personal_report_visible": false
+  }
+}

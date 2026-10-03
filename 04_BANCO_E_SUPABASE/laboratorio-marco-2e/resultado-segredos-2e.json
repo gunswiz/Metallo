@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "files_scanned_including_nested": 1250,
+  "nested_entries": 1059,
+  "bytes": 79792430,
+  "findings": [],
+  "zip": {
+    "path": "outputs/Metallo-Marco2E-BaselineAprovada-20260927-R1.zip",
+    "sha256": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+    "entries": 67
+  },
+  "known_sensitive_values": 8,
+  "backup_decompressed": true,
+  "scope": "fontes/evidencias/bundles e ZIP com arquivos aninhados descompactados",
+  "at": "2026-09-28T01:02:38.156Z",
+  "previous_scans": [
+    {
+      "at": "2026-09-27T23:39:39.889Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T23:41:39.855Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T23:43:00.270Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-27T23:53:07.917Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T00:04:56.603Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2E-Revogacao-Auditoria-20260927-Ciclo1.zip",
+        "sha256": "34208c2b8a9557903274779120e119e5ecc4734d1da3ad2c6084b6d14a22fc12",
+        "entries": 63
+      },
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T00:29:38.945Z",
+      "passed": true,
+      "zip": null,
+      "findings": []
+    },
+    {
+      "at": "2026-09-28T00:30:03.894Z",
+      "passed": true,
+      "zip": {
+        "path": "outputs/Metallo-Marco2E-Revogacao-Auditoria-20260927-Ciclo2.zip",
+        "sha256": "2eb9dea5e270d86f891190de3e9f7b8c91b803eae84bb59cb90defc5528ad451",
+        "entries": 65
+      },
+      "findings": []
+    }
+  ]
+}

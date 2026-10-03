@@ -11,6 +11,8 @@ Next.js (gestão) ┘
 O portal Web é uma nova interface sobre o backend existente. Não há segundo
 banco, sincronização paralela ou cópia de regras de negócio.
 
+Esta descrição é da **Gestão atual**. O futuro Metallo Colaborador e REP-P seguem o [desenho de identidade e isolamento](../19_IDENTIDADE_COLABORADOR_MARCO_1A.md); o [REP-P dedicado](../22_AMBIENTE_REP_P_E_ROADMAP.md) é hipótese preferida, ainda sem projeto criado.
+
 ## Camadas do portal
 
 - `app/`: rotas, layouts, estados de carregamento/erro e Server Actions.

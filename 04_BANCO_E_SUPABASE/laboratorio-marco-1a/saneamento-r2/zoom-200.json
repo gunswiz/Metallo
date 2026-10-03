@@ -1,0 +1,26 @@
+{
+  "at": "2026-09-27T12:27:15Z",
+  "method": "Inspeção visual e DOM somente leitura no Microsoft Edge real, com zoom ajustado manualmente pelo responsável para 200%; navegação e foco pelos controles da interface",
+  "browser": "Microsoft Edge",
+  "effectiveZoomPercent": 200,
+  "measurement": {
+    "devicePixelRatio": 2,
+    "outerWidth": 1920,
+    "innerWidthCssPx": 956,
+    "innerHeightCssPx": 433,
+    "visualViewportScale": 1,
+    "priorDevicePixelRatioAt100Percent": 1
+  },
+  "criteria": "Título e conteúdo carregados; sem rolagem horizontal da página; controles interativos dentro da largura CSS útil; rolagem vertical permitida; foco do campo de e-mail visível no Login",
+  "pages": [
+    {"page":"login","url":"http://127.0.0.1:3101/colaborador/login","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":3,"verticalScrollRequired":true,"focusVisible":true,"passed":true},
+    {"page":"inicio","url":"http://127.0.0.1:3101/colaborador/inicio","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":8,"verticalScrollRequired":true,"passed":true},
+    {"page":"perfil","url":"http://127.0.0.1:3101/colaborador/perfil","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":6,"verticalScrollRequired":true,"passed":true},
+    {"page":"equipe","url":"http://127.0.0.1:3101/colaborador/equipe","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":6,"verticalScrollRequired":true,"passed":true},
+    {"page":"obra","url":"http://127.0.0.1:3101/colaborador/obra","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":6,"verticalScrollRequired":true,"passed":true},
+    {"page":"gestao-consumo","url":"http://127.0.0.1:3102/previa/consumo","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":3,"verticalScrollRequired":true,"caixasUnidadesToggle":true,"legendFontCssPx":14,"passed":true},
+    {"page":"gestao-operacoes","url":"http://127.0.0.1:3102/previa/correcoes-metallo","scrollWidthCssPx":948,"offscreenControls":0,"controlCount":14,"verticalScrollRequired":true,"tabsChecked":["Materiais","EPI e funcionário","Equipamentos","Pedidos e recebimentos"],"tabOffscreenControls":[0,0,0,0],"passed":true}
+  ],
+  "scopeLimit": "Verificação manual assistida de reflow e acesso visual nos estados sintéticos observados; não é certificação WCAG completa nem prova de todas as combinações de dados.",
+  "passed": true
+}

@@ -1,0 +1,401 @@
+{
+  "at": "2026-09-29T09:18:48.946Z",
+  "scope": "Marco 3A local sintético",
+  "checks": [
+    {
+      "name": "RPC é SECURITY DEFINER e sem argumentos",
+      "ok": true
+    },
+    {
+      "name": "RPC fixa search_path vazio",
+      "ok": true
+    },
+    {
+      "name": "anon sem EXECUTE, authenticated com EXECUTE",
+      "ok": true
+    },
+    {
+      "name": "existe só a RPC pessoal sem argumentos",
+      "ok": true
+    },
+    {
+      "name": "RLS ativo nas quatro tabelas operacionais",
+      "ok": true
+    },
+    {
+      "name": "João vê uma equipe própria",
+      "ok": true
+    },
+    {
+      "name": "Maria vê a equipe B",
+      "ok": true
+    },
+    {
+      "name": "João não recebe Maria nem colega B",
+      "ok": true
+    },
+    {
+      "name": "Maria não recebe João nem colega A",
+      "ok": true
+    },
+    {
+      "name": "integrantes ativos mínimos de João",
+      "ok": true
+    },
+    {
+      "name": "integrantes ativos mínimos de Maria",
+      "ok": true
+    },
+    {
+      "name": "função em branco vira rótulo válido no DTO",
+      "ok": true
+    },
+    {
+      "name": "nenhum campo pessoal proibido no DTO",
+      "ok": true
+    },
+    {
+      "name": "contagem equivale à lista filtrada",
+      "ok": true
+    },
+    {
+      "name": "obra da equipe coincide com Minha Obra pessoal",
+      "ok": true
+    },
+    {
+      "name": "perfil mínimo continua próprio",
+      "ok": true
+    },
+    {
+      "name": "RPC recusa team_id injetado",
+      "ok": true
+    },
+    {
+      "name": "RPC recusa employee_id injetado",
+      "ok": true
+    },
+    {
+      "name": "Maria não escolhe equipe ou funcionário de João pelo body",
+      "ok": true
+    },
+    {
+      "name": "querystring não troca equipe",
+      "ok": true
+    },
+    {
+      "name": "Maria não alcança equipe de João pela querystring",
+      "ok": true
+    },
+    {
+      "name": "João não lê Maria pela tabela operacional",
+      "ok": true
+    },
+    {
+      "name": "João não lê equipe de Maria pela tabela operacional",
+      "ok": true
+    },
+    {
+      "name": "João não lê linhas operacionais em epi_employees select=*",
+      "ok": true
+    },
+    {
+      "name": "João não lê linhas operacionais em teams select=*",
+      "ok": true
+    },
+    {
+      "name": "João não lê linhas operacionais em employee_assignments select=*",
+      "ok": true
+    },
+    {
+      "name": "João não lê linhas operacionais em worksites select=*",
+      "ok": true
+    },
+    {
+      "name": "Maria não lê linhas operacionais em epi_employees select=*",
+      "ok": true
+    },
+    {
+      "name": "Maria não lê linhas operacionais em teams select=*",
+      "ok": true
+    },
+    {
+      "name": "Maria não lê linhas operacionais em employee_assignments select=*",
+      "ok": true
+    },
+    {
+      "name": "Maria não lê linhas operacionais em worksites select=*",
+      "ok": true
+    },
+    {
+      "name": "anon não lê linhas operacionais em epi_employees select=*",
+      "ok": true
+    },
+    {
+      "name": "anon não lê linhas operacionais em teams select=*",
+      "ok": true
+    },
+    {
+      "name": "anon não lê linhas operacionais em employee_assignments select=*",
+      "ok": true
+    },
+    {
+      "name": "anon não lê linhas operacionais em worksites select=*",
+      "ok": true
+    },
+    {
+      "name": "admin Gestão preserva leitura operacional autorizada",
+      "ok": true
+    },
+    {
+      "name": "admin Gestão não recebe equipe pessoal",
+      "ok": true
+    },
+    {
+      "name": "anon não executa RPC",
+      "ok": true
+    },
+    {
+      "name": "revogada não consegue novo login",
+      "ok": true
+    },
+    {
+      "name": "sem equipe mantém perfil e esvazia Equipe",
+      "ok": true
+    },
+    {
+      "name": "sem equipe mantém Minha Obra vazia",
+      "ok": true
+    },
+    {
+      "name": "equipe inativa não mostra colegas e não revoga perfil",
+      "ok": true
+    },
+    {
+      "name": "troca A→B não mantém colegas da A",
+      "ok": true
+    },
+    {
+      "name": "troca A→B atualiza obra pelo mesmo contrato 1C",
+      "ok": true
+    },
+    {
+      "name": "vínculo ativo ambíguo falha sem revelar equipe",
+      "ok": true
+    },
+    {
+      "name": "vínculo encerrado não restaura equipe antiga",
+      "ok": true
+    },
+    {
+      "name": "funcionária inativa não recebe equipe",
+      "ok": true
+    },
+    {
+      "name": "token residual revogado não recebe equipe",
+      "ok": true
+    },
+    {
+      "name": "token residual revogado não recebe perfil",
+      "ok": true
+    }
+  ],
+  "http_samples": [
+    {
+      "case": "João equipe",
+      "status": 200,
+      "dto": [
+        {
+          "team_name": "Equipe Prévia mumgs9rm",
+          "work_name": "Obra A 3A sintética",
+          "member_count": 6,
+          "members": [
+            {
+              "name": "Colega A 3A",
+              "profession": "Montador"
+            },
+            {
+              "name": "Colega Sem Função 3A",
+              "profession": "Função não informada"
+            },
+            {
+              "name": "Conta Banida Sintética",
+              "profession": "Profissão de teste"
+            },
+            {
+              "name": "Conta Revogada Sintética",
+              "profession": "Profissão de teste"
+            },
+            {
+              "name": "João Sintético",
+              "profession": "Profissão de teste"
+            },
+            {
+              "name": "Sessão Sintética Temporária",
+              "profession": "Profissão de teste"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "Maria equipe",
+      "status": 200,
+      "dto": [
+        {
+          "team_name": "Equipe B 3A sintética 1790673533019",
+          "work_name": "Obra B 3A sintética",
+          "member_count": 2,
+          "members": [
+            {
+              "name": "Colega B 3A",
+              "profession": "Caldeireiro"
+            },
+            {
+              "name": "Maria Sintética",
+              "profession": "Profissão de teste"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "João GET epi_employees select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "João GET teams select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "João GET employee_assignments select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "João GET worksites select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "Maria GET epi_employees select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "Maria GET teams select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "Maria GET employee_assignments select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "Maria GET worksites select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "anon GET epi_employees select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "anon GET teams select=*",
+      "status": 401,
+      "row_count": null
+    },
+    {
+      "case": "anon GET employee_assignments select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "anon GET worksites select=*",
+      "status": 200,
+      "row_count": 0
+    },
+    {
+      "case": "admin Gestão GET epi_employees select=id",
+      "status": 200,
+      "row_count": 1
+    }
+  ],
+  "rls_policies": [
+    {
+      "table": "employee_assignments",
+      "name": "assignments_read",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "SELECT",
+      "condition": "(can_operate('epi:write'::text, team_id) OR ((employee_work_team(employee_id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(employee_id))))"
+    },
+    {
+      "table": "epi_employees",
+      "name": "epi_employees_admin_write",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "ALL",
+      "condition": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+    },
+    {
+      "table": "epi_employees",
+      "name": "epi_employees_read",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "SELECT",
+      "condition": "(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))"
+    },
+    {
+      "table": "teams",
+      "name": "teams_admin_delete",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "DELETE",
+      "condition": "private.is_admin()"
+    },
+    {
+      "table": "teams",
+      "name": "teams_admin_insert",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "INSERT",
+      "condition": null
+    },
+    {
+      "table": "teams",
+      "name": "teams_admin_update",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "UPDATE",
+      "condition": "private.is_admin()"
+    },
+    {
+      "table": "teams",
+      "name": "teams_read",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "SELECT",
+      "condition": "private.is_active_user()"
+    },
+    {
+      "table": "worksites",
+      "name": "works_read",
+      "roles": [
+        "authenticated"
+      ],
+      "command": "SELECT",
+      "condition": "( SELECT private.is_active_user() AS is_active_user)"
+    }
+  ]
+}

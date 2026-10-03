@@ -1,0 +1,316 @@
+{
+  "at": "2026-10-01T09:27:26.629168+00:00",
+  "id": "METALLO-4A-LAB-20261001-R1",
+  "passed": true,
+  "scope": "conferência final somente local; SELECT estrutural; login sintético transitório; nenhuma nova marcação",
+  "origin": {
+    "id": "METALLO-3H-LAB-20261001-R1",
+    "zip": "Metallo-Marco3H-BaselineAprovada-20261001-R1.zip",
+    "sha256": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd",
+    "at": "2026-10-01T05:12:31.360745+00:00",
+    "files": 341,
+    "entries": 342
+  },
+  "baseline_chain_verified": [
+    {
+      "id": "METALLO-1B-LAB-20260927-R1",
+      "zip": "Metallo-Marco1B-BaselineAprovada-20260927.zip",
+      "sha256": "41cc99f9eb38cbd895ec8e9555ce9c9e2d3ca1ead7b757c6f5dbffe89863a162",
+      "at": "2026-09-27T10:41:44.457Z",
+      "files": 114,
+      "entries": 115
+    },
+    {
+      "id": "METALLO-1B-LAB-20260927-R2",
+      "zip": "Metallo-Marco1B-BaselineSaneada-20260927-R2.zip",
+      "sha256": "f44ca13e4a1096f855f0fc566f19b7aa670c28047094636ac61c61b3493e60be",
+      "at": "2026-09-27T12:30:38.872Z",
+      "files": 146,
+      "entries": 147
+    },
+    {
+      "id": "METALLO-1C-LAB-20260927-R1",
+      "zip": "Metallo-Marco1C-BaselineAprovada-20260927-R1.zip",
+      "sha256": "ea672a8c90c0f1b4de6c5e739404508b1fc68523e0d8c6d91bcd24f8621f70ae",
+      "at": "2026-09-27T15:59:08.546Z",
+      "files": 163,
+      "entries": 164
+    },
+    {
+      "id": "METALLO-2B-LAB-20260927-R1",
+      "zip": "Metallo-Marco2B-BaselineAprovada-20260927-R1.zip",
+      "sha256": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+      "at": "2026-09-27T18:49:53.128Z",
+      "files": 204,
+      "entries": 205
+    },
+    {
+      "id": "METALLO-2D-LAB-20260927-R1",
+      "zip": "Metallo-Marco2D-BaselineAprovada-20260927-R1.zip",
+      "sha256": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+      "at": "2026-09-27T22:41:23.728355+00:00",
+      "files": 258,
+      "entries": 259
+    },
+    {
+      "id": "METALLO-2E-LAB-20260927-R1",
+      "zip": "Metallo-Marco2E-BaselineAprovada-20260927-R1.zip",
+      "sha256": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+      "at": "2026-09-28T01:02:36.040543+00:00",
+      "files": 66,
+      "entries": 67
+    },
+    {
+      "id": "METALLO-2F-LAB-20260928-R1",
+      "zip": "Metallo-Marco2F-BaselineAprovada-20260928-R1.zip",
+      "sha256": "5b7b50ddf9385b58731b84852d54626c9893d0a812151e4e7cd157b568b34097",
+      "at": "2026-09-28T07:55:00.647432+00:00",
+      "files": 101,
+      "entries": 102
+    },
+    {
+      "id": "METALLO-3A-LAB-20260928-R1",
+      "zip": "Metallo-Marco3A-BaselineAprovada-20260928-R1.zip",
+      "sha256": "907e26c0b51fdd781a2233a03782c31349630ab3e9dc61e5f96ada0005d52c4a",
+      "at": "2026-09-28T11:02:24.270196+00:00",
+      "files": 74,
+      "entries": 75
+    },
+    {
+      "id": "METALLO-3B-LAB-20260928-R1",
+      "zip": "Metallo-Marco3B-BaselineAprovada-20260928-R1.zip",
+      "sha256": "b8f6e5955b3cc9f4a670212fd24451c30d0fac9e7dba4acd544186f180356148",
+      "at": "2026-09-28T16:13:25.918123+00:00",
+      "files": 103,
+      "entries": 104
+    },
+    {
+      "id": "METALLO-3C-LAB-20260928-R1",
+      "zip": "Metallo-Marco3C-BaselineAprovada-20260928-R1.zip",
+      "sha256": "bf3f1bb34813f03afaa9fac613ef4ede24a0f35f3ca3292670dda230cc63c3a6",
+      "at": "2026-09-28T21:48:39.560003+00:00",
+      "files": 136,
+      "entries": 137
+    },
+    {
+      "id": "METALLO-3D-LAB-20260929-R1",
+      "zip": "Metallo-Marco3D-BaselineAprovada-20260929-R1.zip",
+      "sha256": "4246426837e90324b1e2242ca2162dd0d2b0d3cd49c72abb8c209283ec6b9516",
+      "at": "2026-09-29T07:47:36.013061+00:00",
+      "files": 162,
+      "entries": 163
+    },
+    {
+      "id": "METALLO-3E-LAB-20260929-R1",
+      "zip": "Metallo-Marco3E-BaselineAprovada-20260929-R1.zip",
+      "sha256": "7ffb4707ae0a6bd2c12cd5756284582cba8c4f31673569207b0a0552a3d86c8c",
+      "at": "2026-09-29T16:14:20.247312+00:00",
+      "files": 235,
+      "entries": 236
+    },
+    {
+      "id": "METALLO-3F-LAB-20260929-R1",
+      "zip": "Metallo-Marco3F-BaselineAprovada-20260929-R1.zip",
+      "sha256": "76e964041e3f4a06ce4c11cc0fdc58fa8a3429bb68d8db2a4a248918356ea3d4",
+      "at": "2026-09-29T22:09:05.157031+00:00",
+      "files": 260,
+      "entries": 261
+    },
+    {
+      "id": "METALLO-3G-LAB-20260930-R1",
+      "zip": "Metallo-Marco3G-BaselineAprovada-20260930-R1.zip",
+      "sha256": "36d40d4eb85f594b75f904b899b13c02cd3283efa451bb25cdc4ed3c4b00323f",
+      "at": "2026-09-30T21:15:34.069135+00:00",
+      "files": 302,
+      "entries": 303
+    },
+    {
+      "id": "METALLO-3H-LAB-20261001-R1",
+      "zip": "Metallo-Marco3H-BaselineAprovada-20261001-R1.zip",
+      "sha256": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd",
+      "at": "2026-10-01T05:12:31.360745+00:00",
+      "files": 341,
+      "entries": 342
+    }
+  ],
+  "previous_baselines_preserved": {
+    "Metallo-Marco1B-BaselineAprovada-20260927.zip": "41cc99f9eb38cbd895ec8e9555ce9c9e2d3ca1ead7b757c6f5dbffe89863a162",
+    "Metallo-Marco1B-BaselineSaneada-20260927-R2.zip": "f44ca13e4a1096f855f0fc566f19b7aa670c28047094636ac61c61b3493e60be",
+    "Metallo-Marco1C-BaselineAprovada-20260927-R1.zip": "ea672a8c90c0f1b4de6c5e739404508b1fc68523e0d8c6d91bcd24f8621f70ae",
+    "Metallo-Marco2B-BaselineAprovada-20260927-R1.zip": "7df0935cd75e5b1e822b08fbaf40f53f2b1f4f8c98b5d2dcdb10610c4928b1d0",
+    "Metallo-Marco2D-BaselineAprovada-20260927-R1.zip": "15d5e791c3237f8c7c98d316ddef7220c256ddc8b5b011f9c289741ab1691dd3",
+    "Metallo-Marco2E-BaselineAprovada-20260927-R1.zip": "c0c54b8e29cb0d29f2ebf29bf485d79b52632008a09d6e7261c90fae4c66b0ad",
+    "Metallo-Marco2F-BaselineAprovada-20260928-R1.zip": "5b7b50ddf9385b58731b84852d54626c9893d0a812151e4e7cd157b568b34097",
+    "Metallo-Marco3A-BaselineAprovada-20260928-R1.zip": "907e26c0b51fdd781a2233a03782c31349630ab3e9dc61e5f96ada0005d52c4a",
+    "Metallo-Marco3B-BaselineAprovada-20260928-R1.zip": "b8f6e5955b3cc9f4a670212fd24451c30d0fac9e7dba4acd544186f180356148",
+    "Metallo-Marco3C-BaselineAprovada-20260928-R1.zip": "bf3f1bb34813f03afaa9fac613ef4ede24a0f35f3ca3292670dda230cc63c3a6",
+    "Metallo-Marco3D-BaselineAprovada-20260929-R1.zip": "4246426837e90324b1e2242ca2162dd0d2b0d3cd49c72abb8c209283ec6b9516",
+    "Metallo-Marco3E-BaselineAprovada-20260929-R1.zip": "7ffb4707ae0a6bd2c12cd5756284582cba8c4f31673569207b0a0552a3d86c8c",
+    "Metallo-Marco3F-BaselineAprovada-20260929-R1.zip": "76e964041e3f4a06ce4c11cc0fdc58fa8a3429bb68d8db2a4a248918356ea3d4",
+    "Metallo-Marco3G-BaselineAprovada-20260930-R1.zip": "36d40d4eb85f594b75f904b899b13c02cd3283efa451bb25cdc4ed3c4b00323f",
+    "Metallo-Marco3H-BaselineAprovada-20261001-R1.zip": "389137f649221344292ee85d5602f3fbc0c746ce68b4107ee2b607c8b3f084bd"
+  },
+  "audits_preserved": [
+    {
+      "cycle": 1,
+      "zip": "Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo1.zip",
+      "sha256": "75c64e38022ad175a1648aeee42aaafbb8cfaf9478ea0a46f82eda4378c015c3",
+      "files": 72,
+      "entries": 73,
+      "direct_scan_passed": true,
+      "opinion": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/parecer-grok-ciclo1-original.md",
+      "opinion_sha256": "d68decf352cf09b3615dfeac03dac95348299fb0c87862ddce235050a7dc5249",
+      "conversation": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1",
+      "response": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1?rid=f19eea89-5481-449f-a7e6-8705e5ce027e"
+    },
+    {
+      "cycle": 2,
+      "zip": "Metallo-Marco4A-MeuPonto-Auditoria-20261001-Ciclo2.zip",
+      "sha256": "f130eb6d95585078d5c98b7bf12dcf002dbc34d6500d2267add32860ea4d64f2",
+      "files": 77,
+      "entries": 78,
+      "direct_scan_passed": true,
+      "opinion": "04_BANCO_E_SUPABASE/laboratorio-marco-4a/parecer-grok-ciclo2-original.md",
+      "opinion_sha256": "de686a49096b63977ee0bbc4eea1f21a01a37c2d7ec91ea7cc0adca68d14b874",
+      "conversation": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1",
+      "response": "https://grok.com/c/4602c4cb-7503-45c2-be55-b326df42e1f1?rid=07798063-909e-4342-a79e-93c94f8cc0b9"
+    }
+  ],
+  "audited_functional_sources_identical": true,
+  "post_audit_documentation_evidence_changes": [
+    "04_BANCO_E_SUPABASE/laboratorio-marco-4a/auditoria-4a.json",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-4a/verificacao-final-4a.json",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-4a/verificar-4a.py",
+    "05_DOCUMENTACAO/47_MARCO_4A_MEU_PONTO_ONLINE_GEOLOCALIZACAO.md"
+  ],
+  "frozen_core_sources_identical": [
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/auth-local.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/autorizacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/backup.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/http-lab.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/integridade.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/nucleo.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-revogacao-concorrente-2b.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/provas-transporte-2b.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/recuperacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/schema.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2b/sessao-local-2e.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/processo-ensaio.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/provas-auth-real-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2d/verificar-segredos-2d.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/gerar-pacote-auditoria-2e.py",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/preparar-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/provas-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2e/servidor-2e.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/gerar-pacote-auditoria-2f.py",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/origem-local-2f.sql",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/preparar-2f.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/provas-2f.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/reconciliacao.mjs",
+    "04_BANCO_E_SUPABASE/laboratorio-marco-2f/servidor-2f.mjs"
+  ],
+  "catalog_functions_identical": 5,
+  "catalog_tables_identical": 7,
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3106
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3105
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3102
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101
+    }
+  ],
+  "health": {
+    "status": "READY",
+    "official": false,
+    "process_online": true,
+    "database_ok": true,
+    "schema_ok": true,
+    "append_only_ok": true,
+    "recovery_state": "MATCH",
+    "auth_dependency": "AVAILABLE",
+    "context_state": "AVAILABLE",
+    "ready_for_new_events": true
+  },
+  "http": {
+    "legacy_denied": [
+      {
+        "url": "http://127.0.0.1:3105/lab-point/v1/events",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:3101/api/ponto-lab/events",
+        "status": 404
+      }
+    ],
+    "history_unchanged": true,
+    "geolocation_collected": false
+  },
+  "results_preserved": {
+    "4A_Auth_JWT_PostgREST_HTTP": "80/80",
+    "confrontation_reproduction_sessions": "13/13",
+    "specific_web": "23/23",
+    "web_complete": "246/246",
+    "2F": "28/28",
+    "bank": "31/31",
+    "quality": "44/44",
+    "network": "8/8",
+    "TypeScript": "aprovado",
+    "lint": "aprovado",
+    "build": "aprovado",
+    "overlapping_suites_do_not_sum": true,
+    "closure_does_not_claim_full_test_rerun": true
+  },
+  "remote_not_touched": true,
+  "published": false
+}

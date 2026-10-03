@@ -1,0 +1,42 @@
+{
+  "at": "2026-09-27T10:46:56.909Z",
+  "environment": [
+    "DOCKER_HOST=http://host.docker.internal:2375"
+  ],
+  "mounts": [],
+  "networks": {
+    "metallo-marco1a-local": {
+      "IPAMConfig": null,
+      "Links": null,
+      "Aliases": [
+        "vector"
+      ],
+      "DriverOpts": null,
+      "GwPriority": 0,
+      "NetworkID": "56a7347c22e8a12019142cdfa8d492c59a10762be2e25b72a6719f31470be014",
+      "EndpointID": "",
+      "Gateway": "",
+      "IPAddress": "",
+      "MacAddress": "",
+      "IPPrefixLen": 0,
+      "IPv6Gateway": "",
+      "GlobalIPv6Address": "",
+      "GlobalIPv6PrefixLen": 0,
+      "DNSNames": [
+        "supabase_vector_laboratorio-marco-1a",
+        "vector",
+        "35d5f89452bb"
+      ]
+    }
+  },
+  "restart": {
+    "Name": "unless-stopped",
+    "MaximumRetryCount": 0
+  },
+  "state": {
+    "status": "restarting",
+    "restartCount": 106,
+    "exitCode": 0
+  },
+  "dockerContext": "npipe:////./pipe/dockerDesktopLinuxEngine"
+}

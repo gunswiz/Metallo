@@ -1,0 +1,685 @@
+Stopped services: [supabase_imgproxy_laboratorio-marco-1a supabase_pooler_laboratorio-marco-1a]
+A new version of Supabase CLI is available: v2.118.0 (currently installed v2.117.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
+PASS Auth local saudavel — HTTP 200
+PASS ticket admin — HTTP 204
+PASS Auth create admin — HTTP 200
+PASS Admin Gestao sintetico ativo
+PASS Auth login Admin Sintetico — HTTP 200
+PASS Auth JWKS local — HTTP 200
+PASS JWT assinado Admin Sintetico
+PASS Gestao via PostgREST — HTTP 200
+PASS Perfil admin pela RLS
+PASS Inscricao publica bloqueada — HTTP 422
+PASS ticket joao — HTTP 204
+PASS Auth create joao — HTTP 200
+PASS ticket maria — HTTP 204
+PASS Auth create maria — HTTP 200
+PASS ticket revogada — HTTP 204
+PASS Auth create revogada — HTTP 200
+PASS Equipe sintetica disponivel
+PASS Funcionarios EPI sinteticos
+PASS Entregas EPI sinteticas
+PASS Registro de conta dedicada Joao Sintetico — HTTP 204
+PASS Vinculo identidade Joao Sintetico — HTTP 200
+PASS Registro de conta dedicada Maria Sintetica — HTTP 204
+PASS Vinculo identidade Maria Sintetica — HTTP 200
+PASS Registro de conta dedicada Conta Revogada Sintetica — HTTP 204
+PASS Vinculo identidade Conta Revogada Sintetica — HTTP 200
+PASS Auth login Joao Sintetico — HTTP 200
+PASS Auth JWKS local — HTTP 200
+PASS JWT assinado Joao Sintetico
+PASS Auth login Maria Sintetica — HTTP 200
+PASS Auth JWKS local — HTTP 200
+PASS JWT assinado Maria Sintetica
+PASS Auth login Conta Revogada Sintetica — HTTP 200
+PASS Auth JWKS local — HTTP 200
+PASS JWT assinado Conta Revogada Sintetica
+PASS Edge Function admin-invite-user nega Joao — HTTP 403
+PASS Edge Function create-employee nega Joao — HTTP 403
+PASS Edge Function delete-employee nega Joao — HTTP 403
+PASS Edge Function revoke-portal-account nega Joao — HTTP 403
+PASS DTO proprio Joao Sintetico — HTTP 200
+PASS Identidade propria Joao Sintetico
+PASS DTO minimo sem ASO/CPF/campos sensiveis Joao Sintetico
+PASS DTO proprio Maria Sintetica — HTTP 200
+PASS Identidade propria Maria Sintetica
+PASS DTO minimo sem ASO/CPF/campos sensiveis Maria Sintetica
+PASS DTO proprio Conta Revogada Sintetica — HTTP 200
+PASS Identidade propria Conta Revogada Sintetica
+PASS DTO minimo sem ASO/CPF/campos sensiveis Conta Revogada Sintetica
+PASS Gestao le EPI via RLS — HTTP 200
+PASS Gestao encontra tres funcionarios
+PASS Joao nao le epi_employees alheio — HTTP 200
+PASS Joao nao le epi_deliveries alheio — HTTP 200
+PASS Joao nao le epi_monthly_acknowledgements alheio — HTTP 200
+PASS Joao nao le epi_requests alheio — HTTP 200
+PASS Maria nao le epi_employees alheio — HTTP 200
+PASS Maria nao le epi_deliveries alheio — HTTP 200
+PASS Maria nao le epi_monthly_acknowledgements alheio — HTTP 200
+PASS Maria nao le epi_requests alheio — HTTP 200
+PASS Joao nao le ASO — HTTP 200
+PASS Joao nao acessa identidade privada — HTTP 404
+PASS Maria nao le ASO — HTTP 200
+PASS Maria nao acessa identidade privada — HTTP 404
+PASS Joao tabela asset_movements — HTTP 200, linhas 0
+PASS Joao tabela assets — HTTP 200, linhas 0
+PASS Joao tabela employee_assignments — HTTP 200, linhas 0
+PASS Joao tabela epi_deliveries — HTTP 200, linhas 0
+PASS Joao tabela epi_employee_item_sets — HTTP 200, linhas 0
+PASS Joao tabela epi_employee_items — HTTP 200, linhas 0
+PASS Joao tabela epi_employees — HTTP 200, linhas 0
+PASS Joao tabela epi_item_variants — HTTP 200, linhas 0
+PASS Joao tabela epi_items — HTTP 200, linhas 0
+PASS Joao tabela epi_monthly_acknowledgements — HTTP 200, linhas 0
+PASS Joao tabela epi_profession_items — HTTP 200, linhas 0
+PASS Joao tabela epi_professions — HTTP 200, linhas 0
+PASS Joao tabela epi_requests — HTTP 200, linhas 0
+PASS Joao tabela epi_stock_batches — HTTP 200, linhas 0
+PASS Joao tabela epi_stock_transfers — HTTP 200, linhas 0
+PASS Joao tabela inventory — HTTP 200, linhas 0
+PASS Joao tabela items — HTTP 200, linhas 0
+PASS Joao tabela movements — HTTP 200, linhas 0
+PASS Joao tabela operation_reasons — HTTP 200, linhas 0
+PASS Joao tabela profile_access_audit — HTTP 200, linhas 0
+PASS Joao tabela profiles — HTTP 200, linhas 1
+PASS Joao tabela rental_admin_details — HTTP 200, linhas 0
+PASS Joao tabela rental_return_requests — HTTP 200, linhas 0
+PASS Joao tabela site_operation_receipts — HTTP 200, linhas 0
+PASS Joao tabela supply_order_events — HTTP 200, linhas 0
+PASS Joao tabela supply_order_lines — HTTP 200, linhas 0
+PASS Joao tabela supply_orders — HTTP 200, linhas 0
+PASS Joao tabela teams — HTTP 200, linhas 0
+PASS Joao tabela work_locations — HTTP 200, linhas 0
+PASS Joao tabela worksites — HTTP 200, linhas 0
+PASS Maria tabela asset_movements — HTTP 200, linhas 0
+PASS Maria tabela assets — HTTP 200, linhas 0
+PASS Maria tabela employee_assignments — HTTP 200, linhas 0
+PASS Maria tabela epi_deliveries — HTTP 200, linhas 0
+PASS Maria tabela epi_employee_item_sets — HTTP 200, linhas 0
+PASS Maria tabela epi_employee_items — HTTP 200, linhas 0
+PASS Maria tabela epi_employees — HTTP 200, linhas 0
+PASS Maria tabela epi_item_variants — HTTP 200, linhas 0
+PASS Maria tabela epi_items — HTTP 200, linhas 0
+PASS Maria tabela epi_monthly_acknowledgements — HTTP 200, linhas 0
+PASS Maria tabela epi_profession_items — HTTP 200, linhas 0
+PASS Maria tabela epi_professions — HTTP 200, linhas 0
+PASS Maria tabela epi_requests — HTTP 200, linhas 0
+PASS Maria tabela epi_stock_batches — HTTP 200, linhas 0
+PASS Maria tabela epi_stock_transfers — HTTP 200, linhas 0
+PASS Maria tabela inventory — HTTP 200, linhas 0
+PASS Maria tabela items — HTTP 200, linhas 0
+PASS Maria tabela movements — HTTP 200, linhas 0
+PASS Maria tabela operation_reasons — HTTP 200, linhas 0
+PASS Maria tabela profile_access_audit — HTTP 200, linhas 0
+PASS Maria tabela profiles — HTTP 200, linhas 1
+PASS Maria tabela rental_admin_details — HTTP 200, linhas 0
+PASS Maria tabela rental_return_requests — HTTP 200, linhas 0
+PASS Maria tabela site_operation_receipts — HTTP 200, linhas 0
+PASS Maria tabela supply_order_events — HTTP 200, linhas 0
+PASS Maria tabela supply_order_lines — HTTP 200, linhas 0
+PASS Maria tabela supply_orders — HTTP 200, linhas 0
+PASS Maria tabela teams — HTTP 200, linhas 0
+PASS Maria tabela work_locations — HTTP 200, linhas 0
+PASS Maria tabela worksites — HTTP 200, linhas 0
+PASS Inventario REST de 30 tabelas para Joao e Maria
+PASS Portal RPC add_epi_stock_batch(p_item_id uuid, p_quantity integer, p_variant text, p_ca_number text, p_brand_model text, p_lot_number text) — HTTP 400, codigo P0001
+PASS Portal RPC admin_delete_asset_movement(p_movement_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC admin_delete_material_movement(p_movement_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC admin_link_employee_identity(p_auth_user_id uuid, p_employee_id uuid, p_expected_employee_name text, p_expected_registration_code text, p_verification_method text) — HTTP 403, codigo 42501
+PASS Portal RPC admin_register_portal_account(p_auth_user_id uuid) — HTTP 403, codigo 42501
+PASS Portal RPC admin_revoke_employee_identity(p_identity_id uuid, p_reason text) — HTTP 403, codigo 42501
+PASS Portal RPC admin_update_asset_movement(p_movement_id uuid, p_destination_team_id uuid, p_new_status text, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC admin_update_material_movement(p_movement_id uuid, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC admin_update_profile(p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean) — HTTP 400, codigo P0001
+PASS Portal RPC admin_update_profile_access(p_user_id uuid, p_full_name text, p_role text, p_team_id uuid, p_active boolean, p_operation_permissions text[], p_operation_team_ids uuid[]) — HTTP 400, codigo P0001
+PASS Portal RPC can_operate(p_permission text, p_team_id uuid) — HTTP 200, codigo -
+PASS Portal RPC close_epi_delivery_quantity(p_delivery_id uuid, p_quantity integer, p_status text) — HTTP 400, codigo P0001
+PASS Portal RPC consume_material(p_item_id uuid, p_team_id uuid, p_quantity numeric, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC create_epi_item_with_stock(p_code text, p_name text, p_item_kind text, p_unit text, p_ca_number text, p_brand_model text, p_minimum_stock integer, p_return_policy text, p_initial_quantity integer, p_variant text, p_lot_number text) — HTTP 400, codigo P0001
+PASS Portal RPC create_equipment_for_team(p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_notes text) — HTTP 400, codigo P0001
+PASS Portal RPC create_equipment_for_team_v2(p_code text, p_name text, p_asset_code text, p_serial_number text, p_description text, p_category text, p_team_id uuid, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date) — HTTP 400, codigo P0001
+PASS Portal RPC create_material_for_team(p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock integer, p_team_id uuid, p_quantity integer) — HTTP 400, codigo P0001
+PASS Portal RPC create_team_admin(p_name text, p_description text) — HTTP 300, codigo PGRST203
+PASS Portal RPC create_team_admin(p_name text, p_description text, p_location_type text) — HTTP 400, codigo P0001
+PASS Portal RPC deactivate_asset_admin(p_asset_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC deactivate_item_admin(p_item_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC delete_team_admin(p_team_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC employee_work_team(p_employee_id uuid, p_at timestamp with time zone) — HTTP 200, codigo -
+PASS Portal RPC fulfill_epi_request(p_request_id uuid, p_stock_batch_id uuid) — HTTP 400, codigo P0001
+PASS Portal RPC is_active_admin() — HTTP 200, codigo -
+PASS Portal RPC my_employee_profile() — HTTP 200, codigo -
+PASS Portal RPC register_asset_movement(p_asset_id uuid, p_movement_type text, p_destination_team_id uuid, p_new_status text, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC register_epi_delivery(p_employee_id uuid, p_item_id uuid, p_stock_batch_id uuid, p_quantity integer, p_delivery_reason text, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC register_epi_delivery_batch(p_employee_id uuid, p_lines jsonb, p_delivery_reason text, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC register_movement(p_item_id uuid, p_movement_type text, p_quantity integer, p_origin_team_id uuid, p_destination_team_id uuid, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC replenish_material(p_item_id uuid, p_origin_team_id uuid, p_destination_team_id uuid, p_quantity numeric, p_note text) — HTTP 400, codigo P0001
+PASS Portal RPC request_epi_item(p_employee_id uuid, p_item_id uuid, p_quantity integer, p_requested_variant text) — HTTP 400, codigo P0001
+PASS Portal RPC return_rented_equipment(p_asset_id uuid, p_note text) — HTTP 403, codigo 42501
+PASS Portal RPC run_site_operation(p_command text, p_data jsonb, p_operation_id uuid, p_occurred_at timestamp with time zone) — HTTP 400, codigo P0001
+PASS Portal RPC set_epi_employee_items(p_employee_id uuid, p_lines jsonb) — HTTP 403, codigo 42501
+PASS Portal RPC set_updated_at() — HTTP 404, codigo PGRST202
+PASS P4 dashboard.works vazio
+PASS P4 dashboard.teams vazio
+PASS P4 dashboard.employees vazio
+PASS P4 dashboard.alerts vazio
+PASS Portal RPC site_dashboard() — HTTP 200, codigo -
+PASS Portal RPC stock_team(p_team_id uuid) — HTTP 200, codigo -
+PASS Portal RPC update_asset_admin(p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean) — HTTP 400, codigo P0001
+PASS Portal RPC update_equipment_admin(p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_notes text, p_active boolean) — HTTP 400, codigo P0001
+PASS Portal RPC update_equipment_admin_v2(p_item_id uuid, p_item_code text, p_item_name text, p_asset_id uuid, p_asset_code text, p_serial_number text, p_team_id uuid, p_status text, p_user_notes text, p_ownership_type text, p_rental_company text, p_rental_start_date date, p_rental_end_date date, p_active boolean) — HTTP 400, codigo P0001
+PASS Portal RPC update_item_admin(p_item_id uuid, p_code text, p_name text, p_description text, p_category text, p_unit text, p_minimum_stock numeric, p_active boolean) — HTTP 400, codigo P0001
+PASS Portal RPC update_team_admin(p_team_id uuid, p_name text, p_description text) — HTTP 400, codigo P0001
+PASS RPCs do portal nao alteram tabelas publicas ou identidades privadas
+PASS Inventario RPC autenticadas executado — 43 assinaturas
+PASS Parametro employee_id inexistente: roteamento PostgREST, nao guarda SQL — HTTP 404, PGRST202
+PASS Joao nao chama RPC administrativa — HTTP 403
+PASS RPC employee_work_team nao vaza dados — HTTP 200
+PASS RPC stock_team nao vaza dados — HTTP 200
+PASS JWT adulterado recusado pelo PostgREST — HTTP 401
+PASS Refresh de conta ativa funciona — HTTP 200
+PASS Gestao continua lendo profiles — HTTP 200
+PASS Gestao continua lendo teams — HTTP 200
+PASS Gestao continua lendo worksites — HTTP 200
+PASS Gestao continua lendo items — HTTP 200
+PASS Gestao continua lendo inventory — HTTP 200
+PASS Gestao continua lendo epi_employees — HTTP 200
+PASS Gestao continua lendo epi_items — HTTP 200
+PASS Gestao continua lendo epi_deliveries — HTTP 200
+PASS Gestao continua lendo supply_orders — HTTP 200
+PASS RPC admin da Gestao continua ativa — HTTP 200
+PASS Gestao cria equipe sintetica via RPC — HTTP 200
+PASS Gestao edita equipe sintetica via RPC — HTTP 204
+PASS Edge servidor revoga banco e bloqueia Auth — HTTP 200
+PASS Revogacao pode ser repetida sem novo evento — HTTP 200
+PASS Token antigo perde acesso pessoal imediato — HTTP 200
+PASS Refresh da conta revogada bloqueado — HTTP 400
+PASS Novo login da conta revogada bloqueado — HTTP 400
+PASS Edge Function admin-invite-user nega token antigo revogado — HTTP 401
+PASS Edge Function create-employee nega token antigo revogado — HTTP 401
+PASS Edge Function delete-employee nega token antigo revogado — HTTP 401
+PASS Edge Function revoke-portal-account nega token antigo revogado — HTTP 403
+PASS P1 catalogo possui 30 tabelas publicas com chave
+PASS P1 todas as tentativas PATCH/DELETE possuem alvo existente — 30 tabelas
+PASS P1 Joao POST asset_movements — HTTP 403, 42501
+PASS P1 Joao PATCH asset_movements — HTTP 403, 42501
+PASS P1 Joao DELETE asset_movements — HTTP 403, 42501
+PASS P1 Joao POST assets — HTTP 403, 42501
+PASS P1 Joao PATCH assets — HTTP 200, 0 linhas
+PASS P1 Joao DELETE assets — HTTP 200, 0 linhas
+PASS P1 Joao POST employee_assignments — HTTP 403, 42501
+PASS P1 Joao PATCH employee_assignments — HTTP 403, 42501
+PASS P1 Joao DELETE employee_assignments — HTTP 403, 42501
+PASS P1 Joao POST epi_deliveries — HTTP 403, 42501
+PASS P1 Joao PATCH epi_deliveries — HTTP 403, 42501
+PASS P1 Joao DELETE epi_deliveries — HTTP 403, 42501
+PASS P1 Joao POST epi_employee_item_sets — HTTP 403, 42501
+PASS P1 Joao PATCH epi_employee_item_sets — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_employee_item_sets — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_employee_items — HTTP 403, 42501
+PASS P1 Joao PATCH epi_employee_items — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_employee_items — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_employees — HTTP 403, 42501
+PASS P1 Joao PATCH epi_employees — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_employees — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_item_variants — HTTP 403, 42501
+PASS P1 Joao PATCH epi_item_variants — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_item_variants — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_items — HTTP 403, 42501
+PASS P1 Joao PATCH epi_items — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_items — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_monthly_acknowledgements — HTTP 403, 42501
+PASS P1 Joao PATCH epi_monthly_acknowledgements — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_monthly_acknowledgements — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_profession_items — HTTP 403, 42501
+PASS P1 Joao PATCH epi_profession_items — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_profession_items — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_professions — HTTP 403, 42501
+PASS P1 Joao PATCH epi_professions — HTTP 200, 0 linhas
+PASS P1 Joao DELETE epi_professions — HTTP 200, 0 linhas
+PASS P1 Joao POST epi_requests — HTTP 403, 42501
+PASS P1 Joao PATCH epi_requests — HTTP 403, 42501
+PASS P1 Joao DELETE epi_requests — HTTP 403, 42501
+PASS P1 Joao POST epi_stock_batches — HTTP 403, 42501
+PASS P1 Joao PATCH epi_stock_batches — HTTP 403, 42501
+PASS P1 Joao DELETE epi_stock_batches — HTTP 403, 42501
+PASS P1 Joao POST epi_stock_transfers — HTTP 403, 42501
+PASS P1 Joao PATCH epi_stock_transfers — HTTP 403, 42501
+PASS P1 Joao DELETE epi_stock_transfers — HTTP 403, 42501
+PASS P1 Joao POST inventory — HTTP 403, 42501
+PASS P1 Joao PATCH inventory — HTTP 403, 42501
+PASS P1 Joao DELETE inventory — HTTP 403, 42501
+PASS P1 Joao POST items — HTTP 403, 42501
+PASS P1 Joao PATCH items — HTTP 200, 0 linhas
+PASS P1 Joao DELETE items — HTTP 200, 0 linhas
+PASS P1 Joao POST movements — HTTP 403, 42501
+PASS P1 Joao PATCH movements — HTTP 403, 42501
+PASS P1 Joao DELETE movements — HTTP 403, 42501
+PASS P1 Joao POST operation_reasons — HTTP 403, 42501
+PASS P1 Joao PATCH operation_reasons — HTTP 200, 0 linhas
+PASS P1 Joao DELETE operation_reasons — HTTP 200, 0 linhas
+PASS P1 Joao POST profile_access_audit — HTTP 403, 42501
+PASS P1 Joao PATCH profile_access_audit — HTTP 403, 42501
+PASS P1 Joao DELETE profile_access_audit — HTTP 403, 42501
+PASS P1 Joao POST profiles — HTTP 403, 42501
+PASS P1 Joao PATCH profiles — HTTP 200, 0 linhas
+PASS P1 Joao DELETE profiles — HTTP 200, 0 linhas
+PASS P1 Joao POST rental_admin_details — HTTP 403, 42501
+PASS P1 Joao PATCH rental_admin_details — HTTP 403, 42501
+PASS P1 Joao DELETE rental_admin_details — HTTP 403, 42501
+PASS P1 Joao POST rental_return_requests — HTTP 403, 42501
+PASS P1 Joao PATCH rental_return_requests — HTTP 403, 42501
+PASS P1 Joao DELETE rental_return_requests — HTTP 403, 42501
+PASS P1 Joao POST site_operation_receipts — HTTP 403, 42501
+PASS P1 Joao PATCH site_operation_receipts — HTTP 403, 42501
+PASS P1 Joao DELETE site_operation_receipts — HTTP 403, 42501
+PASS P1 Joao POST supply_order_events — HTTP 403, 42501
+PASS P1 Joao PATCH supply_order_events — HTTP 403, 42501
+PASS P1 Joao DELETE supply_order_events — HTTP 403, 42501
+PASS P1 Joao POST supply_order_lines — HTTP 403, 42501
+PASS P1 Joao PATCH supply_order_lines — HTTP 403, 42501
+PASS P1 Joao DELETE supply_order_lines — HTTP 403, 42501
+PASS P1 Joao POST supply_orders — HTTP 403, 42501
+PASS P1 Joao PATCH supply_orders — HTTP 403, 42501
+PASS P1 Joao DELETE supply_orders — HTTP 403, 42501
+PASS P1 Joao POST teams — HTTP 403, 42501
+PASS P1 Joao PATCH teams — HTTP 200, 0 linhas
+PASS P1 Joao DELETE teams — HTTP 200, 0 linhas
+PASS P1 Joao POST work_locations — HTTP 403, 42501
+PASS P1 Joao PATCH work_locations — HTTP 200, 0 linhas
+PASS P1 Joao DELETE work_locations — HTTP 200, 0 linhas
+PASS P1 Joao POST worksites — HTTP 403, 42501
+PASS P1 Joao PATCH worksites — HTTP 403, 42501
+PASS P1 Joao DELETE worksites — HTTP 403, 42501
+PASS P1 Joao nao ativa o proprio perfil Gestao
+PASS P1 Joao fingerprints SHA256 de 33 tabelas inalterados
+PASS P1 Maria POST asset_movements — HTTP 403, 42501
+PASS P1 Maria PATCH asset_movements — HTTP 403, 42501
+PASS P1 Maria DELETE asset_movements — HTTP 403, 42501
+PASS P1 Maria POST assets — HTTP 403, 42501
+PASS P1 Maria PATCH assets — HTTP 200, 0 linhas
+PASS P1 Maria DELETE assets — HTTP 200, 0 linhas
+PASS P1 Maria POST employee_assignments — HTTP 403, 42501
+PASS P1 Maria PATCH employee_assignments — HTTP 403, 42501
+PASS P1 Maria DELETE employee_assignments — HTTP 403, 42501
+PASS P1 Maria POST epi_deliveries — HTTP 403, 42501
+PASS P1 Maria PATCH epi_deliveries — HTTP 403, 42501
+PASS P1 Maria DELETE epi_deliveries — HTTP 403, 42501
+PASS P1 Maria POST epi_employee_item_sets — HTTP 403, 42501
+PASS P1 Maria PATCH epi_employee_item_sets — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_employee_item_sets — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_employee_items — HTTP 403, 42501
+PASS P1 Maria PATCH epi_employee_items — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_employee_items — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_employees — HTTP 403, 42501
+PASS P1 Maria PATCH epi_employees — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_employees — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_item_variants — HTTP 403, 42501
+PASS P1 Maria PATCH epi_item_variants — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_item_variants — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_items — HTTP 403, 42501
+PASS P1 Maria PATCH epi_items — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_items — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_monthly_acknowledgements — HTTP 403, 42501
+PASS P1 Maria PATCH epi_monthly_acknowledgements — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_monthly_acknowledgements — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_profession_items — HTTP 403, 42501
+PASS P1 Maria PATCH epi_profession_items — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_profession_items — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_professions — HTTP 403, 42501
+PASS P1 Maria PATCH epi_professions — HTTP 200, 0 linhas
+PASS P1 Maria DELETE epi_professions — HTTP 200, 0 linhas
+PASS P1 Maria POST epi_requests — HTTP 403, 42501
+PASS P1 Maria PATCH epi_requests — HTTP 403, 42501
+PASS P1 Maria DELETE epi_requests — HTTP 403, 42501
+PASS P1 Maria POST epi_stock_batches — HTTP 403, 42501
+PASS P1 Maria PATCH epi_stock_batches — HTTP 403, 42501
+PASS P1 Maria DELETE epi_stock_batches — HTTP 403, 42501
+PASS P1 Maria POST epi_stock_transfers — HTTP 403, 42501
+PASS P1 Maria PATCH epi_stock_transfers — HTTP 403, 42501
+PASS P1 Maria DELETE epi_stock_transfers — HTTP 403, 42501
+PASS P1 Maria POST inventory — HTTP 403, 42501
+PASS P1 Maria PATCH inventory — HTTP 403, 42501
+PASS P1 Maria DELETE inventory — HTTP 403, 42501
+PASS P1 Maria POST items — HTTP 403, 42501
+PASS P1 Maria PATCH items — HTTP 200, 0 linhas
+PASS P1 Maria DELETE items — HTTP 200, 0 linhas
+PASS P1 Maria POST movements — HTTP 403, 42501
+PASS P1 Maria PATCH movements — HTTP 403, 42501
+PASS P1 Maria DELETE movements — HTTP 403, 42501
+PASS P1 Maria POST operation_reasons — HTTP 403, 42501
+PASS P1 Maria PATCH operation_reasons — HTTP 200, 0 linhas
+PASS P1 Maria DELETE operation_reasons — HTTP 200, 0 linhas
+PASS P1 Maria POST profile_access_audit — HTTP 403, 42501
+PASS P1 Maria PATCH profile_access_audit — HTTP 403, 42501
+PASS P1 Maria DELETE profile_access_audit — HTTP 403, 42501
+PASS P1 Maria POST profiles — HTTP 403, 42501
+PASS P1 Maria PATCH profiles — HTTP 200, 0 linhas
+PASS P1 Maria DELETE profiles — HTTP 200, 0 linhas
+PASS P1 Maria POST rental_admin_details — HTTP 403, 42501
+PASS P1 Maria PATCH rental_admin_details — HTTP 403, 42501
+PASS P1 Maria DELETE rental_admin_details — HTTP 403, 42501
+PASS P1 Maria POST rental_return_requests — HTTP 403, 42501
+PASS P1 Maria PATCH rental_return_requests — HTTP 403, 42501
+PASS P1 Maria DELETE rental_return_requests — HTTP 403, 42501
+PASS P1 Maria POST site_operation_receipts — HTTP 403, 42501
+PASS P1 Maria PATCH site_operation_receipts — HTTP 403, 42501
+PASS P1 Maria DELETE site_operation_receipts — HTTP 403, 42501
+PASS P1 Maria POST supply_order_events — HTTP 403, 42501
+PASS P1 Maria PATCH supply_order_events — HTTP 403, 42501
+PASS P1 Maria DELETE supply_order_events — HTTP 403, 42501
+PASS P1 Maria POST supply_order_lines — HTTP 403, 42501
+PASS P1 Maria PATCH supply_order_lines — HTTP 403, 42501
+PASS P1 Maria DELETE supply_order_lines — HTTP 403, 42501
+PASS P1 Maria POST supply_orders — HTTP 403, 42501
+PASS P1 Maria PATCH supply_orders — HTTP 403, 42501
+PASS P1 Maria DELETE supply_orders — HTTP 403, 42501
+PASS P1 Maria POST teams — HTTP 403, 42501
+PASS P1 Maria PATCH teams — HTTP 200, 0 linhas
+PASS P1 Maria DELETE teams — HTTP 200, 0 linhas
+PASS P1 Maria POST work_locations — HTTP 403, 42501
+PASS P1 Maria PATCH work_locations — HTTP 200, 0 linhas
+PASS P1 Maria DELETE work_locations — HTTP 200, 0 linhas
+PASS P1 Maria POST worksites — HTTP 403, 42501
+PASS P1 Maria PATCH worksites — HTTP 403, 42501
+PASS P1 Maria DELETE worksites — HTTP 403, 42501
+PASS P1 Maria nao ativa o proprio perfil Gestao
+PASS P1 Maria fingerprints SHA256 de 33 tabelas inalterados
+PASS P2 controle admin confirma query valida ou objeto comprovadamente indisponivel — {"status":200,"rows":null,"found_maria":false,"aso_column_present":false,"errors":[{"message":"pg_graphql extension is not enabled."}]}
+PASS P2 Joao GraphQL nao retorna colega nem ASO — HTTP 200; extensao desabilitada, sem prova de RLS GraphQL
+PASS P2 Maria GraphQL nao retorna colega nem ASO — HTTP 200; extensao desabilitada, sem prova de RLS GraphQL
+PASS A-09 create-employee Gestao cria conta real local — HTTP 200
+PASS A-09 perfil Gestao ativo e sem marcador portal — {"active":true,"role":"collaborator","portal_marker":null}
+PASS A-09 conta Gestao ativa recusada como portal
+PASS A-09 conta Gestao inativa sem marcador recusada como portal
+PASS ticket delete — HTTP 204
+PASS Auth create delete — HTTP 200
+PASS P5 conta alvo vinculada por fluxo dedicado
+PASS P5 delete-employee falha de forma fechada e controlada — {"status":400,"data":{"error":"Database error deleting user"}}
+PASS P5 Auth identidade conta e auditoria preservados
+PASS P5 Auth confirma usuario ainda existente — HTTP 200
+PASS P5 FKs de identidade e conta usam ON DELETE RESTRICT
+PASS A-13 Maria ativa: precondicao e identidade ativa
+PASS A-13 Maria ativa: JWT existente preserva DTO minimo proprio
+PASS A-13 Maria ativa: novo login Auth permitido
+PASS A-13 Maria ativa: JWT de novo login recebe perfil proprio
+PASS A-13 Maria ativa: refresh permitido sem perda de perfil
+PASS A-13 Maria ativa: Joao nao le perfil nem ASO do colega
+PASS A-13 Maria ativa: Maria nao le perfil nem ASO do colega
+PASS A-13 Maria ativa: conta identidade auditoria e ban inalterados
+PASS A-13 Maria inativa: precondicao e identidade ativa
+PASS A-13 Maria inativa: JWT existente preserva DTO minimo proprio
+PASS A-13 Maria inativa: novo login Auth permitido
+PASS A-13 Maria inativa: JWT de novo login recebe perfil proprio
+PASS A-13 Maria inativa: refresh permitido sem perda de perfil
+PASS A-13 Maria inativa: Joao nao le perfil nem ASO do colega
+PASS A-13 Maria inativa: Maria nao le perfil nem ASO do colega
+PASS A-13 Maria inativa: conta identidade auditoria e ban inalterados
+PASS A-13 Maria ausente: precondicao e identidade ativa
+PASS A-13 Maria ausente: JWT existente preserva DTO minimo proprio
+PASS A-13 Maria ausente: novo login Auth permitido
+PASS A-13 Maria ausente: JWT de novo login recebe perfil proprio
+PASS A-13 Maria ausente: refresh permitido sem perda de perfil
+PASS A-13 Maria ausente: Joao nao le perfil nem ASO do colega
+PASS A-13 Maria ausente: Maria nao le perfil nem ASO do colega
+PASS A-13 Maria ausente: conta identidade auditoria e ban inalterados
+PASS A-13 Maria removida: precondicao e identidade ativa
+PASS A-13 Maria removida: JWT existente preserva DTO minimo proprio
+PASS A-13 Maria removida: novo login Auth permitido
+PASS A-13 Maria removida: JWT de novo login recebe perfil proprio
+PASS A-13 Maria removida: refresh permitido sem perda de perfil
+PASS A-13 Maria removida: Joao nao le perfil nem ASO do colega
+PASS A-13 Maria removida: Maria nao le perfil nem ASO do colega
+PASS A-13 Maria removida: conta identidade auditoria e ban inalterados
+PASS A-13 Maria funcionario inativo continua sem DTO mesmo sem equipe
+PASS A-13 Maria reatribuicao de equipe ativa restaura nome sem novo vinculo
+PASS A-13 Joao ativa: precondicao e identidade ativa
+PASS A-13 Joao ativa: JWT existente preserva DTO minimo proprio
+PASS A-13 Joao ativa: novo login Auth permitido
+PASS A-13 Joao ativa: JWT de novo login recebe perfil proprio
+PASS A-13 Joao ativa: refresh permitido sem perda de perfil
+PASS A-13 Joao ativa: Joao nao le perfil nem ASO do colega
+PASS A-13 Joao ativa: Maria nao le perfil nem ASO do colega
+PASS A-13 Joao ativa: conta identidade auditoria e ban inalterados
+PASS A-13 Joao inativa: precondicao e identidade ativa
+PASS A-13 Joao inativa: JWT existente preserva DTO minimo proprio
+PASS A-13 Joao inativa: novo login Auth permitido
+PASS A-13 Joao inativa: JWT de novo login recebe perfil proprio
+PASS A-13 Joao inativa: refresh permitido sem perda de perfil
+PASS A-13 Joao inativa: Joao nao le perfil nem ASO do colega
+PASS A-13 Joao inativa: Maria nao le perfil nem ASO do colega
+PASS A-13 Joao inativa: conta identidade auditoria e ban inalterados
+PASS A-13 Joao ausente: precondicao e identidade ativa
+PASS A-13 Joao ausente: JWT existente preserva DTO minimo proprio
+PASS A-13 Joao ausente: novo login Auth permitido
+PASS A-13 Joao ausente: JWT de novo login recebe perfil proprio
+PASS A-13 Joao ausente: refresh permitido sem perda de perfil
+PASS A-13 Joao ausente: Joao nao le perfil nem ASO do colega
+PASS A-13 Joao ausente: Maria nao le perfil nem ASO do colega
+PASS A-13 Joao ausente: conta identidade auditoria e ban inalterados
+PASS A-13 Joao removida: precondicao e identidade ativa
+PASS A-13 Joao removida: JWT existente preserva DTO minimo proprio
+PASS A-13 Joao removida: novo login Auth permitido
+PASS A-13 Joao removida: JWT de novo login recebe perfil proprio
+PASS A-13 Joao removida: refresh permitido sem perda de perfil
+PASS A-13 Joao removida: Joao nao le perfil nem ASO do colega
+PASS A-13 Joao removida: Maria nao le perfil nem ASO do colega
+PASS A-13 Joao removida: conta identidade auditoria e ban inalterados
+PASS A-13 Joao funcionario inativo continua sem DTO mesmo sem equipe
+PASS A-13 Joao reatribuicao de equipe ativa restaura nome sem novo vinculo
+PASS P3 Joao sem equipe tem perfil antes da revogacao
+PASS P3 Joao autenticado antes da falha
+PASS P3 endpoint de ensaio tambem exige admin e preserva Maria — HTTP 403
+PASS P3 falha de transporte apos SQL retorna 502 auth_ban_pending — {"status":502,"data":{"error":"auth_ban_pending"}}
+PASS P3 SQL revogado antes de ban Auth
+PASS P3 access token antigo continua roteavel mas DTO vazio — {"status":200,"data":[]}
+PASS P3 refresh intermediario observado sem reabrir DTO — refresh HTTP 200; dados permanecem bloqueados
+PASS P3 motivo diferente retorna erro controlado e nao modifica historico — {"status":400,"data":{"error":"identity_revocation_denied"}}
+PASS P3 retry mesmo motivo conclui ban Auth
+PASS P3 retry nao duplica auditoria
+PASS P3 refresh apos retry negado pelo Auth — HTTP 400
+PASS P3 novo login apos retry negado pelo Auth — HTTP 400
+PASS P3 JWT antigo ainda aceito pelo gateway sem acesso pessoal
+PASS T05 engineer: Auth real e perfil operacional sintetico
+PASS T05 global_engineer: Auth real e perfil operacional sintetico
+PASS T05 leader: Auth real e perfil operacional sintetico
+PASS T05 leader_default: Auth real e perfil operacional sintetico
+PASS T05 collaborator: Auth real e perfil operacional sintetico
+PASS T05 collaborator_default: Auth real e perfil operacional sintetico
+PASS T05 empty_scope: Auth real e perfil operacional sintetico
+PASS T05 admin: leitura own — HTTP 200; linhas=1
+PASS T05 admin: leitura other — HTTP 200; linhas=1
+PASS T05 admin: leitura unassigned — HTTP 200; linhas=1
+PASS T05 admin: dashboard respeita mesmo recorte
+PASS T05 admin: can_operate NULL preserva capacidade anterior
+PASS T05 engineer: leitura own — HTTP 200; linhas=1
+PASS T05 engineer: leitura other — HTTP 200; linhas=0
+PASS T05 engineer: leitura unassigned — HTTP 200; linhas=0
+PASS T05 engineer: dashboard respeita mesmo recorte
+PASS T05 engineer: can_operate NULL preserva capacidade anterior
+PASS T05 global_engineer: leitura own — HTTP 200; linhas=1
+PASS T05 global_engineer: leitura other — HTTP 200; linhas=1
+PASS T05 global_engineer: leitura unassigned — HTTP 200; linhas=0
+PASS T05 global_engineer: dashboard respeita mesmo recorte
+PASS T05 global_engineer: can_operate NULL preserva capacidade anterior
+PASS T05 leader: leitura own — HTTP 200; linhas=1
+PASS T05 leader: leitura other — HTTP 200; linhas=0
+PASS T05 leader: leitura unassigned — HTTP 200; linhas=0
+PASS T05 leader: dashboard respeita mesmo recorte
+PASS T05 leader: can_operate NULL preserva capacidade anterior
+PASS T05 leader_default: leitura own — HTTP 200; linhas=0
+PASS T05 leader_default: leitura other — HTTP 200; linhas=0
+PASS T05 leader_default: leitura unassigned — HTTP 200; linhas=0
+PASS T05 leader_default: dashboard respeita mesmo recorte
+PASS T05 leader_default: can_operate NULL preserva capacidade anterior
+PASS T05 collaborator: leitura own — HTTP 200; linhas=1
+PASS T05 collaborator: leitura other — HTTP 200; linhas=0
+PASS T05 collaborator: leitura unassigned — HTTP 200; linhas=0
+PASS T05 collaborator: dashboard respeita mesmo recorte
+PASS T05 collaborator: can_operate NULL preserva capacidade anterior
+PASS T05 collaborator_default: leitura own — HTTP 200; linhas=0
+PASS T05 collaborator_default: leitura other — HTTP 200; linhas=0
+PASS T05 collaborator_default: leitura unassigned — HTTP 200; linhas=0
+PASS T05 collaborator_default: dashboard respeita mesmo recorte
+PASS T05 collaborator_default: can_operate NULL preserva capacidade anterior
+PASS T05 empty_scope: leitura own — HTTP 200; linhas=0
+PASS T05 empty_scope: leitura other — HTTP 200; linhas=0
+PASS T05 empty_scope: leitura unassigned — HTTP 200; linhas=0
+PASS T05 empty_scope: dashboard respeita mesmo recorte
+PASS T05 empty_scope: can_operate NULL preserva capacidade anterior
+PASS T05 portal: leitura own — HTTP 200; linhas=0
+PASS T05 portal: leitura other — HTTP 200; linhas=0
+PASS T05 portal: leitura unassigned — HTTP 200; linhas=0
+PASS T05 portal: dashboard respeita mesmo recorte
+PASS T05 portal: can_operate NULL preserva capacidade anterior
+PASS T05 sem equipe nao amplia historico epi_deliveries
+PASS T05 sem equipe nao amplia historico employee_assignments
+PASS T05 historico com equipe explicita conserva permissao anterior
+PASS T05 register_epi_delivery: exige admin para funcionario sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T05 register_epi_delivery: estoque e historico inalterados
+PASS T05 register_epi_delivery_batch: exige admin para funcionario sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T05 register_epi_delivery_batch: estoque e historico inalterados
+PASS T05 request_epi_item: exige admin para funcionario sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T05 request_epi_item: estoque e historico inalterados
+PASS T05 fulfill_epi_request: exige admin para funcionario sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T05 fulfill_epi_request: estoque e historico inalterados
+PASS T05 close_epi_delivery_quantity: exige admin para funcionario sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T05 close_epi_delivery_quantity: estoque e historico inalterados
+PASS T05 admin continua podendo fechar historico sem equipe
+PASS T05 engenheiro continua entregando EPI na propria equipe
+PASS T05 T10 DELETE de equipe com movimento falha por FK e preserva historico
+PASS T15 admin own GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 admin own GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 admin own GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 admin own POST acknowledgement — HTTP 201
+PASS T15 admin own PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 admin own DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 admin other GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 admin other GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 admin other GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 admin other POST acknowledgement — HTTP 201
+PASS T15 admin other PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 admin other DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 admin unassigned GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 admin unassigned GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 admin unassigned GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 admin unassigned POST acknowledgement — HTTP 201
+PASS T15 admin unassigned PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 admin unassigned DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 engineer own GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 engineer own GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 engineer own GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 engineer own POST acknowledgement — HTTP 201
+PASS T15 engineer own PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 engineer own DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 engineer other GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 engineer other GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 engineer other GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 engineer other POST acknowledgement — HTTP 403
+PASS T15 engineer other POST conserva onze tabelas e auditorias
+PASS T15 engineer other PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 engineer other PATCH conserva onze tabelas e auditorias
+PASS T15 engineer other DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 engineer other DELETE conserva onze tabelas e auditorias
+PASS T15 engineer unassigned GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 engineer unassigned GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 engineer unassigned GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 engineer unassigned POST acknowledgement — HTTP 403
+PASS T15 engineer unassigned POST conserva onze tabelas e auditorias
+PASS T15 engineer unassigned PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 engineer unassigned PATCH conserva onze tabelas e auditorias
+PASS T15 engineer unassigned DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 engineer unassigned DELETE conserva onze tabelas e auditorias
+PASS T15 leader own GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 leader own GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 leader own GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 leader own POST acknowledgement — HTTP 201
+PASS T15 leader own PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 leader own DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 leader other GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 leader other GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 leader other GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 leader other POST acknowledgement — HTTP 403
+PASS T15 leader other POST conserva onze tabelas e auditorias
+PASS T15 leader other PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 leader other PATCH conserva onze tabelas e auditorias
+PASS T15 leader other DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 leader other DELETE conserva onze tabelas e auditorias
+PASS T15 leader unassigned GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 leader unassigned GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 leader unassigned GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 leader unassigned POST acknowledgement — HTTP 403
+PASS T15 leader unassigned POST conserva onze tabelas e auditorias
+PASS T15 leader unassigned PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 leader unassigned PATCH conserva onze tabelas e auditorias
+PASS T15 leader unassigned DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 leader unassigned DELETE conserva onze tabelas e auditorias
+PASS T15 collaborator own GET epi_employee_items — HTTP 200; linhas=1
+PASS T15 collaborator own GET epi_employee_item_sets — HTTP 200; linhas=1
+PASS T15 collaborator own GET epi_monthly_acknowledgements — HTTP 200; linhas=1
+PASS T15 collaborator own POST acknowledgement — HTTP 201
+PASS T15 collaborator own PATCH acknowledgement — HTTP 200; linhas=1
+PASS T15 collaborator own DELETE acknowledgement — HTTP 200; linhas=1
+PASS T15 collaborator other GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 collaborator other GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 collaborator other GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 collaborator other POST acknowledgement — HTTP 403
+PASS T15 collaborator other POST conserva onze tabelas e auditorias
+PASS T15 collaborator other PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 collaborator other PATCH conserva onze tabelas e auditorias
+PASS T15 collaborator other DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 collaborator other DELETE conserva onze tabelas e auditorias
+PASS T15 collaborator unassigned GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 collaborator unassigned GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 collaborator unassigned GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 collaborator unassigned POST acknowledgement — HTTP 403
+PASS T15 collaborator unassigned POST conserva onze tabelas e auditorias
+PASS T15 collaborator unassigned PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 collaborator unassigned PATCH conserva onze tabelas e auditorias
+PASS T15 collaborator unassigned DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 collaborator unassigned DELETE conserva onze tabelas e auditorias
+PASS T15 portal own GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 portal own GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 portal own GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 portal own POST acknowledgement — HTTP 403
+PASS T15 portal own POST conserva onze tabelas e auditorias
+PASS T15 portal own PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 portal own PATCH conserva onze tabelas e auditorias
+PASS T15 portal own DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 portal own DELETE conserva onze tabelas e auditorias
+PASS T15 portal other GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 portal other GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 portal other GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 portal other POST acknowledgement — HTTP 403
+PASS T15 portal other POST conserva onze tabelas e auditorias
+PASS T15 portal other PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 portal other PATCH conserva onze tabelas e auditorias
+PASS T15 portal other DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 portal other DELETE conserva onze tabelas e auditorias
+PASS T15 portal unassigned GET epi_employee_items — HTTP 200; linhas=0
+PASS T15 portal unassigned GET epi_employee_item_sets — HTTP 200; linhas=0
+PASS T15 portal unassigned GET epi_monthly_acknowledgements — HTTP 200; linhas=0
+PASS T15 portal unassigned POST acknowledgement — HTTP 403
+PASS T15 portal unassigned POST conserva onze tabelas e auditorias
+PASS T15 portal unassigned PATCH acknowledgement — HTTP 200; linhas=0
+PASS T15 portal unassigned PATCH conserva onze tabelas e auditorias
+PASS T15 portal unassigned DELETE acknowledgement — HTTP 200; linhas=0
+PASS T15 portal unassigned DELETE conserva onze tabelas e auditorias
+PASS T15 WITH CHECK nega troca de employee_id proprio para other — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"new row violates row-level security policy for table \"epi_monthly_acknowledgements\""}}
+PASS T15 troca de ID para other conserva onze tabelas e auditorias
+PASS T15 WITH CHECK nega troca de employee_id proprio para unassigned — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"new row violates row-level security policy for table \"epi_monthly_acknowledgements\""}}
+PASS T15 troca de ID para unassigned conserva onze tabelas e auditorias
+PASS T15 engineer run_site_operation deliver_epi sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T15 deliver_epi negado conserva estoque historico identidade audit e recibos
+PASS T15 engineer run_site_operation close_epi sem equipe — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T15 close_epi negado conserva estoque historico identidade audit e recibos
+PASS T15 admin run_site_operation deliver_epi sem equipe — {"status":200,"data":{"id":"4b1cb8ca-657c-4e13-8898-156d2fccb670"}}
+PASS T15 admin run_site_operation close_epi sem equipe — {"status":200,"data":{"id":"553895bb-a5a7-4a73-b42d-559ea74afaa5"}}
+PASS T15 concorrencia delivery_after_unassign: B espera A em lock real — [{"pid":173,"state":"active","wait_event_type":"Lock","wait_event":"transactionid","blocked_by":[2927]}]
+PASS T15 concorrencia delivery_after_unassign: depois do commit NULL B e negado — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T15 concorrencia delivery_after_unassign: dados operacionais identidade e audit preservados
+PASS T15 concorrencia delivery_after_unassign: desvinculo confirmado e entrega continua ativa
+PASS T15 concorrencia close_after_unassign: B espera A em lock real — [{"pid":173,"state":"active","wait_event_type":"Lock","wait_event":"transactionid","blocked_by":[2983]}]
+PASS T15 concorrencia close_after_unassign: depois do commit NULL B e negado — {"status":403,"data":{"code":"42501","details":null,"hint":null,"message":"unassigned_employee_admin_required"}}
+PASS T15 concorrencia close_after_unassign: dados operacionais identidade e audit preservados
+PASS T15 concorrencia close_after_unassign: desvinculo confirmado e entrega continua ativa

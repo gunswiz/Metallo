@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-28T00:24:50.249Z",
+  "scope": "Concorrência de revogação 2B, simulada no limite da transação",
+  "checks": [
+    {
+      "name": "Revogação observada antes do commit nega evento",
+      "ok": true
+    },
+    {
+      "name": "Revogação durante transação faz rollback completo",
+      "ok": true
+    },
+    {
+      "name": "Intenção rejeitada pode ser confirmada depois de autorização vigente",
+      "ok": true
+    },
+    {
+      "name": "Revogação confirmada antes do pedido nega nova intenção",
+      "ok": true
+    },
+    {
+      "name": "Original anterior à revogação preservado",
+      "ok": true
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,835 @@
+Agora estou fornecendo o conteúdo dos 17 achados originais da auditoria SuperGrok que estava faltando.
+
+Use estes achados como entrada para completar:
+
+`05_DOCUMENTACAO/24_TRATAMENTO_AUDITORIA_SUPERGROK_MARCO_0.md`
+
+IMPORTANTE:
+
+- NÃO aceite automaticamente as conclusões do SuperGrok.
+- NÃO rejeite automaticamente.
+- O código já mudou depois da auditoria.
+- Portanto confronte CADA achado contra o ESTADO ATUAL do repositório.
+- Um problema que já foi corrigido deve ser marcado como VÁLIDO NA ÉPOCA / RESOLVIDO AGORA, com evidência e teste.
+- Um problema parcialmente resolvido deve permanecer aberto.
+- Um problema incorreto deve ser classificado como INVÁLIDO, explicando por quê.
+- Não altere Supabase remoto compartilhado nesta rodada.
+- Não faça `db push`, reset ou migration remota.
+- Continue utilizando laboratório local/descartável.
+
+---
+
+# PARECER ORIGINAL SUPERGROK — 17 ACHADOS
+
+## ACHADO 1 — `collaborator` ativo quebra isolamento João/Maria
+
+**Severidade original:** CRÍTICA  
+**Tipo:** defeito confirmado no código local.
+
+O papel `collaborator` atual pertence à Gestão.
+
+No estado auditado:
+
+- `private.is_active_user()` considerava qualquer perfil ativo;
+- `profiles_read` permitia `id = auth.uid() OR is_active_user()`;
+- equipes, obras, inventário, itens, movimentos e ativos também possuíam leituras associadas a usuário ativo;
+- `collaborator` já existia na Gestão.
+
+Cenário original:
+
+João é ativado como `collaborator`, autentica no mesmo Supabase da Gestão e consegue consultar informações de outros perfis/equipes.
+
+Correção recomendada pelo auditor:
+
+- fronteira de portal distinta da Gestão;
+- autorização pessoal por `auth.uid()` → vínculo ativo → funcionário;
+- não reutilizar `OR is_active_user()` para portal;
+- provar João/Maria ativos com tokens reais.
+
+Verifique se a nova fundação `employee_portal_accounts + employee_identity` realmente corrigiu isso.
+
+---
+
+## ACHADO 2 — `create-employee` criava colaborador ativo sem identidade
+
+**Severidade original:** CRÍTICA  
+**Tipo:** defeito confirmado.
+
+No estado auditado:
+
+`create-employee`:
+
+- usava `role="collaborator"`;
+- criava perfil `active=true`;
+- confirmava e-mail;
+- criava Auth + profile;
+- não criava `epi_employees`;
+- não criava `employee_identity`.
+
+Além disso, rotas administrativas podiam ativar perfil sem exigir vínculo pessoal.
+
+Correção proposta:
+
+- separar operador da Gestão de trabalhador do portal;
+- conta do portal não nascer pelo `create-employee` atual;
+- não ativar portal até identidade válida + isolamento.
+
+Verifique se o desenho atual realmente impede esse fluxo.
+
+---
+
+## ACHADO 3 — ASO no mesmo registro operacional
+
+**Severidade original:** ALTA  
+**Tipo:** defeito de desenho + risco provável.
+
+`aso_exam_date` e `aso_expiry_date` estavam dentro de `epi_employees`.
+
+O auditor corrigiu uma interpretação anterior:
+
+ativar `collaborator` sozinho não significava automaticamente ler ASO.
+
+O risco aparecia quando o usuário recebia permissões operacionais de EPI ou quando algum portal futuro utilizasse `select *`.
+
+Correção proposta:
+
+- DTO mínimo;
+- nunca `select *`;
+- ASO fora da superfície pessoal;
+- considerar futura separação SST/saúde.
+
+Verifique o DTO atual `my_employee_profile()`.
+
+---
+
+## ACHADO 4 — Revogar identidade não revogava sessão Auth
+
+**Severidade original:** ALTA  
+**Tipo:** defeito confirmado.
+
+No estado auditado:
+
+`admin_revoke_employee_identity`:
+
+- revogava vínculo;
+- colocava perfil inativo;
+- registrava evento;
+
+mas não invalidava automaticamente:
+
+- refresh sessions;
+- novo login;
+- tokens ainda válidos.
+
+Correção proposta:
+
+- RLS/DTO deve negar acesso imediatamente por estado atual do vínculo;
+- revogar sessões/refresh no Auth via mecanismo oficial;
+- testar token antigo;
+- impedir renovação;
+- avaliar ban quando apropriado.
+
+Verifique documentação ATUAL do Supabase antes de implementar revogação Auth.
+
+Não suponha que Admin Sign Out aceita simplesmente `user_id` se a API vigente não funcionar assim.
+
+---
+
+## ACHADO 5 — Identidade 1:1 de conta não era identidade civil/trabalhista completa
+
+**Severidade original:** ALTA  
+**Tipo:** defeito confirmado + risco provável.
+
+Pontos apontados:
+
+- `auth_user_id unique` impede reutilizar conta para outra pessoa;
+- funcionário podia receber nova conta após revogação;
+- confirmação utilizava nome;
+- homônimos poderiam gerar erro;
+- senha temporária criada administrativamente poderia ser compartilhada.
+
+O auditor reconheceu um ponto positivo:
+
+a unicidade histórica da conta já impede reutilizar conta de João para Maria.
+
+Correções sugeridas:
+
+- matrícula/identificador empresarial;
+- eventualmente identificador adicional restrito ao DP;
+- cuidado com homônimos;
+- não chamar `verification_method` de prova de identidade;
+- senha inicial de uso único;
+- definir formalmente política de recontratação.
+
+Confronte com a nova exigência de UUID + nome + matrícula.
+
+---
+
+## ACHADO 6 — `employee_work_team` e `stock_team` como helpers privilegiados sem titularidade
+
+**Severidade original:** MÉDIA atualmente / ALTA se herdados pelo portal  
+**Tipo:** defeito confirmado.
+
+No estado auditado:
+
+essas funções:
+
+- eram `SECURITY DEFINER`;
+- tinham `EXECUTE` para `authenticated`;
+- não verificavam diretamente titularidade do trabalhador.
+
+Isso poderia permitir consultar metadados de alocação caso alguém soubesse UUIDs.
+
+Correção proposta:
+
+- não herdar no portal;
+- adicionar guarda explícita;
+- mover helpers internos para `private` quando apropriado;
+- revogar execução desnecessária.
+
+Verifique a guarda de portal adicionada agora e teste novamente.
+
+---
+
+## ACHADO 7 — `run_site_operation` é inadequado para REP-P
+
+**Severidade original:** ALTA se reutilizado no ponto / MÉDIA na Gestão  
+**Tipo:** defeito do padrão para uso como ponto.
+
+O fluxo atual da Gestão aceitava:
+
+- horário `occurred_at` vindo do cliente;
+- UUID gerado pelo cliente;
+- fila offline;
+- `SharedPreferences`;
+- registros retroativos dentro de janela ampla;
+- certas operações administrativas capazes de alterar histórico operacional.
+
+Conclusão:
+
+isso pode servir à Gestão operacional de teste.
+
+NÃO serve como motor de ponto.
+
+Correção:
+
+- REP-P terá API própria;
+- hora do servidor;
+- NSR;
+- idempotência própria;
+- original append-only;
+- nenhum `occurred_at` escolhido pelo cliente.
+
+Registrar isto como ADR/invariante permanente.
+
+---
+
+## ACHADO 8 — Histórico da Gestão é mutável
+
+**Severidade original:** ALTA para futuro REP-P / MÉDIA para Gestão  
+**Tipo:** defeito confirmado enquanto padrão operacional.
+
+Existem operações administrativas que:
+
+- excluem movimentos;
+- alteram histórico;
+- unificam equipes/estoques;
+- podem modificar registros operacionais.
+
+Isso não significa necessariamente erro na Gestão.
+
+Significa:
+
+**REP-P não pode herdar esse modelo.**
+
+Correção:
+
+- originais REP-P sem UPDATE/DELETE para app, Gestão, tratamento e admin operacional;
+- correções aditivas;
+- auditoria separada;
+- segregação administrativa.
+
+---
+
+## ACHADO 9 — Migrations local e remoto divergentes
+
+**Severidade original:** ALTA  
+**Tipo:** risco provável / parcialmente confirmado.
+
+Na auditoria havia:
+
+- mais migrations no remoto que local;
+- arquivos somente locais;
+- pares com mesmo nome/versão;
+- migration `unify_existing_operations` somente local;
+- identity somente local;
+- fixture utilizada nos testes não reproduzia totalmente o remoto.
+
+O relatório atual afirma que foram comparados 12 pares e o SQL executável coincide.
+
+Agora conclua a análise:
+
+- obtenha/reproduza schema efetivo remoto;
+- compare policies;
+- functions;
+- grants;
+- triggers;
+- constraints;
+- extensions;
+- views;
+- schemas expostos;
+- Auth-related dependencies.
+
+NÃO aplicar migration identity no remoto antes disso.
+
+---
+
+## ACHADO 10 — Dois Supabases ainda não tinham contrato de sincronização
+
+**Severidade original:** ALTA futura  
+**Tipo:** risco provável.
+
+Problema:
+
+se Gestão e REP-P forem projetos separados, precisamos definir:
+
+- eventos;
+- versões;
+- snapshot;
+- atraso;
+- retry;
+- idempotência;
+- indisponibilidade;
+- reconciliação.
+
+Exemplo:
+
+João muda de equipe às 06:55.
+
+REP-P recebe atualização somente depois.
+
+Qual contexto vale na marcação?
+
+Correção sugerida:
+
+- snapshot versionado local no REP-P;
+- marcação usa contexto local do REP-P;
+- caminho crítico do ponto não consulta Gestão em tempo real;
+- sincronização assíncrona;
+- reconciliação.
+
+Confronte com `CONTRATO_GESTAO_REP_P.md`.
+
+---
+
+## ACHADO 11 — Backup/restore real não estava demonstrado
+
+**Severidade original:** ALTA para produção futura / INFORMATIVA agora  
+**Tipo:** lacuna confirmada.
+
+PGlite não prova recuperação real do Supabase.
+
+Precisamos futuramente provar recuperação de:
+
+- DB;
+- Auth/configuração;
+- Storage;
+- hashes;
+- secrets/configs recuperáveis;
+- integração.
+
+Não precisa impedir Marco 1A local.
+
+Mas não chamar o ensaio atual de RTO/RPO oficial.
+
+---
+
+## ACHADO 12 — Catálogo `SECURITY DEFINER` herdável pelo cliente
+
+**Severidade original:** MÉDIA  
+**Tipo:** risco provável.
+
+O auditor NÃO afirmou que “34 funções = 34 vulnerabilidades”.
+
+Várias possuíam guarda adequada.
+
+O risco é que portal e Gestão utilizem o mesmo papel Postgres `authenticated` e o catálogo fique exposto para tentativa de chamada.
+
+Correção proposta:
+
+- portal sem herdar RPCs da Gestão;
+- BFF/API quando necessário;
+- guards internos;
+- grants mais específicos quando viável;
+- reauditoria após schema reconciliado.
+
+---
+
+## ACHADO 13 — Offline, relógio, replay, GPS e app adulterado
+
+**Severidade original:** ALTA como requisito futuro / INFORMATIVA hoje  
+**Tipo:** não implementado / risco futuro.
+
+Ainda não existe REP-P.
+
+Problemas apontados caso copiemos padrões atuais:
+
+- horário do dispositivo;
+- FakeGPS;
+- APK adulterado;
+- replay;
+- UUID cliente;
+- fila local;
+- atraso offline.
+
+Correções/invariantes:
+
+- não copiar offline da Gestão;
+- hora servidor;
+- GPS = evidência/sinal, não verdade absoluta;
+- revisão humana de anomalias;
+- Play Protect ≠ Play Integrity;
+- política BYOD antes de coleta;
+- RIPD antes de GPS/foto real.
+
+---
+
+## ACHADO 14 — Comprovante, AFD, AEJ, Espelho, ICP, Storage ainda inexistentes
+
+**Severidade original:** INFORMATIVA no Marco 0 / ALTA quando o produto for chamado de REP-P  
+**Tipo:** não iniciado.
+
+Não é bug atual.
+
+É gate futuro.
+
+A matriz estava corretamente marcada como “não iniciado”.
+
+Antes de implementar:
+
+- verificar Portaria 671 vigente;
+- leiaute AFD vigente;
+- AEJ vigente;
+- NSR por escopo legal correto;
+- comprovantes;
+- assinatura;
+- ICP-Brasil;
+- INPI;
+- Storage.
+
+Não implementar agora só para “resolver auditoria”.
+
+---
+
+## ACHADO 15 — LGPD / GPS / foto / biometria / RIPD
+
+**Severidade original:** MÉDIA de processo  
+**Tipo:** risco provável.
+
+Pendências:
+
+- base legal;
+- retenção;
+- RIPD;
+- BYOD;
+- GPS;
+- foto;
+- eventual biometria.
+
+Correção:
+
+antes de dados reais:
+
+- inventário;
+- minimização;
+- RIPD;
+- política;
+- retenção;
+- canal de contestação;
+- revisão jurídica/privacidade.
+
+Não impedir identidade local.
+
+---
+
+## ACHADO 16 — Ameaça interna do administrador/encarregado
+
+**Severidade original:** ALTA  
+**Tipo:** risco provável / arquitetural.
+
+Um único administrador não deve no futuro possuir simultaneamente controle sobre:
+
+- vínculo do trabalhador;
+- ponto;
+- tratamento;
+- original;
+- auditoria;
+- chave ICP;
+- infraestrutura.
+
+Correções:
+
+- segregação de funções;
+- dual control em operações sensíveis;
+- DP participa de identidade;
+- gestor trata jornada;
+- infraestrutura separada;
+- chave ICP fora do alcance operacional;
+- auditoria independente.
+
+Incorporar isto no threat model e arquitetura.
+
+---
+
+## ACHADO 17 — Testes 1A anteriores davam falsa sensação de cobertura
+
+**Severidade original:** MÉDIA  
+**Tipo:** defeito confirmado na cobertura da época.
+
+Na auditoria:
+
+- fixture não reproduzia remoto integralmente;
+- não havia JWT real;
+- não havia PostgREST;
+- contas pessoais positivas permaneciam inativas na Gestão;
+- os 3 TODO eram justamente o produto.
+
+O estado atual já possui:
+
+- 22 testes banco;
+- 35 testes qualidade;
+- zero TODO.
+
+Isso é positivo, MAS ainda não prova o gate final.
+
+Precisamos agora de laboratório fiel + Auth/JWT + REST/PostgREST + RPC.
+
+---
+
+# PONTOS EM QUE O SUPERGROK DISSE QUE O PACOTE ANTERIOR EXAGEROU
+
+Também registre estas correções de interpretação:
+
+1. `employee_work_team` sozinho não vazava ASO; retornava equipe.
+2. 34 `SECURITY DEFINER` não significavam 34 vulnerabilidades.
+3. Tabelas snapshot com RLS sem policy podem estar corretamente fechadas.
+4. Proteção nativa contra senha vazada no Free é limitação de plano, não CVE.
+5. Não há motivo para congelar o trabalho LOCAL do Marco 1A.
+6. `created_by` realmente não era vínculo entre Auth e funcionário.
+
+---
+
+# TAREFA 1 — COMPLETAR O DOCUMENTO 24
+
+Preencha todas as 17 linhas de:
+
+`24_TRATAMENTO_AUDITORIA_SUPERGROK_MARCO_0.md`
+
+Para cada achado:
+
+- descrição fiel;
+- severidade original;
+- evidência original;
+- estado atual;
+- classificação:
+  - VÁLIDO;
+  - PARCIALMENTE VÁLIDO;
+  - INVÁLIDO;
+  - NÃO VERIFICÁVEL;
+- correção implementada;
+- correção ainda necessária;
+- teste;
+- resultado;
+- status.
+
+Quando já corrigido, registrar:
+
+**Válido no momento da auditoria / Resolvido no estado atual**
+
+em vez de fingir que nunca existiu.
+
+---
+
+# TAREFA 2 — FECHAR RECONCILIAÇÃO DO SCHEMA
+
+Não alterar remoto.
+
+Obter a melhor representação possível do schema remoto conectado:
+
+- schemas;
+- tabelas;
+- columns;
+- constraints;
+- indexes;
+- RLS;
+- policies;
+- grants;
+- functions;
+- function bodies;
+- SECURITY DEFINER;
+- triggers;
+- views;
+- exposed schemas;
+- extensions necessárias.
+
+Gerar representação reproduzível e hash/checksum quando apropriado.
+
+Comparar com local.
+
+Atualizar:
+
+`20_RECONCILIACAO_MIGRATIONS_E_TIPOS.md`
+
+Objetivo:
+
+conseguir criar um laboratório descartável que represente o estado efetivo.
+
+---
+
+# TAREFA 3 — LABORATÓRIO FIEL AO REMOTO
+
+Criar ambiente LOCAL/DESCARTÁVEL.
+
+Não usar Supabase compartilhado como laboratório.
+
+Quando tecnicamente possível, usar pilha que inclua:
+
+- PostgreSQL compatível;
+- Supabase Auth;
+- PostgREST;
+- funções;
+- RLS;
+- RPC.
+
+Aplicar nesse laboratório:
+
+1. schema reconciliado;
+2. fundação de identidade;
+3. dados sintéticos;
+4. João;
+5. Maria;
+6. admin;
+7. conta revogada.
+
+Não utilizar dados empresariais reais.
+
+---
+
+# TAREFA 4 — PROVA REALISTA JOÃO/MARIA
+
+Criar testes com sessão/token real sempre que possível.
+
+Testar:
+
+### João ativo
+
+- autentica;
+- lê próprio DTO;
+- não lê Maria;
+- não enumera `epi_employees`;
+- não enumera profiles da Gestão;
+- não recebe ASO;
+- não chama RPC administrativa;
+- não consegue trocar employee_id porque DTO não recebe esse parâmetro.
+
+### Maria ativa
+
+mesmas garantias.
+
+### Conta revogada
+
+- DTO retorna nada/erro apropriado;
+- acesso direto negado;
+- REST negado;
+- RPC negado;
+- token antigo não consegue acessar o domínio pessoal;
+- refresh não deve permitir perpetuar sessão após revogação definitiva.
+
+### Admin Gestão
+
+- continua realizando operações autorizadas;
+- regressão das funções existentes.
+
+---
+
+# TAREFA 5 — REVOGAÇÃO AUTH
+
+Verificar documentação Supabase ATUAL.
+
+Projetar e, em laboratório quando possível, implementar fluxo servidor para:
+
+- revogar identidade;
+- negar banco imediatamente;
+- revogar refresh sessions;
+- impedir renovação;
+- impedir novo login quando o trabalhador estiver definitivamente desligado;
+- preservar histórico.
+
+Não colocar credencial administrativa no cliente.
+
+Documentar limites de access token já emitido.
+
+A proteção principal deve continuar sendo:
+
+**estado atual no banco bloqueando acesso pessoal.**
+
+---
+
+# TAREFA 6 — ENUMERAÇÃO DA SUPERFÍCIE DO PORTAL
+
+Produzir inventário:
+
+**O QUE UM JWT DE PORTAL CONSEGUE CHAMAR?**
+
+Listar:
+
+- tabelas REST;
+- views;
+- RPCs;
+- Storage futuro;
+- Edge Functions relevantes;
+- schemas expostos.
+
+Para cada rota:
+
+- permitido;
+- negado;
+- motivo.
+
+Esse inventário será um gate de segurança do Marco 1A.
+
+---
+
+# TAREFA 7 — REVISAR THREAT MODEL
+
+Incorporar formalmente:
+
+- trabalhador malicioso;
+- administrador malicioso;
+- encarregado malicioso;
+- erro do DP;
+- conta comprometida;
+- token roubado;
+- service_role vazada;
+- migration incorreta;
+- sincronização Gestão↔REP-P;
+- indisponibilidade;
+- restore divergente;
+- chave ICP comprometida.
+
+Separar:
+
+controles atuais
+
+de:
+
+controles futuros.
+
+---
+
+# TAREFA 8 — REFINAR CONTRATO GESTÃO ↔ REP-P
+
+O documento atual está no caminho correto.
+
+Detalhar, sem implementar ainda:
+
+- source_id;
+- event_id;
+- entity_id;
+- entity_version;
+- schema_version;
+- effective_at;
+- produced_at;
+- checksum;
+- autenticação serviço-serviço;
+- outbox/inbox;
+- retry;
+- dead-letter/falha;
+- reconciliação;
+- snapshot;
+- revogação prioritária;
+- recuperação após restore.
+
+Definir comportamento conceitual quando:
+
+- Gestão fica offline;
+- REP-P fica offline;
+- evento chega duplicado;
+- evento chega fora de ordem;
+- restore coloca lados em versões diferentes.
+
+Não inventar política trabalhista de contingência; marcar decisões que exigem DP/jurídico.
+
+---
+
+# TAREFA 9 — NÃO CRIAR UI AINDA SE O GATE NÃO PASSAR
+
+A Home real do Colaborador só começa depois que:
+
+- João ativo não lê Maria;
+- Maria ativa não lê João;
+- ASO não aparece;
+- portal não herda Gestão;
+- token revogado é controlado;
+- regressão Gestão passa.
+
+Se tudo passar em laboratório:
+
+pode declarar **Marco 1A tecnicamente concluído em laboratório**.
+
+Isso NÃO significa produção.
+
+---
+
+# TAREFA 10 — TESTES AUTOMÁTICOS
+
+Execute automaticamente todos os testes relevantes após alterações.
+
+Quero relatório final:
+
+- quantidade;
+- aprovados;
+- falhas;
+- TODO;
+- skipped;
+- cobertura relevante;
+- limitações.
+
+Não considerar teste SQL isolado equivalente a teste de Auth/REST.
+
+---
+
+# RESULTADO QUE ESPERO
+
+Ao final desta rodada entregue:
+
+1. `24_TRATAMENTO_AUDITORIA_SUPERGROK_MARCO_0.md` completo com os 17 achados;
+2. reconciliação final atualizada;
+3. schema/laboratório reproduzível;
+4. inventário da superfície de portal;
+5. resultado Auth/JWT/REST/RPC João/Maria;
+6. resultado da revogação;
+7. DTO pessoal verificado sem ASO;
+8. regressão da Gestão;
+9. threat model atualizado;
+10. contrato Gestão↔REP-P refinado;
+11. todos os testes e resultados;
+12. bloqueios restantes;
+13. decisão:
+   - Marco 0 fechado tecnicamente;
+   - Marco 0 ainda aberto;
+14. decisão:
+   - Marco 1A concluído em laboratório;
+   - ou ainda aberto.
+
+NÃO aplique nada no Supabase compartilhado sem autorização.
+
+NÃO publique interface.
+
+NÃO crie ponto.
+
+NÃO crie projeto REP-P pago.
+
+NÃO altere produção.
+
+Continue agora confrontando o parecer e fortalecendo o laboratório.

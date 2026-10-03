@@ -8,6 +8,10 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 export type OperationState = { error?: string };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["forbidden_stock_location", "Este lote não corresponde à obra do funcionário ou ao seu escopo de acesso."],
+  ["stock_return_requires_original_batch", "A entrega não possui lote de origem para receber uma devolução reutilizável."],
+  ["damaged_or_lost_item_cannot_restock", "Item danificado ou extraviado não pode voltar ao saldo disponível."],
+  ["idempotency_conflict", "Esta tentativa já foi usada com dados diferentes. Atualize a página e confira a entrega."],
   ["invalid_replacement", "Informe um patrimônio diferente e confira se a locação continua ativa."],
   ["shoe_size", "Selecione o tamanho da bota entre 38 e 46."],
   ["insufficient", "O estoque disponível não é suficiente. Atualize a página e confira o lote."],

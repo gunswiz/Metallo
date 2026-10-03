@@ -1,0 +1,136 @@
+{
+  "at": "2026-09-27T10:41:44.326Z",
+  "external_listeners": 0,
+  "reason": "Baseline aprovada mantida disponível exclusivamente em loopback para consulta local",
+  "jwt_expiry_seconds": 3600,
+  "containers": [
+    {
+      "name": "supabase_edge_runtime_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 23 minutes",
+      "ports": ""
+    },
+    {
+      "name": "supabase_studio_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "127.0.0.1:54323->3000/tcp, [::1]:54323->3000/tcp"
+    },
+    {
+      "name": "supabase_pg_meta_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "8080/tcp"
+    },
+    {
+      "name": "supabase_storage_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "5000/tcp"
+    },
+    {
+      "name": "supabase_rest_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours",
+      "ports": "3000/tcp"
+    },
+    {
+      "name": "supabase_realtime_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "4000/tcp"
+    },
+    {
+      "name": "supabase_inbucket_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "127.0.0.1:54324->8025/tcp, [::1]:54324->8025/tcp"
+    },
+    {
+      "name": "supabase_auth_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "9999/tcp"
+    },
+    {
+      "name": "supabase_kong_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "127.0.0.1:54321->8000/tcp, [::1]:54321->8000/tcp"
+    },
+    {
+      "name": "supabase_vector_laboratorio-marco-1a",
+      "state": "restarting",
+      "status": "Restarting (0) 14 seconds ago",
+      "ports": ""
+    },
+    {
+      "name": "supabase_analytics_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "127.0.0.1:54327->4000/tcp, [::1]:54327->4000/tcp"
+    },
+    {
+      "name": "supabase_db_laboratorio-marco-1a",
+      "state": "running",
+      "status": "Up 2 hours (healthy)",
+      "ports": "127.0.0.1:54322->5432/tcp, [::1]:54322->5432/tcp"
+    }
+  ],
+  "listeners": [
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "::1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54327
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54324
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54323
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54322
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 54321
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3101
+    }
+  ],
+  "auxiliary_warnings": [
+    {
+      "service": "supabase_vector_laboratorio-marco-1a",
+      "status": "restarting",
+      "health": "unhealthy",
+      "observed_error": "docker_logs: Listing currently running containers failed; NetworkUnreachable",
+      "impact": "Coleta centralizada auxiliar de logs não comprovada; serviços essenciais e gate de rede verificados separadamente",
+      "treatment": "Ocorrência registrada, sem modificar rede, configuração gerada ou controles de segurança; saneamento operacional pendente"
+    }
+  ]
+}

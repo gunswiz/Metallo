@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-29T13:42:45.668Z",
+  "scope": "F-3E-01 reprodução anterior à correção, somente laboratório sintético",
+  "before": {
+    "status": 200,
+    "deliveries": 1
+  },
+  "catalog_kind_changed": {
+    "status": 200,
+    "deliveries": 0
+  },
+  "kind_restored": true,
+  "no_constraints_disabled": true,
+  "no_credentials_saved": true
+}

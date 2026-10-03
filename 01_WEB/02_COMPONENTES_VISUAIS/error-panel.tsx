@@ -1,10 +1,10 @@
 import { CircleAlert } from "lucide-react";
 
-export function ErrorPanel({ message }: { message: string }) {
+export function ErrorPanel({ message, title = "Não foi possível carregar" }: { message: string; title?: string }) {
   return (
     <div className="empty-state" role="alert">
       <CircleAlert size={34} aria-hidden />
-      <strong>Não foi possível carregar</strong>
+      <strong>{title}</strong>
       <p>{message}</p>
     </div>
   );

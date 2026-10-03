@@ -1,0 +1,288 @@
+{
+  "scope": "Marco 3G — estoque local sintético",
+  "at": "2026-09-30T20:40:19.912Z",
+  "checks": [
+    {
+      "name": "A: entrega vinculada desconta 10 para 9",
+      "ok": true
+    },
+    {
+      "name": "vínculo imutável da saída aponta ao lote existente",
+      "ok": true
+    },
+    {
+      "name": "K/L: retry e resposta perdida retornam a mesma entrega, sem segunda saída",
+      "ok": true
+    },
+    {
+      "name": "F-3G-01: tentativa inicial cria uma entrega e uma baixa",
+      "ok": true
+    },
+    {
+      "name": "F-3G-01: timeout/resposta perdida mantém resultado e saldo",
+      "ok": true
+    },
+    {
+      "name": "F-3G-01: mesma chave com payload divergente gera conflito controlado",
+      "ok": true
+    },
+    {
+      "name": "F-3G-01: nova chave permite outra entrega intencional",
+      "ok": true
+    },
+    {
+      "name": "F-3G-01: dois envios simultâneos da mesma operação fazem uma só baixa",
+      "ok": true
+    },
+    {
+      "name": "M: duas abas com a mesma intenção fazem uma saída",
+      "ok": true
+    },
+    {
+      "name": "B: entrega sem vínculo explícito não movimenta estoque",
+      "ok": true
+    },
+    {
+      "name": "origem sem estoque exige justificativa",
+      "ok": true
+    },
+    {
+      "name": "exceção direta sem confirmação é recusada",
+      "ok": true
+    },
+    {
+      "name": "motivo OUTRO sem observação é recusado",
+      "ok": true
+    },
+    {
+      "name": "ausência de lote não ativa exceção automaticamente",
+      "ok": true
+    },
+    {
+      "name": "parâmetro skip_stock não contorna a assinatura da RPC",
+      "ok": true
+    },
+    {
+      "name": "parâmetro without_stock não contorna a assinatura da RPC",
+      "ok": true
+    },
+    {
+      "name": "Gestão com epi:write sem admin não pode usar a exceção",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: Gestão com epi:write não baixa lote central por RPC direta",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: batch_id central injetado para Maria também falha",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: João não opera lote central nem com employee_id próprio",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: administrador autorizado pode operar lote central",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: Gestão comum não repõe lote central por RPC direta",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: administrador autorizado repõe lote central original",
+      "ok": true
+    },
+    {
+      "name": "João não cria entrega excepcional por chamada direta",
+      "ok": true
+    },
+    {
+      "name": "exceção autorizada não movimenta saldo nem cria lote",
+      "ok": true
+    },
+    {
+      "name": "auditoria da exceção usa ator e horário do servidor",
+      "ok": true
+    },
+    {
+      "name": "origem e motivo imutáveis após a entrega",
+      "ok": true
+    },
+    {
+      "name": "C: confirmação não desconta novamente",
+      "ok": true
+    },
+    {
+      "name": "D: solicitação não desconta",
+      "ok": true
+    },
+    {
+      "name": "E: aprovação não desconta",
+      "ok": true
+    },
+    {
+      "name": "F: nova entrega física desconta exatamente uma vez",
+      "ok": true
+    },
+    {
+      "name": "substituição formal não movimenta estoque",
+      "ok": true
+    },
+    {
+      "name": "G: devolução para avaliação não aumenta saldo",
+      "ok": true
+    },
+    {
+      "name": "H: retorno reutilizável explícito aumenta saldo no lote de origem",
+      "ok": true
+    },
+    {
+      "name": "retorno repetido com mesma chave não duplica entrada",
+      "ok": true
+    },
+    {
+      "name": "I: danificado não pode retornar como reutilizável",
+      "ok": true
+    },
+    {
+      "name": "danificado devolvido para avaliação não aumenta saldo",
+      "ok": true
+    },
+    {
+      "name": "J: extraviado não retorna ao saldo nem pode ser reintegrado como reutilizável",
+      "ok": true
+    },
+    {
+      "name": "João não confirma item de Maria",
+      "ok": true
+    },
+    {
+      "name": "funcionário não injeta lote ou matrícula para criar saída",
+      "ok": true
+    },
+    {
+      "name": "lote de outro item é recusado",
+      "ok": true
+    },
+    {
+      "name": "N: última unidade concorrente gera só uma entrega e nunca saldo negativo",
+      "ok": true
+    },
+    {
+      "name": "O/R: saldo insuficiente não cria entrega parcial",
+      "ok": true
+    },
+    {
+      "name": "saldo 1, pedido 2: não cria entrega nem saldo parcial",
+      "ok": true
+    },
+    {
+      "name": "R: falha no estoque impede criar entrega",
+      "ok": true
+    },
+    {
+      "name": "S: falha na entrega reverte débito do lote",
+      "ok": true
+    },
+    {
+      "name": "T: entregas antigas permanecem legadas sem lote inventado",
+      "ok": true
+    },
+    {
+      "name": "entrega na obra antiga reduz apenas o lote original",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: Gestão com escopo opera lote da própria obra",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: escopo de obra não vira permissão no lote de outra obra",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: Gestão sem escopo atual não encerra item após mudança de equipe",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: administrador autorizado devolve ao lote da obra original",
+      "ok": true
+    },
+    {
+      "name": "devolução reutilizável após mudança de equipe/obra repõe somente o lote original",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: Gestão sem escopo do funcionário não encerra entrega histórica alheia",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: lote central injetado para funcionário de outra equipe é recusado",
+      "ok": true
+    },
+    {
+      "name": "portal de João não recebe lote, saldo ou destino interno",
+      "ok": true
+    },
+    {
+      "name": "P: João e Maria continuam isolados",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: duas entregas históricas existem antes da inativação",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: inativação impede nova entrega, sem reativar funcionário",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: funcionário inativo não registra a própria devolução",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: Gestão comum não repõe lote central de funcionário inativo",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: admin registra devolução histórica ao lote original mesmo com item inativo",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: devolução repetida é idempotente e não repõe duas vezes",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: descarte posterior à inativação não repõe saldo",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: inativo não admite substituição administrativa",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: portal do inativo não reabre lista pessoal",
+      "ok": true
+    },
+    {
+      "name": "F-3G-07: identidade e vínculo permaneceram inativos",
+      "ok": true
+    },
+    {
+      "name": "F-3G-02: perfil Gestão inativo não opera lote central",
+      "ok": true
+    }
+  ],
+  "passed": 68,
+  "total": 68,
+  "stock": {
+    "initial": 10,
+    "afterFirstDelivery": 9,
+    "afterSecondDelivery": 8,
+    "afterReplacement": 7,
+    "afterReusableReturn": 8,
+    "lastUnitAfterConcurrency": 0
+  }
+}

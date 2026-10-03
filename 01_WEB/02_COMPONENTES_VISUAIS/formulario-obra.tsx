@@ -118,7 +118,7 @@ export function SiteOperationForm({
                   type={field.type ?? "text"}
                   required={field.required !== false}
                   defaultValue={field.value}
-                  min={field.type === "number" ? 0 : undefined}
+                  min={field.type === "number" ? (field.name === "amount" ? 0 : 1) : undefined}
                   max={field.max}
                   step={field.name === "amount" ? "0.01" : undefined}
                   maxLength={180}

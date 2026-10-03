@@ -1,0 +1,135 @@
+{
+  "run": "1c4df6a1-d3e2-42a9-88c6-6cdcb1c71f6f",
+  "parser": "pypdf + zipfile independentes do pdf-lib/fflate",
+  "pdfs": [
+    {
+      "user": 0,
+      "file": "pdf50-u0-6a55418c-9500-4566-89d6-930c249bfca8.pdf",
+      "event_id": "6a55418c-9500-4566-89d6-930c249bfca8",
+      "sha256": "597e3a21bf1c1156e0b5a3633261f1840396146af7efd9f2ef3693e23a619b50",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 17,
+      "file": "pdf50-u17-4a564530-511b-4ee0-ae8c-9fe5380d6ae0.pdf",
+      "event_id": "4a564530-511b-4ee0-ae8c-9fe5380d6ae0",
+      "sha256": "31531ad7565ff55557c34a93b1b9608b756a573812b53e1c61928ed28a95e626",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 14,
+      "file": "pdf50-u14-a5fb73f3-a1db-4975-aac5-28920df99451.pdf",
+      "event_id": "a5fb73f3-a1db-4975-aac5-28920df99451",
+      "sha256": "8ed916a5d72aaf29e0a1d5ea3b67e959ac765efde1492278054854aca22a304e",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 13,
+      "file": "pdf50-u13-136e8621-15a4-4fc1-b02a-dee3679eebc6.pdf",
+      "event_id": "136e8621-15a4-4fc1-b02a-dee3679eebc6",
+      "sha256": "8c2df5b1bca398781512fa75174de27ed88f753069ea913202db0b0ea8ebdbfd",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 12,
+      "file": "pdf50-u12-2053f49b-a392-46ac-bde7-ba78b7139ab5.pdf",
+      "event_id": "2053f49b-a392-46ac-bde7-ba78b7139ab5",
+      "sha256": "481dfb21ed99120f23379b88e85b8e8fd188fa3b7e9dd151e14a1cbed29a3a6f",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 27,
+      "file": "pdf50-u27-ca543c73-0343-4fd5-93b2-444b213e7267.pdf",
+      "event_id": "ca543c73-0343-4fd5-93b2-444b213e7267",
+      "sha256": "6918854ea03aed9f8868a2b88147394a4625fe7bd1b345739c2f51fcc25911e2",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 8,
+      "file": "pdf50-u8-69881b8b-4c76-4e41-ad82-e83078773161.pdf",
+      "event_id": "69881b8b-4c76-4e41-ad82-e83078773161",
+      "sha256": "d77b11aef3f5ed05deb4accd1445c87cc45594761deb5c847af9690e5af80a45",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 26,
+      "file": "pdf50-u26-ebc55fe5-0e9b-4c71-b209-d7ba8c9a0525.pdf",
+      "event_id": "ebc55fe5-0e9b-4c71-b209-d7ba8c9a0525",
+      "sha256": "85b80dda366fd0472b291063ff470ac13f38abfd69fc40a80f11f07fe30f7ac0",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 40,
+      "file": "pdf50-u40-8668a4f1-7ef8-41f3-864d-4e27d456e20b.pdf",
+      "event_id": "8668a4f1-7ef8-41f3-864d-4e27d456e20b",
+      "sha256": "fdace793ed0e69e482387e534e93a5434d679170e930f86083c8a39d83319e51",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 37,
+      "file": "pdf50-u37-fd1cfd9c-d111-4766-97bd-42b73b4aa3ce.pdf",
+      "event_id": "fd1cfd9c-d111-4766-97bd-42b73b4aa3ce",
+      "sha256": "2310c8870fafae9b4896c2ef61dfd4f4cdd4f14429e0082221533a7d6f75f688",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 34,
+      "file": "pdf50-u34-5d1aeaaf-3cb5-4503-a063-2cd8eb6ccfd9.pdf",
+      "event_id": "5d1aeaaf-3cb5-4503-a063-2cd8eb6ccfd9",
+      "sha256": "ef873abe7a9917e05beba75fa0985070a9a9a5f09ae7b74ac30d6f8227194424",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    },
+    {
+      "user": 36,
+      "file": "pdf50-u36-9895c623-eebd-4927-b20d-c2f85d33bdc1.pdf",
+      "event_id": "9895c623-eebd-4927-b20d-c2f85d33bdc1",
+      "sha256": "bb7da2647732fd0f2a888a335069a3d0986797e6f6c1d743e1e635cd5d3a5396",
+      "pages": 1,
+      "a4": true,
+      "event_and_original_times_match": true,
+      "legal_name_not_fabricated": true
+    }
+  ],
+  "zips": [],
+  "errors": [],
+  "passed": false,
+  "resources": {
+    "samples": 73,
+    "cpu_max_percent": 71,
+    "free_ram_min_bytes": 2810589184,
+    "pg_connections_max": 45
+  }
+}

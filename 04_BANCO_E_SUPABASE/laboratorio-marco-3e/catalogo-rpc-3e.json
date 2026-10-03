@@ -1,0 +1,1324 @@
+{
+  "at": "2026-09-29T13:47:52.424787+00:00",
+  "scope": "read-only catalog from synthetic Docker local laboratory; schema only, no employee/auth/event rows",
+  "container": "supabase_db_laboratorio-marco-1a",
+  "query_sha256": "ecea6d776f40298a558468f3d4931286ba1b453093a8ead387f00e5b4f06a990",
+  "rpc": [
+    {
+      "acl": "{postgres=X/postgres}",
+      "args": "p_employee_id uuid",
+      "name": "epi_report_payload_3e",
+      "owner": "postgres",
+      "schema": "private",
+      "definition": "CREATE OR REPLACE FUNCTION private.epi_report_payload_3e(p_employee_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_result jsonb;\nbegin\n  if (select count(*) from public.epi_deliveries where employee_id=p_employee_id)>3000\n    or (select count(*) from public.epi_exchange_events x join public.epi_exchange_requests r on r.id=x.request_id where r.employee_id=p_employee_id)>3000\n    or (select count(*) from public.epi_delivery_feedback_events_3d x join public.epi_delivery_groups_3d g on g.id=x.group_id where g.employee_id=p_employee_id)>3000\n  then raise exception 'epi_report_too_large'; end if;\n\n  select pg_catalog.jsonb_build_object(\n    'employee',pg_catalog.jsonb_build_object('id',e.id,'name',e.full_name,\n      'registration',e.registration_code,'profession',e.profession,'team',t.name),\n    'generated_at',pg_catalog.now(),\n    'report_id',pg_catalog.gen_random_uuid(),\n    'deliveries',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',d.id,'item_id',d.item_id,'group_id',d.delivery_group_id,'item_name',coalesce(d.item_name_snapshot,i.name),\n      'legacy_name',d.item_name_snapshot is null,'ca',d.ca_snapshot,'quantity',d.quantity,\n      'unit',coalesce(d.unit_snapshot,i.unit),'legacy_unit',d.unit_snapshot is null,\n      'variant',d.variant_snapshot,'lot',d.lot_snapshot,'brand',d.brand_model_snapshot,\n      'delivered_at',d.delivered_at,'status',d.current_status,'closed_at',d.closed_at,\n      'reason',d.delivery_reason,'team',g.team_name_snapshot,'work',g.work_name_snapshot,\n      'responsible_id',coalesce(g.delivered_by,d.delivered_by),\n      'responsible_name_snapshot',null,\n      'exchange_request_id',g.exchange_request_id,\n      'employee_name_snapshot',g.employee_name_snapshot,'profession_snapshot',g.profession_snapshot)\n      order by d.delivered_at,d.id)\n      from public.epi_deliveries d join public.epi_items i on i.id=d.item_id\n      left join public.epi_delivery_groups_3d g on g.id=d.delivery_group_id\n      -- O grupo 3D só nasce de entrega de EPI validada no registro. A classificação\n      -- atual do catálogo não pode apagar esse fato histórico. Legado sem grupo\n      -- continua dependendo do catálogo, sem adivinhar sua classificação passada.\n      where d.employee_id=e.id and (i.item_kind='epi' or g.id is not null)),'[]'::jsonb),\n    'feedback',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',x.id,'group_id',x.group_id,'delivery_id',x.delivery_id,'type',x.event_type,\n      'category',x.category,\n      'at',x.occurred_at) order by x.occurred_at,x.id)\n      from public.epi_delivery_feedback_events_3d x\n      join public.epi_delivery_groups_3d g on g.id=x.group_id\n      where g.employee_id=e.id),'[]'::jsonb),\n    'exchanges',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n      'id',r.id,'source_delivery_id',r.source_delivery_id,'item_name',r.item_name_snapshot,\n      'ca',r.ca_snapshot,'reason',r.reason,'created_at',r.created_at,\n      'events',coalesce((select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object(\n        'id',x.id,'status',x.to_status,'at',x.occurred_at)\n        order by x.occurred_at,x.id) from public.epi_exchange_events x\n        where x.request_id=r.id),'[]'::jsonb),\n      'new_group_id',(select g.id from public.epi_delivery_groups_3d g\n        where g.exchange_request_id=r.id)) order by r.created_at,r.id)\n      from public.epi_exchange_requests r where r.employee_id=e.id),'[]'::jsonb)\n  ) into v_result\n  from public.epi_employees e left join public.teams t on t.id=e.team_id and t.active\n  where e.id=p_employee_id;\n  if v_result is null then raise exception 'employee_not_found'; end if;\n  return v_result;\nend $function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_employee_id uuid",
+      "name": "admin_epi_report_3e",
+      "owner": "postgres",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_epi_report_3e(p_employee_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_team uuid;\nbegin\n  if p_employee_id is null then raise exception 'employee_not_found'; end if;\n  select e.team_id into v_team from public.epi_employees e where e.id=p_employee_id;\n  if not found or not ((v_team is not null and public.can_operate('epi:write',v_team))\n    or (v_team is null and exists(select 1 from public.profiles p where p.id=(select auth.uid())\n      and p.active and p.role='admin')))\n  then raise exception 'epi_report_access_denied'; end if;\n  return private.epi_report_payload_3e(p_employee_id);\nend $function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "args": "p_permission text, p_team_id uuid DEFAULT NULL::uuid",
+      "name": "can_operate",
+      "owner": "postgres",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.can_operate(p_permission text, p_team_id uuid DEFAULT NULL::uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select coalesce((\n    select p.role = 'admin' or (\n      p_permission = any(coalesce(p.operation_permissions,\n        case p.role\n          when 'engineer' then array['materials:write','consumption:write','equipment:write','epi:write','requests:write','rentals:write']\n          when 'leader' then array['materials:write','consumption:write','equipment:write','requests:write','rentals:write']\n          else array[]::text[] end))\n      and (p_team_id is null or\n        case when p.operation_team_ids is not null then p_team_id = any(p.operation_team_ids)\n          else p.role = 'engineer' or p.team_id = p_team_id end)\n    )\n    from public.profiles p where p.id = (select auth.uid()) and p.active\n  ), false);\n$function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "",
+      "name": "my_epi_report_3e",
+      "owner": "postgres",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.my_epi_report_3e()\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_employee uuid;\nbegin\n  select e.id into v_employee from private.employee_identity link\n    join private.employee_portal_accounts portal on portal.auth_user_id=link.auth_user_id\n    join public.profiles p on p.id=link.auth_user_id and not p.active\n    join public.epi_employees e on e.id=link.employee_id and e.active\n    where link.auth_user_id=(select auth.uid()) and link.status='active';\n  if v_employee is null then raise exception 'portal_access_denied'; end if;\n  return private.epi_report_payload_3e(v_employee);\nend $function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_employee_id uuid, p_lines jsonb, p_idempotency_key uuid, p_exchange_request_id uuid DEFAULT NULL::uuid",
+      "name": "prepare_epi_kit_3d",
+      "owner": "postgres",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.prepare_epi_kit_3d(p_employee_id uuid, p_lines jsonb, p_idempotency_key uuid, p_exchange_request_id uuid DEFAULT NULL::uuid)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_employee public.epi_employees%rowtype; v_request public.epi_exchange_requests%rowtype;\n  v_line jsonb; v_batch public.epi_stock_batches%rowtype; v_item public.epi_items%rowtype;\n  v_lines jsonb:='[]'::jsonb; v_existing public.epi_prepared_kits_3d%rowtype; v_id uuid;\n  v_quantity integer; v_seen uuid[]:='{}'::uuid[];\nbegin\n  if (select auth.uid()) is null or p_employee_id is null or p_idempotency_key is null\n    or jsonb_typeof(p_lines)<>'array' or jsonb_array_length(p_lines) not between 1 and 30\n  then raise exception 'invalid_preparation'; end if;\n  perform 1 from public.profiles p where p.id=(select auth.uid()) and p.active for share;\n  if not found then raise exception 'management_access_denied'; end if;\n  select * into v_employee from public.epi_employees where id=p_employee_id and active for share;\n  if not found then raise exception 'employee_not_found'; end if;\n  if not ((v_employee.team_id is not null and public.can_operate('epi:write',v_employee.team_id))\n    or (v_employee.team_id is null and exists(select 1 from public.profiles p\n      where p.id=(select auth.uid()) and p.active and p.role='admin')))\n  then raise exception 'management_access_denied'; end if;\n  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_idempotency_key::text,8031));\n  select * into v_existing from public.epi_prepared_kits_3d where idempotency_key=p_idempotency_key;\n  if found then\n    if v_existing.employee_id<>p_employee_id or v_existing.exchange_request_id is distinct from p_exchange_request_id\n      or (select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object('item_id',x->>'item_id','stock_batch_id',x->>'stock_batch_id','quantity',x->'quantity') order by ord)\n          from pg_catalog.jsonb_array_elements(v_existing.lines_snapshot) with ordinality as t(x,ord)) is distinct from p_lines\n    then raise exception 'idempotency_conflict'; end if;\n    return v_existing.id;\n  end if;\n  if p_exchange_request_id is not null then\n    select * into v_request from public.epi_exchange_requests where id=p_exchange_request_id\n      and employee_id=p_employee_id and status='APROVADA' for share;\n    if not found then raise exception 'exchange_not_approved'; end if;\n    perform 1 from public.epi_deliveries d where d.id=v_request.source_delivery_id\n      and d.employee_id=p_employee_id and d.current_status='active' for share;\n    if not found then raise exception 'source_epi_not_active'; end if;\n  end if;\n  for v_line in select value from pg_catalog.jsonb_array_elements(p_lines) loop\n    if pg_catalog.jsonb_typeof(v_line)<>'object' or\n      (select pg_catalog.count(*) from pg_catalog.jsonb_object_keys(v_line) as k(key))<>3 or\n      not (v_line ? 'item_id' and v_line ? 'stock_batch_id' and v_line ? 'quantity') or\n      pg_catalog.jsonb_typeof(v_line->'quantity')<>'number'\n    then raise exception 'invalid_preparation_line'; end if;\n    v_quantity:=(v_line->>'quantity')::integer;\n    if v_quantity not between 1 and 100 or (v_line->>'stock_batch_id')::uuid=any(v_seen)\n    then raise exception 'invalid_preparation_line'; end if;\n    select * into v_batch from public.epi_stock_batches where id=(v_line->>'stock_batch_id')::uuid\n      and item_id=(v_line->>'item_id')::uuid for share;\n    if not found then raise exception 'stock_batch_not_found'; end if;\n    select * into v_item from public.epi_items where id=v_batch.item_id and active and item_kind='epi' for share;\n    if not found then raise exception 'epi_not_available'; end if;\n    if p_exchange_request_id is not null and v_item.id<>(select item_id from public.epi_deliveries\n      where id=v_request.source_delivery_id) then raise exception 'exchange_item_mismatch'; end if;\n    v_seen:=pg_catalog.array_append(v_seen,v_batch.id);\n    v_lines:=v_lines || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(\n      'item_id',v_item.id,'stock_batch_id',v_batch.id,'quantity',v_quantity,\n      'item_name',v_item.name,'item_code',v_item.code,'unit',v_item.unit,\n      'ca',v_batch.ca_number,'variant',v_batch.variant,\n      'lot_number',v_batch.lot_number,'brand_model',v_batch.brand_model));\n  end loop;\n  insert into public.epi_prepared_kits_3d(employee_id,profession_snapshot,lines_snapshot,\n    exchange_request_id,prepared_by,idempotency_key)\n  values(p_employee_id,v_employee.profession,v_lines,p_exchange_request_id,(select auth.uid()),p_idempotency_key)\n  returning id into v_id;\n  return v_id;\nend $function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "args": "p_preparation_id uuid, p_idempotency_key uuid",
+      "name": "register_epi_delivery_3d",
+      "owner": "postgres",
+      "schema": "public",
+      "definition": "CREATE OR REPLACE FUNCTION public.register_epi_delivery_3d(p_preparation_id uuid, p_idempotency_key uuid)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_prep public.epi_prepared_kits_3d%rowtype; v_employee public.epi_employees%rowtype;\n  v_existing public.epi_delivery_groups_3d%rowtype; v_group uuid; v_team_name text; v_work_name text;\n  v_line jsonb; v_batch public.epi_stock_batches%rowtype; v_item public.epi_items%rowtype;\nbegin\n  if (select auth.uid()) is null or p_preparation_id is null or p_idempotency_key is null\n  then raise exception 'invalid_delivery'; end if;\n  perform 1 from public.profiles p where p.id=(select auth.uid()) and p.active for share;\n  if not found then raise exception 'management_access_denied'; end if;\n  select * into v_prep from public.epi_prepared_kits_3d where id=p_preparation_id for share;\n  if not found then raise exception 'preparation_not_found'; end if;\n  select * into v_employee from public.epi_employees where id=v_prep.employee_id and active for update;\n  if not found then raise exception 'employee_not_found'; end if;\n  if not ((v_employee.team_id is not null and public.can_operate('epi:write',v_employee.team_id))\n    or (v_employee.team_id is null and exists(select 1 from public.profiles p\n      where p.id=(select auth.uid()) and p.active and p.role='admin')))\n  then raise exception 'management_access_denied'; end if;\n  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_preparation_id::text,8032));\n  select * into v_existing from public.epi_delivery_groups_3d\n    where prepared_kit_id=p_preparation_id or idempotency_key=p_idempotency_key;\n  if found then\n    if v_existing.prepared_kit_id<>p_preparation_id or v_existing.idempotency_key<>p_idempotency_key\n    then raise exception 'delivery_already_registered'; end if;\n    return v_existing.id;\n  end if;\n  if v_prep.exchange_request_id is not null then\n    perform 1 from public.epi_exchange_requests r where r.id=v_prep.exchange_request_id\n      and r.employee_id=v_prep.employee_id and r.status='APROVADA' for share;\n    if not found then raise exception 'exchange_not_approved'; end if;\n    perform 1 from public.epi_deliveries d join public.epi_exchange_requests r\n      on r.source_delivery_id=d.id where r.id=v_prep.exchange_request_id\n      and d.employee_id=v_prep.employee_id and d.current_status='active' for share of d;\n    if not found then raise exception 'source_epi_not_active'; end if;\n  end if;\n  -- A preparação é só uma foto da separação; alterações posteriores de catálogo/lote exigem nova revisão.\n  for v_line in select value from pg_catalog.jsonb_array_elements(v_prep.lines_snapshot) loop\n    select * into v_batch from public.epi_stock_batches\n      where id=(v_line->>'stock_batch_id')::uuid and item_id=(v_line->>'item_id')::uuid for share;\n    select * into v_item from public.epi_items where id=(v_line->>'item_id')::uuid and active and item_kind='epi' for share;\n    if v_batch.id is null or v_item.id is null or v_item.name is distinct from v_line->>'item_name'\n      or v_item.code is distinct from v_line->>'item_code' or v_item.unit is distinct from v_line->>'unit'\n      or v_batch.ca_number is distinct from v_line->>'ca'\n      or v_batch.variant is distinct from v_line->>'variant'\n      or (v_line ? 'lot_number' and v_batch.lot_number is distinct from v_line->>'lot_number')\n      or (v_line ? 'brand_model' and v_batch.brand_model is distinct from v_line->>'brand_model')\n    then raise exception 'prepared_kit_context_changed'; end if;\n  end loop;\n  -- Reusa a rotina existente de baixa de estoque e criação atômica de múltiplas entregas.\n  v_group:=public.register_epi_delivery_batch(v_employee.id,\n    (select pg_catalog.jsonb_agg(pg_catalog.jsonb_build_object('item_id',x->>'item_id',\n      'stock_batch_id',x->>'stock_batch_id','quantity',x->'quantity'))\n      from pg_catalog.jsonb_array_elements(v_prep.lines_snapshot) x),\n    case when v_prep.exchange_request_id is null then 'initial' else 'replacement' end,null);\n  select t.name,w.name into v_team_name,v_work_name from public.teams t\n    left join public.worksites w on w.id=t.worksite_id where t.id=v_employee.team_id;\n  insert into public.epi_delivery_groups_3d(id,employee_id,employee_name_snapshot,prepared_kit_id,exchange_request_id,\n    profession_snapshot,team_name_snapshot,work_name_snapshot,delivered_by,idempotency_key)\n  values(v_group,v_employee.id,v_employee.full_name,v_prep.id,v_prep.exchange_request_id,v_employee.profession,\n    v_team_name,v_work_name,(select auth.uid()),p_idempotency_key);\n  return v_group;\nend $function$\n",
+      "search_path": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "security_definer": true,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    }
+  ],
+  "tables": [
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "employee_identity",
+      "schema": "private",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "auth_user_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "verification_method",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "linked_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "activated_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "revoked_at",
+          "type": "timestamp with time zone",
+          "notnull": false
+        },
+        {
+          "name": "revoked_by",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "revocation_reason",
+          "type": "text",
+          "notnull": false
+        }
+      ],
+      "policies": [],
+      "triggers": [
+        "CREATE TRIGGER employee_identity_guard_update BEFORE DELETE OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.guard_employee_identity_history()",
+        "CREATE TRIGGER employee_identity_audit_event AFTER INSERT OR UPDATE ON private.employee_identity FOR EACH ROW EXECUTE FUNCTION private.audit_employee_identity()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "employee_identity_auth_user_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "employee_identity_auth_user_id_key",
+          "type": "u",
+          "definition": "UNIQUE (auth_user_id)"
+        },
+        {
+          "name": "employee_identity_employee_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "employee_identity_linked_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (linked_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "employee_identity_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "employee_identity_revocation_complete",
+          "type": "c",
+          "definition": "CHECK ((((status = 'active'::text) AND (revoked_at IS NULL) AND (revoked_by IS NULL) AND (revocation_reason IS NULL)) OR ((status = 'revoked'::text) AND (revoked_at IS NOT NULL) AND (revoked_by IS NOT NULL) AND (revocation_reason IS NOT NULL))))"
+        },
+        {
+          "name": "employee_identity_revocation_reason_check",
+          "type": "c",
+          "definition": "CHECK ((revocation_reason = ANY (ARRAY['employment_ended'::text, 'wrong_association'::text, 'account_replaced'::text, 'other'::text])))"
+        },
+        {
+          "name": "employee_identity_revoked_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (revoked_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "employee_identity_status_check",
+          "type": "c",
+          "definition": "CHECK ((status = ANY (ARRAY['active'::text, 'revoked'::text])))"
+        },
+        {
+          "name": "employee_identity_verification_method_check",
+          "type": "c",
+          "definition": "CHECK ((verification_method = ANY (ARRAY['in_person'::text, 'hr_record'::text])))"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "employee_portal_accounts",
+      "schema": "private",
+      "columns": [
+        {
+          "name": "auth_user_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "registered_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "registered_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "employee_portal_accounts_auth_user_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "employee_portal_accounts_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (auth_user_id)"
+        },
+        {
+          "name": "employee_portal_accounts_registered_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (registered_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,authenticated=rDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_deliveries",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "team_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "item_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "stock_batch_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "notnull": true
+        },
+        {
+          "name": "delivered_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "delivery_reason",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "current_status",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "ca_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "brand_model_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "lot_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "delivered_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "closed_at",
+          "type": "timestamp with time zone",
+          "notnull": false
+        },
+        {
+          "name": "closed_by",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "delivery_group_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "variant_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "item_name_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "unit_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "item_code_snapshot",
+          "type": "text",
+          "notnull": false
+        }
+      ],
+      "policies": [
+        {
+          "name": "epi_deliveries_close",
+          "roles": [
+            "16444"
+          ],
+          "using": "((current_status = 'active'::text) AND can_operate('epi:write'::text, team_id))",
+          "command": "w",
+          "with_check": "((current_status = ANY (ARRAY['returned'::text, 'replaced'::text, 'lost'::text, 'damaged'::text, 'consumed'::text])) AND (closed_by = ( SELECT auth.uid() AS uid)) AND (closed_at IS NOT NULL) AND can_operate('epi:write'::text, team_id))"
+        },
+        {
+          "name": "epi_deliveries_read",
+          "roles": [
+            "16444"
+          ],
+          "using": "(can_operate('epi:write'::text, team_id) OR ((employee_work_team(employee_id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(employee_id))))",
+          "command": "r",
+          "with_check": null
+        }
+      ],
+      "triggers": [
+        "CREATE TRIGGER reconcile_epi_request_after_delivery AFTER INSERT ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION reconcile_epi_request_after_delivery()",
+        "CREATE TRIGGER enforce_epi_delivery_close BEFORE UPDATE ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION enforce_epi_delivery_close()",
+        "CREATE TRIGGER set_operation_time BEFORE INSERT ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION set_operation_time()",
+        "CREATE TRIGGER guard_unassigned_employee_operation BEFORE INSERT OR DELETE OR UPDATE ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION private.guard_unassigned_employee_operation()",
+        "CREATE TRIGGER guard_epi_delivery_team_3d BEFORE INSERT OR UPDATE OF team_id ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION guard_epi_delivery_team_3d()",
+        "CREATE TRIGGER snapshot_epi_delivery_3d BEFORE INSERT ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION snapshot_epi_delivery_3d()",
+        "CREATE TRIGGER guard_epi_delivery_snapshot_3d BEFORE DELETE OR UPDATE ON public.epi_deliveries FOR EACH ROW EXECUTE FUNCTION guard_epi_delivery_snapshot_3d()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_deliveries_closed_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (closed_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "epi_deliveries_current_status_check",
+          "type": "c",
+          "definition": "CHECK ((current_status = ANY (ARRAY['active'::text, 'returned'::text, 'replaced'::text, 'lost'::text, 'damaged'::text, 'consumed'::text])))"
+        },
+        {
+          "name": "epi_deliveries_delivered_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (delivered_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "epi_deliveries_delivery_reason_check",
+          "type": "c",
+          "definition": "CHECK ((delivery_reason ~ '^[a-z][a-z0-9_]{1,39}$'::text))"
+        },
+        {
+          "name": "epi_deliveries_employee_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id)"
+        },
+        {
+          "name": "epi_deliveries_item_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (item_id) REFERENCES epi_items(id)"
+        },
+        {
+          "name": "epi_deliveries_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_deliveries_quantity_check",
+          "type": "c",
+          "definition": "CHECK ((quantity > 0))"
+        },
+        {
+          "name": "epi_deliveries_stock_batch_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (stock_batch_id) REFERENCES epi_stock_batches(id)"
+        },
+        {
+          "name": "epi_deliveries_team_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (team_id) REFERENCES teams(id)"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_delivery_feedback_events_3d",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "notnull": true
+        },
+        {
+          "name": "group_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "event_type",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "delivery_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "details",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "public_message",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "internal_note",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "occurred_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "notnull": true
+        }
+      ],
+      "policies": [],
+      "triggers": [
+        "CREATE TRIGGER guard_epi_feedback_3d BEFORE DELETE OR UPDATE ON public.epi_delivery_feedback_events_3d FOR EACH ROW EXECUTE FUNCTION guard_epi_3d_immutable()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_delivery_feedback_events_3d_actor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_category_check",
+          "type": "c",
+          "definition": "CHECK (((category IS NULL) OR (category = ANY (ARRAY['ITEM_FALTANDO'::text, 'QUANTIDADE'::text, 'TAMANHO'::text, 'VARIANTE'::text, 'NAO_RECEBIDO'::text, 'OUTRO'::text]))))"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_delivery_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (delivery_id) REFERENCES epi_deliveries(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_details_check",
+          "type": "c",
+          "definition": "CHECK (((details IS NULL) OR (((char_length(details) >= 1) AND (char_length(details) <= 240)) AND (details = btrim(details)))))"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_event_type_check",
+          "type": "c",
+          "definition": "CHECK ((event_type = ANY (ARRAY['CONFIRMADO'::text, 'DIVERGENCIA'::text, 'EM_ANALISE'::text, 'RESOLVIDA'::text])))"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_group_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (group_id) REFERENCES epi_delivery_groups_3d(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_group_id_idempotency_key_key",
+          "type": "u",
+          "definition": "UNIQUE (group_id, idempotency_key)"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_internal_note_check",
+          "type": "c",
+          "definition": "CHECK (((internal_note IS NULL) OR (((char_length(internal_note) >= 1) AND (char_length(internal_note) <= 240)) AND (internal_note = btrim(internal_note)))))"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_delivery_feedback_events_3d_public_message_check",
+          "type": "c",
+          "definition": "CHECK (((public_message IS NULL) OR (((char_length(public_message) >= 1) AND (char_length(public_message) <= 240)) AND (public_message = btrim(public_message)))))"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_delivery_groups_3d",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "prepared_kit_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "exchange_request_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "profession_snapshot",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "team_name_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "work_name_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "delivered_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "delivered_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_name_snapshot",
+          "type": "text",
+          "notnull": false
+        }
+      ],
+      "policies": [],
+      "triggers": [
+        "CREATE TRIGGER guard_epi_delivery_groups_3d BEFORE DELETE OR UPDATE ON public.epi_delivery_groups_3d FOR EACH ROW EXECUTE FUNCTION guard_epi_3d_immutable()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_delivery_groups_3d_delivered_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (delivered_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_groups_3d_employee_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_groups_3d_exchange_request_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (exchange_request_id) REFERENCES epi_exchange_requests(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_groups_3d_exchange_request_id_key",
+          "type": "u",
+          "definition": "UNIQUE (exchange_request_id)"
+        },
+        {
+          "name": "epi_delivery_groups_3d_idempotency_key_key",
+          "type": "u",
+          "definition": "UNIQUE (idempotency_key)"
+        },
+        {
+          "name": "epi_delivery_groups_3d_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_delivery_groups_3d_prepared_kit_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (prepared_kit_id) REFERENCES epi_prepared_kits_3d(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_delivery_groups_3d_prepared_kit_id_key",
+          "type": "u",
+          "definition": "UNIQUE (prepared_kit_id)"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_employees",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "full_name",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "registration_code",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "profession",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "team_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "shirt_size",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "pants_size",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "shoe_size",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "notnull": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "aso_exam_date",
+          "type": "date",
+          "notnull": false
+        },
+        {
+          "name": "aso_expiry_date",
+          "type": "date",
+          "notnull": false
+        }
+      ],
+      "policies": [
+        {
+          "name": "epi_employees_admin_write",
+          "roles": [
+            "16444"
+          ],
+          "using": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+          "command": "*",
+          "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+        },
+        {
+          "name": "epi_employees_read",
+          "roles": [
+            "16444"
+          ],
+          "using": "(is_active_admin() OR ((team_id IS NOT NULL) AND (can_operate('epi:write'::text, team_id) OR ((employee_work_team(id) IS NOT NULL) AND can_operate('epi:write'::text, employee_work_team(id))))))",
+          "command": "r",
+          "with_check": null
+        }
+      ],
+      "triggers": [],
+      "force_rls": false,
+      "anon_select": true,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true,
+      "constraints": [
+        {
+          "name": "epi_employee_aso_dates",
+          "type": "c",
+          "definition": "CHECK (((aso_expiry_date IS NULL) OR ((aso_exam_date IS NOT NULL) AND (aso_expiry_date >= aso_exam_date))))"
+        },
+        {
+          "name": "epi_employees_created_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "epi_employees_full_name_check",
+          "type": "c",
+          "definition": "CHECK ((length(TRIM(BOTH FROM full_name)) >= 3))"
+        },
+        {
+          "name": "epi_employees_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_employees_team_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (team_id) REFERENCES teams(id)"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_exchange_events",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "notnull": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "from_status",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "to_status",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "occurred_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "public_message",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "internal_note",
+          "type": "text",
+          "notnull": false
+        }
+      ],
+      "policies": [],
+      "triggers": [
+        "CREATE TRIGGER guard_epi_exchange_event BEFORE DELETE OR UPDATE ON public.epi_exchange_events FOR EACH ROW EXECUTE FUNCTION guard_epi_exchange_event()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_exchange_events_actor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_exchange_events_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_exchange_events_request_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (request_id) REFERENCES epi_exchange_requests(id) ON DELETE RESTRICT"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_exchange_requests",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "source_delivery_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "item_name_snapshot",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "ca_snapshot",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "public_decision",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "internal_note",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "decided_by",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "decided_at",
+          "type": "timestamp with time zone",
+          "notnull": false
+        }
+      ],
+      "policies": [],
+      "triggers": [],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_exchange_decision_shape",
+          "type": "c",
+          "definition": "CHECK (((public_decision IS NULL) OR (((char_length(public_decision) >= 1) AND (char_length(public_decision) <= 240)) AND (public_decision = btrim(public_decision)))))"
+        },
+        {
+          "name": "epi_exchange_internal_shape",
+          "type": "c",
+          "definition": "CHECK (((internal_note IS NULL) OR (((char_length(internal_note) >= 1) AND (char_length(internal_note) <= 240)) AND (internal_note = btrim(internal_note)))))"
+        },
+        {
+          "name": "epi_exchange_note_shape",
+          "type": "c",
+          "definition": "CHECK (((note IS NULL) OR (((char_length(note) >= 1) AND (char_length(note) <= 240)) AND (note = btrim(note)))))"
+        },
+        {
+          "name": "epi_exchange_other_note",
+          "type": "c",
+          "definition": "CHECK (((reason <> 'OUTRO'::text) OR (note IS NOT NULL)))"
+        },
+        {
+          "name": "epi_exchange_requests_decided_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (decided_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_exchange_requests_employee_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_exchange_requests_employee_id_idempotency_key_key",
+          "type": "u",
+          "definition": "UNIQUE (employee_id, idempotency_key)"
+        },
+        {
+          "name": "epi_exchange_requests_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_exchange_requests_reason_check",
+          "type": "c",
+          "definition": "CHECK ((reason = ANY (ARRAY['DESGASTE'::text, 'DANO'::text, 'PERDA_EXTRAVIO'::text, 'OUTRO'::text])))"
+        },
+        {
+          "name": "epi_exchange_requests_source_delivery_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (source_delivery_id) REFERENCES epi_deliveries(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_exchange_requests_status_check",
+          "type": "c",
+          "definition": "CHECK ((status = ANY (ARRAY['SOLICITADA'::text, 'EM_ANALISE'::text, 'APROVADA'::text, 'RECUSADA'::text, 'CANCELADA'::text])))"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_items",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "code",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "item_kind",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "unit",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "ca_number",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "brand_model",
+          "type": "text",
+          "notnull": false
+        },
+        {
+          "name": "minimum_stock",
+          "type": "integer",
+          "notnull": true
+        },
+        {
+          "name": "replacement_days",
+          "type": "integer",
+          "notnull": false
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "notnull": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "return_policy",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "requires_note_on_close",
+          "type": "boolean",
+          "notnull": true
+        },
+        {
+          "name": "system_key",
+          "type": "text",
+          "notnull": false
+        }
+      ],
+      "policies": [
+        {
+          "name": "epi_items_admin_write",
+          "roles": [
+            "16444"
+          ],
+          "using": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))",
+          "command": "*",
+          "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND p.active AND (p.role = 'admin'::text))))"
+        },
+        {
+          "name": "epi_items_read",
+          "roles": [
+            "16444"
+          ],
+          "using": "(( SELECT can_operate('epi:write'::text) AS can_operate) OR ( SELECT can_operate('requests:write'::text) AS can_operate))",
+          "command": "r",
+          "with_check": null
+        }
+      ],
+      "triggers": [
+        "CREATE TRIGGER preserve_epi_item_system_key BEFORE UPDATE ON public.epi_items FOR EACH ROW EXECUTE FUNCTION preserve_epi_item_system_key()"
+      ],
+      "force_rls": false,
+      "anon_select": true,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true,
+      "constraints": [
+        {
+          "name": "epi_items_code_key",
+          "type": "u",
+          "definition": "UNIQUE (code)"
+        },
+        {
+          "name": "epi_items_created_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "epi_items_item_kind_check",
+          "type": "c",
+          "definition": "CHECK ((item_kind = ANY (ARRAY['epi'::text, 'uniform'::text, 'personal_tool'::text])))"
+        },
+        {
+          "name": "epi_items_minimum_stock_check",
+          "type": "c",
+          "definition": "CHECK ((minimum_stock >= 0))"
+        },
+        {
+          "name": "epi_items_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_items_replacement_days_check",
+          "type": "c",
+          "definition": "CHECK (((replacement_days IS NULL) OR (replacement_days > 0)))"
+        },
+        {
+          "name": "epi_items_return_policy_check",
+          "type": "c",
+          "definition": "CHECK ((return_policy = ANY (ARRAY['consumable'::text, 'returnable'::text, 'personal'::text, 'uniform'::text, 'non_returnable'::text])))"
+        }
+      ]
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres}",
+      "rls": true,
+      "name": "epi_prepared_kits_3d",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "employee_id",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "profession_snapshot",
+          "type": "text",
+          "notnull": true
+        },
+        {
+          "name": "lines_snapshot",
+          "type": "jsonb",
+          "notnull": true
+        },
+        {
+          "name": "exchange_request_id",
+          "type": "uuid",
+          "notnull": false
+        },
+        {
+          "name": "prepared_by",
+          "type": "uuid",
+          "notnull": true
+        },
+        {
+          "name": "prepared_at",
+          "type": "timestamp with time zone",
+          "notnull": true
+        },
+        {
+          "name": "idempotency_key",
+          "type": "uuid",
+          "notnull": true
+        }
+      ],
+      "policies": [],
+      "triggers": [
+        "CREATE TRIGGER guard_epi_prepared_3d BEFORE DELETE OR UPDATE ON public.epi_prepared_kits_3d FOR EACH ROW EXECUTE FUNCTION guard_epi_3d_immutable()"
+      ],
+      "force_rls": false,
+      "anon_select": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": false,
+      "authenticated_update": false,
+      "constraints": [
+        {
+          "name": "epi_prepared_kits_3d_employee_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (employee_id) REFERENCES epi_employees(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_prepared_kits_3d_exchange_request_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (exchange_request_id) REFERENCES epi_exchange_requests(id) ON DELETE RESTRICT"
+        },
+        {
+          "name": "epi_prepared_kits_3d_exchange_request_id_key",
+          "type": "u",
+          "definition": "UNIQUE (exchange_request_id)"
+        },
+        {
+          "name": "epi_prepared_kits_3d_idempotency_key_key",
+          "type": "u",
+          "definition": "UNIQUE (idempotency_key)"
+        },
+        {
+          "name": "epi_prepared_kits_3d_lines_snapshot_check",
+          "type": "c",
+          "definition": "CHECK (((jsonb_typeof(lines_snapshot) = 'array'::text) AND ((jsonb_array_length(lines_snapshot) >= 1) AND (jsonb_array_length(lines_snapshot) <= 30))))"
+        },
+        {
+          "name": "epi_prepared_kits_3d_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "epi_prepared_kits_3d_prepared_by_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (prepared_by) REFERENCES auth.users(id) ON DELETE RESTRICT"
+        }
+      ]
+    }
+  ],
+  "constraints_collected_read_only": true
+}

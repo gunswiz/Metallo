@@ -123,8 +123,8 @@ class SiteOperationsRepository {
         return _sync(user, await _pendingFor(user));
       });
   Future<String> _sync(String user, List<Map<String, dynamic>> entries) async {
-    while (entries.isNotEmpty) {
-      final entry = entries.first;
+    for (final entry in List<Map<String, dynamic>>.from(entries)) {
+      if (entry["failure"] == "rejected") continue;
       try {
         if (_currentUserId() != user) {
           throw StateError('Entre novamente na mesma conta.');
@@ -135,23 +135,40 @@ class SiteOperationsRepository {
           'p_operation_id': entry['id'],
           'p_occurred_at': entry['occurred_at']
         }).timeout(const Duration(seconds: 20));
-        entries.removeAt(0);
+        entries.removeWhere((row) => row["id"] == entry["id"]);
         await _save(user, entries);
       } catch (e) {
+        final rejected = e is PostgrestException &&
+          (['23505','23514','42501','22P02'].contains(e.code) ||
+           (e.code == 'P0001' && !e.message.contains('operation_id_conflict') && !e.message.contains('operation_actor_mismatch')));
+        entry['failure'] = rejected ? 'rejected' : 'uncertain';
         entry['error'] = siteOperationError(e);
         await _save(user, entries);
+        if (rejected) continue;
         return '${entries.length} lançamento(s) guardado(s) no aparelho, aguardando confirmação. ${entry['error']}';
       }
     }
-    return 'Lançamentos confirmados no Metallo.';
+    return entries.isEmpty ? 'Lançamentos confirmados no Metallo.' : 'Há lançamentos recusados para revisão. Os demais foram enviados; confira a fila.';
   }
 
   Future<void> removePending(String id) => _serial(() async {
         final user = _user;
         final entries = await _pendingFor(user);
+        final entry = entries.where((row) => row['id'] == id).firstOrNull;
+        if (entry != null && entry['failure'] != 'rejected') throw StateError('Reenvie o mesmo lançamento para confirmar o resultado antes de retirar.');
         entries.removeWhere((row) => row['id'] == id);
         await _save(user, entries);
       });
+
+  Future<void> revisePending(String id, Map<String,dynamic> data) => _serial(() async {
+    final user=_user;
+    final entries=await _pendingFor(user);
+    final entry=entries.where((row)=>row['id']==id).firstOrNull;
+    if(entry==null || entry['failure']!='rejected') throw StateError('Confirme o resultado do envio antes de modificar o lançamento.');
+    entry['data']={...data,'actor_id':user};
+    entry.remove('failure');entry.remove('error');
+    await _save(user,entries);
+  });
 }
 
 String siteOperationError(Object error) {

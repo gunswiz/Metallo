@@ -7,6 +7,9 @@ export default defineConfig([
   ...nextTs,
   globalIgnores([
     ".next/**",
+    ".next-local-preview/**",
+    ".next-gestao-preview/**",
+    ".next-4c-preview/**",
     ".vinext/**",
     ".wrangler/**",
     "coverage/**",

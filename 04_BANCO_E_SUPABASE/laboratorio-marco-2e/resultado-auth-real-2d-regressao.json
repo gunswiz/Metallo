@@ -1,0 +1,156 @@
+{
+  "at": "2026-09-28T00:22:06.089Z",
+  "scope": "Auth ES256, JWT, PostgREST e RPC locais reais; PGlite persistente em filho reiniciado",
+  "checks": [
+    {
+      "name": "Preparação sintética autentica João/Maria com ES256 real",
+      "ok": true
+    },
+    {
+      "name": "João registra antes do restart",
+      "ok": true
+    },
+    {
+      "name": "Maria registra antes do restart",
+      "ok": true
+    },
+    {
+      "name": "Restart real recupera mesma intenção/ID/hash/timestamp",
+      "ok": true
+    },
+    {
+      "name": "João vê somente original próprio após restart",
+      "ok": true
+    },
+    {
+      "name": "Maria vê somente original próprio após restart",
+      "ok": true
+    },
+    {
+      "name": "João → Maria intenção negada após restart",
+      "ok": true
+    },
+    {
+      "name": "Maria → João intenção negada após restart",
+      "ok": true
+    },
+    {
+      "name": "Cinco POST reais mesma chave pós-restart geram um original",
+      "ok": true
+    },
+    {
+      "name": "Auth realmente pausado: health distingue dependência indisponível",
+      "ok": true
+    },
+    {
+      "name": "Auth realmente pausado: POST negado, zero evento novo",
+      "ok": true
+    },
+    {
+      "name": "Auth recuperado: autorização real volta a funcionar",
+      "ok": true
+    },
+    {
+      "name": "João revogado, processo reiniciado, token residual negado",
+      "ok": true
+    },
+    {
+      "name": "Retry do token revogado continua negado e sem original",
+      "ok": true
+    },
+    {
+      "name": "Funcionário inativo não marca após restart",
+      "ok": true
+    },
+    {
+      "name": "Maria permanece isolada após revogação de João e restart",
+      "ok": true
+    },
+    {
+      "name": "Shutdown gracioso encerra listener e preserva integridade",
+      "ok": true
+    }
+  ],
+  "passed": true,
+  "plan_sha256": "b3ed7ce43130b1f979da66896611a533dde8c42c1afa253aa654c1c430a057a8",
+  "plan_read_only_during_execution": true,
+  "expected": 17,
+  "revoked_auth_with_active_local_snapshot_denied": true,
+  "disposable_environment_removed": true,
+  "previous_runs": [
+    {
+      "at": "2026-09-27T23:24:12.413Z",
+      "passed": true,
+      "checks": [
+        {
+          "name": "Preparação sintética autentica João/Maria com ES256 real",
+          "ok": true
+        },
+        {
+          "name": "João registra antes do restart",
+          "ok": true
+        },
+        {
+          "name": "Maria registra antes do restart",
+          "ok": true
+        },
+        {
+          "name": "Restart real recupera mesma intenção/ID/hash/timestamp",
+          "ok": true
+        },
+        {
+          "name": "João vê somente original próprio após restart",
+          "ok": true
+        },
+        {
+          "name": "Maria vê somente original próprio após restart",
+          "ok": true
+        },
+        {
+          "name": "João → Maria intenção negada após restart",
+          "ok": true
+        },
+        {
+          "name": "Maria → João intenção negada após restart",
+          "ok": true
+        },
+        {
+          "name": "Cinco POST reais mesma chave pós-restart geram um original",
+          "ok": true
+        },
+        {
+          "name": "Auth realmente pausado: health distingue dependência indisponível",
+          "ok": true
+        },
+        {
+          "name": "Auth realmente pausado: POST negado, zero evento novo",
+          "ok": true
+        },
+        {
+          "name": "Auth recuperado: autorização real volta a funcionar",
+          "ok": true
+        },
+        {
+          "name": "João revogado, processo reiniciado, token residual negado",
+          "ok": true
+        },
+        {
+          "name": "Retry do token revogado continua negado e sem original",
+          "ok": true
+        },
+        {
+          "name": "Funcionário inativo não marca após restart",
+          "ok": true
+        },
+        {
+          "name": "Maria permanece isolada após revogação de João e restart",
+          "ok": true
+        },
+        {
+          "name": "Shutdown gracioso encerra listener e preserva integridade",
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

@@ -26,18 +26,20 @@ export function SiteOrderForm({
   canPurchase: boolean;
   canRent: boolean;
 }) {
-  const [kind, setKind] = useState(canPurchase ? "material" : "rental");
+  const [kind, setKind] = useState("material");
   const [item, setItem] = useState("");
   const [lines, setLines] = useState<Line[]>([]);
   const [busy, setBusy] = useState(false);
   const lock = useRef(false);
   const [error, setError] = useState("");
+  const typeLabel = (value: string) => value === "epi" ? "EPI" : "Material";
   const choices =
-    kind === "material" ? data.materials : kind === "epi" ? data.epi_items : [];
+    kind === "material" ? data.materials : data.epi_items;
   const variants =
     kind === "epi"
       ? (data.epi_items.find((x) => x.id === item)?.variants ?? [])
       : [];
+  if (!canPurchase) return null;
   return (
     <section className="panel">
       <header className="panel-header">
@@ -48,27 +50,25 @@ export function SiteOrderForm({
           className="form-grid"
           onSubmit={(event) => {
             event.preventDefault();
+            if (lock.current) return;
             const form = event.currentTarget;
             const values = new FormData(form);
-            const description =
-              kind === "rental"
-                ? String(values.get("description") ?? "").trim()
-                : choices.find((x) => x.id === item)?.name;
-            if (!description || lines.length >= 100) return;
-            setLines([
-              ...lines,
-              {
-                kind,
-                description,
-                variant: String(values.get("variant") ?? ""),
-                quantity: Number(values.get("quantity")),
-                ...(kind === "material"
-                  ? { item_id: item }
-                  : kind === "epi"
-                    ? { epi_item_id: item }
-                    : {}),
-              },
-            ]);
+            const description = choices.find((x) => x.id === item)?.name;
+            const variant = String(values.get("variant") ?? "").trim();
+            const quantity = Number(values.get("quantity"));
+            if (!description || !item || !Number.isInteger(quantity) || quantity < 1 || quantity > 100000 || (variants.length > 0 && !variants.includes(variant))) { setError("Escolha o item, a variante e uma quantidade inteira entre 1 e 100.000."); return; }
+            const itemKey = item;
+            const existing = lines.findIndex((line) => line.kind === kind && (line.item_id ?? line.epi_item_id ?? line.description) === itemKey && line.variant === variant);
+            if (existing >= 0) {
+              if (lines[existing].quantity + quantity > 100000) { setError("A quantidade total do item deve ser de até 100.000."); return; }
+              setLines(lines.map((line, index) => index === existing ? { ...line, quantity: line.quantity + quantity } : line));
+            } else {
+              if (lines.length >= 100) { setError("Cada pedido pode ter até 100 itens."); return; }
+              setLines([...lines, { kind, description, variant, quantity, ...(kind === "material" ? { item_id: item } : { epi_item_id: item }) }]);
+            }
+            setError("");
+            form.reset();
+            setItem("");
           }}
         >
           <label>
@@ -87,20 +87,9 @@ export function SiteOrderForm({
                   <option value="epi">EPI / fardamento / item pessoal</option>
                 </>
               )}
-              {canRent && <option value="rental">Máquina alugada</option>}
             </select>
           </label>
-          {kind === "rental" ? (
-            <label>
-              Máquina necessária
-              <input
-                name="description"
-                required
-                maxLength={180}
-                disabled={busy}
-              />
-            </label>
-          ) : (
+          {
             <label>
               Item
               <select
@@ -117,7 +106,7 @@ export function SiteOrderForm({
                 ))}
               </select>
             </label>
-          )}
+          }
           {variants.length > 0 ? (
             <label>
               Variante
@@ -131,7 +120,7 @@ export function SiteOrderForm({
           ) : (
             <label>
               Tamanho / variante
-              <input name="variant" maxLength={100} disabled={busy} />
+              <input key={`${kind}:${item}`} name="variant" maxLength={100} disabled={busy} />
             </label>
           )}
           <label>
@@ -146,19 +135,25 @@ export function SiteOrderForm({
               disabled={busy}
             />
           </label>
+          {canPurchase && canRent && <p className="muted full">Máquinas são registradas na área de locações quando a necessidade for decidida. Este pedido reúne materiais e EPI.</p>}
           <button
             className="button secondary"
             type="submit"
-            disabled={busy || lines.length >= 100}
+            disabled={busy}
           >
             Adicionar à lista
           </button>
         </form>
-        <ul className="order-draft">
+        <div className="order-draft">
+          <div className="order-draft-header"><strong>Itens do pedido</strong><span>{lines.length} {lines.length === 1 ? "item" : "itens"}</span></div>
+          {lines.length === 0 && <p className="muted">A lista está vazia. Adicione os materiais necessários acima; depois envie tudo de uma vez para a ADM.</p>}
           {lines.map((line, index) => (
-            <li key={index}>
+            <div className="order-draft-row" key={index}>
+              <span><b>{typeLabel(line.kind)}</b>
               {line.quantity} × {line.description}{" "}
               {line.variant && `(${line.variant})`}{" "}
+              </span>
+              <input aria-label={"Quantidade de " + line.description} type="number" min={1} max={100000} step={1} value={line.quantity} disabled={busy} onChange={(event) => { const quantity = Number(event.target.value); if (Number.isInteger(quantity) && quantity > 0 && quantity <= 100000) setLines(lines.map((entry, i) => i === index ? { ...entry, quantity } : entry)); }} />
               <button
                 className="text-link"
                 disabled={busy}
@@ -166,9 +161,9 @@ export function SiteOrderForm({
               >
                 Remover
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
         <form
           className="form-grid"
           onSubmit={async (event) => {

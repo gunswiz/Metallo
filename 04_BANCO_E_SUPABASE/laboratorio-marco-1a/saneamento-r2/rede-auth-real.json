@@ -1,0 +1,1105 @@
+{
+  "at": "2026-09-27T11:57:16.701Z",
+  "note": "Somente metadados. Neste harness exclusivamente portalFetch define cache=no-store; fixtures e SDK direto não definem. Origem atribuída por essa marca observável, sem alterar headers ou transporte.",
+  "requests": [
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/admin_revoke_employee_identity",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/admin/users/c1f13e7f-44cf-41f4-b521-cd2ee7af525f",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 403,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 403,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/admin/users/8ae3aff4-5ca0-40aa-a4b7-e3c3b9283518",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 403,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 403,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/rest/v1/rpc/my_employee_profile",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 200,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/logout",
+      "status": 204,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": null,
+      "source": "harness"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 400,
+      "cache": "no-store",
+      "source": "portalFetch"
+    },
+    {
+      "origin": "http://127.0.0.1:54321",
+      "path": "/auth/v1/token",
+      "status": 0,
+      "cache": "no-store",
+      "source": "portalFetch"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "started_at": "2026-09-27T07:57:28.287Z",
+  "environment": "Edge real / Auth e PostgREST locais reais",
+  "checks": [
+    {
+      "name": "João: perfil próprio real",
+      "ok": true,
+      "at": "2026-09-27T07:57:29.346Z"
+    },
+    {
+      "name": "João: URL com ID Maria conserva João",
+      "ok": true,
+      "at": "2026-09-27T07:57:29.941Z"
+    },
+    {
+      "name": "João: recarga conserva sessão e titularidade",
+      "ok": true,
+      "at": "2026-09-27T07:57:30.222Z"
+    },
+    {
+      "name": "João: equipe sem colegas",
+      "ok": true,
+      "at": "2026-09-27T07:57:31.452Z"
+    },
+    {
+      "name": "João: obra sem consulta operacional",
+      "ok": true,
+      "at": "2026-09-27T07:57:32.483Z"
+    },
+    {
+      "name": "João: logout limpa dados",
+      "ok": true,
+      "at": "2026-09-27T07:57:33.387Z"
+    },
+    {
+      "name": "Maria: login real e Home própria",
+      "ok": true,
+      "at": "2026-09-27T08:00:00.197Z"
+    },
+    {
+      "name": "Maria: perfil próprio real",
+      "ok": true,
+      "at": "2026-09-27T08:00:00.756Z"
+    },
+    {
+      "name": "Maria: URL com ID João conserva Maria",
+      "ok": true,
+      "at": "2026-09-27T08:00:01.162Z"
+    },
+    {
+      "name": "Maria: recarga conserva sessão e titularidade",
+      "ok": true,
+      "at": "2026-09-27T08:00:01.449Z"
+    },
+    {
+      "name": "Maria: equipe sem colegas",
+      "ok": true,
+      "at": "2026-09-27T08:00:02.678Z"
+    },
+    {
+      "name": "Maria: obra sem consulta operacional",
+      "ok": true,
+      "at": "2026-09-27T08:00:03.665Z"
+    },
+    {
+      "name": "Nova aba: sessão Maria não aceita employee_id João",
+      "ok": true,
+      "at": "2026-09-27T08:01:16.312Z"
+    },
+    {
+      "name": "Maria: logout em outra aba limpa a sessão original",
+      "ok": true,
+      "at": "2026-09-27T08:01:17.425Z"
+    },
+    {
+      "name": "Offline: página de login abre sem Supabase",
+      "ok": true,
+      "at": "2026-09-27T08:01:54.614Z"
+    },
+    {
+      "name": "Offline: erro amigável sem perfil",
+      "ok": false,
+      "at": "2026-09-27T08:01:55.546Z"
+    },
+    {
+      "name": "Offline: resultado final confirmado em inspeção seguinte",
+      "ok": true,
+      "at": "2026-09-27T08:02:48.193Z",
+      "detail": "Supabase parado, login continuou aberto e exibiu: Não foi possível conectar ao laboratório. Tente novamente. A primeira leitura após clicar capturou estado transitório; preservada como observação falha."
+    },
+    {
+      "name": "João: Home real com equipe inativa",
+      "ok": true,
+      "at": "2026-09-27T08:05:55.803Z"
+    },
+    {
+      "name": "João: equipe inativa não bloqueia nem encerra sessão",
+      "ok": true,
+      "at": "2026-09-27T08:05:56.487Z"
+    },
+    {
+      "name": "João: perfil preservado com equipe inativa",
+      "ok": true,
+      "at": "2026-09-27T08:05:57.498Z"
+    },
+    {
+      "name": "João: sem equipe em sessão aberta preserva perfil",
+      "ok": true,
+      "at": "2026-09-27T08:07:23.926Z"
+    },
+    {
+      "name": "João: NULL e URL Maria conservam perfil próprio",
+      "ok": true,
+      "at": "2026-09-27T08:07:24.611Z"
+    },
+    {
+      "name": "João: reatribuição atualiza própria equipe",
+      "ok": true,
+      "at": "2026-09-27T08:08:02.052Z"
+    },
+    {
+      "name": "Revogação real com João aberto: dados removidos e login exibido",
+      "ok": true,
+      "at": "2026-09-27T08:08:43.934Z"
+    },
+    {
+      "name": "Revogação: recarregar não recupera perfil antigo",
+      "ok": true,
+      "at": "2026-09-27T08:08:44.258Z"
+    },
+    {
+      "name": "Maria: login pelo teclado",
+      "ok": true,
+      "at": "2026-09-27T08:09:50.614Z"
+    },
+    {
+      "name": "Ban Auth real durante sessão Maria limpa tela",
+      "ok": true,
+      "at": "2026-09-27T08:10:34.297Z"
+    },
+    {
+      "at": "2026-09-27T08:56:17.793Z",
+      "name": "Ciclo2: dois logins reais concorrentes João/Maria em duas abas Edge",
+      "ok": true,
+      "detail": "Após submissões concorrentes ambas exibiram Maria; sessões compartilhadas por origem. Nenhum storage/evento foi injetado neste ensaio; não prova todos os interleavings."
+    },
+    {
+      "at": "2026-09-27T08:57:00.753Z",
+      "name": "Ciclo2: saída em uma aba retira perfil das duas",
+      "ok": true,
+      "detail": "Logout UI em B, ambas voltaram à tela de entrada."
+    }
+  ]
+}

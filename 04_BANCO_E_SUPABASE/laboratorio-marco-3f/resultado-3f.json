@@ -1,0 +1,240 @@
+{
+  "at": "2026-09-29T21:24:39.022Z",
+  "scope": "Marco 3F, somente laboratório sintético",
+  "checks": [
+    {
+      "name": "baseline 3E e API locais preservadas",
+      "ok": true
+    },
+    {
+      "name": "A: cadastro voluntário; portal acessível sem credencial",
+      "ok": true
+    },
+    {
+      "name": "R/T: funcionário inativo não inicia cadastro",
+      "ok": true
+    },
+    {
+      "name": "Z: Gestão não cadastra método do funcionário",
+      "ok": true
+    },
+    {
+      "name": "S: identidade revogada não cadastra método",
+      "ok": true
+    },
+    {
+      "name": "origem externa bloqueada",
+      "ok": true
+    },
+    {
+      "name": "querystring não altera autorização",
+      "ok": true
+    },
+    {
+      "name": "G/J: employee_id injetado no corpo é recusado",
+      "ok": true
+    },
+    {
+      "name": "G/J: delivery_id injetado no corpo é recusado",
+      "ok": true
+    },
+    {
+      "name": "RLS/grants: authenticated, anon e service_role não leem credenciais",
+      "ok": true
+    },
+    {
+      "name": "RPC: nenhuma função pública 3F nova",
+      "ok": true
+    },
+    {
+      "name": "RLS: todas as quatro tabelas privadas estão protegidas",
+      "ok": true
+    },
+    {
+      "name": "AB/AC: colunas não contêm PIN, biometria ou chave privada",
+      "ok": true
+    },
+    {
+      "name": "B: cancelamento deixa só challenge, sem credencial",
+      "ok": true
+    },
+    {
+      "name": "D: origin inválido não cadastra",
+      "ok": true
+    },
+    {
+      "name": "G: Maria não consome challenge de João",
+      "ok": true
+    },
+    {
+      "name": "C: registro WebAuthn real validado",
+      "ok": true
+    },
+    {
+      "name": "F: challenge de cadastro é de uso único",
+      "ok": true
+    },
+    {
+      "name": "credencial pessoal não exposta pelo PostgREST",
+      "ok": true
+    },
+    {
+      "name": "método aparece só para seu titular",
+      "ok": true
+    },
+    {
+      "name": "U/V: challenge de uma sessão não serve na outra",
+      "ok": true
+    },
+    {
+      "name": "G: João não inicia assinatura da entrega de Maria",
+      "ok": true
+    },
+    {
+      "name": "G: Maria não usa credential_id de João",
+      "ok": true
+    },
+    {
+      "name": "snapshot 3D é apresentado antes da confirmação",
+      "ok": true
+    },
+    {
+      "name": "challenge aleatório é vinculado à transação e hash",
+      "ok": true
+    },
+    {
+      "name": "D: challenge de assinatura errado é negado",
+      "ok": true
+    },
+    {
+      "name": "Y/Z: servidor/Gestão sem chave privada não produz assinatura válida",
+      "ok": true
+    },
+    {
+      "name": "UV obrigatória: sem verificação local não assina",
+      "ok": true
+    },
+    {
+      "name": "UP obrigatória: sem presença local não assina",
+      "ok": true
+    },
+    {
+      "name": "G: Maria não consome challenge de João",
+      "ok": true
+    },
+    {
+      "name": "L/F: duas abas, uma resposta válida no máximo",
+      "ok": true
+    },
+    {
+      "name": "K: único evento reforçado e confirmação 3D atômicos",
+      "ok": true
+    },
+    {
+      "name": "M: novo desafio para grupo confirmado não duplica",
+      "ok": true
+    },
+    {
+      "name": "O: evento reforçado e confirmação 3D permanecem após nova leitura",
+      "ok": true
+    },
+    {
+      "name": "AE: regressão 3D mostra grupo confirmado ao titular",
+      "ok": true
+    },
+    {
+      "name": "AF: relatório 3E conserva entrega e evento de confirmação reais",
+      "ok": true
+    },
+    {
+      "name": "AA: snapshot posterior alterado é detectado por hash, sem reescrever evento",
+      "ok": true
+    },
+    {
+      "name": "histórico append-only rejeita UPDATE",
+      "ok": true
+    },
+    {
+      "name": "segundo grupo ainda pendente antes da revogação",
+      "ok": true
+    },
+    {
+      "name": "N: titular revoga o próprio método",
+      "ok": true
+    },
+    {
+      "name": "H: Maria não revoga método de João",
+      "ok": true
+    },
+    {
+      "name": "Z: Gestão não revoga por rota pessoal",
+      "ok": true
+    },
+    {
+      "name": "N: challenge emitido antes da revogação não assina depois",
+      "ok": true
+    },
+    {
+      "name": "O: evidência anterior sobrevive à revogação",
+      "ok": true
+    },
+    {
+      "name": "N: revogada não inicia nova assinatura",
+      "ok": true
+    },
+    {
+      "name": "P: nova passkey distinta após perda/revogação",
+      "ok": true
+    },
+    {
+      "name": "Q: múltiplos dispositivos pessoais",
+      "ok": true
+    },
+    {
+      "name": "Q: sem seleção explícita, desafio aceita os dois métodos ativos do titular",
+      "ok": true
+    },
+    {
+      "name": "P/Q: passkey antiga ainda assina nova entrega",
+      "ok": true
+    },
+    {
+      "name": "I: snapshot registrado da entrega não muda durante desafio",
+      "ok": true
+    },
+    {
+      "name": "L/concorrência: dois desafios em abas diferentes criam uma só assinatura",
+      "ok": true
+    },
+    {
+      "name": "E: challenge expirado não cadastra",
+      "ok": true
+    },
+    {
+      "name": "G: Maria só cadastra sua própria credencial",
+      "ok": true
+    },
+    {
+      "name": "G: João não consome assinatura de Maria",
+      "ok": true
+    },
+    {
+      "name": "V: sessão independente do mesmo titular enxerga somente seus métodos",
+      "ok": true
+    },
+    {
+      "name": "U: logout invalida token da sessão anterior",
+      "ok": true
+    },
+    {
+      "name": "X: resposta do transporte pessoal proíbe cache",
+      "ok": true
+    },
+    {
+      "name": "prévia manual possui duas entregas sintéticas pendentes",
+      "ok": true
+    }
+  ],
+  "passed": 58,
+  "total": 58
+}
