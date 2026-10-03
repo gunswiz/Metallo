@@ -3,6 +3,7 @@ import type { Database, Tables } from "@metallo/types";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 
 export type ExchangeManagementRow = { request_id: string; employee_name: string; item_name: string; ca_number: string | null; reason: string; note: string | null; request_status: string; requested_at: string; updated_at: string; public_decision: string | null; internal_note: string | null; timeline: { status: string; at: string }[] };
@@ -31,21 +32,21 @@ export type Awareness3i = { employee_id: string; employee_name: string; accepted
 export class EpiOperationsRepository {
   constructor(private client: SupabaseClient<Database>) {}
   async report3e(employeeId: string) {
-    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Relatórios 3E disponíveis somente no laboratório local.");
+    if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Relatórios 3E disponíveis somente no laboratório local.");
     const result = await this.client.rpc("admin_epi_report_3e" as never, { p_employee_id: employeeId } as never);
     if (result.error) throw new Error(result.error.message);
     return epiReportPayloadSchema.parse(result.data);
   }
   // Marco 3I: aceite do termo de ciência (NR-6, 6.6.1) no escopo da Gestão. Sem employeeId, lista todos do escopo.
   async awareness3i(employeeId: string | null = null): Promise<Awareness3i[]> {
-    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Termo de ciência disponível somente no laboratório local.");
+    if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Termo de ciência disponível somente no laboratório local.");
     const result = await this.client.rpc("admin_epi_awareness_3i" as never, { p_employee_id: employeeId } as never);
     if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar os termos de ciência.");
     return (result.data as Awareness3i[]).filter(row => typeof row.employee_id === "string" && typeof row.employee_name === "string" &&
       (row.accepted_at === null || Number.isFinite(Date.parse(row.accepted_at))));
   }
   async delivery3d() {
-    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Entregas 3D disponíveis somente no laboratório local.");
+    if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Entregas 3D disponíveis somente no laboratório local.");
     const names = ["admin_epi_prepared_kits_3d", "admin_epi_approved_exchanges_3d", "admin_epi_delivery_feedback_3d"] as const;
     const [prepared, approved, feedback] = await Promise.all(names.map(name => this.client.rpc(name as never)));
     if (prepared.error || approved.error || feedback.error || !Array.isArray(prepared.data) || !Array.isArray(approved.data) || !Array.isArray(feedback.data))
@@ -53,13 +54,13 @@ export class EpiOperationsRepository {
     return { prepared: prepared.data as PreparedKit3d[], approved: approved.data as ApprovedExchange3d[], feedback: feedback.data as DeliveryFeedback3d[] };
   }
   async kitSuggestion3d(employeeId: string) {
-    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Sugestão disponível somente no laboratório local.");
+    if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Sugestão disponível somente no laboratório local.");
     const result = await this.client.rpc("admin_epi_kit_suggestion_3d" as never, { p_employee_id: employeeId } as never);
     if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar a sugestão do kit.");
     return result.data as { item_id: string; item_name: string; unit: string; recommended_quantity: number }[];
   }
   async exchangeRequests(): Promise<ExchangeManagementRow[]> {
-    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Trocas de EPI disponíveis somente no laboratório local.");
+    if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Trocas de EPI disponíveis somente no laboratório local.");
     const result = await this.client.rpc("admin_epi_exchange_requests" as never);
     if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar as solicitações locais.");
     return result.data as ExchangeManagementRow[];

@@ -13,7 +13,10 @@ export default async function ColaboradorPage({
   const environment = colaboradorEnvironment(process.env);
   if (!environment) notFound();
   const host = (await headers()).get("host");
-  if (!host || !(/^127\.0\.0\.1:\d+$/.test(host) || host === "localhost:3101")) notFound();
+  // Laboratório: só no próprio computador. Teste online: endereço público do Worker de teste.
+  const online = "online" in environment && environment.online === true;
+  if (!online && (!host || !(/^127\.0\.0\.1:\d+$/.test(host) || host === "localhost:3101"))) notFound();
+  if (online && !host) notFound();
   const path = (await params).screen ?? [];
   if (path.length > 1 || (path[0] && !screens.has(path[0]))) notFound();
   if (environment.demo && ["ponto", "registros", "comprovantes"].includes(path[0])) notFound();

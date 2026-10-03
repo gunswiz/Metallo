@@ -4,6 +4,7 @@ import { z } from "zod";
 import { batchDeliverySchema, fulfillEpiSchema, kitSchema, requestEpiSchema, replacementSchema } from "@/03_FUNCOES_E_LOGICA/validarParidadeMobile";
 import { executeValidated, type OperationState } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 const paths = ["/epis", "/funcionarios", "/ferramentas", "/relatorios", "/dashboard"];
 const exchangeActionSchema = z.object({
@@ -27,7 +28,7 @@ export async function prepareEpiKit3d(_previous: OperationState, formData: FormD
   return executeValidated({ schema: preparation3dSchema, capability: "epi:write", formData,
     paths: ["/epis/entrega-em-lote"], destination: "/epis/entrega-em-lote?prepared=1",
     operation: (client, data) => {
-      if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Somente laboratório local.");
+      if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("prepare_epi_kit_3d" as never, { p_employee_id: data.employeeId,
         p_lines: data.lines, p_idempotency_key: data.idempotencyKey,
         p_exchange_request_id: data.exchangeRequestId || null } as never);
@@ -38,7 +39,7 @@ export async function registerEpiDelivery3d(_previous: OperationState, formData:
   return executeValidated({ schema: register3dSchema, capability: "epi:write", formData,
     paths: ["/epis/entrega-em-lote", "/funcionarios", "/epis"], destination: "/epis/entrega-em-lote?delivered=1",
     operation: (client, data) => {
-      if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Somente laboratório local.");
+      if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("register_epi_delivery_3d" as never, {
         p_preparation_id: data.preparationId, p_idempotency_key: data.idempotencyKey } as never);
     },
@@ -48,7 +49,7 @@ export async function manageEpiFeedback3d(_previous: OperationState, formData: F
   return executeValidated({ schema: feedback3dSchema, capability: "epi:write", formData,
     paths: ["/epis/entrega-em-lote"], destination: "/epis/entrega-em-lote?feedback=1",
     operation: (client, data) => {
-      if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Somente laboratório local.");
+      if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("manage_epi_delivery_feedback_3d" as never, { p_group_id: data.groupId,
         p_action: data.action, p_public_message: data.publicMessage || null,
         p_internal_note: data.internalNote || null, p_idempotency_key: data.idempotencyKey } as never);
@@ -60,7 +61,7 @@ export async function manageExchangeRequest(_previous: OperationState, formData:
   return executeValidated({ schema: exchangeActionSchema, capability: "epi:write", formData,
     paths: ["/epis/solicitacoes"], destination: "/epis/solicitacoes?success=exchange",
     operation: async (client, data) => {
-      if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Somente laboratório local.");
+      if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("manage_epi_exchange_request" as never, {
         p_request_id: data.requestId, p_action: data.action,
         p_public_message: data.publicMessage || null, p_internal_note: data.internalNote || null,

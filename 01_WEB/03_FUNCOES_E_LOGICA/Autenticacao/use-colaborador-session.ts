@@ -24,7 +24,9 @@ const visualItems3g: PersonalItem3g[] = [
     events: [{ event_type: "CONFIRMED", category: null, note: null, occurred_at: "2026-09-27T14:00:00Z" }] },
 ];
 
-export function useColaboradorSession(anonKey: string, demo: boolean, screen: PortalScreen, go: (next: PortalScreen) => void) {
+export function useColaboradorSession(anonKey: string, demo: boolean, screen: PortalScreen, go: (next: PortalScreen) => void, baseUrl: string = LAB_URL) {
+  // Teste online: sem servidor de ponto do laboratório; a saída usa o próprio Auth do projeto de teste.
+  const online = baseUrl !== LAB_URL;
   const [profile, setProfile] = useState<PersonalProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -34,7 +36,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
   const generation = useRef(0);
   const invalidate = useCallback(() => { generation.current += 1; }, []);
   const checking = useRef<number | null>(null);
-  const getClient = useCallback(() => client.current ??= portalClient(anonKey), [anonKey]);
+  const getClient = useCallback(() => client.current ??= portalClient(anonKey, baseUrl), [anonKey, baseUrl]);
 
   const endSession = useCallback(async (message = "", redirect = true, scope?: "current" | "global") => {
     const ticket = ++generation.current;
@@ -44,7 +46,14 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     client.current = null;
     let finalMessage = message;
     try {
-      if (scope) {
+      if (scope && online) {
+        try {
+          const result = await previous?.auth.signOut({ scope: scope === "global" ? "global" : "local" });
+          if (result?.error) throw result.error;
+        } catch {
+          finalMessage = scope === "global" ? "Não foi possível confirmar a saída de todos os dispositivos. Procure a administração." : "Não foi possível confirmar o encerramento no servidor. Entre novamente ou procure a administração.";
+        }
+      } else if (scope) {
         try {
           const session = await previous?.auth.getSession();
           const token = session?.data.session?.access_token;
@@ -67,7 +76,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (redirect) go("login");
       setBusy(false);
     }
-  }, [go]);
+  }, [go, online]);
 
   useEffect(() => () => {
     invalidate();
@@ -99,7 +108,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (user.error || !user.data.user) {
         if (target === "login") {
           try {
-            const health = await portalFetch(`${LAB_URL}/auth/v1/health`);
+            const health = await portalFetch(`${baseUrl}/auth/v1/health`);
             if (!health.ok) throw new Error("Laboratório indisponível.");
           } catch {
             if (ticket === generation.current) await endSession("Não foi possível conectar ao laboratório. Tente novamente.", false);
@@ -124,7 +133,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (checking.current === ticket) checking.current = null;
       if (ticket === generation.current) setLoading(false);
     }
-  }, [demo, endSession, getClient, go, screen]);
+  }, [baseUrl, demo, endSession, getClient, go, screen]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void verify(); }, 0);

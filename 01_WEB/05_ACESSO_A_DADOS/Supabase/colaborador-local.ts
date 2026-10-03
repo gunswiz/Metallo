@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 export const PORTAL_STORAGE_KEY = "metallo-colaborador-laboratorio";
 export const LAB_URL = "http://127.0.0.1:54321";
@@ -21,7 +22,7 @@ export type PersonalDeliveryGroup3d = {
 export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) {
   const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
   const allowed = ["/auth/v1/token", "/auth/v1/user", "/auth/v1/logout", "/auth/v1/health", "/rest/v1/rpc/my_employee_profile", "/rest/v1/rpc/my_current_work", "/rest/v1/rpc/my_team_summary", "/rest/v1/rpc/my_personal_epi", "/rest/v1/rpc/my_exchangeable_epi", "/rest/v1/rpc/my_epi_exchange_requests", "/rest/v1/rpc/create_epi_exchange_request", "/rest/v1/rpc/cancel_epi_exchange_request", "/rest/v1/rpc/my_epi_delivery_groups_3d", "/rest/v1/rpc/respond_epi_delivery_3d", "/rest/v1/rpc/my_epi_report_3e", "/rest/v1/rpc/my_personal_items_3g", "/rest/v1/rpc/confirm_personal_item_3g", "/rest/v1/rpc/report_personal_item_3g", "/rest/v1/rpc/my_communications_3h", "/rest/v1/rpc/open_communication_3h", "/rest/v1/rpc/my_epi_awareness_3i", "/rest/v1/rpc/accept_epi_awareness_3i"];
-  if (url.origin !== LAB_URL || !allowed.includes(url.pathname)) throw new Error("Destino local não autorizado.");
+  if (![LAB_URL, TESTE_ONLINE_SUPABASE_URL].includes(url.origin) || !allowed.includes(url.pathname)) throw new Error("Destino local não autorizado.");
   return fetch(input, { ...init, cache: "no-store", redirect: "error",
     signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(6000)]) : AbortSignal.timeout(6000) });
 }
@@ -166,12 +167,17 @@ export function disposePortalClient(client: SupabaseClient) {
   void client.auth.dispose();
 }
 
-export function portalClient(anonKey: string) {
-  if (typeof window !== "undefined" && !(window.location.hostname === "127.0.0.1" ||
-    (window.location.hostname === "localhost" && window.location.port === "3101")))
-    throw new Error("Prévia disponível apenas no próprio computador.");
+export function portalClient(anonKey: string, baseUrl: string = LAB_URL) {
+  if (baseUrl === LAB_URL) {
+    if (typeof window !== "undefined" && !(window.location.hostname === "127.0.0.1" ||
+      (window.location.hostname === "localhost" && window.location.port === "3101")))
+      throw new Error("Prévia disponível apenas no próprio computador.");
+  } else if (baseUrl === TESTE_ONLINE_SUPABASE_URL) {
+    // Teste online: somente em página HTTPS (Worker de teste).
+    if (typeof window !== "undefined" && window.location.protocol !== "https:") throw new Error("Teste online exige HTTPS.");
+  } else throw new Error("Destino não autorizado.");
   let active = true;
-  const client = createClient(LAB_URL, anonKey, {
+  const client = createClient(baseUrl, anonKey, {
     global: { fetch: portalFetch },
     auth: { storageKey: PORTAL_STORAGE_KEY, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false,
       storage: {

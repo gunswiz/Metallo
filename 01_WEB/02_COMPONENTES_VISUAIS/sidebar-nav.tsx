@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { can, type Capability } from "@metallo/core";
 import type { SessionProfile } from "@metallo/types";
+import { LAB_SUPABASE_URL, recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 const entries: Array<{
   href: string;
@@ -23,6 +24,8 @@ const entries: Array<{
   icon: typeof Gauge;
   capability: Capability;
   localOnly?: boolean;
+  // Recurso novo: laboratório e teste online, ainda fora da produção.
+  newFeature?: boolean;
 }> = [
   { href: "/dashboard", label: "Visão geral", icon: Gauge, capability: "dashboard:read" },
   { href: "/obras", label: "Obras e pedidos", icon: Building2, capability: "inventory:read" },
@@ -32,7 +35,7 @@ const entries: Array<{
   { href: "/movimentacoes", label: "Movimentações", icon: ClipboardList, capability: "inventory:read" },
   { href: "/consumo", label: "Consumo", icon: ChartNoAxesCombined, capability: "inventory:read" },
   { href: "/relatorios", label: "Relatórios", icon: ChartNoAxesCombined, capability: "inventory:read" },
-  { href: "/comunicados", label: "Comunicados", icon: Megaphone, capability: "admin:manage", localOnly: true },
+  { href: "/comunicados", label: "Comunicados", icon: Megaphone, capability: "admin:manage", newFeature: true },
   { href: "/ponto-laboratorio", label: "Ponto · laboratório", icon: Clock3, capability: "admin:manage", localOnly: true },
   { href: "/usuarios", label: "Usuários", icon: UserRoundCog, capability: "admin:manage" },
   { href: "/minha-conta", label: "Minha conta", icon: UserRoundCog, capability: "dashboard:read" },
@@ -45,7 +48,8 @@ export function SidebarNav({ profile }: { profile: SessionProfile }) {
   return (
     <nav className="sidebar-nav" aria-label="Navegação principal">
       {entries.filter((entry) => can(profile, entry.capability) &&
-        (!entry.localOnly || process.env.NEXT_PUBLIC_SUPABASE_URL === "http://127.0.0.1:54321")).map((entry) => {
+        (!entry.localOnly || process.env.NEXT_PUBLIC_SUPABASE_URL === LAB_SUPABASE_URL) &&
+        (!entry.newFeature || recursosNovosLiberados(process.env.NEXT_PUBLIC_SUPABASE_URL))).map((entry) => {
         const active = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
         const Icon = entry.icon;
         return (

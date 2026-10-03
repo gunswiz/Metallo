@@ -1,11 +1,13 @@
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { LAB_SUPABASE_URL, TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { adminCommunication3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import { createClient } from "./server";
 
 export function requireCommunicationLab3h() {
-  if (process.env.METALLO_LOCAL_PREVIEW !== "1" || getSupabaseEnv().url !== "http://127.0.0.1:54321")
+  const url = getSupabaseEnv().url;
+  if (!((process.env.METALLO_LOCAL_PREVIEW === "1" && url === LAB_SUPABASE_URL) || url === TESTE_ONLINE_SUPABASE_URL))
     throw new Error("Marco 3H disponível somente no laboratório local.");
 }
 export async function readAdminCommunications3h(page: number) {

@@ -1,0 +1,95 @@
+name: Teste online (metallo-teste)
+
+# Ambiente de TESTE com dados fictícios. Publica SOMENTE os Workers metallo-teste-gestao e
+# metallo-teste-colaborador, apontando SOMENTE para o projeto Supabase de teste.
+# Não toca na main, no Worker de produção (metallo-web) nem no Supabase de produção.
+on:
+  push:
+    branches: [laboratorio-colaborador]
+    paths:
+      - "01_WEB/**"
+      - "03_COMPARTILHADO/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/teste-online.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: teste-online
+  cancel-in-progress: true
+
+jobs:
+  teste-online:
+    if: github.ref == 'refs/heads/laboratorio-colaborador'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Valores públicos do projeto de TESTE (a chave publicável não é segredo).
+      NEXT_PUBLIC_SUPABASE_URL: https://cvimwiqokkujfhwynhmt.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_TUkzAq8LJrn0lFWwmL4cng_lfjlbKgH
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Configure pnpm
+        uses: pnpm/action-setup@f520eceda224fe1a4aed5a2a27a194379a409996 # v6
+      - name: Configure Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Guardas do ambiente de teste
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -z "${!name:-}" ]; then echo "Segredo ausente: $name"; exit 1; fi
+          done
+          # Só o projeto de teste é aceito (o mesmo endereço fixo do código).
+          grep -q "\"$NEXT_PUBLIC_SUPABASE_URL\"" 01_WEB/09_CONFIGURACOES/ambiente-teste-online.ts
+          echo "METALLO_TESTE_ACTION_KEY=$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+      - name: Lint
+        run: pnpm lint:web
+      - name: Typecheck
+        run: pnpm typecheck:web
+      - name: Tests
+        run: pnpm test:web
+      - name: Build for Cloudflare Workers
+        env:
+          NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: ${{ env.METALLO_TESTE_ACTION_KEY }}
+        run: pnpm --filter @metallo/web build:vinext
+      - name: Configurações dos Workers de teste
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd 01_WEB/dist/server
+          node --input-type=module -e '
+            import { readFileSync, writeFileSync } from "node:fs";
+            const base = JSON.parse(readFileSync("wrangler.json", "utf8"));
+            const common = {
+              NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+              NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+              NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: process.env.METALLO_TESTE_ACTION_KEY,
+            };
+            const make = (name, vars) => {
+              if (!name.startsWith("metallo-teste-")) throw new Error("nome de Worker fora do teste");
+              const config = { ...base, name, vars: { ...common, ...vars } };
+              delete config.secrets; delete config.configPath; delete config.userConfigPath; delete config.topLevelName;
+              writeFileSync(`wrangler.${name}.json`, JSON.stringify(config));
+            };
+            make("metallo-teste-gestao", {});
+            make("metallo-teste-colaborador", {
+              METALLO_COLABORADOR_TESTE_ONLINE: "1",
+              METALLO_COLABORADOR_TESTE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+            });
+          '
+      - name: Publicar Gestão de teste
+        run: pnpm --filter @metallo/web exec wrangler deploy --config dist/server/wrangler.metallo-teste-gestao.json
+      - name: Publicar Colaborador de teste
+        run: pnpm --filter @metallo/web exec wrangler deploy --config dist/server/wrangler.metallo-teste-colaborador.json

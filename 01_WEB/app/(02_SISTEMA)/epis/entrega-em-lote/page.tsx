@@ -5,14 +5,15 @@ import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
-import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { manageEpiFeedback3d, registerEpiDelivery3d } from "@/app/actions/epi-completo";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
 export default async function Page({searchParams}:{searchParams:Promise<{employee?:string;prepared?:string;delivered?:string;feedback?:string}>}){
  const profile=await requireCapability("epi:write"); const query=await searchParams;
- const local=getSupabaseEnv().url==="http://127.0.0.1:54321";
+ const local=recursosNovosLiberados(getSupabaseEnv().url);
  const data=local?null:await (await getMetalloService()).siteSnapshot();
  const repo=local?await getEpiOperations():null;
  const employeeId=z.uuid().safeParse(query.employee).success?query.employee!:"";

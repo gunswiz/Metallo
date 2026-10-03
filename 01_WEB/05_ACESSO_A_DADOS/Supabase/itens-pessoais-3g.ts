@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { adminPersonalItem3g, type AdminPersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 
 export function requirePersonalItemLab3g() {
-  if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Marco 3G disponível somente no laboratório local.");
+  if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Marco 3G disponível somente no laboratório local.");
 }
 export async function readAdminPersonalItems3g(filters: {
   employeeId?: string | null; teamId?: string | null; workId?: string | null; status?: string | null;
