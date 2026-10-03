@@ -32,9 +32,9 @@ it("exige revisão dos itens e só anuncia confirmação após resposta real", a
   await waitFor(() => expect(respond).toHaveBeenCalledTimes(1));
   expect(respond.mock.calls[0][0]).toBe(groupId);
   expect(respond.mock.calls[0][1]).toBe("CONFIRMADO");
-  expect(screen.queryByText("Recebimento confirmado no laboratório.")).not.toBeInTheDocument();
+  expect(screen.queryByText("Recebimento confirmado.")).not.toBeInTheDocument();
   finish(1);
-  expect(await screen.findByText("Recebimento confirmado no laboratório.")).toBeInTheDocument();
+  expect(await screen.findByText("Recebimento confirmado.")).toBeInTheDocument();
 });
 
 it("divergência exige item, categoria e descrição; falha offline não produz sucesso", async () => {

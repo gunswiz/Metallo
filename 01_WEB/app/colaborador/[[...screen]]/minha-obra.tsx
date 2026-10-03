@@ -23,8 +23,8 @@ export function MinhaObra({ demo, readWork }: { demo: boolean; readWork: () => P
     return () => { current = false; };
   }, [demo, readWork, request]);
 
-  if (state.status === "loading") return <div role="status" className={styles.workStatus}>Consultando sua obra no laboratório…</div>;
+  if (state.status === "loading") return <div role="status" className={styles.workStatus}>Consultando sua obra…</div>;
   if (state.status === "error") return <div role="alert" className={styles.workStatus}><WifiOff size={36}/><h2>Obra indisponível</h2><p>{state.message}</p><button className={styles.workRetry} onClick={() => { setState({ status: "loading" }); setRequest(value => value + 1); }}>Tentar novamente</button></div>;
   if (state.status === "empty") return <div className={styles.workStatus}><HardHat size={36}/><h2>Nenhuma obra atribuída no momento.</h2><p>Seu acesso pessoal continua disponível.</p></div>;
-  return <div className={styles.workStatus}><HardHat size={36}/><span className={styles.workLabel}>OBRA ATUAL</span><h2>{state.work.work_name}</h2><p>Informação pessoal consultada no laboratório.</p></div>;
+  return <div className={styles.workStatus}><HardHat size={36}/><span className={styles.workLabel}>OBRA ATUAL</span><h2>{state.work.work_name}</h2><p>Informação pessoal da sua conta.</p></div>;
 }

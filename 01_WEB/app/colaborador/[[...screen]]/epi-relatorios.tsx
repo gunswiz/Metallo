@@ -24,7 +24,7 @@ function PersonalReportContent({ read, readAwareness }: { read: () => Promise<Ep
       if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
     };
   }, []);
-  if (state.status === "loading") return <p role="status">Consultando seus relatórios no laboratório…</p>;
+  if (state.status === "loading") return <p role="status">Consultando seus relatórios…</p>;
   if (state.status === "error") return <div role="alert"><p>Não foi possível consultar seus relatórios agora.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
   let report;
   try { report = projectEpiReport(state.data, type, resolveEpiPeriod({ preset, from, to }, new Date(state.data.generated_at))); }

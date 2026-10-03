@@ -7,7 +7,7 @@ import styles from "./colaborador.module.css";
 
 export function MinhaEquipe({ readTeamSummary }: { readTeamSummary: () => Promise<PersonalTeam | null> }) {
   const { state, refresh } = usePersonalDetail(readTeamSummary);
-  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando sua equipe no laboratório…</div>;
+  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando sua equipe…</div>;
   if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>Equipe indisponível</h2><p>{state.message}</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
   const team = state.data;
   if (!team) return <div className={styles.personalStatus}><UsersRound size={36}/><h2>Sem equipe atribuída no momento.</h2><p>Seu acesso ao portal continua disponível.</p></div>;

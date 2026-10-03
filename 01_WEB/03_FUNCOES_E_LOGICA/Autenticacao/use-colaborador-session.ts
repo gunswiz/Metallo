@@ -108,10 +108,10 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (user.error || !user.data.user) {
         if (target === "login") {
           try {
-            const health = await portalFetch(`${baseUrl}/auth/v1/health`);
+            const health = await portalFetch(`${baseUrl}/auth/v1/health`, { headers: { apikey: anonKey } }); // Supabase online exige a chave pública.
             if (!health.ok) throw new Error("Laboratório indisponível.");
           } catch {
-            if (ticket === generation.current) await endSession("Não foi possível conectar ao laboratório. Tente novamente.", false);
+            if (ticket === generation.current) await endSession("Não foi possível conectar ao servidor. Tente novamente.", false);
             return;
           }
         }
@@ -133,7 +133,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (checking.current === ticket) checking.current = null;
       if (ticket === generation.current) setLoading(false);
     }
-  }, [baseUrl, demo, endSession, getClient, go, screen]);
+  }, [anonKey, baseUrl, demo, endSession, getClient, go, screen]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void verify(); }, 0);

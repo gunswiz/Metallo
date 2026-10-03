@@ -67,7 +67,7 @@ it("mantém loading sem obra antiga e informa ausência sem encerrar sessão", a
     ? Promise.resolve({ data: [joaoProfile], error: null })
     : new Promise(resolve => { finish = resolve; }));
   render(<ColaboradorApp screen="obra" anonKey="anon-local" />);
-  expect(await screen.findByText("Consultando sua obra no laboratório…")).toBeInTheDocument();
+  expect(await screen.findByText("Consultando sua obra…")).toBeInTheDocument();
   expect(screen.queryByText(joaoWork.work_name)).not.toBeInTheDocument();
   await waitFor(() => expect(finish).toBeTypeOf("function"));
   await act(async () => { finish({ data: [], error: null }); });
@@ -84,7 +84,7 @@ it("erro de laboratório não usa resultado anterior e permite tentar novamente"
     return Promise.resolve({ data: [joaoWork], error: null });
   });
   render(<ColaboradorApp screen="obra" anonKey="anon-local" />);
-  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao laboratório");
+  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
   expect(screen.queryByText(joaoWork.work_name)).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
   expect(await screen.findByText(joaoWork.work_name)).toBeInTheDocument();
@@ -144,7 +144,7 @@ it("nova montagem exige nova leitura pessoal antes de exibir obra", async () => 
 it("laboratório offline mantém tela de login acessível e não exibe obra antiga", async () => {
   mocks.getUser.mockRejectedValue(new Error("Failed to fetch"));
   render(<ColaboradorApp screen="obra" anonKey="anon-local" />);
-  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao laboratório");
+  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
   expect(screen.getByText("Entrar no Colaborador")).toBeInTheDocument();
   expect(mocks.replace).not.toHaveBeenCalledWith("/colaborador/login");
   expect(screen.queryByText(joaoWork.work_name)).not.toBeInTheDocument();
@@ -156,7 +156,7 @@ it("Login sem sessão avisa imediatamente quando o laboratório local está desl
   const fetcher = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Failed to fetch"));
   try {
     render(<ColaboradorApp screen="login" anonKey="anon-local" />);
-    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao laboratório");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
     expect(fetcher).toHaveBeenCalledWith("http://127.0.0.1:54321/auth/v1/health", expect.objectContaining({ cache: "no-store", redirect: "error" }));
     expect(mocks.rpc).not.toHaveBeenCalled();
   } finally { fetcher.mockRestore(); }

@@ -80,7 +80,7 @@ export function MeusItens({ read, actions = {} }: { read: () => Promise<Personal
   const { state, refresh } = usePersonalDetail(read);
   if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seus itens pessoais…</div>;
   if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>Itens indisponíveis</h2>
-    <p>Não foi possível consultar o laboratório agora.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
+    <p>Não foi possível consultar agora.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
   const current = state.data.filter(item => item.status !== "DEVOLVIDO" && item.status !== "SUBSTITUIDO");
   const history = state.data.filter(item => item.status === "DEVOLVIDO" || item.status === "SUBSTITUIDO");
   return <div className={styles.epiLayout}>

@@ -47,7 +47,7 @@ export function MeusEpis({ readEpis, exchange, receiving, readReport, awareness 
     respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA",
     deliveryId: string | null, category: string | null, details: string | null, key: string) => Promise<number> } }) {
   const { state, refresh } = usePersonalDetail(readEpis);
-  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seus EPIs no laboratório…</div>;
+  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seus EPIs…</div>;
   if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>EPIs indisponíveis</h2><p>Dados de EPIs temporariamente indisponíveis.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
   const current = state.data.filter(item => item.current_status === "active");
   const history = state.data.filter(item => item.current_status !== "active");

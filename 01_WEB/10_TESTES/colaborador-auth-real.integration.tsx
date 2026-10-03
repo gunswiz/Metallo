@@ -232,7 +232,7 @@ it("laboratório realmente parado: login abre, erro amigável e nenhuma requisi�
   fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: accounts.expira.email } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: accounts.expira.password } });
   fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
-  expect(await screen.findByRole("alert", {}, { timeout: 15000 })).toHaveTextContent("Não foi possível conectar ao laboratório");
+  expect(await screen.findByRole("alert", {}, { timeout: 15000 })).toHaveTextContent("Não foi possível conectar ao servidor");
   expect(screen.queryByText(/Olá,/)).not.toBeInTheDocument();
   expect(localStorage.getItem(PORTAL_STORAGE_KEY)).toBeNull();
   const attempts = network.slice(start);

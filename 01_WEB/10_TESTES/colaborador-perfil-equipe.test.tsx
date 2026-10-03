@@ -104,7 +104,7 @@ it("laboratório indisponível elimina dados antigos e permite nova tentativa", 
   state.team = "error";
   fireEvent.focus(window);
   expect(screen.queryByText("Colega A")).not.toBeInTheDocument();
-  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao laboratório");
+  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
   state.team = "B";
   fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
   expect(await screen.findByText("Colega B")).toBeInTheDocument();

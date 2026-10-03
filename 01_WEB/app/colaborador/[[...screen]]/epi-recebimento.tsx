@@ -71,7 +71,7 @@ export function EpiRecebimento({ read, respond, getAccessToken, sharedDevice = f
       await respond(groupId, mode, mode === "DIVERGENCIA" ? deliveryId : null,
         mode === "DIVERGENCIA" ? category : null, mode === "DIVERGENCIA" ? details.trim() : null,
         key.current ??= crypto.randomUUID());
-      setNotice(mode === "CONFIRMADO" ? "Recebimento confirmado no laboratório." : "Divergência informada à Gestão.");
+      setNotice(mode === "CONFIRMADO" ? "Recebimento confirmado." : "Divergência informada à Gestão.");
       dismiss(); refresh(); onConfirmed?.();
     } catch {
       setError(typeof navigator !== "undefined" && !navigator.onLine ?

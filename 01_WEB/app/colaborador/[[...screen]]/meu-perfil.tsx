@@ -22,7 +22,7 @@ export function MeuPerfil({ profile, demo, busy, go, logout, readCurrentWork, re
     return { work, team };
   }, [readCurrentWork, readTeamSummary]);
   const { state, refresh } = usePersonalDetail(read);
-  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seu perfil no laboratório…</div>;
+  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seu perfil…</div>;
   if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>Perfil indisponível</h2><p>{state.message}</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
   const { work, team } = state.data;
   const initial = profile.full_name.trim().slice(0, 1).toUpperCase();

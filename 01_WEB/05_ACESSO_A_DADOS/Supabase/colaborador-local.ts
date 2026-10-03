@@ -197,6 +197,6 @@ export function friendlyPortalError(error: unknown) {
   if (/invalid login credentials|invalid credentials/i.test(message)) return "E-mail ou senha incorretos.";
   if (/banned|revoked|user not found/i.test(message)) return "Esta conta não tem acesso ativo. Procure a administração.";
   if (/email not confirmed/i.test(message)) return "Esta conta ainda não foi liberada.";
-  if (/fetch|network|timeout|abort/i.test(message)) return "Não foi possível conectar ao laboratório. Tente novamente.";
+  if (/fetch|network|timeout|abort/i.test(message)) return "Não foi possível conectar ao servidor. Tente novamente.";
   return "Não foi possível concluir a operação. Tente novamente.";
 }

@@ -89,5 +89,5 @@ it("sem conexão esconde itens anteriores e oferece nova tentativa", async () =>
   expect(await screen.findByText("Trena sintética 5 m")).toBeInTheDocument();
   fail = true; fireEvent.focus(window);
   expect(screen.queryByText("Trena sintética 5 m")).not.toBeInTheDocument();
-  expect(await screen.findByText("Não foi possível consultar o laboratório agora.")).toBeInTheDocument();
+  expect(await screen.findByText("Não foi possível consultar agora.")).toBeInTheDocument();
 });
