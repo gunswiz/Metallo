@@ -7,9 +7,13 @@ import { personalEpis, portalFetch } from "@/05_ACESSO_A_DADOS/Supabase/colabora
 import ColaboradorPage from "@/app/colaborador/[[...screen]]/page";
 import { iniciarMarcacao } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 
-const state = vi.hoisted(() => ({ actor: "joao" as string | null, rows: [] as unknown[], failure: false, replace: vi.fn(), signOut: vi.fn(), pointRequest: vi.fn(), rpc: vi.fn() }));
+const state = vi.hoisted(() => {
+  const base = { acceptedAt: null as string | null, actor: "joao" as string | null, rows: [] as unknown[], failure: false, replace: vi.fn(), signOut: vi.fn(), pointRequest: vi.fn(), rpc: vi.fn() };
+  // Roteador estável, como o do Next (o mock antigo criava um objeto novo a cada render).
+  return Object.assign(base, { router: { replace: (...args: unknown[]) => base.replace(...args) } });
+});
 vi.mock("next/headers", () => ({ headers: async () => ({ get: () => "127.0.0.1:3101" }) }));
-vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND"); }, useRouter: () => ({ replace: state.replace }) }));
+vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND"); }, useRouter: () => state.router }));
 vi.mock("@/05_ACESSO_A_DADOS/Ponto/ponto-lab", async importOriginal => {
   const actual = await importOriginal<typeof import("@/05_ACESSO_A_DADOS/Ponto/ponto-lab")>();
   return { ...actual, pointRequest: state.pointRequest };
@@ -25,6 +29,8 @@ vi.mock("@supabase/supabase-js", () => ({ createClient: () => ({
     if (name === "my_employee_profile") return Promise.resolve({ data: [{ employee_id: state.actor, full_name: state.actor === "joao" ? "João Sintético" : "Maria Sintética", profession: null, team_name: null }], error: null });
     if (name === "my_personal_epi") return Promise.resolve(state.failure ? { data: null, error: new Error("Failed to fetch") } : { data: state.rows, error: null });
     if (name === "my_exchangeable_epi" || name === "my_epi_exchange_requests") return Promise.resolve({ data: [], error: null });
+    if (name === "my_epi_awareness_3i") return Promise.resolve({ data: [{ term_version: "NR6-6.6.1-v1", term_text: "Termo sintético NR-6 6.6.1", term_sha256: "a".repeat(64), accepted_at: state.acceptedAt }], error: null });
+    if (name === "accept_epi_awareness_3i") { state.acceptedAt = "2026-10-03T12:00:00Z"; return Promise.resolve({ data: state.acceptedAt, error: null }); }
     throw new Error(`RPC inesperada: ${name}`);
   },
 }) }));
@@ -35,7 +41,7 @@ const entry = (item_name: string, current_status: "active" | "replaced" = "activ
   current_status, closed_at: current_status === "active" ? null : "2026-09-01T12:00:00Z",
 });
 beforeEach(() => {
-  localStorage.clear(); state.actor = "joao"; state.rows = [entry("Capacete João"), entry("Luva anterior", "replaced")]; state.failure = false;
+  localStorage.clear(); state.acceptedAt = null; state.actor = "joao"; state.rows = [entry("Capacete João"), entry("Luva anterior", "replaced")]; state.failure = false;
   state.replace.mockReset(); state.signOut.mockReset(); state.rpc.mockReset(); state.pointRequest.mockReset();
   state.signOut.mockResolvedValue({ error: null }); state.pointRequest.mockResolvedValue({ status: 200, body: { status: "SESSAO_ENCERRADA" } });
 });
@@ -148,4 +154,18 @@ it("foco da janela durante marcação de ponto revalida sem esconder o portal; s
     await waitFor(() => expect(state.replace).toHaveBeenCalledWith("/colaborador/login"));
     expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
   } finally { encerrar(); }
+});
+
+it("termo de ciência NR-6 aparece pendente, exige marcar ciência e registra o aceite uma vez", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Termo sintético NR-6 6.6.1")).toBeInTheDocument();
+  const button = screen.getByRole("button", { name: "Aceitar termo" });
+  expect(button).toBeDisabled();
+  fireEvent.click(screen.getByRole("checkbox", { name: /Li e estou ciente/ }));
+  fireEvent.click(button);
+  expect(await screen.findByText(/Termo aceito em/)).toBeInTheDocument();
+  const accepts = state.rpc.mock.calls.filter(([name]) => name === "accept_epi_awareness_3i");
+  expect(accepts).toHaveLength(1);
+  expect(accepts[0][1]).toMatchObject({ p_term_sha256: "a".repeat(64) });
+  expect(screen.queryByRole("button", { name: "Aceitar termo" })).not.toBeInTheDocument();
 });

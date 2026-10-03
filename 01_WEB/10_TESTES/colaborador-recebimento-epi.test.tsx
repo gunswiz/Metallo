@@ -78,3 +78,14 @@ it("parser pessoal recusa campo interno e a allowlist bloqueia escrita direta e 
     "https://example.supabase.co/rest/v1/rpc/respond_epi_delivery_3d"])
     await expect(portalFetch(url)).rejects.toThrow("Destino local não autorizado.");
 });
+
+it("recusa registrada pela Gestão aparece com a mensagem e o funcionário ainda pode confirmar", async () => {
+  const refused: PersonalDeliveryGroup3d[] = [{ ...groups[0], feedback_status: "RECUSA", feedback_at: "2026-09-28T13:00:00Z",
+    public_message: "Funcionário recusou receber a bota sintética." }];
+  expect(personalDeliveryGroups3d(refused)).toEqual(refused);
+  render(<EpiRecebimento read={async () => refused} respond={async () => 1}/>);
+  expect(await screen.findByText(/Recusa registrada pela Gestão/)).toBeInTheDocument();
+  expect(screen.getByText("Mensagem da Gestão: Funcionário recusou receber a bota sintética.")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Informar divergência" })).toBeInTheDocument();
+});

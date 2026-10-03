@@ -27,7 +27,7 @@ const delivery = z.object({
 });
 const feedback = z.object({
   id: z.number().int(), group_id: z.uuid(), delivery_id: z.uuid().nullable(),
-  type: z.enum(["CONFIRMADO", "DIVERGENCIA", "EM_ANALISE", "RESOLVIDA"]),
+  type: z.enum(["CONFIRMADO", "DIVERGENCIA", "EM_ANALISE", "RESOLVIDA", "RECUSA"]),
   category: optionalText, at: dateTime,
 });
 const exchange = z.object({
@@ -120,7 +120,7 @@ export const epiReportResponsible = (row: EpiReportPayload["deliveries"][number]
     : "Responsável pela entrega: não registrado nominalmente no histórico.";
 
 export type EpiPrintedSupply = { title: "ENTREGA" | "ENTREGA PARA TROCA" | "SUBSTITUIÇÃO"; at: string;
-  item: string; ca: string; quantity: string; responsible: string; variant: string | null; receipt: string };
+  item: string; ca: string; quantity: string; responsible: string; receipt: string };
 
 // Situação da confirmação do funcionário para cada entrega. Na via impressa, substitui a
 // assinatura manuscrita: o registro eletrônico é aceito pela NR-6 (item 6.5.1, alínea "d").
@@ -139,6 +139,7 @@ export function epiReceiptLabel(groupId: string | null, state: FeedbackRow | nul
   if (!state) return "Confirmação do funcionário pendente";
   if (state.type === "CONFIRMADO") return `Recebimento confirmado pelo funcionário no portal em ${reportDate(state.at)}`;
   if (state.type === "RESOLVIDA") return "Divergência resolvida; confirmação pendente";
+  if (state.type === "RECUSA") return "Recusa registrada pela Gestão; confirmação do funcionário pendente";
   return "Divergência informada pelo funcionário, em andamento";
 }
 
@@ -169,7 +170,7 @@ export function epiPrintedSupplies(report: EpiReport): EpiPrintedSupply[] {
       return { title: replacement ? "SUBSTITUIÇÃO" : forReplacement ? "ENTREGA PARA TROCA" : "ENTREGA", at: row.delivered_at,
         item: row.item_name, ca, quantity: epiReportQuantity(row.quantity, row.unit),
         responsible: row.responsible_name_snapshot?.trim() || "Não registrado",
-        variant: report.type === "current" ? row.variant : null,
+        // Tamanho/variante (M, G, GG, 42…) fica só na trilha técnica: decisão do responsável para não poluir a via impressa.
         receipt: epiReceiptLabel(row.group_id, row.group_id ? latest.get(row.group_id) : null) };
     });
 }
@@ -222,7 +223,8 @@ export function projectEpiReport(raw: unknown, type: EpiReportType, period: EpiP
     events.push({ id: `feedback-${row.id}`, at: row.at,
       kind: row.type === "CONFIRMADO" ? "confirmacao" : "divergencia",
       title: ({ CONFIRMADO: "Recebimento confirmado no portal", DIVERGENCIA: "Divergência informada",
-        EM_ANALISE: "Divergência em análise", RESOLVIDA: "Divergência resolvida" })[row.type],
+        EM_ANALISE: "Divergência em análise", RESOLVIDA: "Divergência resolvida",
+        RECUSA: "Recusa registrada pela Gestão" })[row.type],
       item: selected?.item_name ?? (items.length === 1 ? items[0].item_name : "Grupo de entrega"),
       originAt: items[0]?.delivered_at,
       details: [row.category ? `Categoria: ${categoryLabel[row.category] ?? "Categoria não identificada no formato do relatório"}` : "",
@@ -258,7 +260,8 @@ export function projectEpiReport(raw: unknown, type: EpiReportType, period: EpiP
     const feedbackLabel = !row.group_id ? "Sem confirmação eletrônica registrada" :
       !state ? "Confirmação pendente" : state.type === "CONFIRMADO" ?
       `Recebimento confirmado no portal em ${reportDate(state.at)}` :
-      state.type === "RESOLVIDA" ? "Divergência resolvida; confirmação pendente" : "Divergência em andamento";
+      state.type === "RESOLVIDA" ? "Divergência resolvida; confirmação pendente" :
+      state.type === "RECUSA" ? "Recusa registrada pela Gestão; confirmação pendente" : "Divergência em andamento";
     return { ...row, feedbackLabel, reportReference: references.get(row.id)!,
       groupReference: row.group_id ? groups.get(row.group_id)! : null };
   });

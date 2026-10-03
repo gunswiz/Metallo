@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
 import { ArrowLeft, ArrowRight, CircleUserRound, Menu, ShieldCheck } from "lucide-react";
 import { useColaboradorSession, type PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
+import { setSharedDevice, useAparelhoCompartilhado } from "@/03_FUNCOES_E_LOGICA/Autenticacao/aparelho-compartilhado";
 import { MinhaObra } from "./minha-obra";
 import { MeuPerfil } from "./meu-perfil";
 import { MinhaEquipe } from "./minha-equipe";
@@ -27,18 +28,21 @@ export default function ColaboradorApp({ screen, anonKey, demo = false }: { scre
   const current = (demo && visualScreen ? visualScreen : screen) as Screen;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [sharedChoice, setSharedChoice] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuTrigger = useRef<HTMLButtonElement>(null);
   const go = useCallback((next: Screen) => {
     if (demo) setVisualScreen(next);
     else router.replace(`/colaborador/${next}`);
   }, [router, demo]);
-  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, getAccessToken } = useColaboradorSession(anonKey, demo, current, go);
+  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken } = useColaboradorSession(anonKey, demo, current, go);
+  const sharedDevice = useAparelhoCompartilhado(Boolean(profile) && !demo, () => logout());
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMenuOpen(false);
     const submitted = password;
     setPassword("");
+    setSharedDevice(sharedChoice);
     await signIn(email, submitted);
   }
 
@@ -51,10 +55,11 @@ export default function ColaboradorApp({ screen, anonKey, demo = false }: { scre
 
     </header>
     {!demo && <p className={styles.modeLabel}>SIMULAÇÃO SEM VALOR OFICIAL</p>}
+    {sharedDevice.shared && <p className={styles.sharedBanner} role="status">Aparelho do almoxarifado: {sharedDevice.leaving ? "registro concluído. Saindo da sua conta em instantes…" : "o portal sai sozinho depois que você confirmar ou após 2 minutos sem uso."} <button type="button" onClick={sharedDevice.leaveNow}>Sair agora</button></p>}
     {loading ? <div className={styles.loading} role="status">Verificando seu acesso…</div> : !profile ?
       <section className={styles.loginLayout}>
         <div className={styles.loginIntro}><p className={styles.eyebrow}>ACESSO PESSOAL</p><h1>Acesse suas<br/><em>informações.</em></h1><p>Consulte seu perfil, equipe e obra atual em um só lugar.</p><div className={styles.introLine}><ShieldCheck size={21}/> Acesso individual protegido</div></div>
-        {demo ? <div className={styles.loginCard}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Prévia visual</h2><p>Explore as telas com dados sintéticos. A autenticação real não está habilitada nesta prévia.</p><button className={styles.primary} onClick={() => { window.sessionStorage.removeItem("metallo-visual-ended"); go("inicio"); }}>Abrir prévia<ArrowRight size={20}/></button><small>Sem login, ponto ou dados reais nesta prévia.</small></div> : <form className={styles.loginCard} onSubmit={login}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Entrar no Colaborador</h2><p>Use sua conta de teste para acessar.</p><label htmlFor="email">E-mail</label><input id="email" type="email" autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} required placeholder="seu.email@exemplo.com"/><label htmlFor="password">Senha</label><input id="password" type="password" autoComplete="off" value={password} onChange={event => setPassword(event.target.value)} required placeholder="Sua senha"/>{error && <div className={styles.error} role="alert">{error}</div>}<button className={styles.primary} type="submit" disabled={busy} aria-busy={busy}>{busy ? "Entrando…" : "Entrar"}<ArrowRight size={20}/></button><small>Somente testes locais com dados fictícios. Meu Ponto não tem valor oficial.</small></form>}
+        {demo ? <div className={styles.loginCard}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Prévia visual</h2><p>Explore as telas com dados sintéticos. A autenticação real não está habilitada nesta prévia.</p><button className={styles.primary} onClick={() => { window.sessionStorage.removeItem("metallo-visual-ended"); go("inicio"); }}>Abrir prévia<ArrowRight size={20}/></button><small>Sem login, ponto ou dados reais nesta prévia.</small></div> : <form className={styles.loginCard} onSubmit={login}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Entrar no Colaborador</h2><p>Use sua conta de teste para acessar.</p><label htmlFor="email">E-mail</label><input id="email" type="email" autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} required placeholder="seu.email@exemplo.com"/><label htmlFor="password">Senha</label><input id="password" type="password" autoComplete="off" value={password} onChange={event => setPassword(event.target.value)} required placeholder="Sua senha"/>{error && <div className={styles.error} role="alert">{error}</div>}<label className={styles.sharedChoice}><input type="checkbox" checked={sharedChoice} onChange={event => setSharedChoice(event.target.checked)}/> Aparelho do almoxarifado (sair automaticamente)</label><button className={styles.primary} type="submit" disabled={busy} aria-busy={busy}>{busy ? "Entrando…" : "Entrar"}<ArrowRight size={20}/></button><small>Somente testes locais com dados fictícios. Meu Ponto não tem valor oficial.</small></form>}
       </section> : <div className={styles.appLayout}>
         <DrawerColaborador key={profile.employee_id} open={menuOpen} onClose={() => setMenuOpen(false)} trigger={menuTrigger} profile={profile} current={current} busy={busy} logout={logout} demo={demo} go={go}/>
         <div className={styles.content}>
@@ -71,7 +76,8 @@ export default function ColaboradorApp({ screen, anonKey, demo = false }: { scre
               current === "equipe" ? <MinhaEquipe key={profile.employee_id} readTeamSummary={readTeamSummary}/> :
               current === "epis" ? <MeusEpis key={profile.employee_id} readEpis={readPersonalEpis}
                 readReport={demo ? undefined : readPersonalReport3e}
-                receiving={demo ? undefined : {read:readDeliveryGroups3d,respond:respondDelivery3d,getAccessToken}}
+                awareness={demo ? undefined : { read: readEpiAwareness3i, accept: acceptEpiAwareness3i }}
+                receiving={demo ? undefined : {read:readDeliveryGroups3d,respond:respondDelivery3d,getAccessToken,sharedDevice:sharedDevice.shared,onConfirmed:sharedDevice.afterConfirm}}
                 exchange={demo ? undefined : {readEligible:readExchangeableEpis,readRequests:readExchangeRequests,create:createExchangeRequest,cancel:cancelExchangeRequest}}/> :
               current === "itens" ? <MeusItens key={profile.employee_id} read={readPersonalItems3g}
                 actions={demo ? {} : { confirm: confirmPersonalItem3g, report: reportPersonalItem3g }}/>: 

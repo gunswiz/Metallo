@@ -9,7 +9,8 @@ export function epiReportFilename(report: EpiReport) {
   return `${report.type === "current" ? "ficha-atual" : "historico"}-epi-${filenameId(report.payload.report_id)}.pdf`;
 }
 
-export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Array) {
+// awarenessAcceptedAt: data do aceite do termo de ciência (NR-6, 6.6.1); null = não aceito; undefined = não consultado.
+export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Array, awarenessAcceptedAt?: string | null) {
   const supplies = epiPrintedSupplies(report);
   if (report.type === "history" && supplies.length > 1200) throw new Error("Relatório muito extenso. Escolha um período menor.");
   if (report.type === "current" && supplies.length > 1200) throw new Error("Ficha muito extensa. Solicite conferência à administração.");
@@ -76,7 +77,6 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
     details: [
       report.type === "history" ? `EPI: ${row.item}` : "",
       `CA: ${row.ca}  |  Quantidade: ${row.quantity}`,
-      row.variant ? `Tamanho / variante: ${row.variant}` : "",
       `Responsável pela entrega: ${row.responsible}`,
       row.receipt,
     ].filter(Boolean) }));
@@ -124,10 +124,14 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
   const notice = "Fornecimento registrado em sistema eletrônico (NR-6, item 6.5.1, alínea \"d\"). " +
     "A situação de cada entrega mostra a confirmação feita pelo próprio funcionário no portal. " +
     "Este relatório é extraído do sistema (NR-6, item 6.5.1.1) e não depende de assinatura manuscrita.";
-  ensure(40 + fit(notice, regular, 8, width).length * 12);
+  const awareness = awarenessAcceptedAt === undefined ? "" : awarenessAcceptedAt
+    ? `Termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1) aceito pelo funcionário no portal em ${reportDate(awarenessAcceptedAt)}.`
+    : "Termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1): ainda não aceito pelo funcionário.";
+  ensure(48 + (fit(notice, regular, 8, width).length + (awareness ? fit(awareness, regular, 8, width).length : 0)) * 12);
   y -= 4;
   line("REGISTRO ELETRÔNICO", 9, true, brand);
   line(notice, 8, false, muted);
+  if (awareness) { y -= 2; line(awareness, 8, true, ink); }
   const pages = pdf.getPages();
   pages.forEach((p, index) => {
     p.drawLine({ start: { x: left, y: 60 }, end: { x: right, y: 60 }, thickness: 0.5, color: muted });

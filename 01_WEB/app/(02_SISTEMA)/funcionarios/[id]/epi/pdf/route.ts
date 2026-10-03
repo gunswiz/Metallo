@@ -22,10 +22,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       from: url.searchParams.get("from") ?? undefined, to: url.searchParams.get("to") ?? undefined });
   } catch { return new Response("Período inválido", { status: 400 }); }
   try {
-    const raw = await (await getEpiOperations()).report3e(parsed.data);
+    const operations = await getEpiOperations();
+    const raw = await operations.report3e(parsed.data);
+    // Termo de ciência é complementar: se a consulta falhar, o PDF sai sem essa linha (não inventa aceite).
+    const awareness = await operations.awareness3i(parsed.data).then(rows => rows.length === 1 ? rows[0].accepted_at : undefined, () => undefined);
     const report = projectEpiReport(raw, type, period, event as EpiEventFilter);
     const logo = await readFile(join(process.cwd(), "public", "metallo-logo.png"));
-    const bytes = await buildEpiReport3ePdf(report, logo);
+    const bytes = await buildEpiReport3ePdf(report, logo, awareness);
     const disposition = url.searchParams.get("download") === "1" ? "attachment" : "inline";
     return new Response(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
       { headers: { "Content-Type": "application/pdf",

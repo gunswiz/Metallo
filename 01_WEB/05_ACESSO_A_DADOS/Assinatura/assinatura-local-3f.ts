@@ -156,7 +156,7 @@ export async function finishSignature3f(db: PoolClient, actor: Actor3f, challeng
     throw new Error("Entrega alterada. Confira novamente.");
   const last = await db.query<{ event_type: string }>(`select event_type from public.epi_delivery_feedback_events_3d
     where group_id=$1 order by id desc limit 1`, [challenge.group_id]);
-  if (last.rows.length && last.rows[0].event_type !== "RESOLVIDA") throw new Error("Entrega já respondida.");
+  if (last.rows.length && !["RESOLVIDA", "RECUSA"].includes(last.rows[0].event_type)) throw new Error("Entrega já respondida.");
   if (verifiedCounter < Number(credential.counter) ||
     (Number(credential.counter) !== 0 && verifiedCounter === Number(credential.counter)))
     throw new Error("Contador da credencial inválido.");

@@ -1,10 +1,11 @@
 "use client";
 
 import { HardHat, PackageCheck, WifiOff } from "lucide-react";
-import type { ExchangeableEpi, ExchangeCreateOutcome, ExchangeRequest, PersonalDeliveryGroup3d, PersonalEpi } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
+import type { EpiAwareness3i, ExchangeableEpi, ExchangeCreateOutcome, ExchangeRequest, PersonalDeliveryGroup3d, PersonalEpi } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { EpiRecebimento } from "./epi-recebimento";
 import { EpiTroca } from "./epi-troca";
 import { EpiRelatorios } from "./epi-relatorios";
+import { TermoCienciaEpi } from "./termo-ciencia-epi";
 import type { EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 import { usePersonalDetail } from "./use-personal-detail";
 import styles from "./colaborador.module.css";
@@ -39,9 +40,10 @@ type ExchangeActions = {
   create: (deliveryId: string, reason: string, note: string, key: string) => Promise<ExchangeCreateOutcome>;
   cancel: (requestId: string) => Promise<void>;
 };
-export function MeusEpis({ readEpis, exchange, receiving, readReport }: { readEpis: () => Promise<PersonalEpi[]>; exchange?: ExchangeActions;
+export function MeusEpis({ readEpis, exchange, receiving, readReport, awareness }: { readEpis: () => Promise<PersonalEpi[]>; exchange?: ExchangeActions;
+  awareness?: { read: () => Promise<EpiAwareness3i>; accept: (termSha256: string, idempotencyKey: string) => Promise<string> };
   readReport?: () => Promise<EpiReportPayload>;
-  receiving?: { read: () => Promise<PersonalDeliveryGroup3d[]>; getAccessToken?: () => Promise<string>;
+  receiving?: { read: () => Promise<PersonalDeliveryGroup3d[]>; getAccessToken?: () => Promise<string>; sharedDevice?: boolean; onConfirmed?: () => void;
     respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA",
     deliveryId: string | null, category: string | null, details: string | null, key: string) => Promise<number> } }) {
   const { state, refresh } = usePersonalDetail(readEpis);
@@ -55,9 +57,10 @@ export function MeusEpis({ readEpis, exchange, receiving, readReport }: { readEp
       {current.length === 0 ? <div className={styles.epiEmpty}><HardHat size={32}/><p>Nenhuma entrega ativa registrada no momento.</p></div> :
         <ul className={styles.epiGrid}>{current.map((item, index) => <li className={styles.epiItem} key={index}><span className={styles.epiItemIcon}><HardHat size={24}/></span><div><span className={styles.epiState}>Ativo no registro</span><h3>{item.item_name}</h3><EpiFacts item={item} historical={false}/></div></li>)}</ul>}
     </section>
+    {awareness && <TermoCienciaEpi read={awareness.read} accept={awareness.accept}/>}
     {receiving && <EpiRecebimento {...receiving}/>}
     {exchange && <EpiTroca {...exchange}/>}
-    {readReport && <EpiRelatorios read={readReport}/>}
+    {readReport && <EpiRelatorios read={readReport} readAwareness={awareness?.read}/>}
     <section className={styles.personalCard} aria-labelledby="epis-historico"><div className={styles.epiSectionHead}><div><p className={styles.workLabel}>ENTREGAS ANTERIORES</p><h2 id="epis-historico">Histórico</h2></div><PackageCheck aria-hidden="true" size={25}/></div>
       {history.length === 0 ? <p>Nenhuma entrega encerrada no histórico.</p> :
         <ul className={styles.epiHistory}>{history.map((item, index) => <li key={index}><div className={styles.epiHistoryHeading}><h3>{item.item_name}</h3><span>{outcome[item.current_status as Exclude<PersonalEpi["current_status"], "active">]}</span></div><p>{reason[item.delivery_reason]}</p><EpiFacts item={item} historical/></li>)}</ul>}

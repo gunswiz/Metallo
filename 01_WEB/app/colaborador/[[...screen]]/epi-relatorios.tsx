@@ -6,7 +6,8 @@ import { epiPrintedSupplies, projectEpiReport, reportDate, resolveEpiPeriod, typ
 import { usePersonalDetail } from "./use-personal-detail";
 import styles from "./colaborador.module.css";
 
-function PersonalReportContent({ read }: { read: () => Promise<EpiReportPayload> }) {
+type ReadAwareness = () => Promise<{ accepted_at: string | null }>;
+function PersonalReportContent({ read, readAwareness }: { read: () => Promise<EpiReportPayload>; readAwareness?: ReadAwareness }) {
   const { state, refresh } = usePersonalDetail(read);
   const [type, setType] = useState<EpiReportType>("current");
   const [preset, setPreset] = useState("all");
@@ -42,7 +43,9 @@ function PersonalReportContent({ read }: { read: () => Promise<EpiReportPayload>
       const next = projectEpiReport(fresh, type, resolveEpiPeriod({ preset, from, to }, new Date(fresh.generated_at)));
       const logoResponse = await fetch("/metallo-logo.png", { credentials: "omit", redirect: "error", signal: AbortSignal.timeout(6000) });
       if (!logoResponse.ok) throw new Error("Logo indisponível.");
-      const bytes = await buildEpiReport3ePdf(next, new Uint8Array(await logoResponse.arrayBuffer()));
+      // Termo de ciência é complementar: falha na consulta não impede o PDF nem inventa aceite.
+      const awareness = readAwareness ? await readAwareness().then(row => row.accepted_at, () => undefined) : undefined;
+      const bytes = await buildEpiReport3ePdf(next, new Uint8Array(await logoResponse.arrayBuffer()), awareness);
       if (!active.current) return;
       if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
       const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: "application/pdf" }));
@@ -75,7 +78,6 @@ function PersonalReportContent({ read }: { read: () => Promise<EpiReportPayload>
         <ol className={styles.epiHistory}>{supplies.map((row, index) => <li key={index}>
           <strong>{type === "current" ? row.item : row.title}</strong>
           <p>{reportDate(row.at)}{type === "history" && <> · {row.item}</>} · CA: {row.ca} · {row.quantity}</p>
-          {row.variant && <p>Tamanho / variante: {row.variant}</p>}
           <p>Responsável pela entrega: {row.responsible}</p></li>)}</ol>}
       <button type="button" onClick={() => void download()} disabled={!!busy} aria-busy={!!busy} className={styles.primary}>
         {busy || (type === "current" ? "Baixar minha ficha em PDF" : "Baixar meu histórico em PDF")}
@@ -85,12 +87,12 @@ function PersonalReportContent({ read }: { read: () => Promise<EpiReportPayload>
     <p className={styles.epiFootnote}>SIMULAÇÃO SEM VALOR OFICIAL. O arquivo baixado fica sob sua guarda; não é assinatura digital.</p>
   </div>;
 }
-export function EpiRelatorios({ read }: { read: () => Promise<EpiReportPayload> }) {
+export function EpiRelatorios({ read, readAwareness }: { read: () => Promise<EpiReportPayload>; readAwareness?: ReadAwareness }) {
   const [open, setOpen] = useState(false);
   return <section className={styles.personalCard} aria-labelledby="epi-relatorios-title">
     <div className={styles.epiSectionHead}><div><p className={styles.workLabel}>DOCUMENTOS PESSOAIS</p>
       <h2 id="epi-relatorios-title">Ficha e histórico em PDF</h2></div></div>
     {!open ? <button type="button" onClick={() => setOpen(true)} className={styles.primary}>Visualizar meus relatórios</button> :
-      <PersonalReportContent read={read} />}
+      <PersonalReportContent read={read} readAwareness={readAwareness} />}
   </section>;
 }

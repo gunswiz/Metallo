@@ -14,15 +14,19 @@ type Props = {
   respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA", deliveryId: string | null,
     category: string | null, details: string | null, key: string) => Promise<number>;
   getAccessToken?: () => Promise<string>;
+  // Aparelho do almoxarifado: sem biometria do aparelho e saída automática após registrar.
+  sharedDevice?: boolean;
+  onConfirmed?: () => void;
 };
 const labels = { ITEM_FALTANDO: "Item faltando", QUANTIDADE: "Quantidade diferente", TAMANHO: "Tamanho diferente",
   VARIANTE: "Variante diferente", NAO_RECEBIDO: "Item não recebido", OUTRO: "Outro" } as const;
 type Category = keyof typeof labels;
 const stateLabel = { CONFIRMADO: "Recebimento confirmado", DIVERGENCIA: "Divergência informada",
-  EM_ANALISE: "Divergência em análise", RESOLVIDA: "Divergência resolvida" } as const;
+  EM_ANALISE: "Divergência em análise", RESOLVIDA: "Divergência resolvida",
+  RECUSA: "Recusa registrada pela Gestão · você ainda pode confirmar ou informar divergência" } as const;
 const day = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" }).format(new Date(value));
 
-export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
+export function EpiRecebimento({ read, respond, getAccessToken, sharedDevice = false, onConfirmed }: Props) {
   const { state, refresh } = usePersonalDetail(read);
   const [selected, setSelected] = useState<string | null>(null);
   const [mode, setMode] = useState<"CONFIRMADO" | "DIVERGENCIA" | null>(null);
@@ -57,7 +61,7 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
     setSignedGroup(null); setSelected(groupId); setMode(action); setDeliveryId(""); setCategory(""); setDetails(""); setAgreed(false);
     setError(""); setNotice(""); key.current = crypto.randomUUID();
   }, []);
-  const biometricDefault = Boolean(getAccessToken) && signatureStatus === "ready" && hasBiometric;
+  const biometricDefault = !sharedDevice && Boolean(getAccessToken) && signatureStatus === "ready" && hasBiometric;
   function dismiss() { setSelected(null); setMode(null); setError(""); key.current = null; }
   async function send(groupId: string) {
     if (lock.current || !mode || (mode === "CONFIRMADO" && !agreed) ||
@@ -68,7 +72,7 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
         mode === "DIVERGENCIA" ? category : null, mode === "DIVERGENCIA" ? details.trim() : null,
         key.current ??= crypto.randomUUID());
       setNotice(mode === "CONFIRMADO" ? "Recebimento confirmado no laboratório." : "Divergência informada à Gestão.");
-      dismiss(); refresh();
+      dismiss(); refresh(); onConfirmed?.();
     } catch {
       setError(typeof navigator !== "undefined" && !navigator.onLine ?
         "Não foi possível registrar agora. Verifique a conexão." :
@@ -119,7 +123,7 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
               setSignedGroup(null); setNotice("Recebimento confirmado com biometria do celular no laboratório."); refresh();
             }}/>}
         </div>
-        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA") &&
+        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA") &&
           <div className={styles.exchangeActions}>
             {biometricDefault ? <>
               <button type="button" className={styles.biometricPrimary} onClick={() => { setSelected(null); setMode(null); setSignedGroup(group.group_id); setError(""); setNotice(""); }}><Fingerprint aria-hidden="true" size={20}/> Confirmar com biometria</button>
@@ -127,8 +131,8 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
             </> : <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar recebimento</button>}
             <button type="button" onClick={() => choose(group.group_id,"DIVERGENCIA")}>Informar divergência</button>
           </div>}
-        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA") &&
-          getAccessToken && signatureStatus === "ready" && !hasBiometric &&
+        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA") &&
+          !sharedDevice && getAccessToken && signatureStatus === "ready" && !hasBiometric &&
           <p className={styles.signatureNote}>Dica: ative a biometria do celular em <Link href="/colaborador/perfil#perfil-seguranca">Meu Perfil → Segurança</Link> para confirmar entregas com a sua digital, rosto ou senha da tela.</p>}
       </li>)}</ul>}
   </section>;

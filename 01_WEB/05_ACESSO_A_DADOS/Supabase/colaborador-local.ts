@@ -11,7 +11,7 @@ export type ExchangeRequest = { request_id: string; source_delivery_id: string; 
 export type ExchangeCreateOutcome = { requestId: string; status: ExchangeRequest["request_status"] };
 export type PersonalDeliveryGroup3d = {
   group_id: string; delivered_at: string; profession: string;
-  feedback_status: "CONFIRMADO" | "DIVERGENCIA" | "EM_ANALISE" | "RESOLVIDA" | null;
+  feedback_status: "CONFIRMADO" | "DIVERGENCIA" | "EM_ANALISE" | "RESOLVIDA" | "RECUSA" | null;
   feedback_at: string | null; public_message: string | null;
   items: { delivery_id: string; item_name: string; ca_number: string | null; quantity: number;
     unit: string; variant: string | null; current_status: string }[];
@@ -20,7 +20,7 @@ export type PersonalDeliveryGroup3d = {
 // Defesa também no ponto de saída: redirecionamentos, hosts e superfícies amplas são recusados.
 export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) {
   const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
-  const allowed = ["/auth/v1/token", "/auth/v1/user", "/auth/v1/logout", "/auth/v1/health", "/rest/v1/rpc/my_employee_profile", "/rest/v1/rpc/my_current_work", "/rest/v1/rpc/my_team_summary", "/rest/v1/rpc/my_personal_epi", "/rest/v1/rpc/my_exchangeable_epi", "/rest/v1/rpc/my_epi_exchange_requests", "/rest/v1/rpc/create_epi_exchange_request", "/rest/v1/rpc/cancel_epi_exchange_request", "/rest/v1/rpc/my_epi_delivery_groups_3d", "/rest/v1/rpc/respond_epi_delivery_3d", "/rest/v1/rpc/my_epi_report_3e", "/rest/v1/rpc/my_personal_items_3g", "/rest/v1/rpc/confirm_personal_item_3g", "/rest/v1/rpc/report_personal_item_3g", "/rest/v1/rpc/my_communications_3h", "/rest/v1/rpc/open_communication_3h"];
+  const allowed = ["/auth/v1/token", "/auth/v1/user", "/auth/v1/logout", "/auth/v1/health", "/rest/v1/rpc/my_employee_profile", "/rest/v1/rpc/my_current_work", "/rest/v1/rpc/my_team_summary", "/rest/v1/rpc/my_personal_epi", "/rest/v1/rpc/my_exchangeable_epi", "/rest/v1/rpc/my_epi_exchange_requests", "/rest/v1/rpc/create_epi_exchange_request", "/rest/v1/rpc/cancel_epi_exchange_request", "/rest/v1/rpc/my_epi_delivery_groups_3d", "/rest/v1/rpc/respond_epi_delivery_3d", "/rest/v1/rpc/my_epi_report_3e", "/rest/v1/rpc/my_personal_items_3g", "/rest/v1/rpc/confirm_personal_item_3g", "/rest/v1/rpc/report_personal_item_3g", "/rest/v1/rpc/my_communications_3h", "/rest/v1/rpc/open_communication_3h", "/rest/v1/rpc/my_epi_awareness_3i", "/rest/v1/rpc/accept_epi_awareness_3i"];
   if (url.origin !== LAB_URL || !allowed.includes(url.pathname)) throw new Error("Destino local não autorizado.");
   return fetch(input, { ...init, cache: "no-store", redirect: "error",
     signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(6000)]) : AbortSignal.timeout(6000) });
@@ -122,6 +122,18 @@ export function exchangeRequests(data: unknown): ExchangeRequest[] {
   });
 }
 
+// Termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, 6.6.1). Marco 3I.
+export type EpiAwareness3i = { term_version: "NR6-6.6.1-v1"; term_text: string; term_sha256: string; accepted_at: string | null };
+export function epiAwareness3i(data: unknown): EpiAwareness3i {
+  if (!Array.isArray(data) || data.length !== 1 || !data[0] || typeof data[0] !== "object") throw new Error("Contrato do termo inválido.");
+  const row = data[0] as Record<string, unknown>;
+  if (Object.keys(row).sort().join() !== "accepted_at,term_sha256,term_text,term_version" ||
+    row.term_version !== "NR6-6.6.1-v1" || typeof row.term_text !== "string" || !row.term_text.trim() ||
+    typeof row.term_sha256 !== "string" || !/^[0-9a-f]{64}$/.test(row.term_sha256) ||
+    !(row.accepted_at === null || date(row.accepted_at))) throw new Error("Contrato do termo inválido.");
+  return row as EpiAwareness3i;
+}
+
 export function personalDeliveryGroups3d(data: unknown): PersonalDeliveryGroup3d[] {
   if (!Array.isArray(data)) throw new Error("Contrato pessoal de entregas inválido.");
   return data.map((value: unknown) => {
@@ -130,7 +142,7 @@ export function personalDeliveryGroups3d(data: unknown): PersonalDeliveryGroup3d
     if (Object.keys(row).sort().join() !== "delivered_at,feedback_at,feedback_status,group_id,items,profession,public_message" ||
       typeof row.group_id !== "string" || !uuid.test(row.group_id) || !date(row.delivered_at) ||
       typeof row.profession !== "string" || !Array.isArray(row.items) || row.items.length < 1 ||
-      !(row.feedback_status === null || ["CONFIRMADO", "DIVERGENCIA", "EM_ANALISE", "RESOLVIDA"].includes(String(row.feedback_status))) ||
+      !(row.feedback_status === null || ["CONFIRMADO", "DIVERGENCIA", "EM_ANALISE", "RESOLVIDA", "RECUSA"].includes(String(row.feedback_status))) ||
       !(row.feedback_at === null || date(row.feedback_at)) || !nullableText(row.public_message) ||
       (row.feedback_status === null && (row.feedback_at !== null || row.public_message !== null)) ||
       (row.feedback_status !== null && row.feedback_at === null) ||

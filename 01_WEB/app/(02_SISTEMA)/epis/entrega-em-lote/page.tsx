@@ -16,7 +16,9 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
  const data=local?null:await (await getMetalloService()).siteSnapshot();
  const repo=local?await getEpiOperations():null;
  const employeeId=z.uuid().safeParse(query.employee).success?query.employee!:"";
- const [choices, flow, suggestion]=repo?await Promise.all([repo.choices(),repo.delivery3d(),employeeId?repo.kitSuggestion3d(employeeId):Promise.resolve([])]):[null,null,[]];
+ const [choices, flow, suggestion, awareness]=repo?await Promise.all([repo.choices(),repo.delivery3d(),employeeId?repo.kitSuggestion3d(employeeId):Promise.resolve([]),
+   repo.awareness3i().catch(()=>null)]):[null,null,[],null];
+ const statusLabel:Record<string,string>={CONFIRMADO:"Recebimento confirmado pelo funcionário",DIVERGENCIA:"Divergência informada",EM_ANALISE:"Divergência em análise",RESOLVIDA:"Divergência resolvida; confirmação pendente",RECUSA:"Recusa registrada pela Gestão"};
  const employee=choices?.employees.find(entry=>entry.id===employeeId);
  const items=new Map(choices?.items.filter(entry=>entry.item_kind==="epi").map(entry=>[entry.id,entry])??[]);
  const batches=(choices?.batches??[]).filter(batch=>items.has(batch.item_id)).map(batch=>({id:batch.id,item_id:batch.item_id,name:items.get(batch.item_id)!.name,unit:items.get(batch.item_id)!.unit,quantity:batch.quantity,variant:batch.variant,ca_number:batch.ca_number}));
@@ -40,14 +42,24 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
     </div>
     <div className="panel-body"><h3>Divergências e confirmações</h3>{flow.feedback.length===0?<p>Nenhuma entrega 3D registrada.</p>:<div className="list">{flow.feedback.map(entry=><article className="list-row" key={entry.group_id}>
       <div className="list-row-main"><strong>{entry.employee_name}</strong><span>Entregue em {new Date(entry.delivered_at).toLocaleString("pt-BR",{timeZone:"America/Fortaleza"})}</span>
-        <span>Manifestação: {entry.feedback_status??"Confirmação pendente"}</span>
+        <span>Manifestação: {entry.feedback_status?statusLabel[entry.feedback_status]??entry.feedback_status:"Confirmação pendente"}</span>
         {entry.item_name&&<span>Item: {entry.item_name}</span>}{entry.category&&<span>Categoria: {entry.category}</span>}{entry.details&&<span>Relato: {entry.details}</span>}
         {entry.public_message&&<span>Mensagem ao funcionário: {entry.public_message}</span>}{entry.internal_note&&<span>Nota interna: {entry.internal_note}</span>}</div>
       {(entry.feedback_status==="DIVERGENCIA"||entry.feedback_status==="EM_ANALISE")&&<OperationForm action={manageEpiFeedback3d} label="Registrar tratamento">
         <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="idempotencyKey" value={randomUUID()}/>
         <label>Ação<select name="action" defaultValue={entry.feedback_status==="DIVERGENCIA"?"EM_ANALISE":"RESOLVIDA"}><option value="EM_ANALISE">Colocar em análise</option><option value="RESOLVIDA">Registrar resolução</option></select></label>
         <label>Mensagem ao funcionário<textarea name="publicMessage" maxLength={240} rows={2}/></label><label>Nota interna da Gestão<textarea name="internalNote" maxLength={240} rows={2}/></label>
+      </OperationForm>}
+      {(entry.feedback_status===null||entry.feedback_status==="RESOLVIDA")&&<OperationForm action={manageEpiFeedback3d} label="Registrar recusa">
+        <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="idempotencyKey" value={randomUUID()}/><input type="hidden" name="action" value="RECUSA"/>
+        <p className="full">Use só se o funcionário recusou receber ou confirmar este EPI. O registro não pode ser apagado; o funcionário verá a mensagem e ainda poderá confirmar depois.</p>
+        <label className="full">O que foi recusado (o funcionário verá)<textarea name="publicMessage" maxLength={240} rows={2} required/></label>
+        <label className="full">Testemunha / observação interna<textarea name="internalNote" maxLength={240} rows={2}/></label>
       </OperationForm>}</article>)}</div>}</div>
+    <div className="panel-body"><h3>Termo de ciência dos deveres (NR-6, item 6.6.1)</h3>{awareness===null?<p>Consulta dos termos indisponível no momento.</p>:awareness.length===0?<p>Nenhum funcionário no seu escopo.</p>:<>
+      <p>{awareness.filter(row=>row.accepted_at).length} de {awareness.length} funcionários aceitaram o termo no portal.</p>
+      <div className="list">{awareness.map(row=><article className="list-row" key={row.employee_id}><div className="list-row-main"><strong>{row.employee_name}</strong>
+        <span>{row.accepted_at?`Aceito em ${new Date(row.accepted_at).toLocaleString("pt-BR",{timeZone:"America/Fortaleza"})}`:"Pendente — o funcionário aceita em Meus EPIs no portal"}</span></div></article>)}</div></>}</div>
   </section>}
   {data&&<SiteOperations initial={data} profile={profile} mode="batch" initialEmployee={query.employee}/>}
  </>;

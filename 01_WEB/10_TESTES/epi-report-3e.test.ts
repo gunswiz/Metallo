@@ -155,10 +155,10 @@ describe("Marco 3E - ficha e histórico", () => {
     const printed = epiPrintedSupplies(report);
     expect(printed).toEqual([
       { title: "ENTREGA", at: raw.deliveries[0].delivered_at, item: "Capacete sintético", ca: "12345",
-        quantity: "1 unidade", responsible: "Não registrado", variant: null,
+        quantity: "1 unidade", responsible: "Não registrado",
         receipt: `Recebimento confirmado pelo funcionário no portal em ${reportDate("2026-01-10T13:00:00Z")}` },
       { title: "ENTREGA PARA TROCA", at: raw.deliveries[1].delivered_at, item: "Capacete sintético", ca: "67890",
-        quantity: "2 unidades", responsible: "Não registrado", variant: null,
+        quantity: "2 unidades", responsible: "Não registrado",
         receipt: "Divergência resolvida; confirmação pendente" },
     ]);
     expect(JSON.stringify(printed)).not.toMatch(/00000000-|Grupo 00|Entrega 00|DESGASTE|TAMANHO|L-9|Marca de teste/);
@@ -261,13 +261,13 @@ describe("Marco 3E - ficha e histórico", () => {
     raw.deliveries[1].exchange_request_id = null;
     expect(epiPrintedSupplies(projectEpiReport(raw, "history", all))[1].title).toBe("ENTREGA PARA TROCA");
   });
-  it("ficha atual conserva variante útil e só imprime responsável nominal histórico", () => {
+  it("via impressa não mostra tamanho/variante (decisão de 03/10) e só imprime responsável nominal histórico", () => {
     const raw = structuredClone(payload);
     raw.deliveries[0].responsible_name_snapshot = "  Gestão Sintética (snapshot)  ";
     raw.deliveries[1].responsible_name_snapshot = "  ";
     const printed = epiPrintedSupplies(projectEpiReport(raw, "current", all));
-    expect(printed[0]).toMatchObject({ variant: "M", responsible: "Gestão Sintética (snapshot)" });
-    expect(printed[1]).toMatchObject({ variant: "58", responsible: "Não registrado" });
+    expect(printed[0]).toMatchObject({ responsible: "Gestão Sintética (snapshot)" }); expect(printed[0]).not.toHaveProperty("variant");
+    expect(printed[1]).toMatchObject({ responsible: "Não registrado" }); expect(JSON.stringify(printed)).not.toMatch(/"M"|"58"/);
     expect(JSON.stringify(printed)).not.toContain(id(7));
     raw.deliveries[0].status = "replaced";
     raw.deliveries[0].closed_at = "2026-09-15T12:00:00Z";
@@ -331,5 +331,18 @@ describe("Marco 3E - ficha e histórico", () => {
       report.payload.report_id = id(900 + index);
       await writeFile(join(directory, name), await buildEpiReport3ePdf(report, logo));
     }
+  });
+});
+
+describe("Marco 3I - recusa e termo no relatório", () => {
+  it("recusa registrada entra na trilha e na via impressa sem fingir confirmação", async () => {
+    const raw = structuredClone(payload);
+    raw.feedback = [{ id: 9, group_id: id(3), delivery_id: null, type: "RECUSA", category: null, at: "2026-01-11T12:00:00Z" }];
+    const report = projectEpiReport(raw, "history", all);
+    expect(report.events.some(event => event.title === "Recusa registrada pela Gestão")).toBe(true);
+    expect(epiPrintedSupplies(report)[0].receipt).toBe("Recusa registrada pela Gestão; confirmação do funcionário pendente");
+    const pdf = await PDFDocument.load(await buildEpiReport3ePdf(report, undefined, "2026-01-05T12:00:00Z"));
+    expect(pdf.getPageCount()).toBeGreaterThan(0);
+    await buildEpiReport3ePdf(projectEpiReport(raw, "current", all), undefined, null);
   });
 });

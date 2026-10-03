@@ -76,7 +76,8 @@ export async function signatureStart3f(token: string, groupId: string, selectedC
     if (already.rows.length) throw new Error("Esta entrega já tem confirmação reforçada.");
     const last = await db.query<{ event_type: string }>(`select event_type from public.epi_delivery_feedback_events_3d
       where group_id=$1 order by id desc limit 1`, [groupId]);
-    if (last.rows.length && last.rows[0].event_type !== "RESOLVIDA") throw new Error("Entrega já respondida.");
+    // Marco 3I: após RECUSA registrada pela Gestão, o funcionário ainda pode confirmar.
+    if (last.rows.length && !["RESOLVIDA", "RECUSA"].includes(last.rows[0].event_type)) throw new Error("Entrega já respondida.");
     const transactionId = randomUUID();
     const { payload, canonical, hash } = canonicalDelivery3f(snapshot, transactionId);
     const options = await generateAuthenticationOptions({ rpID: RP_ID_3F, timeout: 120000,

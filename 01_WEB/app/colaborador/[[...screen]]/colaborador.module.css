@@ -323,3 +323,8 @@
 
 /* EPI: biometria do celular como forma padrão de confirmar o recebimento. */
 .biometricPrimary{display:inline-flex;align-items:center;gap:8px;border-color:var(--highlight)!important;background:var(--accent)!important;color:var(--bg-deep)!important;font-weight:900}
+
+/* Aparelho do almoxarifado (compartilhado): aviso de saída automática. */
+.sharedBanner{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:0;padding:12px 18px;border-bottom:1px solid rgba(247,184,75,.5);background:rgba(247,184,75,.12);color:#ffd18a;font-size:15px;font-weight:750;text-align:center}
+.sharedBanner button{border:1px solid #ffd18a;border-radius:8px;padding:6px 12px;background:transparent;color:#ffd18a;font:inherit;cursor:pointer}
+.sharedChoice{display:flex;align-items:center;gap:10px;margin:4px 0 14px;color:var(--soft);font-size:15px;line-height:1.4}

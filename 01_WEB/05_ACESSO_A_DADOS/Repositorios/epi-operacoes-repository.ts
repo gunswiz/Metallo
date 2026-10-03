@@ -27,6 +27,7 @@ async function readAll<T>(fetchPage: (from: number, to: number) => PromiseLike<{
   }
   return rows;
 }
+export type Awareness3i = { employee_id: string; employee_name: string; accepted_at: string | null };
 export class EpiOperationsRepository {
   constructor(private client: SupabaseClient<Database>) {}
   async report3e(employeeId: string) {
@@ -34,6 +35,14 @@ export class EpiOperationsRepository {
     const result = await this.client.rpc("admin_epi_report_3e" as never, { p_employee_id: employeeId } as never);
     if (result.error) throw new Error(result.error.message);
     return epiReportPayloadSchema.parse(result.data);
+  }
+  // Marco 3I: aceite do termo de ciência (NR-6, 6.6.1) no escopo da Gestão. Sem employeeId, lista todos do escopo.
+  async awareness3i(employeeId: string | null = null): Promise<Awareness3i[]> {
+    if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Termo de ciência disponível somente no laboratório local.");
+    const result = await this.client.rpc("admin_epi_awareness_3i" as never, { p_employee_id: employeeId } as never);
+    if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar os termos de ciência.");
+    return (result.data as Awareness3i[]).filter(row => typeof row.employee_id === "string" && typeof row.employee_name === "string" &&
+      (row.accepted_at === null || Number.isFinite(Date.parse(row.accepted_at))));
   }
   async delivery3d() {
     if (getSupabaseEnv().url !== "http://127.0.0.1:54321") throw new Error("Entregas 3D disponíveis somente no laboratório local.");

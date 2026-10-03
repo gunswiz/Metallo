@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { marcacaoEmAndamento } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
-import { disposePortalClient, exchangeableEpis, exchangeRequests, friendlyPortalError, LAB_URL, personalDeliveryGroups3d, personalEpis, personalProfile, personalTeam, personalWork, portalClient, portalFetch, PORTAL_STORAGE_KEY, type PersonalProfile, type PersonalEpi, type ExchangeCreateOutcome } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
+import { disposePortalClient, exchangeableEpis, exchangeRequests, friendlyPortalError, LAB_URL, personalDeliveryGroups3d, personalEpis, personalProfile, personalTeam, personalWork, portalClient, portalFetch, PORTAL_STORAGE_KEY, epiAwareness3i, type PersonalProfile, type PersonalEpi, type ExchangeCreateOutcome } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { pointRequest } from "@/05_ACESSO_A_DADOS/Ponto/ponto-lab";
 import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 import { personalItem3g, type PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
@@ -203,7 +203,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -227,6 +227,13 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (data !== "CANCELADA") throw new Error("Confirmação de cancelamento inválida.");
   }, [exchangeRpc]);
   const readDeliveryGroups3d = useCallback(async () => personalDeliveryGroups3d(await exchangeRpc("my_epi_delivery_groups_3d")), [exchangeRpc]);
+  // Marco 3I: termo de ciência (NR-6, 6.6.1). O texto e o hash vêm do servidor.
+  const readEpiAwareness3i = useCallback(async () => epiAwareness3i(await exchangeRpc("my_epi_awareness_3i")), [exchangeRpc]);
+  const acceptEpiAwareness3i = useCallback(async (termSha256: string, idempotencyKey: string) => {
+    const data = await exchangeRpc("accept_epi_awareness_3i", { p_term_sha256: termSha256, p_idempotency_key: idempotencyKey });
+    if (typeof data !== "string" || !Number.isFinite(Date.parse(data))) throw new Error("Confirmação do termo inválida.");
+    return data;
+  }, [exchangeRpc]);
   const readPersonalReport3e = useCallback(async () => epiReportPayloadSchema.parse(await exchangeRpc("my_epi_report_3e")), [exchangeRpc]);
   const readPersonalItems3g = useCallback(async () => demo ? visualItems3g :
     z.array(personalItem3g).parse(await exchangeRpc("my_personal_items_3g")), [demo, exchangeRpc]);
@@ -263,5 +270,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (ticket !== generation.current || endingClient.current || result.error || !result.data.session?.access_token) throw new Error("Sessão inválida.");
     return result.data.session.access_token;
   }, [demo, getClient, profile]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, getAccessToken };
+  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken };
 }

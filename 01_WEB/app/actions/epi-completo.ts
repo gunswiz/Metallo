@@ -19,9 +19,9 @@ const preparation3dSchema = z.object({
 });
 const register3dSchema = z.object({ preparationId: z.uuid(), idempotencyKey: z.uuid(), confirmation: z.literal("on") });
 const feedback3dSchema = z.object({
-  groupId: z.uuid(), action: z.enum(["EM_ANALISE", "RESOLVIDA"]), idempotencyKey: z.uuid(),
+  groupId: z.uuid(), action: z.enum(["EM_ANALISE", "RESOLVIDA", "RECUSA"]), idempotencyKey: z.uuid(),
   publicMessage: z.string().trim().max(240).default(""), internalNote: z.string().trim().max(240).default(""),
-}).refine(value => value.action !== "RESOLVIDA" || !!value.publicMessage, { message: "Informe a mensagem ao funcionário." });
+}).refine(value => value.action === "EM_ANALISE" || !!value.publicMessage, { message: "Informe a mensagem ao funcionário." });
 
 export async function prepareEpiKit3d(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: preparation3dSchema, capability: "epi:write", formData,
