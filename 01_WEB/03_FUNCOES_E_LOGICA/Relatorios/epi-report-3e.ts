@@ -120,7 +120,27 @@ export const epiReportResponsible = (row: EpiReportPayload["deliveries"][number]
     : "Responsável pela entrega: não registrado nominalmente no histórico.";
 
 export type EpiPrintedSupply = { title: "ENTREGA" | "ENTREGA PARA TROCA" | "SUBSTITUIÇÃO"; at: string;
-  item: string; ca: string; quantity: string; responsible: string; variant: string | null };
+  item: string; ca: string; quantity: string; responsible: string; variant: string | null; receipt: string };
+
+// Situação da confirmação do funcionário para cada entrega. Na via impressa, substitui a
+// assinatura manuscrita: o registro eletrônico é aceito pela NR-6 (item 6.5.1, alínea "d").
+type FeedbackRow = EpiReportPayload["feedback"][number];
+function latestFeedbackByGroup(feedback: FeedbackRow[]) {
+  const latest = new Map<string, FeedbackRow>();
+  for (const row of feedback) {
+    const previous = latest.get(row.group_id);
+    if (!previous || Date.parse(row.at) > Date.parse(previous.at) ||
+      (Date.parse(row.at) === Date.parse(previous.at) && row.id > previous.id)) latest.set(row.group_id, row);
+  }
+  return latest;
+}
+export function epiReceiptLabel(groupId: string | null, state: FeedbackRow | null | undefined) {
+  if (!groupId) return "Sem confirmação eletrônica registrada";
+  if (!state) return "Confirmação do funcionário pendente";
+  if (state.type === "CONFIRMADO") return `Recebimento confirmado pelo funcionário no portal em ${reportDate(state.at)}`;
+  if (state.type === "RESOLVIDA") return "Divergência resolvida; confirmação pendente";
+  return "Divergência informada pelo funcionário, em andamento";
+}
 
 // Projeção exclusiva da via humana. O payload e os eventos técnicos não são alterados.
 // Filtros operacionais da trilha técnica não selecionam fatos no PDF de fornecimento.
@@ -130,6 +150,7 @@ export function epiPrintedSupplies(report: EpiReport): EpiPrintedSupply[] {
     (!report.period.to || localDate(new Date(row.delivered_at)) <= report.period.to));
   const byId = new Map(report.payload.deliveries.map(row => [row.id, row]));
   const exchanges = new Map(report.payload.exchanges.map(row => [row.id, row]));
+  const latest = latestFeedbackByGroup(report.payload.feedback);
   return [...deliveries].sort((a, b) => Date.parse(a.delivered_at) - Date.parse(b.delivered_at) || a.id.localeCompare(b.id))
     .map(row => {
       const request = row.exchange_request_id ? exchanges.get(row.exchange_request_id) : null;
@@ -148,7 +169,8 @@ export function epiPrintedSupplies(report: EpiReport): EpiPrintedSupply[] {
       return { title: replacement ? "SUBSTITUIÇÃO" : forReplacement ? "ENTREGA PARA TROCA" : "ENTREGA", at: row.delivered_at,
         item: row.item_name, ca, quantity: epiReportQuantity(row.quantity, row.unit),
         responsible: row.responsible_name_snapshot?.trim() || "Não registrado",
-        variant: report.type === "current" ? row.variant : null };
+        variant: report.type === "current" ? row.variant : null,
+        receipt: epiReceiptLabel(row.group_id, row.group_id ? latest.get(row.group_id) : null) };
     });
 }
 
@@ -230,12 +252,7 @@ export function projectEpiReport(raw: unknown, type: EpiReportType, period: EpiP
     (!period.to || localDate(new Date(event.at)) <= period.to) &&
     (eventFilter === "all" || event.kind === eventFilter));
   filtered.sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.id.localeCompare(b.id));
-  const latest = new Map<string, typeof payload.feedback[number]>();
-  for (const row of payload.feedback) {
-    const previous = latest.get(row.group_id);
-    if (!previous || Date.parse(row.at) > Date.parse(previous.at) ||
-      (Date.parse(row.at) === Date.parse(previous.at) && row.id > previous.id)) latest.set(row.group_id, row);
-  }
+  const latest = latestFeedbackByGroup(payload.feedback);
   const current = payload.deliveries.filter(row => row.status === "active").map(row => {
     const state = row.group_id ? latest.get(row.group_id) : null;
     const feedbackLabel = !row.group_id ? "Sem confirmação eletrônica registrada" :

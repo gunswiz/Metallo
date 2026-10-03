@@ -9,7 +9,7 @@ export function epiReportFilename(report: EpiReport) {
   return `${report.type === "current" ? "ficha-atual" : "historico"}-epi-${filenameId(report.payload.report_id)}.pdf`;
 }
 
-export async function buildEpiReport3ePdf(report: EpiReport, signatures = true, logoBytes?: Uint8Array) {
+export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Array) {
   const supplies = epiPrintedSupplies(report);
   if (report.type === "history" && supplies.length > 1200) throw new Error("Relatório muito extenso. Escolha um período menor.");
   if (report.type === "current" && supplies.length > 1200) throw new Error("Ficha muito extensa. Solicite conferência à administração.");
@@ -78,6 +78,7 @@ export async function buildEpiReport3ePdf(report: EpiReport, signatures = true, 
       `CA: ${row.ca}  |  Quantidade: ${row.quantity}`,
       row.variant ? `Tamanho / variante: ${row.variant}` : "",
       `Responsável pela entrega: ${row.responsible}`,
+      row.receipt,
     ].filter(Boolean) }));
   if (!cards.length) {
     ensure(58);
@@ -118,36 +119,15 @@ export async function buildEpiReport3ePdf(report: EpiReport, signatures = true, 
     for (const part of details) { draw(part, left + 11, y, 9); y -= 13; }
     y -= 21;
   }
-  if (report.type === "current" && signatures) {
-    ensure(122);
-    y -= 4;
-    line("Espaço opcional para assinatura manuscrita na via impressa", 9, true);
-    y -= 29;
-    page.drawLine({ start: { x: left, y }, end: { x: 285, y }, thickness: 0.7, color: ink });
-    page.drawLine({ start: { x: 315, y }, end: { x: right, y }, thickness: 0.7, color: ink });
-    y -= 15;
-    draw("Funcionário - nome/data", left, y, 8);
-    draw("Responsável pela entrega - nome/data", 315, y, 8);
-    y -= 27;
-    line("Os espaços acima não indicam assinatura já realizada.", 8, false, muted);
-  }
-  if (report.type === "history" && signatures) {
-    const notice = "A assinatura nesta via impressa registra ciência/conferência deste relatório e não substitui nem cria retroativamente os eventos de confirmação de recebimento registrados individualmente no sistema.";
-    ensure(116 + fit(notice, regular, 8, width).length * 12);
-    y -= 4;
-    line("CIÊNCIA / CONFERÊNCIA DO RELATÓRIO", 9, true, brand);
-    y -= 8;
-    draw("Funcionário:", left, y, 9, true);
-    draw("Responsável:", 315, y, 9, true);
-    y -= 30;
-    page.drawLine({ start: { x: left, y }, end: { x: 285, y }, thickness: 0.7, color: ink });
-    page.drawLine({ start: { x: 315, y }, end: { x: right, y }, thickness: 0.7, color: ink });
-    y -= 20;
-    draw("Data: ____/____/________", left, y, 9);
-    draw("Data: ____/____/________", 315, y, 9);
-    y -= 22;
-    line(notice, 8, false, muted);
-  }
+  // Sem campos de assinatura manuscrita: o fornecimento é registrado em sistema eletrônico
+  // e cada entrega mostra a confirmação feita pelo próprio funcionário no portal.
+  const notice = "Fornecimento registrado em sistema eletrônico (NR-6, item 6.5.1, alínea \"d\"). " +
+    "A situação de cada entrega mostra a confirmação feita pelo próprio funcionário no portal. " +
+    "Este relatório é extraído do sistema (NR-6, item 6.5.1.1) e não depende de assinatura manuscrita.";
+  ensure(40 + fit(notice, regular, 8, width).length * 12);
+  y -= 4;
+  line("REGISTRO ELETRÔNICO", 9, true, brand);
+  line(notice, 8, false, muted);
   const pages = pdf.getPages();
   pages.forEach((p, index) => {
     p.drawLine({ start: { x: left, y: 60 }, end: { x: right, y: 60 }, thickness: 0.5, color: muted });

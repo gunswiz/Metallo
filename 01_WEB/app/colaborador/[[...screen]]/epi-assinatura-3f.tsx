@@ -44,8 +44,8 @@ export function EpiAssinatura3f({ groupId, getToken, onSigned, onCancel }: {
     finally { setBusy(false); }
   }
   return <div className={styles.exchangeForm}>
-    <h3>Confirmação com credencial pessoal</h3>
-    <p>Confira todo o recebimento antes de usar a passkey. A confirmação comum continua disponível separadamente.</p>
+    <h3>Confirmar com biometria do celular</h3>
+    <p>Confira os itens. Depois o celular pede sua digital, rosto ou senha da tela. A confirmação sem biometria continua disponível.</p>
     {error && <p className={styles.exchangeError} role="alert">{error}</p>}
     {prepared ? <div className={styles.signaturePreview}>
       <h4>RECEBIMENTO DE EPI</h4>
@@ -64,12 +64,12 @@ export function EpiAssinatura3f({ groupId, getToken, onSigned, onCancel }: {
       <div className={styles.exchangeActions}>
         <button type="button" disabled={busy} onClick={onCancel}>Cancelar</button>
         <button type="button" disabled={busy} onClick={() => void sign()}>
-          {busy ? "Validando…" : "Confirmar com minha credencial"}</button>
+          {busy ? "Validando…" : "Confirmar com biometria"}</button>
       </div>
     </div> : <div className={styles.exchangeActions}>
       <button type="button" disabled={busy} onClick={onCancel}>Cancelar</button>
       <button type="button" disabled={busy} onClick={() => void prepare()}>
-        {busy ? "Consultando…" : "Conferir dados para assinatura"}</button>
+        {busy ? "Consultando…" : "Conferir itens da entrega"}</button>
     </div>}
   </div>;
 }

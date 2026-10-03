@@ -4,6 +4,7 @@ import { Clock3, MapPin, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { acquireEventLocation, type LocationInput } from "@/03_FUNCOES_E_LOGICA/Ponto/geolocalizacao-evento";
 import { referenceTime, pointDate, pointTime } from "@/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia";
+import { iniciarMarcacao } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 import { onlinePointRequest, pointReceipt, locationLabel, type PointReceipt } from "@/05_ACESSO_A_DADOS/Ponto/ponto-online";
 import styles from "./colaborador.module.css";
 import { MeusRegistros } from "./meus-registros";
@@ -67,10 +68,11 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
   }
   async function mark() {
     if (working.current) return; working.current = true; historyVersion.current += 1; setBusy(true); setReceipt(null);
+    const encerrarMarcacao = iniciarMarcacao();
     try {
       if (navigator.locks) await navigator.locks.request(`metallo-point-${employeeId}`, { ifAvailable: true }, async lock => { if (lock) await perform(); else if (alive.current) setMessage("Uma marcação está em andamento em outra aba. Aguarde e consulte o histórico."); });
       else { if (alive.current) setMessage("Este navegador não oferece o controle entre abas necessário ao laboratório. Use o Edge atualizado."); }
-    } finally { working.current = false; if (alive.current) setBusy(false); }
+    } finally { encerrarMarcacao(); working.current = false; if (alive.current) setBusy(false); }
   }
   return <div className={styles.pointOnline}>
     {presentation === "full" && <strong className={styles.pointWarning}>SIMULAÇÃO SEM VALOR OFICIAL</strong>}

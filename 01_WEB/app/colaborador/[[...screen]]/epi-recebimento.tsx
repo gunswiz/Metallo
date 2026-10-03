@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PackageCheck, WifiOff } from "lucide-react";
+import Link from "next/link";
+import { Fingerprint, PackageCheck, WifiOff } from "lucide-react";
 import type { PersonalDeliveryGroup3d } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
 import { EpiAssinatura3f } from "./epi-assinatura-3f";
@@ -35,6 +36,8 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
   const [signedGroup, setSignedGroup] = useState<string | null>(null);
   const [signedIds, setSignedIds] = useState<Set<string>>(new Set());
   const [signatureStatus, setSignatureStatus] = useState<"loading" | "ready" | "error">("loading");
+  // Biometria do celular (passkey 3F) é o caminho padrão quando o funcionário já a ativou.
+  const [hasBiometric, setHasBiometric] = useState(false);
   const key = useRef<string | null>(null);
   const lock = useRef(false);
   useEffect(() => {
@@ -44,7 +47,8 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
       try {
         const token = await getAccessToken();
         const result = await signatureRequest3f<SignatureState3f>(token, { action: "state" });
-        if (active) { setSignedIds(new Set(result.events.map(event => event.group_id))); setSignatureStatus("ready"); }
+        if (active) { setSignedIds(new Set(result.events.map(event => event.group_id)));
+          setHasBiometric(result.methods.some(method => !method.revoked_at)); setSignatureStatus("ready"); }
       } catch { if (active) setSignatureStatus("error"); }
     })();
     return () => { active = false; };
@@ -53,6 +57,7 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
     setSignedGroup(null); setSelected(groupId); setMode(action); setDeliveryId(""); setCategory(""); setDetails(""); setAgreed(false);
     setError(""); setNotice(""); key.current = crypto.randomUUID();
   }, []);
+  const biometricDefault = Boolean(getAccessToken) && signatureStatus === "ready" && hasBiometric;
   function dismiss() { setSelected(null); setMode(null); setError(""); key.current = null; }
   async function send(groupId: string) {
     if (lock.current || !mode || (mode === "CONFIRMADO" && !agreed) ||
@@ -82,7 +87,7 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
       <ul className={styles.exchangeList}>{state.data.map(group => <li key={group.group_id}>
         <div><strong>Entrega registrada em {day(group.delivered_at)}</strong>
           <span className={styles.exchangeStatus}>{signedIds.has(group.group_id) && group.feedback_status === "CONFIRMADO" ?
-            "Confirmação com credencial reforçada" : group.feedback_status === "CONFIRMADO" && getAccessToken && signatureStatus !== "ready" ?
+            "Confirmado com biometria do celular" : group.feedback_status === "CONFIRMADO" && getAccessToken && signatureStatus !== "ready" ?
             "Recebimento confirmado · tipo de confirmação indisponível" : group.feedback_status ? stateLabel[group.feedback_status] : "Confirmação pendente"}</span>
           {group.feedback_at && <small>Manifestação registrada em {day(group.feedback_at)}</small>}
           {group.public_message && <p>Mensagem da Gestão: {group.public_message}</p>}
@@ -111,15 +116,20 @@ export function EpiRecebimento({ read, respond, getAccessToken }: Props) {
           {signedGroup === group.group_id && getAccessToken && <EpiAssinatura3f groupId={group.group_id}
             getToken={getAccessToken} onCancel={() => setSignedGroup(null)} onSigned={() => {
               setSignedIds(previous => new Set(previous).add(group.group_id));
-              setSignedGroup(null); setNotice("Confirmação com credencial reforçada registrada no laboratório."); refresh();
+              setSignedGroup(null); setNotice("Recebimento confirmado com biometria do celular no laboratório."); refresh();
             }}/>}
         </div>
         {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA") &&
           <div className={styles.exchangeActions}>
-            <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar recebimento</button>
-            {getAccessToken && <button type="button" onClick={() => { setSelected(null); setMode(null); setSignedGroup(group.group_id); setError(""); setNotice(""); }}>Confirmar com credencial</button>}
+            {biometricDefault ? <>
+              <button type="button" className={styles.biometricPrimary} onClick={() => { setSelected(null); setMode(null); setSignedGroup(group.group_id); setError(""); setNotice(""); }}><Fingerprint aria-hidden="true" size={20}/> Confirmar com biometria</button>
+              <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar sem biometria</button>
+            </> : <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar recebimento</button>}
             <button type="button" onClick={() => choose(group.group_id,"DIVERGENCIA")}>Informar divergência</button>
           </div>}
+        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA") &&
+          getAccessToken && signatureStatus === "ready" && !hasBiometric &&
+          <p className={styles.signatureNote}>Dica: ative a biometria do celular em <Link href="/colaborador/perfil#perfil-seguranca">Meu Perfil → Segurança</Link> para confirmar entregas com a sua digital, rosto ou senha da tela.</p>}
       </li>)}</ul>}
   </section>;
 }

@@ -5,6 +5,7 @@ import ColaboradorApp from "@/app/colaborador/[[...screen]]/colaborador-app";
 import { MeusEpis } from "@/app/colaborador/[[...screen]]/meus-epis";
 import { personalEpis, portalFetch } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import ColaboradorPage from "@/app/colaborador/[[...screen]]/page";
+import { iniciarMarcacao } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 
 const state = vi.hoisted(() => ({ actor: "joao" as string | null, rows: [] as unknown[], failure: false, replace: vi.fn(), signOut: vi.fn(), pointRequest: vi.fn(), rpc: vi.fn() }));
 vi.mock("next/headers", () => ({ headers: async () => ({ get: () => "127.0.0.1:3101" }) }));
@@ -125,4 +126,26 @@ it("rota de EPIs existe somente na prévia local autorizada", async () => {
   const page = await ColaboradorPage({ params: Promise.resolve({ screen: ["epis"] }) });
   expect(page.props.screen).toBe("epis");
   vi.unstubAllEnvs();
+});
+
+it("foco da janela durante marcação de ponto revalida sem esconder o portal; sessão expirada ainda encerra", async () => {
+  render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  // Sem marcação: regra aprovada mantida (esconde e mostra a verificação de acesso).
+  fireEvent.focus(window);
+  expect(screen.getByText("Verificando seu acesso…")).toBeInTheDocument();
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  const encerrar = iniciarMarcacao();
+  try {
+    const before = state.rpc.mock.calls.filter(([name]) => name === "my_employee_profile").length;
+    fireEvent.focus(window);
+    expect(screen.queryByText("Verificando seu acesso…")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abrir menu" })).toBeInTheDocument();
+    await waitFor(() => expect(state.rpc.mock.calls.filter(([name]) => name === "my_employee_profile").length).toBe(before + 1));
+    expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+    state.actor = null;
+    fireEvent.focus(window);
+    await waitFor(() => expect(state.replace).toHaveBeenCalledWith("/colaborador/login"));
+    expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  } finally { encerrar(); }
 });

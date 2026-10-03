@@ -320,3 +320,6 @@
 .records{padding:12px}
 .records li button,.recordsButton{white-space:normal;max-width:100%}
 }
+
+/* EPI: biometria do celular como forma padrão de confirmar o recebimento. */
+.biometricPrimary{display:inline-flex;align-items:center;gap:8px;border-color:var(--highlight)!important;background:var(--accent)!important;color:var(--bg-deep)!important;font-weight:900}

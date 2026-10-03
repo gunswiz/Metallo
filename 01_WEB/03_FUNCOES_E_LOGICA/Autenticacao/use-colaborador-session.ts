@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { marcacaoEmAndamento } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 import { disposePortalClient, exchangeableEpis, exchangeRequests, friendlyPortalError, LAB_URL, personalDeliveryGroups3d, personalEpis, personalProfile, personalTeam, personalWork, portalClient, portalFetch, PORTAL_STORAGE_KEY, type PersonalProfile, type PersonalEpi, type ExchangeCreateOutcome } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { pointRequest } from "@/05_ACESSO_A_DADOS/Ponto/ponto-lab";
 import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
@@ -129,6 +130,9 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     const timer = window.setTimeout(() => { void verify(); }, 0);
     const poll = demo ? undefined : window.setInterval(() => { if (screen !== "login" && document.visibilityState === "visible") void verify(screen, false); }, 5000);
     const focus = () => { if (screen !== "login") void verify(); };
+    // Foco da janela volta (ex.: diálogo de permissão de localização). Regra de segurança mantida:
+    // esconde e revalida, exceto durante uma marcação de ponto, que revalida em segundo plano.
+    const windowFocus = () => { if (screen === "login") return; void verify(screen, !marcacaoEmAndamento()); };
     const visibility = () => {
       if (document.visibilityState === "hidden") { ++generation.current; setProfile(null); setLoading(true); }
       else focus();
@@ -143,13 +147,13 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       setProfile(null); setLoading(true); setBusy(false); setError("");
       void verify();
     };
-    window.addEventListener("focus", focus);
+    window.addEventListener("focus", windowFocus);
     window.addEventListener("pageshow", focus);
     window.addEventListener("storage", storage);
     document.addEventListener("visibilitychange", visibility);
     return () => {
       invalidate(); window.clearTimeout(timer); window.clearInterval(poll);
-      window.removeEventListener("focus", focus); window.removeEventListener("pageshow", focus);
+      window.removeEventListener("focus", windowFocus); window.removeEventListener("pageshow", focus);
       window.removeEventListener("storage", storage); document.removeEventListener("visibilitychange", visibility);
     };
   }, [demo, endSession, invalidate, screen, verify]);

@@ -25,7 +25,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const raw = await (await getEpiOperations()).report3e(parsed.data);
     const report = projectEpiReport(raw, type, period, event as EpiEventFilter);
     const logo = await readFile(join(process.cwd(), "public", "metallo-logo.png"));
-    const bytes = await buildEpiReport3ePdf(report, true, logo);
+    const bytes = await buildEpiReport3ePdf(report, logo);
     const disposition = url.searchParams.get("download") === "1" ? "attachment" : "inline";
     return new Response(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
       { headers: { "Content-Type": "application/pdf",

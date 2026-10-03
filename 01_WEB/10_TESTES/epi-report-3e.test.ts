@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { PDFDocument, PDFPage } from "pdf-lib";
 import { describe, expect, it, vi } from "vitest";
 import { buildEpiReport3ePdf, epiReportFilename } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e-pdf";
-import { epiPrintedSupplies, epiReportFailure, epiReportQuantity, epiReportResponsible, projectEpiReport, resolveEpiPeriod, type EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
+import { epiPrintedSupplies, epiReceiptLabel, reportDate, epiReportFailure, epiReportQuantity, epiReportResponsible, projectEpiReport, resolveEpiPeriod, type EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const payload: EpiReportPayload = {
@@ -155,9 +155,11 @@ describe("Marco 3E - ficha e histórico", () => {
     const printed = epiPrintedSupplies(report);
     expect(printed).toEqual([
       { title: "ENTREGA", at: raw.deliveries[0].delivered_at, item: "Capacete sintético", ca: "12345",
-        quantity: "1 unidade", responsible: "Não registrado", variant: null },
+        quantity: "1 unidade", responsible: "Não registrado", variant: null,
+        receipt: `Recebimento confirmado pelo funcionário no portal em ${reportDate("2026-01-10T13:00:00Z")}` },
       { title: "ENTREGA PARA TROCA", at: raw.deliveries[1].delivered_at, item: "Capacete sintético", ca: "67890",
-        quantity: "2 unidades", responsible: "Não registrado", variant: null },
+        quantity: "2 unidades", responsible: "Não registrado", variant: null,
+        receipt: "Divergência resolvida; confirmação pendente" },
     ]);
     expect(JSON.stringify(printed)).not.toMatch(/00000000-|Grupo 00|Entrega 00|DESGASTE|TAMANHO|L-9|Marca de teste/);
     await buildEpiReport3ePdf(report);
@@ -289,6 +291,14 @@ describe("Marco 3E - ficha e histórico", () => {
       expect(raw.deliveries[0].ca).toBe(original);
     }
   });
+  it("via impressa mostra a confirmação eletrônica de cada entrega no lugar da assinatura manuscrita", () => {
+    expect(epiReceiptLabel(null, null)).toBe("Sem confirmação eletrônica registrada");
+    expect(epiReceiptLabel(id(3), null)).toBe("Confirmação do funcionário pendente");
+    expect(epiReceiptLabel(id(3), payload.feedback[1])).toBe("Divergência informada pelo funcionário, em andamento");
+    const pending = structuredClone(payload); pending.feedback = [];
+    expect(epiPrintedSupplies(projectEpiReport(pending, "current", all)).map(row => row.receipt))
+      .toEqual(["Confirmação do funcionário pendente", "Confirmação do funcionário pendente"]);
+  });
   it("gera A4, paginação e nome sem identificação pessoal", async () => {
     const report = projectEpiReport(payload, "current", all);
     const bytes = await buildEpiReport3ePdf(report);
@@ -319,7 +329,7 @@ describe("Marco 3E - ficha e histórico", () => {
     for (const [index, [name, report]] of examples.entries()) {
       if (process.env.METALLO_3E_PDF_SAMPLES === "history" && report.type !== "history") continue;
       report.payload.report_id = id(900 + index);
-      await writeFile(join(directory, name), await buildEpiReport3ePdf(report, true, logo));
+      await writeFile(join(directory, name), await buildEpiReport3ePdf(report, logo));
     }
   });
 });

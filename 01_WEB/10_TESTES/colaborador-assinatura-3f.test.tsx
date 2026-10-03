@@ -70,12 +70,12 @@ it("mostra o conteúdo e não anuncia sucesso antes da validação do servidor",
   const onSigned = vi.fn();
   render(<EpiAssinatura3f groupId={group} getToken={getToken} onSigned={onSigned} onCancel={vi.fn()}/>);
   expect(screen.queryByText(/Capacete/)).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Conferir dados para assinatura" }));
+  fireEvent.click(screen.getByRole("button", { name: "Conferir itens da entrega" }));
   expect(await screen.findByText(/Capacete/)).toBeInTheDocument();
   expect(screen.getByText(/Luva/)).toBeInTheDocument();
   expect(screen.getByText(/2 pares/)).toBeInTheDocument();
   expect(screen.getByText(/entrega registrada em/i)).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Confirmar com minha credencial" }));
+  fireEvent.click(screen.getByRole("button", { name: "Confirmar com biometria" }));
   await waitFor(() => expect(confirmSignature3f).toHaveBeenCalledTimes(1));
   expect(onSigned).not.toHaveBeenCalled();
   finish({ signature_event_id: item1, feedback_id: "1" });
@@ -87,8 +87,8 @@ it("falha offline ou criptográfica não produz indicação de assinatura", asyn
   vi.mocked(confirmSignature3f).mockRejectedValue(new Error("Falha de rede"));
   const onSigned = vi.fn();
   render(<EpiAssinatura3f groupId={group} getToken={getToken} onSigned={onSigned} onCancel={vi.fn()}/>);
-  fireEvent.click(screen.getByRole("button", { name: "Conferir dados para assinatura" }));
-  fireEvent.click(await screen.findByRole("button", { name: "Confirmar com minha credencial" }));
+  fireEvent.click(screen.getByRole("button", { name: "Conferir itens da entrega" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Confirmar com biometria" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Assinatura não concluída");
   expect(onSigned).not.toHaveBeenCalled();
   expect(screen.queryByText(/Proteção ativada/)).not.toBeInTheDocument();
@@ -219,7 +219,7 @@ it("não declara a modalidade da confirmação quando a consulta 3F falha", asyn
   vi.mocked(signatureRequest3f).mockRejectedValue(new Error("Consulta indisponível"));
   render(<EpiRecebimento read={async () => confirmed} respond={async () => 1} getAccessToken={getToken}/>);
   expect(await screen.findByText("Recebimento confirmado · tipo de confirmação indisponível")).toBeInTheDocument();
-  expect(screen.queryByText("Confirmação com credencial reforçada")).not.toBeInTheDocument();
+  expect(screen.queryByText("Confirmado com biometria do celular")).not.toBeInTheDocument();
 });
 
 it("mostra selo reforçado quando o próprio evento 3F está disponível", async () => {
@@ -231,5 +231,42 @@ it("mostra selo reforçado quando o próprio evento 3F está disponível", async
   vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [], events: [{ signature_event_id: item2,
     group_id: group, verified_at: "2026-09-29T13:40:00Z" }] });
   render(<EpiRecebimento read={async () => confirmed} respond={async () => 1} getAccessToken={getToken}/>);
-  expect(await screen.findByText("Confirmação com credencial reforçada")).toBeInTheDocument();
+  expect(await screen.findByText("Confirmado com biometria do celular")).toBeInTheDocument();
+});
+
+const pendingGroup: PersonalDeliveryGroup3d[] = [{ group_id: group,
+  delivered_at: "2026-09-29T13:30:00Z", profession: "Soldador", feedback_status: null,
+  feedback_at: null, public_message: null,
+  items: [{ delivery_id: item1, item_name: "Capacete", ca_number: "CA-12345",
+    quantity: 1, unit: "un", variant: null, current_status: "active" }] }];
+
+it("com biometria ativa, confirmar com biometria é o caminho padrão e o sem biometria continua disponível", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "credencial-sintetica", method: "Passkey",
+    created_at: "2026-09-29T12:00:00Z", revoked_at: null }], events: [] });
+  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
+  const primary = await screen.findByRole("button", { name: "Confirmar com biometria" });
+  const actions = primary.parentElement!.querySelectorAll("button");
+  expect(actions[0]).toBe(primary);
+  expect(screen.getByRole("button", { name: "Confirmar sem biometria" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Confirmar recebimento" })).not.toBeInTheDocument();
+  expect(screen.queryByText(/ative a biometria do celular/)).not.toBeInTheDocument();
+  fireEvent.click(primary);
+  expect(await screen.findByRole("heading", { name: "Confirmar com biometria do celular" })).toBeInTheDocument();
+});
+
+it("sem biometria ativa (ou revogada), mantém confirmação comum e orienta onde ativar", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "credencial-sintetica", method: "Passkey",
+    created_at: "2026-09-29T12:00:00Z", revoked_at: "2026-09-30T12:00:00Z" }], events: [] });
+  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
+  expect(await screen.findByText(/ative a biometria do celular/)).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Meu Perfil → Segurança" })).toHaveAttribute("href", "/colaborador/perfil#perfil-seguranca");
+  expect(screen.getByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Confirmar com biometria" })).not.toBeInTheDocument();
+});
+
+it("falha ao consultar biometria não esconde a confirmação comum", async () => {
+  vi.mocked(signatureRequest3f).mockRejectedValue(new Error("Consulta indisponível"));
+  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
+  expect(await screen.findByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
+  expect(screen.queryByText(/ative a biometria do celular/)).not.toBeInTheDocument();
 });

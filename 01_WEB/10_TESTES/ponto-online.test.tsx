@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { MeuPontoOnline } from "@/app/colaborador/[[...screen]]/meu-ponto-online";
 import { onlinePointRequest, pointReceipt } from "@/05_ACESSO_A_DADOS/Ponto/ponto-online";
 import { acquireEventLocation } from "@/03_FUNCOES_E_LOGICA/Ponto/geolocalizacao-evento";
+import { marcacaoEmAndamento } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 import { referenceTime, pointDate, pointTime } from "@/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia";
 vi.mock("@/05_ACESSO_A_DADOS/Ponto/ponto-online", async original => ({ ...await original<typeof import("@/05_ACESSO_A_DADOS/Ponto/ponto-online")>(), onlinePointRequest: vi.fn() }));
 const request = vi.mocked(onlinePointRequest), getToken = vi.fn(async () => "JWT-SINTETICO"), gps = vi.fn();
@@ -85,4 +86,17 @@ it("F-4C-ANDROID-01: nova referência de getToken durante GPS lento não cancela
   expect(await screen.findByRole("heading",{name:"Ponto registrado"})).toBeInTheDocument();
   expect(request.mock.calls.filter(([path,,init])=>path==="/events"&&init?.method==="POST")).toHaveLength(1);
   expect(request.mock.calls.filter(([path,,init])=>path==="/begin"&&init?.method==="POST")).toHaveLength(1);
+});
+it("marcação sinaliza andamento só enquanto não termina (sucesso ou falha)", async()=>{
+  let answerGps!:(error:{code:number})=>void;
+  gps.mockImplementation((_ok,fail)=>{answerGps=fail;});
+  request.mockImplementation(async(path,_token,init)=>path==="/events"&&init?.method==="POST"?{event}:path==="/events"?{events:[]}:path==="/begin"?{idempotency_key:"key"}:{server_at:event.marking_at});
+  expect(marcacaoEmAndamento()).toBe(false);
+  renderPoint();fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));await waitFor(()=>expect(answerGps).toBeTypeOf("function"));
+  expect(marcacaoEmAndamento()).toBe(true);
+  answerGps({code:1});await screen.findByRole("heading",{name:"Ponto registrado"});
+  await waitFor(()=>expect(marcacaoEmAndamento()).toBe(false));
+  request.mockImplementation(async(path,_token,init)=>init?.method==="POST"?Promise.reject(Error("indisponível")):path==="/events"?{events:[]}:{server_at:event.marking_at});
+  fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));await screen.findByRole("button",{name:"Verificar / reenviar a mesma intenção"});
+  expect(marcacaoEmAndamento()).toBe(false);
 });

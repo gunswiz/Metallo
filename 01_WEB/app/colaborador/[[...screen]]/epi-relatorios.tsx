@@ -42,7 +42,7 @@ function PersonalReportContent({ read }: { read: () => Promise<EpiReportPayload>
       const next = projectEpiReport(fresh, type, resolveEpiPeriod({ preset, from, to }, new Date(fresh.generated_at)));
       const logoResponse = await fetch("/metallo-logo.png", { credentials: "omit", redirect: "error", signal: AbortSignal.timeout(6000) });
       if (!logoResponse.ok) throw new Error("Logo indisponível.");
-      const bytes = await buildEpiReport3ePdf(next, true, new Uint8Array(await logoResponse.arrayBuffer()));
+      const bytes = await buildEpiReport3ePdf(next, new Uint8Array(await logoResponse.arrayBuffer()));
       if (!active.current) return;
       if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
       const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: "application/pdf" }));
