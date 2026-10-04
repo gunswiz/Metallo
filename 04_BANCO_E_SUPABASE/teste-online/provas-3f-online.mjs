@@ -49,7 +49,7 @@ function virtualAuthenticator() {
     } };
 }
 
-const joao = await login(cred.colaborador.joao), maria = await login(cred.colaborador.maria), gestor = await login(cred.gestao);
+const joao = await login(cred.colaborador.robo), maria = await login(cred.colaborador.maria), gestor = await login(cred.gestao);
 const joaoId = (await rpc(joao, "my_employee_profile")).data[0].employee_id;
 async function novaEntrega() {
   const items = (await rpc(gestor, "admin_epi_kit_suggestion_3d", { p_employee_id: joaoId }));

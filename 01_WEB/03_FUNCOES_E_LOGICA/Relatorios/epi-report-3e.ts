@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { consumptionQuantity, consumptionUnit } from "../unidadesConsumo";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 // Mensagens públicas uniformes: não expõem o erro SQL nem a existência de outro titular.
 export function epiReportFailure(cause: unknown): { status: 404 | 422 | 503; message: string } {
@@ -202,7 +203,7 @@ export function projectEpiReport(raw: unknown, type: EpiReportType, period: EpiP
         row.variant ? `Tamanho / variante: ${row.variant}` : "",
         row.lot ? `Lote: ${row.lot}` : "", row.brand ? `Marca / modelo: ${row.brand}` : "",
         row.employee_name_snapshot ? `Nome do funcionário na entrega: ${row.employee_name_snapshot}` : "",
-        row.profession_snapshot ? `Função na entrega: ${row.profession_snapshot}` : "",
+        row.profession_snapshot ? `Função na entrega: ${nomeProfissao(row.profession_snapshot)}` : "",
         `Referência neste relatório: ${references.get(row.id)}`,
         row.group_id ? `Agrupamento neste relatório: ${groups.get(row.group_id)}` : "",
         epiReportResponsible(row),

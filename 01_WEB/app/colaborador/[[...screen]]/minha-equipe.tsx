@@ -4,6 +4,7 @@ import { UsersRound, WifiOff } from "lucide-react";
 import type { PersonalTeam } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
 import styles from "./colaborador.module.css";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 export function MinhaEquipe({ readTeamSummary }: { readTeamSummary: () => Promise<PersonalTeam | null> }) {
   const { state, refresh } = usePersonalDetail(readTeamSummary);
@@ -22,7 +23,7 @@ export function MinhaEquipe({ readTeamSummary }: { readTeamSummary: () => Promis
       </dl>
     </section>
     <section className={styles.personalCard} aria-labelledby="equipe-integrantes"><h2 id="equipe-integrantes">Integrantes</h2><p>Nome e função das pessoas atualmente vinculadas à sua equipe.</p>
-      <ul className={styles.teamRoster}>{team.members.map((member, index) => <li key={`${member.name}-${index}`}><span className={styles.rosterAvatar} aria-hidden="true">{member.name.trim().slice(0, 1).toUpperCase()}</span><span><strong>{member.name}</strong><small>{member.profession}</small></span></li>)}</ul>
+      <ul className={styles.teamRoster}>{team.members.map((member, index) => <li key={`${member.name}-${index}`}><span className={styles.rosterAvatar} aria-hidden="true">{member.name.trim().slice(0, 1).toUpperCase()}</span><span><strong>{member.name}</strong><small>{nomeProfissao(member.profession)}</small></span></li>)}</ul>
     </section>
   </div>;
 }

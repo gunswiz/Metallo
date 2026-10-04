@@ -37,3 +37,11 @@ it("comprovante 4D traz NSR, nome e hash; incompleto é recusado", async () => {
   // Registro de laboratório continua sem nome retroativo e não vira 4D.
   expect(personalRecord.safeParse({ ...record }).success).toBe(false);
 });
+
+it("profissão aparece pelo nome, não pelo código do cadastro", async () => {
+  const { nomeProfissao } = await import("@/03_FUNCOES_E_LOGICA/Cadastros/profissao");
+  expect(nomeProfissao("welder")).toBe("Soldador");
+  expect(nomeProfissao("munck_operator")).toBe("Operador de Munck");
+  expect(nomeProfissao("Caldeireiro")).toBe("Caldeireiro");
+  expect(nomeProfissao(null)).toBe("");
+});

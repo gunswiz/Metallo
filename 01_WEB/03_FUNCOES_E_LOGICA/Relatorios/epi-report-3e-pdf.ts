@@ -1,5 +1,6 @@
 import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from "pdf-lib";
 import { epiPrintedSupplies, reportDate, type EpiReport } from "./epi-report-3e";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 const safe = (value: unknown) => String(value ?? "Não registrado").normalize("NFC")
   .replace(/[^\x20-\x7e\xa0-\xff]/g, " ").replace(/\s+/g, " ").trim();
@@ -66,7 +67,7 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
   y -= 8;
   line(`Funcionário: ${report.payload.employee.name}`, 11, true);
   line([report.payload.employee.registration ? `Matrícula: ${report.payload.employee.registration}` : "",
-    `Função atual: ${report.payload.employee.profession || "Não registrada"}`].filter(Boolean).join("  |  "));
+    `Função atual: ${nomeProfissao(report.payload.employee.profession) || "Não registrada"}`].filter(Boolean).join("  |  "));
   line(report.type === "current" ? `Situação em ${reportDate(report.payload.generated_at)}` :
     report.period.preset === "all" ? "Período consultado: TODO O HISTÓRICO" :
       `Período consultado: ${report.period.label}  |  RELATÓRIO FILTRADO POR PERÍODO`, 9, true);

@@ -6,6 +6,7 @@ import {
   type PDFFont,
 } from "pdf-lib";
 import type { EpiDeliveryReportRow } from "@/05_ACESSO_A_DADOS/Repositorios/metallo-repository";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 export type IndividualReceiptInput = {
   employee: {
     id: string;
@@ -80,7 +81,7 @@ export async function buildIndividualEpiPdf(input: IndividualReceiptInput) {
     name.forEach((line, index) => write(line, 36, 750 - index * 15, 12, true));
     y = 750 - name.length * 15;
     const metadata = wrap(
-      `Matrícula: ${input.employee.registration_code ?? "Não informada"} | Profissão: ${input.employee.profession}`,
+      `Matrícula: ${input.employee.registration_code ?? "Não informada"} | Profissão: ${nomeProfissao(input.employee.profession)}`,
       font,
       523,
     );

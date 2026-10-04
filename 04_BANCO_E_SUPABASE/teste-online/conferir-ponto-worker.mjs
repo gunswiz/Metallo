@@ -6,7 +6,7 @@ const BASE = "https://cvimwiqokkujfhwynhmt.supabase.co", KEY = "sb_publishable_T
 const COLAB = "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev", GEST = "https://metallo-teste-gestao.metallo-gunswiz.workers.dev";
 const cred = JSON.parse(readFileSync(new URL("../../backups/credenciais-teste-online.json", import.meta.url), "utf8"));
 const login = async u => (await (await fetch(`${BASE}/auth/v1/token?grant_type=password`, { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: u.email, password: u.password }) })).json());
-const joao = (await login(cred.colaborador.joao)).access_token;
+const joao = (await login(cred.colaborador.robo)).access_token;
 const h = (extra = {}) => ({ Authorization: `Bearer ${joao}`, Origin: COLAB, ...extra });
 const out = [];
 const key = randomUUID();

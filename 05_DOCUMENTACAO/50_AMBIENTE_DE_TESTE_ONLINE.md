@@ -31,10 +31,15 @@ Senhas das contas fictícias: `backups/credenciais-teste-online.json` (fora do G
 - Recursos novos (EPI 3D–3I, comunicados, itens pessoais) continuam desligados na produção.
 - Testes: `10_TESTES/teste-online.test.ts` (10 casos).
 
-## O que fica só no laboratório nesta fase
+## Atualização 04/10/2026
 
-- **Meu Ponto** (registro, registros, comprovantes): o núcleo do ponto ainda usa o servidor local (PGlite). Vai para o online no Marco 4D, com banco próprio e as regras da Portaria 671.
-- **Biometria do celular na entrega de EPI (3F)**: o serviço usa conexão direta ao banco local. No teste online a confirmação é “sem biometria” (aceite eletrônico + termo, válido pela NR-6 6.5.1 “d”). Porte da biometria para o online: próximo passo.
+- **Biometria do celular na entrega de EPI (3F)** também no teste online: Edge Function `assinatura-epi-3f` (RP = Colaborador de teste). Provas com autenticador virtual: 27/27 (`teste-online/provas-3f-online.mjs`).
+- **Meu Ponto online** (Marco 4D): ver documento 51.
+- Ficha de EPI em PDF funcionando no Worker (logo embutido; antes dava 503).
+- Profissão aparece pelo nome (Soldador, Montador…) e não pelo código do cadastro.
+- Edge Functions usam o pooler em modo transação (o banco grátis aceita só 60 conexões diretas).
+- Dados da demonstração recriados do zero (mesmas senhas). As provas automáticas usam a conta "Robô de Provas Automáticas".
+- Para limpar e semear de novo: `migrar limpar-dados-teste-online.sql` → `migrar ponto-4d.sql` → `teste-online semear-teste-online.mjs`.
 
 ## Ferramenta temporária
 

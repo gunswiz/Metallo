@@ -7,7 +7,8 @@ import type { PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colabo
 import type { PersonalProfile, PersonalTeam, PersonalWork } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
 import { AssinaturaSeguranca3f } from "./assinatura-seguranca-3f";
-import styles from "./colaborador.module.css";
+import styles from "./colaborador.module.css";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 export function MeuPerfil({ profile, demo, busy, go, logout, readCurrentWork, readTeamSummary, getAccessToken }: {
   profile: PersonalProfile; demo: boolean; busy: boolean; go: (screen: PortalScreen) => void;
@@ -29,7 +30,7 @@ export function MeuPerfil({ profile, demo, busy, go, logout, readCurrentWork, re
   const previewLink = (screen: PortalScreen) => demo ? (event: React.MouseEvent<HTMLAnchorElement>) => { event.preventDefault(); go(screen); } : undefined;
   return <div className={styles.personalLayout}>
     <section className={styles.personalCard} aria-labelledby="perfil-identidade">
-      <div className={styles.personalIdentity}><span className={styles.personalAvatar} aria-hidden="true">{initial}</span><div><p className={styles.workLabel}>MEU PERFIL</p><h2 id="perfil-identidade">{profile.full_name}</h2><p>{profile.profession?.trim() || "Função não informada"}</p></div></div>
+      <div className={styles.personalIdentity}><span className={styles.personalAvatar} aria-hidden="true">{initial}</span><div><p className={styles.workLabel}>MEU PERFIL</p><h2 id="perfil-identidade">{profile.full_name}</h2><p>{nomeProfissao(profile.profession) || "Função não informada"}</p></div></div>
       <dl className={styles.personalFacts}>
         <div><dt>Equipe atual</dt><dd>{team?.team_name || "Sem equipe atribuída"}</dd></div>
         <div><dt>Obra atual</dt><dd>{work?.work_name || "Sem obra atribuída no momento."}</dd></div>

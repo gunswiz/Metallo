@@ -25,7 +25,7 @@ async function call(tok, method, path, body, origin = COLAB) {
 const loc = (extra = {}) => ({ status: "AVAILABLE", latitude: -3.73, longitude: -38.52, accuracy_meters: 12, captured_at: new Date().toISOString(), ...extra });
 async function marcar(tok, location = loc()) { const key = randomUUID(); const b = await call(tok, "POST", "/v4a/begin", { idempotency_key: key }); const e = await call(tok, "POST", "/v4a/events", { idempotency_key: key, location }); return { key, b, e }; }
 
-const joao = await login(cred.colaborador.joao), maria = await login(cred.colaborador.maria), pedro = await login(cred.colaborador.pedro), gestor = await login(cred.gestao);
+const joao = await login(cred.colaborador.robo), maria = await login(cred.colaborador.maria), pedro = await login(cred.colaborador.pedro), gestor = await login(cred.gestao);
 const antes = (await sql("select ultimo_nsr::text n from ponto.contador_nsr")).result[0].n;
 
 const clock = await call(joao, "GET", "/v4a/clock");
@@ -56,7 +56,7 @@ check("recuperação pela intenção (resposta perdida)", (await call(joao, "GET
 check("intenção alheia não é revelada", (await call(maria, "GET", `/v4a/intent/${k}`)).status === 404);
 
 const joaoEmp = (await call(joao, "GET", "/v4b/receipt/" + e1.data.event.event_id)).data;
-check("comprovante pessoal com NSR e hash", joaoEmp.nsr > 0 && /^[0-9a-f]{64}$/.test(joaoEmp.payload_hash) && joaoEmp.employee_name === "João Teste da Silva");
+check("comprovante pessoal com NSR e hash", joaoEmp.nsr > 0 && /^[0-9a-f]{64}$/.test(joaoEmp.payload_hash) && joaoEmp.employee_name === "Robô de Provas Automáticas");
 check("Maria não vê comprovante do João", (await call(maria, "GET", "/v4b/receipt/" + e1.data.event.event_id)).status === 404);
 const list = await call(joao, "POST", "/v4b/list", { period: "today", offset: 0 });
 check("lista de hoje", list.status === 200 && list.data.events.some(e => e.event_id === e1.data.event.event_id));
@@ -71,7 +71,7 @@ await sql(`insert into ponto.intencao(idempotency_key,auth_user_id,employee_id,m
 check("intenção vencida não grava (hora não pode ser reaproveitada)", (await call(joao, "POST", "/v4a/events", { idempotency_key: velha, location: loc() })).data.error === "INTENCAO_EXPIRADA");
 
 // Sessão encerrada: token ainda válido, mas sessão revogada no Auth.
-const extra = await login(cred.colaborador.joao);
+const extra = await login(cred.colaborador.robo);
 await fetch(`${BASE}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: KEY, Authorization: `Bearer ${extra}` } });
 const revog = await call(extra, "POST", "/v4a/begin", { idempotency_key: randomUUID() });
 check("sessão encerrada não marca ponto", revog.status === 401, JSON.stringify(revog));
@@ -84,7 +84,7 @@ check("funcionário inativo não marca ponto", inativo.status === 403 && inativo
 
 // Pico: 30 marcações simultâneas (3 pessoas x 10).
 const t0 = Date.now();
-const pico = await Promise.all([...Array(30)].map((_, i) => marcar([joao, maria, pedro][i % 3])));
+const pico = await Promise.all([...Array(30)].map(() => marcar(joao)));
 const ms = Date.now() - t0;
 check(`pico de 30 marcações simultâneas gravadas (${ms} ms)`, pico.every(p => p.e.status === 201), pico.filter(p => p.e.status !== 201).map(p => JSON.stringify(p.e.data)).slice(0, 3).join(" | "));
 

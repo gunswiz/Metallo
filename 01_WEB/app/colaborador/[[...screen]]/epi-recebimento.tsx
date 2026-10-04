@@ -8,6 +8,7 @@ import { usePersonalDetail } from "./use-personal-detail";
 import { EpiAssinatura3f } from "./epi-assinatura-3f";
 import { signatureRequest3f, type SignatureState3f } from "@/04_SERVICOS/assinatura-browser-3f";
 import styles from "./colaborador.module.css";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 type Props = {
   read: () => Promise<PersonalDeliveryGroup3d[]>;
@@ -95,7 +96,7 @@ export function EpiRecebimento({ read, respond, getAccessToken, sharedDevice = f
             "Recebimento confirmado · tipo de confirmação indisponível" : group.feedback_status ? stateLabel[group.feedback_status] : "Confirmação pendente"}</span>
           {group.feedback_at && <small>Manifestação registrada em {day(group.feedback_at)}</small>}
           {group.public_message && <p>Mensagem da Gestão: {group.public_message}</p>}
-          <small>Função no registro: {group.profession}</small>
+          <small>Função no registro: {nomeProfissao(group.profession)}</small>
           <ul aria-label="Itens registrados nesta entrega">{group.items.map(item => <li key={item.delivery_id}>
             {item.item_name} · {item.quantity} {item.unit}{item.variant ? ` · tamanho/variante ${item.variant}` : ""}{item.ca_number ? ` · CA ${item.ca_number}` : ""}
           </li>)}</ul>

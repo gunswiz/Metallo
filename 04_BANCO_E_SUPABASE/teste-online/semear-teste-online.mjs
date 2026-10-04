@@ -12,7 +12,9 @@ const ANON_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const token = readFileSync(root + "tmp/token-migrador.txt", "utf8").trim();
 const target = root + "backups/credenciais-teste-online.json";
-assert.ok(!existsSync(target), "Teste online já semeado. Preserve as credenciais existentes.");
+// Ao semear de novo (depois de limpar), as contas antigas mantêm a mesma senha: quem já testa no celular não precisa de senha nova.
+const anteriores = existsSync(target) ? JSON.parse(readFileSync(target, "utf8")) : null;
+const senhaAnterior = email => [anteriores?.gestao, ...Object.values(anteriores?.colaborador ?? {})].find(c => c?.email === email)?.password;
 
 async function migrador(body, modo = "sql") {
   const r = await fetch(`${BASE}/functions/v1/migrador-temporario`, { method: "POST", headers: { Authorization: `Bearer ${ANON_JWT}`, apikey: ANON_JWT,
@@ -34,7 +36,7 @@ const login = async u => (await (await fetch(`${BASE}/auth/v1/token?grant_type=p
 const senha = () => `Teste-${randomBytes(9).toString("base64url")}-9a`;
 
 async function conta(nome, email, portal) {
-  const password = senha(); const ticket = randomUUID();
+  const password = senhaAnterior(email) ?? senha(); const ticket = randomUUID();
   await sql(`select public.issue_user_provisioning_ticket(${q(email)}, ${q(ticket)})`);
   const user = await migrador({ method: "POST", path: "/admin/users", body: { email, password, email_confirm: true,
     user_metadata: { full_name: nome, metallo_provisioning_token: ticket },
@@ -68,6 +70,8 @@ const funcionarios = [
   ["Pedro Teste Lima", "welder", solda, "pedro.teste@example.com"],
   ["Ana Teste Rocha", "helper", montagem, null],
   ["Carlos Teste Melo", "painter", solda, null],
+  // Conta só para as provas automáticas (não usar na demonstração).
+  ["Robô de Provas Automáticas", "helper", montagem, "robo.provas@example.com"],
 ];
 const contas = {};
 const ids = {};

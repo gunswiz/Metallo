@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-04T08:38:04.196Z",
+  "at": "2026-10-04T09:09:16.212Z",
   "scope": "Marco 4D no teste online (dados fictícios, sem valor oficial)",
   "checks": [
     {
@@ -99,7 +99,7 @@
       "ok": true
     },
     {
-      "name": "pico de 30 marcações simultâneas gravadas (909 ms)",
+      "name": "pico de 30 marcações simultâneas gravadas (945 ms)",
       "ok": true
     },
     {
@@ -152,5 +152,5 @@
     }
   ],
   "result": "37/37 OK",
-  "pico_30_ms": 909
+  "pico_30_ms": 945
 }
