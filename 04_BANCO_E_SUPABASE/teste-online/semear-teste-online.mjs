@@ -47,7 +47,7 @@ async function conta(nome, email, portal) {
 assert.equal(Number(await sql("select count(*) from public.profiles")), 0, "Projeto de teste já tem contas.");
 
 // 1) Gestão
-const gestor = await conta("Gestor de Teste (fictício)", "gestao.teste@example.com", false);
+const gestor = await conta("Gestor de Teste (fictício)", "gestor@teste.metallo", false);
 await sql(`update public.profiles set role='admin', active=true, full_name='Gestor de Teste (fictício)' where id=${q(gestor.id)}::uuid`);
 const adm = await login(gestor); assert.ok(adm, "login do gestor falhou");
 // Catálogo-base igual ao da produção (profissões, kits, itens, motivos), registrado em nome do gestor de teste.
@@ -65,9 +65,9 @@ await sql(`update public.teams set worksite_id=${q(obraSul)}::uuid where id=${q(
 
 // 3) Funcionários (fictícios) e contas do Colaborador
 const funcionarios = [
-  ["João Teste da Silva", "welder", solda, "joao.teste@example.com"],
-  ["Maria Teste Souza", "assembler", montagem, "maria.teste@example.com"],
-  ["Pedro Teste Lima", "welder", solda, "pedro.teste@example.com"],
+  ["João Teste da Silva", "welder", solda, "joao@teste.metallo"],
+  ["Maria Teste Souza", "assembler", montagem, "maria@teste.metallo"],
+  ["Pedro Teste Lima", "welder", solda, "pedro@teste.metallo"],
   ["Ana Teste Rocha", "helper", montagem, null],
   ["Carlos Teste Melo", "painter", solda, null],
   // Conta só para as provas automáticas (não usar na demonstração).

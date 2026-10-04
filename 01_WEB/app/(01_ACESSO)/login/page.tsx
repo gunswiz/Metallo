@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/app/actions/auth";
 import { getSessionProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { SubmitButton } from "@/02_COMPONENTES_VISUAIS/submit-button";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { ehTesteOnline } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 export const metadata: Metadata = { title: "Entrar" };
 
@@ -17,6 +19,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const profile = await getSessionProfile();
   if (profile?.active) redirect("/dashboard");
   const { error } = await searchParams;
+  const teste = ehTesteOnline(getSupabaseEnv().url);
   return (
     <div className="auth-card">
       <p className="eyebrow">BEM-VINDO</p>
@@ -24,11 +27,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <p className="muted">Use as mesmas credenciais do aplicativo móvel.</p>
       {error && <div className="alert error" role="alert">{messages[error] ?? "Não foi possível entrar."}</div>}
       <form action={signIn} className="form-stack">
-        <label>E-mail<input name="email" type="email" autoComplete="email" required /></label>
+        {teste ? <label>Usuário<input name="email" type="text" inputMode="email" autoCapitalize="none" autoCorrect="off" autoComplete="username" placeholder="gestor" required /></label>
+          : <label>E-mail<input name="email" type="email" autoComplete="email" required /></label>}
         <label>Senha<input name="password" type="password" autoComplete="current-password" minLength={8} required /></label>
         <SubmitButton pendingLabel="Entrando…">Entrar</SubmitButton>
       </form>
-      <Link className="text-link" href="/recuperar-senha">Esqueci minha senha</Link>
+      {teste ? <p className="muted">Ambiente de teste: digite só o usuário (sem @).</p> : <Link className="text-link" href="/recuperar-senha">Esqueci minha senha</Link>}
     </div>
   );
 }

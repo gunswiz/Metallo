@@ -3,6 +3,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, resetPasswordSchema, updatePasswordSchema } from "@metallo/validation";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { ehTesteOnline, loginDeTeste } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { resolveApplicationOrigin } from "@/03_FUNCOES_E_LOGICA/Autenticacao/application-origin";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 
@@ -11,7 +13,9 @@ function value(formData: FormData, key: string) {
 }
 
 export async function signIn(formData: FormData) {
-  const parsed = loginSchema.safeParse({ email: value(formData, "email"), password: value(formData, "password") });
+  // Teste online: aceita só o usuário (ex.: "gestor"); produção continua exigindo o e-mail completo.
+  const email = ehTesteOnline(getSupabaseEnv().url) ? loginDeTeste(value(formData, "email")) : value(formData, "email");
+  const parsed = loginSchema.safeParse({ email, password: value(formData, "password") });
   if (!parsed.success) redirect("/login?error=dados-invalidos");
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);

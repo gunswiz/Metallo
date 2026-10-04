@@ -52,3 +52,8 @@ it("página online entrega modo online e recusa caminhos fora da lista", async (
   route.host = null;
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["epis"] }) })).rejects.toThrow("NOT_FOUND");
 });
+it("login rápido do teste: usuário sem @ vira o e-mail de teste", async () => {
+  const { loginDeTeste } = await import("@/09_CONFIGURACOES/ambiente-teste-online");
+  expect(loginDeTeste(" Joao ")).toBe("joao@teste.metallo");
+  expect(loginDeTeste("alguem@empresa.com")).toBe("alguem@empresa.com");
+});

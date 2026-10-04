@@ -19,3 +19,10 @@ export function recursosNovosLiberados(supabaseUrl: string | undefined) {
 export function ehTesteOnline(supabaseUrl: string | undefined) {
   return supabaseUrl === TESTE_ONLINE_SUPABASE_URL;
 }
+
+/** Teste online: login rápido digitando só o usuário (ex.: "joao" vira joao@teste.metallo). */
+export const TESTE_ONLINE_DOMINIO_LOGIN = "teste.metallo";
+export function loginDeTeste(valor: string) {
+  const v = valor.trim().toLowerCase();
+  return v.includes("@") ? v : `${v}@${TESTE_ONLINE_DOMINIO_LOGIN}`;
+}
