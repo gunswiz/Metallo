@@ -4,6 +4,10 @@
 export const LAB_SUPABASE_URL = "http://127.0.0.1:54321";
 export const TESTE_ONLINE_SUPABASE_URL = "https://cvimwiqokkujfhwynhmt.supabase.co";
 export const TESTE_ONLINE_COLABORADOR_ORIGIN = "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev";
+export const TESTE_ONLINE_COLABORADOR_HOST = new URL(TESTE_ONLINE_COLABORADOR_ORIGIN).host;
+export const TESTE_ONLINE_GESTAO_ORIGIN = "https://metallo-teste-gestao.metallo-gunswiz.workers.dev";
+/** Marco 4D: servidor do Meu Ponto no teste online (Edge Function sobre o schema "ponto"). */
+export const TESTE_ONLINE_PONTO_4D = `${TESTE_ONLINE_SUPABASE_URL}/functions/v1/ponto-4d`;
 /** Biometria do celular (3F) no teste online: Edge Function com o RP do Colaborador de teste. */
 export const TESTE_ONLINE_ASSINATURA_3F = `${TESTE_ONLINE_SUPABASE_URL}/functions/v1/assinatura-epi-3f`;
 

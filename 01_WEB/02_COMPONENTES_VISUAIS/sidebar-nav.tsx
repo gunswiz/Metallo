@@ -36,7 +36,7 @@ const entries: Array<{
   { href: "/consumo", label: "Consumo", icon: ChartNoAxesCombined, capability: "inventory:read" },
   { href: "/relatorios", label: "Relatórios", icon: ChartNoAxesCombined, capability: "inventory:read" },
   { href: "/comunicados", label: "Comunicados", icon: Megaphone, capability: "admin:manage", newFeature: true },
-  { href: "/ponto-laboratorio", label: "Ponto · laboratório", icon: Clock3, capability: "admin:manage", localOnly: true },
+  { href: "/ponto-laboratorio", label: "Ponto (teste)", icon: Clock3, capability: "admin:manage", newFeature: true },
   { href: "/usuarios", label: "Usuários", icon: UserRoundCog, capability: "admin:manage" },
   { href: "/minha-conta", label: "Minha conta", icon: UserRoundCog, capability: "dashboard:read" },
   { href: "/ajuda", label: "Guia de uso", icon: ClipboardList, capability: "dashboard:read" },

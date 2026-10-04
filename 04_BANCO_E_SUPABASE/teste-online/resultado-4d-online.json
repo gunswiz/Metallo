@@ -1,0 +1,156 @@
+{
+  "at": "2026-10-04T08:38:04.196Z",
+  "scope": "Marco 4D no teste online (dados fictícios, sem valor oficial)",
+  "checks": [
+    {
+      "name": "relógio do servidor (não do aparelho)",
+      "ok": true
+    },
+    {
+      "name": "origem externa recusada",
+      "ok": true
+    },
+    {
+      "name": "sem login recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão não usa rotas pessoais pela origem do Colaborador",
+      "ok": true
+    },
+    {
+      "name": "intenção fixa a hora; repetir a mesma chave mantém a hora",
+      "ok": true
+    },
+    {
+      "name": "outra pessoa não reaproveita a chave (início)",
+      "ok": true
+    },
+    {
+      "name": "outra pessoa não grava na intenção alheia",
+      "ok": true
+    },
+    {
+      "name": "marcação gravada com NSR e recibo",
+      "ok": true
+    },
+    {
+      "name": "reenvio da mesma marcação não duplica",
+      "ok": true
+    },
+    {
+      "name": "reenvio com outra localização é conflito",
+      "ok": true
+    },
+    {
+      "name": "gravar sem intenção é recusado",
+      "ok": true
+    },
+    {
+      "name": "campo extra na localização é recusado",
+      "ok": true
+    },
+    {
+      "name": "localização com hora antiga vira 'não comprovada'",
+      "ok": true
+    },
+    {
+      "name": "localização negada não impede o registro",
+      "ok": true
+    },
+    {
+      "name": "recuperação pela intenção (resposta perdida)",
+      "ok": true
+    },
+    {
+      "name": "intenção alheia não é revelada",
+      "ok": true
+    },
+    {
+      "name": "comprovante pessoal com NSR e hash",
+      "ok": true
+    },
+    {
+      "name": "Maria não vê comprovante do João",
+      "ok": true
+    },
+    {
+      "name": "lista de hoje",
+      "ok": true
+    },
+    {
+      "name": "últimas 48 h",
+      "ok": true
+    },
+    {
+      "name": "filtro inválido recusado",
+      "ok": true
+    },
+    {
+      "name": "intenção vencida não grava (hora não pode ser reaproveitada)",
+      "ok": true
+    },
+    {
+      "name": "sessão encerrada não marca ponto",
+      "ok": true
+    },
+    {
+      "name": "funcionário inativo não marca ponto",
+      "ok": true
+    },
+    {
+      "name": "pico de 30 marcações simultâneas gravadas (909 ms)",
+      "ok": true
+    },
+    {
+      "name": "cadeia de hash e NSR sem buracos conferidos",
+      "ok": true
+    },
+    {
+      "name": "NSR avançou exatamente pelas marcações desta prova",
+      "ok": true
+    },
+    {
+      "name": "original imutável: alterar é bloqueado",
+      "ok": true
+    },
+    {
+      "name": "original imutável: apagar é bloqueado",
+      "ok": true
+    },
+    {
+      "name": "original imutável: truncar é bloqueado",
+      "ok": true
+    },
+    {
+      "name": "original imutável: mexer no contador é bloqueado",
+      "ok": true
+    },
+    {
+      "name": "original imutável: apagar intenção é bloqueado",
+      "ok": true
+    },
+    {
+      "name": "adulteração direta (com gatilho desligado) é detectada pela verificação",
+      "ok": true
+    },
+    {
+      "name": "adulteração foi desfeita (transação revertida)",
+      "ok": true
+    },
+    {
+      "name": "schema do ponto fora da API pública",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê marcações e integridade",
+      "ok": true
+    },
+    {
+      "name": "funcionário não acessa a visão da Gestão",
+      "ok": true
+    }
+  ],
+  "result": "37/37 OK",
+  "pico_30_ms": 909
+}

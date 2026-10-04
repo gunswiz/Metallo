@@ -44,7 +44,7 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
     const operation = pending.current ?? { key: crypto.randomUUID() }; pending.current = operation;
     const confirmed = async (value: unknown) => {
       const event = pointReceipt.parse(value); if (!alive.current) return;
-      setReceipt(event); setEvents(old => [event, ...old.filter(e => e.event_id !== event.event_id)]); setMessage("Ponto registrado no laboratório."); pending.current = null; setRetry(false);
+      setReceipt(event); setEvents(old => [event, ...old.filter(e => e.event_id !== event.event_id)]); setMessage("Ponto registrado."); pending.current = null; setRetry(false);
       setRecordsRevision(old => old + 1);
       try { if (presentation === "full") await load(); } catch { /* Recibo confirmado permanece; falha de leitura não inventa outra marcação. */ }
     };
@@ -71,21 +71,21 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
     const encerrarMarcacao = iniciarMarcacao();
     try {
       if (navigator.locks) await navigator.locks.request(`metallo-point-${employeeId}`, { ifAvailable: true }, async lock => { if (lock) await perform(); else if (alive.current) setMessage("Uma marcação está em andamento em outra aba. Aguarde e consulte o histórico."); });
-      else { if (alive.current) setMessage("Este navegador não oferece o controle entre abas necessário ao laboratório. Use o Edge atualizado."); }
+      else { if (alive.current) setMessage("Este navegador não oferece o controle entre abas necessário ao registro. Use o Chrome ou o Edge atualizado."); }
     } finally { encerrarMarcacao(); working.current = false; if (alive.current) setBusy(false); }
   }
   return <div className={styles.pointOnline}>
     {presentation === "full" && <strong className={styles.pointWarning}>SIMULAÇÃO SEM VALOR OFICIAL</strong>}
-    <div className={presentation === "home" ? styles.homePointClock : styles.pointHero}><Clock3 size={presentation === "home" ? 20 : 28} aria-hidden/>{presentation === "full" ? <p>Olá, {name.trim().split(/\s+/)[0]}.</p> : <p>{clock ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "full", timeZone: "America/Fortaleza" }).format(clock) : "Aguardando a data do servidor…"}</p>}<span>Hora de referência do laboratório</span><strong className={styles.pointClock}>{clock ? pointTime(clock) : "--:--:--"}</strong><small>Fortaleza · UTC−03:00 · horário do servidor local</small></div>
-    {presentation === "home" && <><p className={styles.homePointLabel}>MEU PONTO</p>{clock ? <MeusRegistros key={pointDate(clock)} getToken={getToken} revision={recordsRevision} presentation="today"/> : <p className={styles.signatureNote}>Marcações de hoje disponíveis após confirmar a referência do laboratório.</p>}</>}
-    {presentation === "full" && <div className={styles.pointLocation}><MapPin size={21} aria-hidden/><p>A localização será coletada somente no momento do registro de ponto para compor o contexto da marcação. O aplicativo não realiza rastreamento contínuo.<br/><small>Negar a permissão ou ter baixa precisão não impede o registro. Use somente o laboratório sintético.</small></p></div>}
+    <div className={presentation === "home" ? styles.homePointClock : styles.pointHero}><Clock3 size={presentation === "home" ? 20 : 28} aria-hidden/>{presentation === "full" ? <p>Olá, {name.trim().split(/\s+/)[0]}.</p> : <p>{clock ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "full", timeZone: "America/Fortaleza" }).format(clock) : "Aguardando a data do servidor…"}</p>}<span>Hora de referência do servidor</span><strong className={styles.pointClock}>{clock ? pointTime(clock) : "--:--:--"}</strong><small>Fortaleza · UTC−03:00 · horário do servidor</small></div>
+    {presentation === "home" && <><p className={styles.homePointLabel}>MEU PONTO</p>{clock ? <MeusRegistros key={pointDate(clock)} getToken={getToken} revision={recordsRevision} presentation="today"/> : <p className={styles.signatureNote}>Marcações de hoje disponíveis após confirmar a hora do servidor.</p>}</>}
+    {presentation === "full" && <div className={styles.pointLocation}><MapPin size={21} aria-hidden/><p>A localização será coletada somente no momento do registro de ponto para compor o contexto da marcação. O aplicativo não realiza rastreamento contínuo.<br/><small>Negar a permissão ou ter baixa precisão não impede o registro. Use somente contas de teste.</small></p></div>}
     <button type="button" className={styles.primary} onClick={() => void mark()} disabled={busy} aria-busy={busy}>{busy ? "Registrando…" : retry ? "Verificar / reenviar a mesma intenção" : "Registrar ponto"}</button>
     <p role="status" aria-live="polite" className={styles.pointState}>{message || "Pronto para uma marcação online."}</p>
     {receipt && <section className={styles.pointReceipt} aria-label="Recibo técnico da marcação"><CheckCircle2 size={22} aria-hidden/><h2>Ponto registrado</h2><p>{pointDate(receipt.marking_at)} · <strong>{pointTime(receipt.marking_at)}</strong></p><p>Online · {locationLabel[receipt.location_status]}</p><small>Referência sintética: {receipt.synthetic_reference}<br/>Recibo técnico de teste. Não é comprovante REP-P oficial.</small></section>}
     {presentation === "home" ? <><nav className={styles.homeShortcuts} aria-label="Atalhos de ponto"><Link href="/colaborador/registros">Meus registros</Link><Link href="/colaborador/comprovantes">Comprovantes</Link></nav><details className={styles.homeLocationNote}><summary>Sobre a localização nesta marcação</summary><p>A localização é solicitada uma única vez ao registrar. Não há rastreamento contínuo. Negar a permissão ou ter baixa precisão não impede o registro.</p></details></> : <>
       <MeusRegistros key={employeeId} getToken={getToken} revision={recordsRevision}/>
-      <details><summary>Resumo recente da marcação online</summary><p className={styles.signatureNote}>Últimas 50 marcações pessoais do fluxo 4A.</p>{!events.length ? <p>Nenhuma marcação confirmada nesta conta.</p> : <ul className={styles.pointHistory}>{events.map(event => <li key={event.event_id}><div><strong>{pointDate(event.marking_at)} · {pointTime(event.marking_at)}</strong><p>Online · {locationLabel[event.location_status]}</p></div><span>Registrada</span></li>)}</ul>}</details>
-      <small>Não é produção, conformidade REP-P ou autorização de ponto oficial. Não liberado para funcionários reais. Não implantado no Supabase remoto. Não autoriza publicação.</small>
+      <details><summary>Resumo recente da marcação online</summary><p className={styles.signatureNote}>Últimas 50 marcações pessoais.</p>{!events.length ? <p>Nenhuma marcação confirmada nesta conta.</p> : <ul className={styles.pointHistory}>{events.map(event => <li key={event.event_id}><div><strong>{pointDate(event.marking_at)} · {pointTime(event.marking_at)}</strong><p>Online · {locationLabel[event.location_status]}</p></div><span>Registrada</span></li>)}</ul>}</details>
+      <small>Não é produção, conformidade REP-P ou autorização de ponto oficial. Não liberado para funcionários reais.</small>
     </>}
   </div>;
 }

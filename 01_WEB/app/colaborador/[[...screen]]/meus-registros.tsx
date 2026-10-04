@@ -1,12 +1,12 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Download, FileText, ChevronLeft, ChevronRight } from "lucide-react";
-import { recordsRequest, recordPage, type PersonalRecord, type RecordFilter } from "@/05_ACESSO_A_DADOS/Ponto/registros";
+import { recordsRequest, recordPage, type AnyRecord as PersonalRecord, type RecordFilter } from "@/05_ACESSO_A_DADOS/Ponto/registros";
 import { pointDate, pointTime } from "@/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia";
 import styles from "./colaborador.module.css";
 function message(error: unknown) {
   const code = error instanceof Error ? error.message : "";
-  return /SEM_REGISTROS_48H/.test(code) ? "Nenhuma marcação nas últimas 48 horas. Não foi gerado arquivo." : /PERIODO_INVALIDO/.test(code) ? "Escolha um período válido, de até 366 dias." : /SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(code) ? "Acesso encerrado. Entre novamente com uma conta ativa." : /EXTRACAO_MUITO_EXTENSA/.test(code) ? "A extração excede o limite de 500 recibos do laboratório. Nenhum pacote parcial foi gerado." : "Não foi possível consultar o laboratório. Tente novamente quando estiver online.";
+  return /SEM_REGISTROS_48H/.test(code) ? "Nenhuma marcação nas últimas 48 horas. Não foi gerado arquivo." : /PERIODO_INVALIDO/.test(code) ? "Escolha um período válido, de até 366 dias." : /SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(code) ? "Acesso encerrado. Entre novamente com uma conta ativa." : /EXTRACAO_MUITO_EXTENSA/.test(code) ? "A extração excede o limite de 500 recibos. Nenhum pacote parcial foi gerado." : "Não foi possível consultar os registros. Tente novamente quando estiver online.";
 }
 export function MeusRegistros({ getToken, revision = 0, presentation = "legacy" }: { getToken: () => Promise<string>; revision?: number; presentation?: "legacy" | "history" | "receipts" | "today" }) {
   const [filter, setFilter] = useState<RecordFilter>({ period: presentation === "receipts" ? "48h" : "today" }), [offset, setOffset] = useState(0);
@@ -43,7 +43,7 @@ export function MeusRegistros({ getToken, revision = 0, presentation = "legacy" 
       const blob = await response.blob();
       if (!alive.current || controller.signal.aborted) return;
       const url = URL.createObjectURL(blob), link = document.createElement("a");
-      link.href = url; link.download = event ? `recibo-laboratorio-${event.event_id}.pdf` : "recibos-laboratorio-ultimas-48h.zip";
+      link.href = url; link.download = event ? (event.source === "4D" ? `comprovante-teste-nsr-${event.nsr}.pdf` : `recibo-laboratorio-${event.event_id}.pdf`) : "recibos-laboratorio-ultimas-48h.zip";
       document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
       setStatus(event ? "Recibo de laboratório baixado." : "Pacote de recibos das últimas 48 horas baixado.");
     } catch (error) { if (alive.current && !controller.signal.aborted) { setStatus(message(error)); if (/SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(error instanceof Error ? error.message : "")) { setEvents([]); setSelected(null); setMore(false); } } }
@@ -69,6 +69,6 @@ export function MeusRegistros({ getToken, revision = 0, presentation = "legacy" 
     {!loading && !events.length && !status && <p>Nenhuma marcação neste período.</p>}
     <ul className={styles.pointHistory}>{events.map(event => <li key={event.event_id}><div><strong>{pointDate(event.marking_at)} · {pointTime(event.marking_at)}</strong><p>Registro realizado</p></div><button type="button" className={styles.recordsButton} aria-label={`Ver recibo de ${pointDate(event.marking_at)} às ${pointTime(event.marking_at)}`} onClick={() => setSelected(event)}>Ver recibo</button></li>)}</ul>
     {(offset > 0 || more) && <div className={styles.recordsPaging}><button type="button" className={styles.recordsButton} disabled={loading || offset === 0} onClick={() => setOffset(old => Math.max(0, old - 20))}><ChevronLeft size={18} aria-hidden/>Anteriores</button><span>Página {Math.floor(offset / 20) + 1}</span><button type="button" className={styles.recordsButton} disabled={loading || !more} onClick={() => setOffset(old => old + 20)}>Próximos<ChevronRight size={18} aria-hidden/></button></div>}
-    {selected && <section className={styles.pointReceipt} aria-label="Recibo de laboratório selecionado"><h3 ref={receiptHeading} tabIndex={-1}>Recibo de marcação — laboratório</h3><p><strong>{pointDate(selected.marking_at)} · {pointTime(selected.marking_at)}</strong></p><p>Registro concluído em {pointDate(selected.recorded_at)} às {pointTime(selected.recorded_at)}.</p><small>Fortaleza · UTC−03:00 · horário do servidor<br/>Dados históricos limitados: nome e identificação legal não preservados nesta marcação.</small><strong>SIMULAÇÃO SEM VALOR OFICIAL</strong><small>Não é comprovante REP-P oficial. Não possui assinatura PAdES/ICP-Brasil.</small><button type="button" className={styles.recordsDownload} disabled={downloading} onClick={() => void download(selected)}><Download size={20} aria-hidden/>Baixar recibo em PDF</button><button type="button" className={styles.recordsButton} onClick={() => setSelected(null)}>Fechar recibo</button></section>}
+    {selected && <section className={styles.pointReceipt} aria-label="Recibo de laboratório selecionado"><h3 ref={receiptHeading} tabIndex={-1}>Recibo de marcação — laboratório</h3><p><strong>{pointDate(selected.marking_at)} · {pointTime(selected.marking_at)}</strong></p><p>Registro concluído em {pointDate(selected.recorded_at)} às {pointTime(selected.recorded_at)}.</p><small>Fortaleza · UTC−03:00 · horário do servidor<br/>{selected.source === "4D" ? `NSR ${selected.nsr} · ${selected.employee_name}` : "Dados históricos limitados: nome e identificação legal não preservados nesta marcação."}</small><strong>SIMULAÇÃO SEM VALOR OFICIAL</strong><small>Não é comprovante REP-P oficial. Não possui assinatura PAdES/ICP-Brasil.</small><button type="button" className={styles.recordsDownload} disabled={downloading} onClick={() => void download(selected)}><Download size={20} aria-hidden/>Baixar recibo em PDF</button><button type="button" className={styles.recordsButton} onClick={() => setSelected(null)}>Fechar recibo</button></section>}
   </section>;
 }

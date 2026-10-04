@@ -18,7 +18,11 @@ const ORIGIN = "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev";
 const RP_ID = "metallo-teste-colaborador.metallo-gunswiz.workers.dev";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const sql = postgres(Deno.env.get("SUPABASE_DB_URL")!, { max: 3, prepare: false, idle_timeout: 20, onnotice: () => {} });
+// Pooler em modo transação (Supavisor): o banco do plano grátis aceita só 60 conexões diretas.
+const dbUrl = new URL(Deno.env.get("SUPABASE_DB_URL")!);
+const ref = new URL(Deno.env.get("SUPABASE_URL")!).hostname.split(".")[0];
+const sql = postgres({ host: "aws-0-sa-east-1.pooler.supabase.com", port: 6543, user: `postgres.${ref}`, password: decodeURIComponent(dbUrl.password),
+  database: "postgres", ssl: "require", prepare: false, max: 3, idle_timeout: 5, connect_timeout: 10, onnotice: () => {} });
 const auth = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!,
   { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
 
