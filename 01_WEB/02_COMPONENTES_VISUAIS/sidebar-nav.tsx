@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  BookOpen, Boxes, Building2, ChartNoAxesCombined, ClipboardList, Clock3, FileText, Gauge, HardHat, Handshake,
-  History, Inbox, Megaphone, PackageOpen, CirclePlus, Settings, ShoppingCart, Toolbox, Truck, UserRound,
-  UserRoundCog, Users, Warehouse, Wrench, type LucideIcon,
-} from "lucide-react";
+import { Boxes } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { can } from "@metallo/core";
@@ -12,12 +8,8 @@ import type { SessionProfile } from "@metallo/types";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { ativo, GRUPOS_MENU, type GrupoMenu, type ItemMenu } from "@/09_CONFIGURACOES/navegacao-gestao";
 
-export const ICONES: Record<string, LucideIcon> = {
-  inicio: Gauge, lancar: CirclePlus, estoque: Warehouse, materiais: PackageOpen, epis: HardHat, ferramentas: Toolbox,
-  equipamentos: Wrench, historico: History, compras: ShoppingCart, caixa: Inbox, locacoes: Truck, funcionarios: UserRound,
-  apoio: Handshake, equipes: Users, comunicados: Megaphone, ponto: Clock3, obras: Building2, consumo: ChartNoAxesCombined,
-  relatorios: FileText, usuarios: UserRoundCog, configuracoes: Settings, conta: UserRoundCog, ajuda: BookOpen, outros: Boxes, lista: ClipboardList,
-};
+import { ICONES } from "./icones-menu";
+export { ICONES };
 
 export function itemVisivel(profile: SessionProfile, item: ItemMenu) {
   return can(profile, item.capability) && (!item.newFeature || recursosNovosLiberados(process.env.NEXT_PUBLIC_SUPABASE_URL));

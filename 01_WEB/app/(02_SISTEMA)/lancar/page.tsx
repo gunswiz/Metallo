@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
-import { ICONES } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
+import { ICONES } from "@/02_COMPONENTES_VISUAIS/icones-menu";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { ACOES_LANCAR } from "@/09_CONFIGURACOES/navegacao-gestao";
 

@@ -2,7 +2,7 @@ import { Boxes, HardHat, Inbox, PackageOpen, Users, UserRound, Wrench } from "lu
 import { can, formatDateTime, movementLabel } from "@metallo/core";
 import Link from "next/link";
 import { MetricCard } from "@/02_COMPONENTES_VISUAIS/metric-card";
-import { ICONES } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
+import { ICONES } from "@/02_COMPONENTES_VISUAIS/icones-menu";
 import { ACOES_LANCAR, SECAO_ANTIGA } from "@/09_CONFIGURACOES/navegacao-gestao";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
