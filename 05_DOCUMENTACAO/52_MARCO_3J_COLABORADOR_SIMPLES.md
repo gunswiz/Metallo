@@ -46,3 +46,12 @@ sessão e o fluxo se perdia. Agora:
   só senha, digital preparada antes do toque, cadastro no lugar, troca no lugar, falhas sem falso sucesso).
 - `provas-3j-online.mjs` (robô de provas, dados fictícios) → `resultado-3j-online.json`.
 - `semear-teste-online.mjs` agora confirma a entrega do João pelo mesmo caminho do celular (senha via Edge Function).
+
+## Resultado (04/10/2026)
+- Testes do Web: 42 arquivos, 331+ testes, tipos e lint OK; publicação de teste (GitHub Actions) OK.
+- `provas-3j-online.mjs`: **20/20 OK** · `provas-3f-online.mjs` (digital): **27/27 OK** após a nova versão da função.
+- Conferência visual no navegador (tamanho de celular, conta Maria): termo já aceito, "Para fazer agora",
+  tela "Confirmar recebimento" com "Confirmar com a digital" pronto e "Usar minha senha", tela de troca.
+
+## Reset do teste online (ordem)
+`limpar-dados-teste-online.sql` → `ponto-4d.sql` → `3j-confirmacao-autenticada.sql` → `semear-teste-online.mjs`.
