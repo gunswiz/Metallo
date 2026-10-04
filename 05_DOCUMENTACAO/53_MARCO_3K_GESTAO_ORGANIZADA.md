@@ -28,3 +28,9 @@ Sair, abas estourando a tela e tabelas rolando para o lado.
 - Ícones em `02_COMPONENTES_VISUAIS/icones-menu.ts` (módulo comum). Lição: tela do servidor não pode ler objeto
   exportado de módulo "use client" (a primeira publicação quebrou o Início por isso; há teste de guarda).
 - Testes: `gestao-navegacao-3k.test.tsx`.
+
+## Ajuste após teste no celular (04/10)
+- Pedidos dos funcionários: o nome e o texto ficavam espremidos ao lado do formulário. Agora, no celular, a linha
+  vira cartão (texto em cima, formulário embaixo, largura toda) e o nome não é mais cortado com "...".
+- Todas as tabelas da Gestão viram cartões no celular: `RotulosTabelas` (no AppShell) copia o título de cada coluna
+  para a célula (`data-label`) e o CSS mostra "COLUNA  valor" em cada linha. No computador nada muda.
