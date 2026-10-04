@@ -167,7 +167,9 @@ it("termo de ciência NR-6 é a primeira tela: bloqueia a lista até aceitar e r
   // Sem aceitar, nada de EPI aparece nem é consultado.
   expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
   expect(state.rpc.mock.calls.some(([name]) => name === "my_personal_epi")).toBe(false);
-  fireEvent.click(screen.getByRole("button", { name: "Li e concordo" }));
+  const agree = screen.getByRole("button", { name: "Li e concordo" });
+  await waitFor(() => expect(agree).toBeEnabled());
+  fireEvent.click(agree);
   expect(await screen.findByText("Capacete João", {}, { timeout: 8000 })).toBeInTheDocument();
   const accepts = state.rpc.mock.calls.filter(([name]) => name === "accept_epi_awareness_3i");
   expect(accepts).toHaveLength(1);

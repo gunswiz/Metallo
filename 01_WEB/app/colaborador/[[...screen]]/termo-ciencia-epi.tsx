@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ScrollText, WifiOff } from "lucide-react";
 import type { EpiAwareness3i } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
@@ -31,7 +31,8 @@ export function TermoCienciaEpi({ read, accept, children }: {
     const el = box.current;
     if (el && el.scrollTop + el.clientHeight >= el.scrollHeight - 24) setReachedEnd(true);
   }, []);
-  useEffect(() => { if (state.status === "ready" && !passed) check(); }, [state, passed, check]);
+  // Texto curto (cabe sem rolar) já libera o botão antes de a tela aparecer.
+  useLayoutEffect(() => { if (state.status === "ready" && !passed) check(); }, [state, passed, check]);
   if (passed) return <>{children(passed)}</>;
   async function send(term: EpiAwareness3i) {
     if (lock.current || !reachedEnd) return;
