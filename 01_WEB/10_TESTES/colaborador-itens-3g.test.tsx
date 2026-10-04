@@ -50,37 +50,64 @@ it("contrato aceita offset do PostgreSQL e rejeita dado administrativo extra", (
   expect(personalItem3g.strict().safeParse({ ...item(), employee_id: "maria" }).success).toBe(false);
   expect(personalItem3g.safeParse({ ...item(), status: "EPI" }).success).toBe(false);
 });
-it("separa entrega pendente, confirmação e histórico", async () => {
-  const read = vi.fn().mockResolvedValue([item(), { ...item("DEVOLVIDO"), delivery_id: "22222222-2222-4222-8222-222222222222" }]);
-  render(<MeusItens read={read} actions={{ confirm: vi.fn().mockResolvedValue(1) }} />);
-  expect(await screen.findByRole("heading", { name: "Atuais" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Histórico" })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
+it("pendente aparece no topo com Recebi; atuais em lista curta; histórico em Mais opções", async () => {
+  const read = vi.fn().mockResolvedValue([item(), { ...item("EM_USO"), delivery_id: "33333333-3333-4333-8333-333333333333", item_name: "Esquadro sintético" },
+    { ...item("DEVOLVIDO"), delivery_id: "22222222-2222-4222-8222-222222222222", item_name: "Alicate devolvido" }]);
+  render(<MeusItens read={read} actions={{ confirm: vi.fn().mockResolvedValue(1), report: vi.fn() }} />);
+  expect(await screen.findByRole("heading", { name: "Você recebeu este item?" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Recebi" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Itens com você (1)" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Trocar ou avisar problema: Esquadro sintético" })).toBeInTheDocument();
+  expect(screen.queryByText("Alicate devolvido")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Mais opções" }));
+  expect(screen.getByText("Alicate devolvido")).toBeInTheDocument();
   expect(screen.getByText("SIMULAÇÃO SEM VALOR OFICIAL.", { exact: false })).toBeInTheDocument();
 });
-it("duplo clique na confirmação envia uma operação; repetir usa a mesma chave até sucesso", async () => {
-  let finish!: (value: number) => void;
-  const confirm = vi.fn().mockImplementation(() => new Promise<number>(resolve => { finish = resolve; }));
-  render(<MeusItens read={async () => [item()]} actions={{ confirm }} />);
-  const button = await screen.findByRole("button", { name: "Confirmar recebimento" });
+it("duplo toque em Recebi envia uma operação; repetir após falha usa a mesma chave", async () => {
+  let fail!: (error: Error) => void;
+  const confirm = vi.fn().mockImplementationOnce(() => new Promise<number>((_, reject) => { fail = reject; })).mockResolvedValue(1);
+  const read = vi.fn(async () => [item()]);
+  render(<MeusItens read={read} actions={{ confirm }} />);
+  const button = await screen.findByRole("button", { name: "Recebi" });
   fireEvent.click(button); fireEvent.click(button);
   expect(confirm).toHaveBeenCalledTimes(1);
   expect(confirm.mock.calls[0][0]).toBe(id);
-  finish(1);
-  await waitFor(() => expect(button).not.toBeDisabled());
+  fail(new Error("Failed to fetch"));
+  expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível confirmar");
+  fireEvent.click(screen.getByRole("button", { name: "Recebi" }));
+  await waitFor(() => expect(confirm).toHaveBeenCalledTimes(2));
+  expect(confirm.mock.calls[1][1]).toBe(confirm.mock.calls[0][1]);
+  await waitFor(() => expect(read).toHaveBeenCalledTimes(2));
 });
-it("problema e troca são solicitações, sem remover item da lista", async () => {
+it("troca e problema abrem tela cheia no lugar, com motivos em botões, sem remover o item", async () => {
   const report = vi.fn().mockResolvedValue(3);
   render(<MeusItens read={async () => [item("EM_USO")]} actions={{ report }} />);
-  fireEvent.click(await screen.findByRole("button", { name: "Informar problema" }));
-  fireEvent.change(screen.getByLabelText("Motivo"), { target: { value: "DAMAGED" } });
+  fireEvent.click(await screen.findByRole("button", { name: "Trocar ou avisar problema: Trena sintética 5 m" }));
+  expect(screen.getByRole("dialog", { name: "Trena sintética 5 m" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Avisar um problema" }));
+  expect(screen.getByRole("button", { name: "Enviar" })).toBeDisabled();
+  fireEvent.click(screen.getByRole("button", { name: "Quebrou ou estragou" }));
   fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
   await waitFor(() => expect(report).toHaveBeenCalledWith(id, "PROBLEM", "DAMAGED", "", expect.any(String)));
-  expect(screen.getByRole("heading", { name: "Trena sintética 5 m" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Solicitar troca" }));
-  fireEvent.change(screen.getByLabelText("Motivo"), { target: { value: "WEAR" } });
+  expect(await screen.findByText("Aviso enviado!")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "OK" }));
+  fireEvent.click(await screen.findByRole("button", { name: "Trocar ou avisar problema: Trena sintética 5 m" }));
+  fireEvent.click(screen.getByRole("button", { name: "Pedir troca" }));
+  fireEvent.click(screen.getByRole("button", { name: "Está gasto" }));
   fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
   await waitFor(() => expect(report).toHaveBeenCalledWith(id, "EXCHANGE_REQUESTED", "WEAR", "", expect.any(String)));
+  expect(await screen.findByText("Pedido enviado!")).toBeInTheDocument();
+});
+it("Outro motivo exige explicação", async () => {
+  const report = vi.fn().mockResolvedValue(3);
+  render(<MeusItens read={async () => [item("EM_USO")]} actions={{ report }} />);
+  fireEvent.click(await screen.findByRole("button", { name: "Trocar ou avisar problema: Trena sintética 5 m" }));
+  fireEvent.click(screen.getByRole("button", { name: "Avisar um problema" }));
+  fireEvent.click(screen.getByRole("button", { name: "Outro problema" }));
+  expect(screen.getByRole("button", { name: "Enviar" })).toBeDisabled();
+  fireEvent.change(screen.getByLabelText("Explique"), { target: { value: "Cabo solto" } });
+  fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
+  await waitFor(() => expect(report).toHaveBeenCalledWith(id, "PROBLEM", "OTHER", "Cabo solto", expect.any(String)));
 });
 it("sem conexão esconde itens anteriores e oferece nova tentativa", async () => {
   let fail = false;

@@ -2,10 +2,12 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, PackageCheck, Toolbox, WifiOff } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Toolbox, WifiOff } from "lucide-react";
 import type { PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 import { usePersonalDetail } from "./use-personal-detail";
 import styles from "./colaborador.module.css";
+import simple from "./simples.module.css";
+import { TelaCheia } from "./tela-cheia";
 
 const status: Record<PersonalItem3g["status"], string> = { AGUARDANDO_CONFIRMACAO: "Aguardando confirmação",
   EM_USO: "Em uso", DANIFICADO: "Problema: danificado", EXTRAVIADO: "Problema: extraviado",
@@ -22,77 +24,110 @@ type Actions = {
   report?: (deliveryId: string, action: "PROBLEM" | "EXCHANGE_REQUESTED", category: string,
     note: string, key: string) => Promise<number>;
 };
-function ItemCard({ item, actions, refresh }: { item: PersonalItem3g; actions: Actions; refresh: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+const closedStatus = (item: PersonalItem3g) => item.status === "DEVOLVIDO" || item.status === "SUBSTITUIDO";
+const line = (item: PersonalItem3g) => [`${item.quantity} ${item.unit}`, item.variant ?? ""].filter(Boolean).join(" · ");
+
+// Marco 3J: pedir troca ou avisar problema numa tela cheia, com motivos em botões grandes.
+function ItemSheet({ item, report, onSent, onClose }: { item: PersonalItem3g; report: NonNullable<Actions["report"]>; onSent: () => void; onClose: () => void }) {
   const [mode, setMode] = useState<"PROBLEM" | "EXCHANGE_REQUESTED" | null>(null);
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
-  const attempts = useRef<Record<string, string>>({});
-  async function confirm() {
-    if (!actions.confirm || busy) return;
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+  const key = useRef<string | null>(null);
+  const options = mode === "EXCHANGE_REQUESTED" ? { WEAR: "Está gasto", DAMAGED: "Quebrou ou estragou", LOST: "Perdi", OTHER: "Outro motivo" } :
+    { DAMAGED: "Quebrou ou estragou", LOST: "Perdi", OTHER: "Outro problema" };
+  async function send() {
+    if (!mode || !category || busy || (category === "OTHER" && !note.trim())) return;
     setBusy(true); setError("");
-    const key = attempts.current.confirm ??= crypto.randomUUID();
-    try { await actions.confirm(item.delivery_id, key); delete attempts.current.confirm; refresh(); }
-    catch { setError("Não foi possível confirmar. Tente novamente."); }
+    try { await report(item.delivery_id, mode, category, note.trim(), key.current ??= crypto.randomUUID()); key.current = null; setSent(true); onSent(); }
+    catch { setError("Não deu certo agora. Tente de novo."); }
     finally { setBusy(false); }
   }
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!actions.report || !mode || !category || busy) return;
-    setBusy(true); setError("");
-    const key = attempts.current.report ??= crypto.randomUUID();
-    try { await actions.report(item.delivery_id, mode, category, note.trim(), key);
-      delete attempts.current.report; setMode(null); setCategory(""); setNote(""); refresh(); }
-    catch { setError("Não foi possível registrar. Confira o item e tente novamente."); }
-    finally { setBusy(false); }
-  }
-  const closed = item.status === "DEVOLVIDO" || item.status === "SUBSTITUIDO";
-  return <article className={styles.personalCard}>
-    <div className={styles.epiSectionHead}><div><p className={styles.workLabel}>{status[item.status]}</p><h2>{item.item_name}</h2></div><PackageCheck size={25} aria-hidden="true"/></div>
-    <dl className={styles.epiFacts}><div><dt>Quantidade</dt><dd>{item.quantity} {item.unit}</dd></div>
-      {item.variant && <div><dt>Medida / variante</dt><dd>{item.variant}</dd></div>}
-      <div><dt>Entrega</dt><dd>{day(item.delivered_at)}</dd></div>
-      <div><dt>Recebimento</dt><dd>{item.confirmed_at ? `Confirmado em ${day(item.confirmed_at)}` : "Pendente"}</dd></div>
-    </dl>
-    {!closed && !item.confirmed_at && actions.confirm && <button className={styles.itemAction3g} type="button" onClick={() => void confirm()} disabled={busy}>Confirmar recebimento</button>}
-    {!closed && actions.report && <div className={styles.itemActions3g}>
-      <button type="button" onClick={() => { setMode("PROBLEM"); setCategory(""); }} disabled={busy}>Informar problema</button>
-      <button type="button" onClick={() => { setMode("EXCHANGE_REQUESTED"); setCategory(""); }} disabled={busy}>Solicitar troca</button>
-    </div>}
-    {mode && <form className={styles.itemForm3g} onSubmit={event => void submit(event)}><h3>{mode === "PROBLEM" ? "Informar problema" : "Solicitar troca"}</h3>
-      <label>Motivo<select value={category} onChange={event => { setCategory(event.target.value); delete attempts.current.report; }} required>
-        <option value="">Selecione</option>{mode === "EXCHANGE_REQUESTED" && <option value="WEAR">Desgaste</option>}
-        <option value="DAMAGED">Danificado</option><option value="LOST">Perdido ou extraviado</option><option value="OTHER">Outro</option>
-      </select></label>
-      <label>Observação opcional<textarea value={note} onChange={event => { setNote(event.target.value); delete attempts.current.report; }} maxLength={240} rows={2}/></label>
-      <div><button type="submit" disabled={busy || !category}>{busy ? "Registrando…" : "Enviar"}</button>
-        <button type="button" onClick={() => { setMode(null); delete attempts.current.report; }} disabled={busy}>Cancelar</button></div>
-    </form>}
-    {error && <p className={styles.exchangeError} role="alert">{error}</p>}
-    {item.events.length > 0 && <details className={styles.itemHistory3g}><summary>Ver eventos deste item</summary><ol>{item.events.map((event, index) =>
-      <li key={`${event.occurred_at}-${index}`}>{day(event.occurred_at)} · {eventLabel[event.event_type] ?? event.event_type}
-        {event.category ? ` · ${reasonLabel[event.category] ?? event.category}` : ""}{event.note ? ` · ${event.note}` : ""}</li>)}</ol></details>}
-  </article>;
+  if (sent) return <TelaCheia title={mode === "EXCHANGE_REQUESTED" ? "Pedido enviado" : "Aviso enviado"} onBack={onClose} backLabel="Fechar">
+    <div className={simple.done} role="status"><CheckCircle2 aria-hidden="true" size={72}/><h2>{mode === "EXCHANGE_REQUESTED" ? "Pedido enviado!" : "Aviso enviado!"}</h2>
+      <p>A Gestão vai analisar. O item continua com você até a Gestão registrar a troca ou a devolução.</p></div>
+    <button type="button" className={simple.bigGo} onClick={onClose}>OK</button>
+  </TelaCheia>;
+  return <TelaCheia title={item.item_name} onBack={onClose} busy={busy}>
+    <div role="group" aria-label="O que você precisa?"><p>O que você precisa?</p><div className={simple.bigActions}>
+      <button type="button" className={simple.big} aria-pressed={mode === "EXCHANGE_REQUESTED"} onClick={() => { setMode("EXCHANGE_REQUESTED"); setCategory(""); key.current = null; }}>Pedir troca</button>
+      <button type="button" className={simple.big} aria-pressed={mode === "PROBLEM"} onClick={() => { setMode("PROBLEM"); setCategory(""); key.current = null; }}>Avisar um problema</button>
+    </div></div>
+    {mode && <div role="group" aria-label="Motivo"><p>Por quê?</p><div className={simple.bigActions}>{Object.entries(options).map(([value, label]) =>
+      <button key={value} type="button" className={simple.big} aria-pressed={category === value} onClick={() => { setCategory(value); key.current = null; }}>{label}</button>)}</div></div>}
+    {category && <label className={simple.field}>{category === "OTHER" ? "Explique" : "Quer explicar? (não é obrigatório)"}
+      <textarea value={note} onChange={event => { setNote(event.target.value); key.current = null; }} maxLength={240} rows={3}/></label>}
+    {error && <p className={simple.fail} role="alert">{error}</p>}
+    <button type="button" className={simple.bigGo} onClick={() => void send()} disabled={busy || !mode || !category || (category === "OTHER" && !note.trim())}>{busy ? "Enviando…" : "Enviar"}</button>
+  </TelaCheia>;
 }
 
 export function MeusItens({ read, actions = {} }: { read: () => Promise<PersonalItem3g[]>; actions?: Actions }) {
   const { state, refresh } = usePersonalDetail(read);
-  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seus itens pessoais…</div>;
-  if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>Itens indisponíveis</h2>
-    <p>Não foi possível consultar agora.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
-  const current = state.data.filter(item => item.status !== "DEVOLVIDO" && item.status !== "SUBSTITUIDO");
-  const history = state.data.filter(item => item.status === "DEVOLVIDO" || item.status === "SUBSTITUIDO");
-  return <div className={styles.epiLayout}>
-    <section aria-labelledby="itens-atuais"><div className={styles.epiSectionHead}><h2 id="itens-atuais">Atuais</h2><span className={styles.epiCount}>{current.length}</span></div>
-      {current.length === 0 ? <p className={styles.personalCard}>Nenhum item pessoal atribuído no momento.</p> :
-        <div className={styles.itemGrid3g}>{current.map(item => <ItemCard key={item.delivery_id} item={item} actions={actions} refresh={refresh}/>)}</div>}
+  const [sheet, setSheet] = useState<PersonalItem3g | null>(null);
+  const [more, setMore] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const confirmKeys = useRef<Record<string, string>>({});
+  const lock = useRef(false);
+  async function confirm(item: PersonalItem3g) {
+    if (!actions.confirm || lock.current) return;
+    lock.current = true; setBusy(item.delivery_id); setError("");
+    // Repetir após falha usa a mesma chave até dar certo (sem duplicar no servidor).
+    const key = confirmKeys.current[item.delivery_id] ??= crypto.randomUUID();
+    try { await actions.confirm(item.delivery_id, key); delete confirmKeys.current[item.delivery_id]; refresh(); }
+    catch { setError("Não foi possível confirmar. Tente de novo."); }
+    finally { lock.current = false; setBusy(null); }
+  }
+  const sheetNode = sheet && actions.report ? <ItemSheet item={sheet} report={actions.report} onSent={refresh} onClose={() => { setSheet(null); refresh(); }}/> : null;
+  if (state.status === "loading") return <><div className={simple.wait} role="status">Consultando seus itens pessoais…</div>{sheetNode}</>;
+  if (state.status === "error") return <><div className={simple.block} role="alert"><WifiOff size={30} aria-hidden="true"/><h2>Itens indisponíveis</h2>
+    <p>Não foi possível consultar agora.</p><div className={simple.bigActions}><button type="button" className={simple.bigSoft} onClick={refresh}>Tentar novamente</button></div></div>{sheetNode}</>;
+  const pending = state.data.filter(item => item.status === "AGUARDANDO_CONFIRMACAO");
+  const current = state.data.filter(item => !closedStatus(item) && item.status !== "AGUARDANDO_CONFIRMACAO");
+  const history = state.data.filter(closedStatus);
+  return <div className={simple.page}>
+    {error && <p className={simple.fail} role="alert">{error}</p>}
+    {pending.map(item => <section key={item.delivery_id} className={`${simple.block} ${simple.blockTodo}`} aria-labelledby={`item-${item.delivery_id}`}>
+      <span className={simple.tag}>Para fazer agora</span>
+      <h2 id={`item-${item.delivery_id}`}>Você recebeu este item?</h2>
+      <ul className={simple.items}><li><Toolbox aria-hidden="true" size={26}/><span>{item.item_name}<small>{line(item)} · entregue em {day(item.delivered_at)}</small></span></li></ul>
+      <div className={simple.bigActions}>
+        {actions.confirm && <button type="button" className={simple.bigOk} onClick={() => void confirm(item)} disabled={busy !== null}>{busy === item.delivery_id ? "Confirmando…" : "Recebi"}</button>}
+        {actions.report && <button type="button" className={simple.big} onClick={() => setSheet(item)} disabled={busy !== null}>Tem problema</button>}
+      </div>
+    </section>)}
+    <section className={simple.block} aria-labelledby="itens-atuais">
+      <h2 id="itens-atuais">Itens com você ({current.length})</h2>
+      {current.length === 0 ? <p>Nenhum item pessoal com você no momento.</p> :
+        <ul className={simple.rows}>{current.map(item => <li key={item.delivery_id} className={simple.row}>
+          <span className={simple.rowIcon}><Toolbox aria-hidden="true" size={22}/></span>
+          <div className={simple.rowText}><strong>{item.item_name}</strong><small>{line(item)} · desde {day(item.delivered_at)}</small>
+            {item.status !== "EM_USO" && <small>{status[item.status]}</small>}</div>
+          {actions.report && <button type="button" className={simple.rowButton} aria-label={`Trocar ou avisar problema: ${item.item_name}`} onClick={() => setSheet(item)}>Trocar / avisar</button>}
+        </li>)}</ul>}
     </section>
-    <section aria-labelledby="itens-historico"><div className={styles.epiSectionHead}><h2 id="itens-historico">Histórico</h2><span className={styles.epiCount}>{history.length}</span></div>
-      {history.length === 0 ? <p>Nenhuma devolução ou substituição registrada.</p> :
-        <div className={styles.itemGrid3g}>{history.map(item => <ItemCard key={item.delivery_id} item={item} actions={{}} refresh={refresh}/>)}</div>}
-    </section>
-    <p className={styles.epiFootnote}>SIMULAÇÃO SEM VALOR OFICIAL. Confirmação simples de recebimento, sem assinatura digital. Problemas e solicitações não encerram o item automaticamente.</p>
+    <div className={simple.more}>
+      <button type="button" className={simple.moreToggle} aria-expanded={more} onClick={() => setMore(value => !value)}>
+        Mais opções{more ? <ChevronUp aria-hidden="true"/> : <ChevronDown aria-hidden="true"/>}</button>
+      {more && <div className={simple.moreBody}>
+        <section className={simple.block} aria-labelledby="itens-historico"><h2 id="itens-historico">Itens que já devolvi ou troquei</h2>
+          {history.length === 0 ? <p>Nenhuma devolução ou substituição registrada.</p> :
+            <ul className={simple.rows}>{history.map(item => <li key={item.delivery_id} className={simple.row}><div className={simple.rowText}>
+              <strong>{item.item_name}</strong><small>{status[item.status]} · entregue em {day(item.delivered_at)}</small></div></li>)}</ul>}
+        </section>
+        <section className={simple.block} aria-labelledby="itens-eventos"><h2 id="itens-eventos">O que aconteceu com cada item</h2>
+          {state.data.every(item => item.events.length === 0) ? <p>Nenhum evento registrado.</p> :
+            state.data.filter(item => item.events.length > 0).map(item => <div key={item.delivery_id}><strong>{item.item_name}</strong>
+              <ol className={simple.small}>{item.events.map((event, index) => <li key={`${event.occurred_at}-${index}`}>{day(event.occurred_at)} · {eventLabel[event.event_type] ?? event.event_type}
+                {event.category ? ` · ${reasonLabel[event.category] ?? event.category}` : ""}{event.note ? ` · ${event.note}` : ""}</li>)}</ol></div>)}
+        </section>
+        <p className={simple.small}>SIMULAÇÃO SEM VALOR OFICIAL. Confirmação simples de recebimento, sem assinatura digital. Problemas e pedidos não encerram o item automaticamente.</p>
+      </div>}
+    </div>
+    {sheetNode}
   </div>;
 }
 
