@@ -1,66 +1,56 @@
 "use client";
 
 import {
-  Building2,
-  ChartNoAxesCombined,
-  ClipboardList,
-  Clock3,
-  Megaphone,
-  Gauge,
-  Settings,
-  ShieldCheck,
-  Users,
-  UserRoundCog,
-  Inbox,
+  BookOpen, Boxes, Building2, ChartNoAxesCombined, ClipboardList, Clock3, FileText, Gauge, HardHat, Handshake,
+  History, Inbox, Megaphone, PackageOpen, CirclePlus, Settings, ShoppingCart, Toolbox, Truck, UserRound,
+  UserRoundCog, Users, Warehouse, Wrench, type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { can, type Capability } from "@metallo/core";
+import { can } from "@metallo/core";
 import type { SessionProfile } from "@metallo/types";
-import { LAB_SUPABASE_URL, recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
+import { ativo, GRUPOS_MENU, type GrupoMenu, type ItemMenu } from "@/09_CONFIGURACOES/navegacao-gestao";
 
-const entries: Array<{
-  href: string;
-  label: string;
-  icon: typeof Gauge;
-  capability: Capability;
-  localOnly?: boolean;
-  // Recurso novo: laboratório e teste online, ainda fora da produção.
-  newFeature?: boolean;
-}> = [
-  { href: "/dashboard", label: "Visão geral", icon: Gauge, capability: "dashboard:read" },
-  { href: "/obras", label: "Obras e pedidos", icon: Building2, capability: "inventory:read" },
-  { href: "/almoxarifado", label: "Almoxarifado", icon: Building2, capability: "inventory:read" },
-  { href: "/equipes", label: "Equipes", icon: Users, capability: "inventory:read" },
-  { href: "/funcionarios", label: "Funcionários", icon: ShieldCheck, capability: "epi:read" },
-  { href: "/movimentacoes", label: "Movimentações", icon: ClipboardList, capability: "inventory:read" },
-  { href: "/consumo", label: "Consumo", icon: ChartNoAxesCombined, capability: "inventory:read" },
-  { href: "/relatorios", label: "Relatórios", icon: ChartNoAxesCombined, capability: "inventory:read" },
-  { href: "/pedidos", label: "Pedidos dos funcionários", icon: Inbox, capability: "epi:write", newFeature: true },
-  { href: "/comunicados", label: "Comunicados", icon: Megaphone, capability: "admin:manage", newFeature: true },
-  { href: "/ponto-laboratorio", label: "Ponto (teste)", icon: Clock3, capability: "admin:manage", newFeature: true },
-  { href: "/usuarios", label: "Usuários", icon: UserRoundCog, capability: "admin:manage" },
-  { href: "/minha-conta", label: "Minha conta", icon: UserRoundCog, capability: "dashboard:read" },
-  { href: "/ajuda", label: "Guia de uso", icon: ClipboardList, capability: "dashboard:read" },
-  { href: "/configuracoes", label: "Configurações", icon: Settings, capability: "admin:manage" },
-];
+export const ICONES: Record<string, LucideIcon> = {
+  inicio: Gauge, lancar: CirclePlus, estoque: Warehouse, materiais: PackageOpen, epis: HardHat, ferramentas: Toolbox,
+  equipamentos: Wrench, historico: History, compras: ShoppingCart, caixa: Inbox, locacoes: Truck, funcionarios: UserRound,
+  apoio: Handshake, equipes: Users, comunicados: Megaphone, ponto: Clock3, obras: Building2, consumo: ChartNoAxesCombined,
+  relatorios: FileText, usuarios: UserRoundCog, configuracoes: Settings, conta: UserRoundCog, ajuda: BookOpen, outros: Boxes, lista: ClipboardList,
+};
 
-export function SidebarNav({ profile }: { profile: SessionProfile }) {
+export function itemVisivel(profile: SessionProfile, item: ItemMenu) {
+  return can(profile, item.capability) && (!item.newFeature || recursosNovosLiberados(process.env.NEXT_PUBLIC_SUPABASE_URL));
+}
+export function gruposVisiveis(profile: SessionProfile): GrupoMenu[] {
+  return GRUPOS_MENU.map(grupo => ({ ...grupo, itens: grupo.itens.filter(item => itemVisivel(profile, item)) }))
+    .filter(grupo => grupo.itens.length > 0);
+}
+
+export function SidebarNav({ profile, onNavigate }: { profile: SessionProfile; onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
     <nav className="sidebar-nav" aria-label="Navegação principal">
-      {entries.filter((entry) => can(profile, entry.capability) &&
-        (!entry.localOnly || process.env.NEXT_PUBLIC_SUPABASE_URL === LAB_SUPABASE_URL) &&
-        (!entry.newFeature || recursosNovosLiberados(process.env.NEXT_PUBLIC_SUPABASE_URL))).map((entry) => {
-        const active = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
-        const Icon = entry.icon;
-        return (
-          <Link key={entry.href} href={entry.href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined}>
-            <Icon size={19} aria-hidden />
-            <span>{entry.label}</span>
-          </Link>
-        );
-      })}
+      {gruposVisiveis(profile).map(grupo => <div className="sidebar-group" key={grupo.id}>
+        {grupo.label && <p className="sidebar-section-label">{grupo.label}</p>}
+        {grupo.itens.map(item => {
+          const on = ativo(pathname, item.href);
+          const Icon = ICONES[item.icone] ?? Boxes;
+          return <Link key={item.href} href={item.href} className={on ? "active" : undefined} aria-current={on ? "page" : undefined} onClick={onNavigate}>
+            <Icon size={19} aria-hidden /><span>{item.label}</span>
+          </Link>;
+        })}
+      </div>)}
     </nav>
   );
+}
+
+// Abas de um grupo (ex.: Pedidos à ADM · Pedidos dos funcionários · Máquinas alugadas) no topo das telas.
+export function SubNav({ profile, grupo }: { profile: SessionProfile; grupo: string }) {
+  const pathname = usePathname();
+  const itens = gruposVisiveis(profile).find(entry => entry.id === grupo)?.itens ?? [];
+  if (itens.length < 2) return null;
+  return <nav className="module-tabs sub-nav" aria-label="Telas deste grupo">{itens.map(item =>
+    <Link key={item.href} href={item.href} className={ativo(pathname, item.href) ? "active" : undefined}
+      aria-current={ativo(pathname, item.href) ? "page" : undefined}>{item.label}</Link>)}</nav>;
 }

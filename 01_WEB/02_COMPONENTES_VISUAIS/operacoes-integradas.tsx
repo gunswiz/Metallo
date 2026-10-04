@@ -59,8 +59,11 @@ export function ReceivingForm({ data, profile, submit, initialItem }: Props) {
   </section>;
 }
 
-export function MaterialOperations({ data, profile, submit, initialItem, initialType }: Props) {
-  const [kind, setKind] = useState(initialType === "consumption" || !can(profile,"materials:write") ? "consumption" : "transfer");
+// Marco 3K: "Registrar consumo" e "Transferir, devolver ou dar baixa" viram atalhos separados (kinds).
+type MaterialKind = "consumption" | "transfer" | "return" | "exit";
+export function MaterialOperations({ data, profile, submit, initialItem, initialType, kinds, title = "Movimentar material" }: Props & { kinds?: MaterialKind[]; title?: string }) {
+  const allow = (kind: MaterialKind) => !kinds || kinds.includes(kind);
+  const [kind, setKind] = useState(allow("consumption") && (initialType === "consumption" || !can(profile,"materials:write") || !allow("transfer")) ? "consumption" : "transfer");
   const [teamId, setTeamId] = useState("");
   const [itemId, setItemId] = useState(initialItem ?? "");
   const { allowedTeams, teamName, note } = siteFields(data, profile);
@@ -68,10 +71,10 @@ export function MaterialOperations({ data, profile, submit, initialItem, initial
   const work = data.works.find(work => work.id === team?.worksite_id);
   const item = data.materials.find(item => item.id === itemId);
   const balance = item?.stock.filter(stock => stock.team_id === (work?.stock_team_id ?? teamId)).reduce((sum,stock)=>sum+stock.quantity,0) ?? 0;
-  const options = [{ id: "transfer", name: "Transferir" },{ id: "return", name: "Devolução de material" },{ id: "exit", name: "Saída / baixa" }];
-  return <section className="panel"><header className="panel-header"><div><h2>Movimentar material</h2><p>Mesma ficha de movimentação, com saldo da obra e data do fato.</p></div></header><div className="panel-body">
+  const options = ([{ id: "transfer", name: "Transferir" },{ id: "return", name: "Devolução de material" },{ id: "exit", name: "Saída / baixa" }] as { id: MaterialKind; name: string }[]).filter(option => allow(option.id));
+  return <section className="panel"><header className="panel-header"><div><h2>{title}</h2><p>Mesma ficha de movimentação, com saldo da obra e data do fato.</p></div></header><div className="panel-body">
     <div className="form-grid"><label>Material<select value={itemId} onChange={event=>setItemId(event.target.value)}><option value="">Selecione</option>{data.materials.map(item=><option key={item.id} value={item.id}>{item.name} · {item.code} · {item.unit}</option>)}</select></label>
-    <label>Operação<select value={kind} onChange={event=>setKind(event.target.value)}>{can(profile,"consumption:write")&&<option value="consumption">Consumo</option>}{can(profile,"materials:write")&&options.map(option=><option key={option.id} value={option.id}>{option.name}</option>)}</select></label>
+    <label>Operação<select value={kind} onChange={event=>setKind(event.target.value)}>{can(profile,"consumption:write")&&allow("consumption")&&<option value="consumption">Consumo</option>}{can(profile,"materials:write")&&options.map(option=><option key={option.id} value={option.id}>{option.name}</option>)}</select></label>
     <label>Equipe {kind === "consumption" ? "que consumiu" : "de origem"}<select value={teamId} onChange={event=>setTeamId(event.target.value)}><option value="">Selecione</option>{allowedTeams.map(team=><option key={team.id} value={team.id}>{team.name}</option>)}</select></label></div>
     {teamId && item && <><p className="alert">Estoque físico: <strong>{work?.name ?? teamName(teamId)}</strong> · saldo: <strong>{balance} {item.unit}</strong>. {work && "O saldo é compartilhado pelas equipes da obra."}</p>
       {balance <= 0 ? <p className="muted">Sem saldo disponível neste local.</p> : <SiteOperationForm key={[kind,teamId,itemId].join("-")} title="Informar quantidade e confirmar" command="material_movement" fixed={{ item_id:itemId, origin_team_id:teamId, movement_type:kind }} submit={submit} fields={[

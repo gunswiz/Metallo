@@ -8,6 +8,7 @@ import { SidebarNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { RealtimeRefresh } from "@/02_COMPONENTES_VISUAIS/realtime-refresh";
 import { version } from "@/package.json";
 import { ModuleTheme } from "./module-theme";
+import { NavegacaoCelular } from "./navegacao-celular";
 
 export function AppShell({ profile, children }: { profile: SessionProfile; children: React.ReactNode }) {
   const initials = profile.fullName
@@ -37,17 +38,22 @@ export function AppShell({ profile, children }: { profile: SessionProfile; child
       </aside>
       <div className="app-main">
         <header className="topbar">
+          <span className="topbar-brand"><Brand compact /></span>
           <div className="topbar-search">
             <Search size={17} aria-hidden />
             <span>Pesquise dentro de cada módulo</span>
           </div>
-          {profile.role === 'admin' && <Link className="icon-button" href="/obras?section=alerts" aria-label="Alertas da ADM" title="Alertas da ADM">
+          {profile.role === 'admin' && <Link className="icon-button" href="/dashboard#pendencias" aria-label="Alertas da ADM" title="Alertas da ADM">
             <Bell size={19} />
           </Link>}
           <span className="topbar-avatar">{initials}</span>
         </header>
         <ModuleTheme>{children}</ModuleTheme>
       </div>
+      <NavegacaoCelular profile={profile} rodape={<>
+        <span className="user-summary"><strong>{profile.fullName}</strong><small>{roleLabels[profile.role]} · Metallo {version}</small></span>
+        <form action={signOut}><button className="button secondary" type="submit"><LogOut size={18} aria-hidden /> Sair</button></form>
+      </>}/>
       <RealtimeRefresh enabled />
     </div>
   );

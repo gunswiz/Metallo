@@ -1,11 +1,17 @@
-import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
-import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
-import { siteSnapshotSchema } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
-import { SiteOperations } from "@/02_COMPONENTES_VISUAIS/obras-pedidos";
+import { redirect } from "next/navigation";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
-export default async function WorksPage({searchParams}:{searchParams:Promise<{section?:string}>}) {
-  const profile=await requireProfile(); const result=await (await createClient()).rpc('site_dashboard');
-  if(result.error)throw new Error('Não foi possível carregar as obras e os pedidos.');
-  const section=(await searchParams).section;
-  return <><PageHeader eyebrow="ROTINA DA OBRA" title="Obras e pedidos" description="Estoque, consumo, compras, EPI, equipes de apoio e locações."/><SiteOperations initial={siteSnapshotSchema.parse(result.data)} profile={profile} initialSection={section&&['stock','orders','rentals','people','works','alerts'].includes(section)?section:'stock'}/></>;
+import { SiteOperations } from "@/02_COMPONENTES_VISUAIS/obras-pedidos";
+import { SubNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
+import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
+import { getMetalloService } from "@/04_SERVICOS/metallo-service";
+import { SECAO_ANTIGA } from "@/09_CONFIGURACOES/navegacao-gestao";
+
+// Marco 3K: "Obras e pedidos" foi dividida. Endereços antigos (?section=) levam à tela nova.
+export default async function WorksPage({ searchParams }: { searchParams: Promise<{ section?: string }> }) {
+  const section = (await searchParams).section;
+  if (section && SECAO_ANTIGA[section] && section !== "works") redirect(SECAO_ANTIGA[section]);
+  const profile = await requireCapability("inventory:read");
+  const data = await (await getMetalloService()).siteSnapshot();
+  return <><PageHeader eyebrow="OBRAS E RELATÓRIOS" title="Obras" description="Obras ativas e as equipes de cada uma. Uma obra pode reunir várias equipes com um estoque único."/>
+    <SubNav profile={profile} grupo="obras"/><SiteOperations initial={data} profile={profile} mode="works"/></>;
 }

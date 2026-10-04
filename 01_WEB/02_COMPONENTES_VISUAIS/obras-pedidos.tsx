@@ -9,7 +9,7 @@ import {
   siteSnapshotSchema,
   type SiteSnapshot,
 } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
-import type { SubmitOperation } from "./formulario-obra";
+import { FormulariosAbertos, type SubmitOperation } from "./formulario-obra";
 
 import { createOperationQueue } from "@/03_FUNCOES_E_LOGICA/fila-operacoes";
 import { PendingReview } from "./revisar-pendente";
@@ -20,6 +20,10 @@ import { PedidosObra } from "./ObrasEPedidos/pedidos";
 import { LocacoesObra } from "./ObrasEPedidos/locacoes";
 import { FuncionariosObra } from "./ObrasEPedidos/funcionarios";
 import { CadastroObras } from "./ObrasEPedidos/cadastro";
+import { EstoqueLista } from "./ObrasEPedidos/estoque-lista";
+import { SiteEpiStockForms } from "./estoque-epi-obra";
+import { SiteOrderForm } from "./pedido-obra-form";
+import { siteFields } from "./ObrasEPedidos/campos";
 
 const commandLabels: Record<string, string> = {
   material_movement: "Movimentação de material",
@@ -51,7 +55,9 @@ export function SiteOperations({
   initial: SiteSnapshot;
   profile: SessionProfile;
   initialSection?: string;
-  mode?: "all" | "movement" | "delivery" | "batch" | "receiving";
+  // Marco 3K: cada parte de "Obras e pedidos" virou uma tela própria (modos abaixo); "all" fica por compatibilidade.
+  mode?: "all" | "movement" | "delivery" | "batch" | "receiving" | "stock" | "orders" | "new-order" | "rentals" | "people" | "works"
+    | "consumption" | "material" | "equipment" | "epi-transfer";
   initialItem?: string; initialAsset?: string; initialEmployee?: string; initialType?: string;
 }) {
   const [data, setData] = useState(initial);
@@ -158,8 +164,9 @@ export function SiteOperations({
         ]
       : []),
   ];
+  const focado = ["consumption", "material", "equipment", "epi-transfer", "new-order", "receiving", "delivery"].includes(mode);
   return (
-    <>
+    <FormulariosAbertos.Provider value={focado}>
       {mode === "all" && <div className="module-tabs">
         {navigation.map(([id, label]) => (
           <button
@@ -171,10 +178,10 @@ export function SiteOperations({
           </button>
         ))}
       </div>}
-      <p className="muted">
+      {mode === "all" && <p className="muted">
         Uma obra pode reunir várias equipes com um estoque único. Os lançamentos
         continuam identificando a equipe e o funcionário.
-      </p>
+      </p>}
       {queueState.error && (
         <p className="alert error" role="alert">
           {queueState.error}
@@ -185,13 +192,13 @@ export function SiteOperations({
           {message}
         </p>
       )}
-      <button
+      {(mode === "all" || pending.length > 0) && <button
         className="button secondary"
         disabled={syncing}
         onClick={() => void sync()}
       >
         {syncing ? "Enviando…" : "Atualizar e enviar pendentes"}
-      </button>
+      </button>}
       {pending.length > 0 && (
         <section className="panel pending-panel">
           <header className="panel-header">
@@ -242,6 +249,17 @@ export function SiteOperations({
       {mode === "batch" && can(profile,"epi:write") && <IntegratedBatchDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee}/>}
       {mode === "delivery" && can(profile,"epi:write") && <IntegratedDelivery data={data} profile={profile} submit={submit} initialEmployee={initialEmployee} initialItem={initialItem}/>}
       {mode === "receiving" && <ReceivingForm data={data} profile={profile} submit={submit} initialItem={initialItem}/>}
+      {mode === "stock" && <EstoqueLista data={data} profile={profile}/>}
+      {mode === "orders" && <PedidosObra data={data} profile={profile} submit={submit} showForm={false}/>}
+      {mode === "new-order" && (can(profile, "requests:write") ? <SiteOrderForm data={data} teams={siteFields(data, profile).allowedTeams} submit={submit}
+        canPurchase={can(profile, "requests:write")} canRent={can(profile, "rentals:write")}/> : <p className="muted">Seu acesso não permite fazer pedidos à ADM.</p>)}
+      {mode === "rentals" && <LocacoesObra data={data} profile={profile} submit={submit} />}
+      {mode === "people" && <FuncionariosObra data={data} profile={profile} submit={submit} />}
+      {mode === "works" && (admin ? <CadastroObras data={data} profile={profile} submit={submit} /> : <ObrasSomenteLeitura data={data}/>)}
+      {mode === "consumption" && (can(profile, "consumption:write") ? <MaterialOperations data={data} profile={profile} submit={submit} initialItem={initialItem} kinds={["consumption"]} title="Registrar consumo"/> : <p className="muted">Seu acesso não permite registrar consumo.</p>)}
+      {mode === "material" && (can(profile, "materials:write") ? <MaterialOperations data={data} profile={profile} submit={submit} initialItem={initialItem} kinds={["transfer", "return", "exit"]} title="Transferir, devolver ou dar baixa"/> : <p className="muted">Seu acesso não permite movimentar material.</p>)}
+      {mode === "equipment" && (can(profile, "equipment:write") ? <EquipmentOperations data={data} profile={profile} submit={submit} initialAsset={initialAsset}/> : <p className="muted">Seu acesso não permite movimentar equipamentos.</p>)}
+      {mode === "epi-transfer" && (can(profile, "epi:write") ? <SiteEpiStockForms data={data} teams={siteFields(data, profile).allowedTeams} submit={submit} transferOnly/> : <p className="muted">Seu acesso não permite transferir EPI.</p>)}
       {mode === "all" && section === "stock" && (
         <EstoqueObra data={data} profile={profile} submit={submit} />
       )}
@@ -277,6 +295,14 @@ export function SiteOperations({
           </div>
         </section>
       )}
-    </>
+    </FormulariosAbertos.Provider>
   );
+}
+
+function ObrasSomenteLeitura({ data }: { data: SiteSnapshot }) {
+  return <section className="panel"><header className="panel-header"><h2>Obras</h2></header><div className="panel-body">
+    {data.works.length === 0 ? <p className="muted">Nenhuma obra cadastrada.</p> :
+      <div className="stock-cards">{data.works.map(work => <article className="stock-card" key={work.id}><h3>{work.name}</h3>
+        <ul>{data.teams.filter(team => team.worksite_id === work.id).map(team => <li key={team.id}><span>{team.name}</span><span>{work.active ? "Ativa" : "Encerrada"}</span></li>)}</ul></article>)}</div>}
+  </div></section>;
 }

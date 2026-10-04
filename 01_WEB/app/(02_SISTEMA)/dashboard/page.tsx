@@ -1,6 +1,9 @@
 import { Boxes, HardHat, Inbox, PackageOpen, Users, UserRound, Wrench } from "lucide-react";
 import { can, formatDateTime, movementLabel } from "@metallo/core";
+import Link from "next/link";
 import { MetricCard } from "@/02_COMPONENTES_VISUAIS/metric-card";
+import { ICONES } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
+import { ACOES_LANCAR, SECAO_ANTIGA } from "@/09_CONFIGURACOES/navegacao-gestao";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
@@ -13,6 +16,13 @@ export default async function DashboardPage() {
   const includeEpi = can(profile, "epi:read");
   const service = await getMetalloService();
   const data = await service.dashboard(includeEpi);
+  // Marco 3K: "Precisa de você" — o que espera uma ação, com o caminho certo para resolver.
+  const obra = await service.siteSnapshot().catch(() => null);
+  const finais = ["received", "rejected", "cancelled", "returned"];
+  const pedidosAbertos = obra?.orders.filter(order => !finais.includes(order.status)).length ?? 0;
+  const aReceber = obra?.orders.filter(order => ["ordered", "partial"].includes(order.status)).length ?? 0;
+  const alertas = profile.role === "admin" ? obra?.alerts ?? [] : [];
+  const atalhos = ACOES_LANCAR.filter(acao => acao.pode(profile)).slice(0, 4);
   // Marco 3J: quantos pedidos do app do Funcionário esperam resposta (só laboratório e teste online).
   const pedidos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
     await lerPedidosFuncionarios().then(result => result.aguardando, () => null) : null;
@@ -20,10 +30,24 @@ export default async function DashboardPage() {
   return (
     <>
       <PageHeader
-        eyebrow="VISÃO GERAL"
+        eyebrow="INÍCIO"
         title={`Olá, ${profile.fullName.split(" ")[0]}`}
-        description="Dados operacionais do mesmo ambiente utilizado pelas equipes em campo."
+        description="O que precisa de você hoje e os atalhos do dia a dia."
       />
+      {atalhos.length > 0 && <nav className="quick-grid" aria-label="Atalhos">{atalhos.map(acao => {
+        const Icon = ICONES[acao.icone] ?? ICONES.outros;
+        return <Link key={acao.slug} className="quick-card" href={`/lancar/${acao.slug}`}><Icon size={30} aria-hidden/><span><strong>{acao.label}</strong><small>{acao.dica}</small></span></Link>;
+      })}</nav>}
+      <section className="panel" id="pendencias" aria-labelledby="pendencias-titulo">
+        <header className="panel-header"><div><h2 id="pendencias-titulo">Precisa de você</h2><p>Toque para resolver.</p></div></header>
+        <div className="panel-body todo-list">
+          {pedidos !== null && pedidos > 0 && <Link className="todo-item" href="/pedidos"><span className="todo-count">{pedidos}</span><span className="todo-text"><strong>Pedidos dos funcionários</strong><small>Trocas e avisos feitos pelo app esperando resposta</small></span></Link>}
+          {aReceber > 0 && <Link className="todo-item" href="/lancar/receber"><span className="todo-count">{aReceber}</span><span className="todo-text"><strong>Pedidos para receber</strong><small>Compras providenciadas que ainda não chegaram por completo</small></span></Link>}
+          {pedidosAbertos > 0 && <Link className="todo-item" href="/pedidos-adm"><span className="todo-count">{pedidosAbertos}</span><span className="todo-text"><strong>Pedidos à ADM em andamento</strong><small>Acompanhe a aprovação e a compra</small></span></Link>}
+          {alertas.map(alerta => <Link className="todo-item" key={alerta.id} href={SECAO_ANTIGA[alerta.section] ?? "/obras"}><span className="todo-count">!</span><span className="todo-text"><strong>{alerta.title}</strong><small>{alerta.description}</small></span></Link>)}
+          {!(pedidos ?? 0) && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
+        </div>
+      </section>
       <section className="metric-grid">
         {pedidos !== null && <MetricCard label="pedidos dos funcionários esperando resposta" value={pedidos} href="/pedidos" icon={Inbox} />}
         <MetricCard label="unidades de materiais" value={data.materialUnits} href="/materiais" icon={PackageOpen} />

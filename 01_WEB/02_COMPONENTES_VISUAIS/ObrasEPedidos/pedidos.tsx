@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import type { SessionProfile } from "@metallo/types";
 import type { SiteSnapshot } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
 import type { SubmitOperation } from "../formulario-obra";
@@ -15,16 +16,25 @@ export function PedidosObra({
   data,
   profile,
   submit,
+  showForm = true,
+  showOrders = true,
 }: {
   data: SiteSnapshot;
   profile: SessionProfile;
   submit: SubmitOperation;
+  // Marco 3K: "Pedir à ADM" (só o formulário) e "Pedidos à ADM" (só a lista) são telas separadas.
+  showForm?: boolean;
+  showOrders?: boolean;
 }) {
   const { teamName, allowedTeams, note } = siteFields(data, profile);
   const admin = profile.role === "admin";
+  const [filtro, setFiltro] = useState<"abertos" | "concluidos" | "todos">("abertos");
+  const finais = ["received", "rejected", "cancelled", "returned"];
+  const orders = data.orders.filter(order => filtro === "todos" || (filtro === "abertos") !== finais.includes(order.status));
+  const contagem = { abertos: data.orders.filter(order => !finais.includes(order.status)).length, concluidos: data.orders.filter(order => finais.includes(order.status)).length, todos: data.orders.length };
   return (
     <>
-      {can(profile, "requests:write") && (
+      {showForm && can(profile, "requests:write") && (
         <SiteOrderForm
           data={data}
           teams={allowedTeams}
@@ -33,10 +43,14 @@ export function PedidosObra({
           canRent={can(profile, "rentals:write")}
         />
       )}
-      {!can(profile, "requests:write") && can(profile, "rentals:write") && (
+      {showForm && !can(profile, "requests:write") && can(profile, "rentals:write") && (
         <p className="muted">Registre as máquinas na área Máquinas alugadas quando a necessidade surgir.</p>
       )}
-      {data.orders.map((order) => (
+      {showOrders && <div className="module-tabs" role="group" aria-label="Filtrar pedidos">{(["abertos", "concluidos", "todos"] as const).map(id =>
+        <button key={id} type="button" className={filtro === id ? "button primary" : "button ghost"} aria-pressed={filtro === id} onClick={() => setFiltro(id)}>
+          {{ abertos: "Em andamento", concluidos: "Concluídos", todos: "Todos" }[id]} ({contagem[id]})</button>)}</div>}
+      {showOrders && orders.length === 0 && <p className="muted">{filtro === "abertos" ? "Nenhum pedido em andamento." : "Nenhum pedido neste filtro."}</p>}
+      {showOrders && orders.map((order) => (
         <section className="panel" key={order.id}>
           <header className="panel-header">
             <div>

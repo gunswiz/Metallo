@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, createContext, useContext, useEffect } from "react";
 import { localEventTime } from "@/03_FUNCOES_E_LOGICA/operacoesObra";
 
 export type OperationField = {
@@ -16,6 +16,8 @@ export type SubmitOperation = (
   data: Record<string, unknown>,
   time: string,
 ) => Promise<void>;
+// Marco 3K: nas telas de uma ação só (Lançar › ...), o formulário já abre aberto.
+export const FormulariosAbertos = createContext(false);
 export function SiteOperationForm({
   command,
   title,
@@ -36,8 +38,11 @@ export function SiteOperationForm({
   const lock = useRef(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const abrir = useContext(FormulariosAbertos);
+  const box = useRef<HTMLDetailsElement>(null);
+  useEffect(() => { if (abrir && box.current) box.current.open = true; }, [abrir]);
   return (
-    <details className="operation-details">
+    <details className="operation-details" ref={box}>
       <summary>{title}</summary>
       <form
         className="form-grid"

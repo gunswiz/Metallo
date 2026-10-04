@@ -5,8 +5,8 @@ import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 export default async function HelpPage() {
   const profile = await requireProfile();
   const guides = [
-    { title: "Obras, compras e recebimentos", href: "/obras", text: "Em Obras e pedidos, registre consumo, compras entregues na obra e entregas de EPI. Pedidos e recebimentos mostra o que foi solicitado, o que chegou e o que ainda falta. Ajuste Quando aconteceu se estiver lançando depois." },
-    { title: "Máquinas alugadas", href: "/obras?section=rentals", text: "Confira a locadora, a numeração e a equipe. Quando não precisar mais, avise a ADM pela própria máquina. A ADM registra a devolução e confirma separadamente o encerramento da cobrança." },
+    { title: "Obras, compras e recebimentos", href: "/lancar", text: "Em Lançar, registre consumo, compras entregues na obra e entregas de EPI. Pedidos e recebimentos mostra o que foi solicitado, o que chegou e o que ainda falta. Ajuste Quando aconteceu se estiver lançando depois." },
+    { title: "Máquinas alugadas", href: "/locacoes", text: "Confira a locadora, a numeração e a equipe. Quando não precisar mais, avise a ADM pela própria máquina. A ADM registra a devolução e confirma separadamente o encerramento da cobrança." },
     { title: "Consultar o almoxarifado", href: "/almoxarifado", text: "Escolha Materiais, Equipamentos, Ferramentas ou EPIs. Abra um item para ver seus detalhes e histórico." },
     { title: "Registrar movimentações", href: "/movimentacoes", text: "Abra Nova movimentação. Escolha o item, origem, destino e quantidade. Confira os dados antes de confirmar." },
     { title: "Acompanhar consumo", href: "/consumo", text: "Escolha o período e a equipe. Compare categorias, materiais e evolução. As quantidades são separadas por unidade." },
