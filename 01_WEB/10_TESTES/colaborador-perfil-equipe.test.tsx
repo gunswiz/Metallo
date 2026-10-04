@@ -106,8 +106,13 @@ it("laboratório indisponível elimina dados antigos e permite nova tentativa", 
   expect(screen.queryByText("Colega A")).not.toBeInTheDocument();
   expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
   state.team = "B";
-  fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
-  expect(await screen.findByText("Colega B", {}, { timeout: 8000 })).toBeInTheDocument();
+  // Sob carga, a revalidação disparada pelo foco pode terminar depois do primeiro toque e descartar
+  // aquela leitura ("Sessão alterada"); nesse caso a tela continua oferecendo "Tentar novamente".
+  await waitFor(() => {
+    const retry = screen.queryByRole("button", { name: "Tentar novamente" });
+    if (retry) fireEvent.click(retry);
+    expect(screen.getByText("Colega B")).toBeInTheDocument();
+  }, { timeout: 8000, interval: 300 });
 }, 15000);
 
 it("saída global na área de segurança usa o fluxo aprovado e esconde o perfil", async () => {

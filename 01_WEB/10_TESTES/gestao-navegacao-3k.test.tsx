@@ -77,7 +77,9 @@ it("abas do grupo no topo das telas", () => {
 it("Registrar consumo é uma tela só de consumo, com o formulário já aberto", () => {
   render(<SiteOperations initial={data} profile={almoxarife} mode="consumption"/>);
   expect(screen.getByRole("heading", { name: "Registrar consumo" })).toBeInTheDocument();
-  expect(within(screen.getByLabelText("Operação")).getAllByRole("option").map(option => option.textContent)).toEqual(["Consumo"]);
+  // Uma operação só: a pergunta "Operação" nem aparece.
+  expect(screen.queryByLabelText("Operação")).not.toBeInTheDocument();
+  expect(screen.getByLabelText("Equipe que consumiu")).toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Atualizar e enviar pendentes" })).not.toBeInTheDocument();
   expect(screen.queryByText(/Uma obra pode reunir várias equipes/)).not.toBeInTheDocument();
 });
@@ -99,4 +101,11 @@ it("Pedidos à ADM separa em andamento e concluídos", () => {
   expect(screen.getByText("Nenhum pedido em andamento.")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Concluídos (1)" }));
   expect(screen.getByRole("heading", { name: /Equipe Teste · Recebido por completo/ })).toBeInTheDocument();
+});
+
+it("telas do servidor leem os ícones de um módulo comum (não de módulo do navegador)", async () => {
+  const { readFileSync } = await import("node:fs");
+  expect(readFileSync("02_COMPONENTES_VISUAIS/icones-menu.ts", "utf8")).not.toMatch(/^["']use client["']/m);
+  for (const page of ["app/(02_SISTEMA)/dashboard/page.tsx", "app/(02_SISTEMA)/lancar/page.tsx"])
+    expect(readFileSync(page, "utf8")).not.toMatch(/import \{[^}]*ICONES[^}]*\} from "@\/02_COMPONENTES_VISUAIS\/sidebar-nav"/);
 });
