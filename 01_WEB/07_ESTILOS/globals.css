@@ -608,3 +608,5 @@ body:has(.user-edit-dialog[open]) { overflow: hidden; }
   pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   .user-edit-trigger { white-space: normal; }
 }
+/* Revisão: fieldset sem a borda branca padrão do navegador (formulários de entrega, permissões etc.). */
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
