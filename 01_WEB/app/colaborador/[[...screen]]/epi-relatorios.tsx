@@ -41,7 +41,7 @@ function PersonalReportContent({ read, readAwareness }: { read: () => Promise<Ep
       if (!active.current) return;
       setBusy("Preparando PDF…");
       const next = projectEpiReport(fresh, type, resolveEpiPeriod({ preset, from, to }, new Date(fresh.generated_at)));
-      const logoResponse = await fetch("/metallo-logo.png", { credentials: "omit", redirect: "error", signal: AbortSignal.timeout(6000) });
+      const logoResponse = await fetch("/metallo-logo-pdf.png", { credentials: "omit", redirect: "error", signal: AbortSignal.timeout(6000) });
       if (!logoResponse.ok) throw new Error("Logo indisponível.");
       // Termo de ciência é complementar: falha na consulta não impede o PDF nem inventa aceite.
       const awareness = readAwareness ? await readAwareness().then(row => row.accepted_at, () => undefined) : undefined;

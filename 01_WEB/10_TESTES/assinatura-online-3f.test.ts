@@ -23,3 +23,12 @@ it("formato canônico 3F-v1 é idêntico no site e na Edge Function", () => {
   expect(body("../../04_BANCO_E_SUPABASE/supabase/functions/assinatura-epi-3f/canonico.ts"))
     .toBe(body("../03_FUNCOES_E_LOGICA/Assinatura/epi-signature-3f.ts"));
 });
+
+it("PDF da ficha usa logo embutido (sem sistema de arquivos no Worker)", async () => {
+  const { logoPdfBytes } = await import("@/03_FUNCOES_E_LOGICA/Relatorios/logo-pdf");
+  const bytes = logoPdfBytes();
+  expect(Array.from(bytes.slice(0, 8))).toEqual([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  expect(bytes.length).toBe(readFileSync(resolve(__dirname, "../public/metallo-logo-pdf.png")).length);
+  const route = readFileSync(resolve(__dirname, "../app/(02_SISTEMA)/funcionarios/[id]/epi/pdf/route.ts"), "utf8");
+  expect(route).not.toMatch(/node:fs/);
+});

@@ -10,7 +10,7 @@ export function epiReportFailure(cause: unknown): { status: 404 | 422 | 503; mes
     return { status: 422, message: "O histórico excede o limite de consulta deste laboratório. Solicite conferência à administração. Reduzir o período não reduz a extração atual." };
   if (message.startsWith("Relatório muito extenso.") || message.startsWith("Ficha muito extensa."))
     return { status: 422, message };
-  return { status: 503, message: "Não foi possível gerar o relatório agora. Confirme que o laboratório local está disponível." };
+  return { status: 503, message: "Não foi possível gerar o relatório agora. Tente novamente em instantes." };
 }
 
 const dateTime = z.string().refine(value => Number.isFinite(Date.parse(value)));

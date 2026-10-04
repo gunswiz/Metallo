@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { buildEpiReport3ePdf, epiReportFilename } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e-pdf";
 import { epiReportFailure, projectEpiReport, resolveEpiPeriod, type EpiEventFilter, type EpiReportType } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
+import { logoPdfBytes } from "@/03_FUNCOES_E_LOGICA/Relatorios/logo-pdf";
 import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +26,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // Termo de ciência é complementar: se a consulta falhar, o PDF sai sem essa linha (não inventa aceite).
     const awareness = await operations.awareness3i(parsed.data).then(rows => rows.length === 1 ? rows[0].accepted_at : undefined, () => undefined);
     const report = projectEpiReport(raw, type, period, event as EpiEventFilter);
-    const logo = await readFile(join(process.cwd(), "public", "metallo-logo.png"));
+    const logo = logoPdfBytes();
     const bytes = await buildEpiReport3ePdf(report, logo, awareness);
     const disposition = url.searchParams.get("download") === "1" ? "attachment" : "inline";
     return new Response(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
