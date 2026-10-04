@@ -109,3 +109,14 @@ it("telas do servidor leem os ícones de um módulo comum (não de módulo do na
   for (const page of ["app/(02_SISTEMA)/dashboard/page.tsx", "app/(02_SISTEMA)/lancar/page.tsx"])
     expect(readFileSync(page, "utf8")).not.toMatch(/import \{[^}]*ICONES[^}]*\} from "@\/02_COMPONENTES_VISUAIS\/sidebar-nav"/);
 });
+
+it("tabelas ganham o nome da coluna em cada célula (cartões no celular)", async () => {
+  const { rotularTabelas } = await import("@/02_COMPONENTES_VISUAIS/rotulos-tabelas");
+  document.body.innerHTML = `<table class="data-table"><thead><tr><th>Funcionário</th><th>Função</th><th>Ações</th></tr></thead>
+    <tbody><tr><td>João</td><td colspan="1">Soldador</td><td><a>Abrir</a></td></tr><tr><td colspan="2">Sem dados</td><td>-</td></tr></tbody></table>`;
+  rotularTabelas(document);
+  const rows = document.querySelectorAll("tbody tr");
+  expect([...rows[0].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Função", "Ações"]);
+  expect([...rows[1].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Ações"]);
+  document.body.innerHTML = "";
+});

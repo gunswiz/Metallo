@@ -9,6 +9,7 @@ import { RealtimeRefresh } from "@/02_COMPONENTES_VISUAIS/realtime-refresh";
 import { version } from "@/package.json";
 import { ModuleTheme } from "./module-theme";
 import { NavegacaoCelular } from "./navegacao-celular";
+import { RotulosTabelas } from "./rotulos-tabelas";
 
 export function AppShell({ profile, children }: { profile: SessionProfile; children: React.ReactNode }) {
   const initials = profile.fullName
@@ -55,6 +56,7 @@ export function AppShell({ profile, children }: { profile: SessionProfile; child
         <form action={signOut}><button className="button secondary" type="submit"><LogOut size={18} aria-hidden /> Sair</button></form>
       </>}/>
       <RealtimeRefresh enabled />
+      <RotulosTabelas />
     </div>
   );
 }
