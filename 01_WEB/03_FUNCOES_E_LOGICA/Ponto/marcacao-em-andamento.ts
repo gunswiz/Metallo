@@ -13,3 +13,7 @@ export function iniciarMarcacao(): () => void {
 export function marcacaoEmAndamento(): boolean {
   return ativas > 0;
 }
+
+// Marco 3J: o mesmo cuidado vale para as telas cheias do Colaborador (confirmar EPI com digital ou senha,
+// pedir troca, informar problema). A janela da digital tira o foco da página; ao voltar, a tela não pode sumir.
+export const manterTelaDuranteAcao = iniciarMarcacao;

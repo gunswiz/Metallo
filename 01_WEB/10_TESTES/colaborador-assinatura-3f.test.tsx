@@ -2,15 +2,17 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { canonicalDelivery3f } from "@/03_FUNCOES_E_LOGICA/Assinatura/epi-signature-3f";
-import { EpiAssinatura3f } from "@/app/colaborador/[[...screen]]/epi-assinatura-3f";
+import { ConfirmarRecebimento } from "@/app/colaborador/[[...screen]]/epi-assinatura-3f";
 import { AssinaturaSeguranca3f } from "@/app/colaborador/[[...screen]]/assinatura-seguranca-3f";
 import { EpiRecebimento } from "@/app/colaborador/[[...screen]]/epi-recebimento";
 import type { PersonalDeliveryGroup3d } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
-import { cancelRegistrationCeremony3f, confirmSignature3f, prepareSignature3f, registerPasskey3f, signatureRequest3f } from
-  "@/04_SERVICOS/assinatura-browser-3f";
+import { biometricSupported, cancelRegistrationCeremony3f, confirmSignature3f, finishRegistration3f, prepareRegistration3f,
+  prepareSignature3f, registerPasskey3f, signatureRequest3f } from "@/04_SERVICOS/assinatura-browser-3f";
 
-vi.mock("@/04_SERVICOS/assinatura-browser-3f", () => ({
-  confirmSignature3f: vi.fn(), prepareSignature3f: vi.fn(),
+vi.mock("@/04_SERVICOS/assinatura-browser-3f", async importOriginal => ({
+  ...(await importOriginal<typeof import("@/04_SERVICOS/assinatura-browser-3f")>()),
+  confirmSignature3f: vi.fn(), prepareSignature3f: vi.fn(), prepareRegistration3f: vi.fn(), finishRegistration3f: vi.fn(),
+  biometricSupported: vi.fn(() => true),
   cancelRegistrationCeremony3f: vi.fn(), registerPasskey3f: vi.fn(), signatureRequest3f: vi.fn(),
 }));
 
@@ -31,7 +33,7 @@ const prepared = { challenge_id: "54b2d5a0-fede-4489-af7f-b7cb2c4630f3",
   options: { challenge: "abc" }, payload: canonicalDelivery3f(snapshot, transaction).payload,
   token: "jwt-sintetico-do-teste" };
 
-beforeEach(() => { vi.clearAllMocks(); });
+beforeEach(() => { vi.clearAllMocks(); vi.mocked(biometricSupported).mockReturnValue(true); });
 afterEach(cleanup);
 
 it("canonicaliza UTC, ordem, null, UTF-8 e rejeita item duplicado", () => {
@@ -61,37 +63,6 @@ it("qualquer campo histórico assinado alterado muda o SHA-256", () => {
   expect(canonicalDelivery3f(snapshot, item1).hash).not.toBe(original);
   expect(() => canonicalDelivery3f({ ...snapshot, items: [{ ...snapshot.items[0], quantity: -1 }] },
     transaction)).toThrow();
-});
-
-it("mostra o conteúdo e não anuncia sucesso antes da validação do servidor", async () => {
-  vi.mocked(prepareSignature3f).mockResolvedValue(prepared as never);
-  let finish!: (value: { signature_event_id: string; feedback_id: string }) => void;
-  vi.mocked(confirmSignature3f).mockImplementation(() => new Promise(resolve => { finish = resolve; }));
-  const onSigned = vi.fn();
-  render(<EpiAssinatura3f groupId={group} getToken={getToken} onSigned={onSigned} onCancel={vi.fn()}/>);
-  expect(screen.queryByText(/Capacete/)).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Conferir itens da entrega" }));
-  expect(await screen.findByText(/Capacete/)).toBeInTheDocument();
-  expect(screen.getByText(/Luva/)).toBeInTheDocument();
-  expect(screen.getByText(/2 pares/)).toBeInTheDocument();
-  expect(screen.getByText(/entrega registrada em/i)).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Confirmar com biometria" }));
-  await waitFor(() => expect(confirmSignature3f).toHaveBeenCalledTimes(1));
-  expect(onSigned).not.toHaveBeenCalled();
-  finish({ signature_event_id: item1, feedback_id: "1" });
-  await waitFor(() => expect(onSigned).toHaveBeenCalledTimes(1));
-});
-
-it("falha offline ou criptográfica não produz indicação de assinatura", async () => {
-  vi.mocked(prepareSignature3f).mockResolvedValue(prepared as never);
-  vi.mocked(confirmSignature3f).mockRejectedValue(new Error("Falha de rede"));
-  const onSigned = vi.fn();
-  render(<EpiAssinatura3f groupId={group} getToken={getToken} onSigned={onSigned} onCancel={vi.fn()}/>);
-  fireEvent.click(screen.getByRole("button", { name: "Conferir itens da entrega" }));
-  fireEvent.click(await screen.findByRole("button", { name: "Confirmar com biometria" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent("Assinatura não concluída");
-  expect(onSigned).not.toHaveBeenCalled();
-  expect(screen.queryByText(/Proteção ativada/)).not.toBeInTheDocument();
 });
 
 it("cadastro é opcional, revogação preserva registro histórico e não mostra dados técnicos", async () => {
@@ -210,63 +181,107 @@ it("falha ao consultar métodos não informa falsamente que não há credencial"
   expect(screen.getByRole("button", { name: "Ativar proteção" })).toBeEnabled();
 });
 
-it("não declara a modalidade da confirmação quando a consulta 3F falha", async () => {
-  const confirmed: PersonalDeliveryGroup3d[] = [{ group_id: group,
-    delivered_at: "2026-09-29T13:30:00Z", profession: "Soldador", feedback_status: "CONFIRMADO",
-    feedback_at: "2026-09-29T13:40:00Z", public_message: null,
-    items: [{ delivery_id: item1, item_name: "Capacete", ca_number: "CA-12345",
-      quantity: 1, unit: "un", variant: null, current_status: "active" }] }];
-  vi.mocked(signatureRequest3f).mockRejectedValue(new Error("Consulta indisponível"));
-  render(<EpiRecebimento read={async () => confirmed} respond={async () => 1} getAccessToken={getToken}/>);
-  expect(await screen.findByText("Recebimento confirmado · tipo de confirmação indisponível")).toBeInTheDocument();
-  expect(screen.queryByText("Confirmado com biometria do celular")).not.toBeInTheDocument();
-});
-
-it("mostra selo reforçado quando o próprio evento 3F está disponível", async () => {
-  const confirmed: PersonalDeliveryGroup3d[] = [{ group_id: group,
-    delivered_at: "2026-09-29T13:30:00Z", profession: "Soldador", feedback_status: "CONFIRMADO",
-    feedback_at: "2026-09-29T13:40:00Z", public_message: null,
-    items: [{ delivery_id: item1, item_name: "Capacete", ca_number: "CA-12345",
-      quantity: 1, unit: "un", variant: null, current_status: "active" }] }];
-  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [], events: [{ signature_event_id: item2,
-    group_id: group, verified_at: "2026-09-29T13:40:00Z" }] });
-  render(<EpiRecebimento read={async () => confirmed} respond={async () => 1} getAccessToken={getToken}/>);
-  expect(await screen.findByText("Confirmado com biometria do celular")).toBeInTheDocument();
-});
-
-const pendingGroup: PersonalDeliveryGroup3d[] = [{ group_id: group,
+// Marco 3J: confirmação de recebimento na tela cheia (digital ou senha, sem passar pelo Perfil).
+const pendingGroup: PersonalDeliveryGroup3d = { group_id: group,
   delivered_at: "2026-09-29T13:30:00Z", profession: "Soldador", feedback_status: null,
   feedback_at: null, public_message: null,
   items: [{ delivery_id: item1, item_name: "Capacete", ca_number: "CA-12345",
-    quantity: 1, unit: "un", variant: null, current_status: "active" }] }];
+    quantity: 1, unit: "un", variant: null, current_status: "active" }] };
+const active = { methods: [{ id: "credencial-sintetica", method: "Passkey" as const, created_at: "2026-09-29T12:00:00Z", revoked_at: null }], events: [] };
+const registration = { challenge_id: "64b2d5a0-fede-4489-af7f-b7cb2c4630f3", options: { challenge: "reg" }, token: "jwt-sintetico-do-teste" };
 
-it("com biometria ativa, confirmar com biometria é o caminho padrão e o sem biometria continua disponível", async () => {
-  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "credencial-sintetica", method: "Passkey",
-    created_at: "2026-09-29T12:00:00Z", revoked_at: null }], events: [] });
-  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
-  const primary = await screen.findByRole("button", { name: "Confirmar com biometria" });
-  const actions = primary.parentElement!.querySelectorAll("button");
-  expect(actions[0]).toBe(primary);
-  expect(screen.getByRole("button", { name: "Confirmar sem biometria" })).toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: "Confirmar recebimento" })).not.toBeInTheDocument();
-  expect(screen.queryByText(/ative a biometria do celular/)).not.toBeInTheDocument();
-  fireEvent.click(primary);
-  expect(await screen.findByRole("heading", { name: "Confirmar com biometria do celular" })).toBeInTheDocument();
+it("com digital ativa, o desafio é preparado ao abrir e o toque chama a digital na hora; sucesso só após o servidor", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue(active);
+  vi.mocked(prepareSignature3f).mockResolvedValue(prepared as never);
+  let finish!: (value: { signature_event_id: string; feedback_id: string }) => void;
+  vi.mocked(confirmSignature3f).mockImplementation(() => new Promise(resolve => { finish = resolve; }));
+  const onDone = vi.fn();
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={onDone} onClose={vi.fn()}/>);
+  const button = await screen.findByRole("button", { name: "Confirmar com a digital" });
+  await waitFor(() => expect(button).toBeEnabled());
+  expect(prepareSignature3f).toHaveBeenCalledWith(getToken, group);
+  expect(confirmSignature3f).not.toHaveBeenCalled();
+  fireEvent.click(button);
+  expect(confirmSignature3f).toHaveBeenCalledTimes(1);
+  expect(confirmSignature3f).toHaveBeenCalledWith(prepared);
+  expect(onDone).not.toHaveBeenCalled();
+  expect(screen.queryByText("Pronto!")).not.toBeInTheDocument();
+  finish({ signature_event_id: item1, feedback_id: "1" });
+  expect(await screen.findByText("Pronto!")).toBeInTheDocument();
+  expect(screen.getByText("Recebimento confirmado com a sua digital.")).toBeInTheDocument();
+  expect(onDone).toHaveBeenCalledWith("digital");
 });
 
-it("sem biometria ativa (ou revogada), mantém confirmação comum e orienta onde ativar", async () => {
-  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "credencial-sintetica", method: "Passkey",
-    created_at: "2026-09-29T12:00:00Z", revoked_at: "2026-09-30T12:00:00Z" }], events: [] });
-  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
-  expect(await screen.findByText(/ative a biometria do celular/)).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: "Meu Perfil → Segurança" })).toHaveAttribute("href", "/colaborador/perfil#perfil-seguranca");
-  expect(screen.getByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: "Confirmar com biometria" })).not.toBeInTheDocument();
+it("digital cancelada ou recusada: mensagem clara, nada confirmado e a senha continua disponível", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue(active);
+  vi.mocked(prepareSignature3f).mockResolvedValue(prepared as never);
+  vi.mocked(confirmSignature3f).mockRejectedValue(new Error("NotAllowedError"));
+  const onDone = vi.fn();
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={onDone} onClose={vi.fn()}/>);
+  const button = await screen.findByRole("button", { name: "Confirmar com a digital" });
+  await waitFor(() => expect(button).toBeEnabled());
+  fireEvent.click(button);
+  expect(await screen.findByRole("alert")).toHaveTextContent("A digital não foi confirmada. Toque de novo ou use sua senha.");
+  expect(onDone).not.toHaveBeenCalled();
+  await waitFor(() => expect(prepareSignature3f).toHaveBeenCalledTimes(2));
+  fireEvent.click(screen.getByRole("button", { name: "Usar minha senha" }));
+  expect(screen.getByLabelText("Digite sua senha para confirmar")).toBeInTheDocument();
 });
 
-it("falha ao consultar biometria não esconde a confirmação comum", async () => {
+it("sem digital cadastrada: cadastra ali mesmo (sem ir ao Perfil) e depois um toque confirma", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [], events: [] });
+  vi.mocked(prepareRegistration3f).mockResolvedValue(registration as never);
+  vi.mocked(finishRegistration3f).mockResolvedValue({ saved: true });
+  vi.mocked(prepareSignature3f).mockResolvedValue(prepared as never);
+  vi.mocked(confirmSignature3f).mockResolvedValue({ signature_event_id: item1, feedback_id: "1" });
+  const onDone = vi.fn();
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={onDone} onClose={vi.fn()}/>);
+  const register = await screen.findByRole("button", { name: "Usar minha digital" });
+  await waitFor(() => expect(register).toBeEnabled());
+  expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  fireEvent.click(register);
+  expect(finishRegistration3f).toHaveBeenCalledWith(registration);
+  expect(await screen.findByText("Digital cadastrada! Agora toque mais uma vez para confirmar.")).toBeInTheDocument();
+  expect(onDone).not.toHaveBeenCalled();
+  const confirm = screen.getByRole("button", { name: "Confirmar com a digital" });
+  await waitFor(() => expect(confirm).toBeEnabled());
+  fireEvent.click(confirm);
+  await waitFor(() => expect(onDone).toHaveBeenCalledWith("digital"));
+});
+
+it("aparelho do almoxarifado: somente senha, nunca chama a digital do aparelho", async () => {
+  const confirmWithPassword = vi.fn(async () => {});
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} sharedDevice confirmWithPassword={confirmWithPassword} onDone={vi.fn()} onClose={vi.fn()}/>);
+  expect(screen.getByLabelText("Digite sua senha para confirmar")).toHaveAttribute("autocomplete", "off");
+  expect(screen.queryByRole("button", { name: /digital/ })).not.toBeInTheDocument();
+  await new Promise(resolve => setTimeout(resolve, 10));
+  expect(signatureRequest3f).not.toHaveBeenCalled();
+  expect(prepareSignature3f).not.toHaveBeenCalled();
+});
+
+it("navegador sem digital ou falha ao preparar: vai direto para a senha", async () => {
   vi.mocked(signatureRequest3f).mockRejectedValue(new Error("Consulta indisponível"));
-  render(<EpiRecebimento read={async () => pendingGroup} respond={async () => 1} getAccessToken={getToken}/>);
-  expect(await screen.findByRole("button", { name: "Confirmar recebimento" })).toBeInTheDocument();
-  expect(screen.queryByText(/ative a biometria do celular/)).not.toBeInTheDocument();
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={vi.fn()} onClose={vi.fn()}/>);
+  expect(await screen.findByLabelText("Digite sua senha para confirmar")).toBeInTheDocument();
+  expect(screen.getByRole("alert")).toHaveTextContent("Não foi possível preparar a digital agora. Use sua senha.");
+  cleanup();
+  vi.mocked(biometricSupported).mockReturnValue(false);
+  render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={vi.fn()} onClose={vi.fn()}/>);
+  expect(screen.getByLabelText("Digite sua senha para confirmar")).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Usar a digital" })).not.toBeInTheDocument();
+});
+
+const confirmedGroup: PersonalDeliveryGroup3d[] = [{ ...pendingGroup, feedback_status: "CONFIRMADO", feedback_at: "2026-09-29T13:40:00Z" }];
+it("entregas confirmadas: não declara a forma quando a consulta 3F falha", async () => {
+  vi.mocked(signatureRequest3f).mockRejectedValue(new Error("Consulta indisponível"));
+  render(<EpiRecebimento read={async () => confirmedGroup} respond={async () => 1} getAccessToken={getToken} view="confirmadas"/>);
+  expect(await screen.findByText("Confirmado · forma indisponível")).toBeInTheDocument();
+  expect(screen.queryByText("Confirmado com a digital")).not.toBeInTheDocument();
+});
+
+it("entregas confirmadas: mostra o selo da digital quando o próprio evento 3F existe", async () => {
+  vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [], events: [{ signature_event_id: item2,
+    group_id: group, verified_at: "2026-09-29T13:40:00Z" }] });
+  render(<EpiRecebimento read={async () => confirmedGroup} respond={async () => 1} getAccessToken={getToken} view="confirmadas"/>);
+  expect(await screen.findByText("Confirmado com a digital")).toBeInTheDocument();
 });

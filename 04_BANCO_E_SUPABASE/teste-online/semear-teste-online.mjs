@@ -101,7 +101,11 @@ async function entrega(nome, itens) {
 }
 const joao = await login(contas.joao);
 const confirmada = await entrega("João Teste da Silva", ["EPI-CAP", "EPI-BOT", "EPI-MASC-SOLDA"]);
-await rpc("respond_epi_delivery_3d", { p_group_id: confirmada, p_action: "CONFIRMADO", p_delivery_id: null, p_category: null, p_details: null, p_idempotency_key: randomUUID() }, joao);
+// Marco 3J: confirmar exige digital ou senha. A semente usa o mesmo caminho do celular (senha conferida pela Edge Function).
+const confirmacao = await fetch(`${BASE}/functions/v1/assinatura-epi-3f`, { method: "POST", headers: { Origin: "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev",
+  Authorization: `Bearer ${joao}`, "Content-Type": "application/json" },
+  body: JSON.stringify({ action: "password_confirm", group_id: confirmada, password: contas.joao.password, idempotency_key: randomUUID() }) });
+assert.equal(confirmacao.status, 200, "confirmação com senha (3J) falhou");
 await entrega("João Teste da Silva", ["EPI-LUV-RASPA", "EPI-OCU"]); // pendente para o teste
 const recusada = await entrega("João Teste da Silva", ["EPI-AUR"]);
 await rpc("manage_epi_delivery_feedback_3d", { p_group_id: recusada, p_action: "RECUSA", p_public_message: "Recusou receber o protetor auricular nesta entrega (dado fictício).", p_internal_note: "Testemunha fictícia: encarregado da equipe", p_idempotency_key: randomUUID() });

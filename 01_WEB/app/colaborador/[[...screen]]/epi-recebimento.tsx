@@ -1,140 +1,133 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { Fingerprint, PackageCheck, WifiOff } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CheckCircle2, HardHat, PackageCheck, WifiOff } from "lucide-react";
 import type { PersonalDeliveryGroup3d } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
-import { EpiAssinatura3f } from "./epi-assinatura-3f";
+import { ConfirmarRecebimento, itemLine } from "./epi-assinatura-3f";
 import { signatureRequest3f, type SignatureState3f } from "@/04_SERVICOS/assinatura-browser-3f";
-import styles from "./colaborador.module.css";
-import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
+import { TelaCheia } from "./tela-cheia";
+import styles from "./simples.module.css";
 
+type Respond = (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA", deliveryId: string | null,
+  category: string | null, details: string | null, key: string) => Promise<number>;
 type Props = {
   read: () => Promise<PersonalDeliveryGroup3d[]>;
-  respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA", deliveryId: string | null,
-    category: string | null, details: string | null, key: string) => Promise<number>;
+  // Usado somente para informar problema (DIVERGENCIA). Confirmar exige digital ou senha (Marco 3J).
+  respond: Respond;
+  confirmWithPassword?: (groupId: string, password: string, key: string) => Promise<void>;
   getAccessToken?: () => Promise<string>;
-  // Aparelho do almoxarifado: sem biometria do aparelho e saída automática após registrar.
+  // Aparelho do almoxarifado: sem digital do aparelho e saída automática após registrar.
   sharedDevice?: boolean;
   onConfirmed?: () => void;
+  // "pendentes": o que a pessoa precisa fazer agora. "confirmadas": histórico (em Mais opções).
+  view?: "pendentes" | "confirmadas";
 };
-const labels = { ITEM_FALTANDO: "Item faltando", QUANTIDADE: "Quantidade diferente", TAMANHO: "Tamanho diferente",
-  VARIANTE: "Variante diferente", NAO_RECEBIDO: "Item não recebido", OUTRO: "Outro" } as const;
-type Category = keyof typeof labels;
-const stateLabel = { CONFIRMADO: "Recebimento confirmado", DIVERGENCIA: "Divergência informada",
-  EM_ANALISE: "Divergência em análise", RESOLVIDA: "Divergência resolvida",
-  RECUSA: "Recusa registrada pela Gestão · você ainda pode confirmar ou informar divergência" } as const;
-const day = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+const problems = { NAO_RECEBIDO: "Não recebi", TAMANHO: "Tamanho errado", QUANTIDADE: "Quantidade errada", OUTRO: "Outro problema" } as const;
+type Problem = keyof typeof problems;
+const day = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
+const isPending = (group: PersonalDeliveryGroup3d) => group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA";
+const isWaiting = (group: PersonalDeliveryGroup3d) => group.feedback_status === "DIVERGENCIA" || group.feedback_status === "EM_ANALISE";
 
-export function EpiRecebimento({ read, respond, getAccessToken, sharedDevice = false, onConfirmed }: Props) {
-  const { state, refresh } = usePersonalDetail(read);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [mode, setMode] = useState<"CONFIRMADO" | "DIVERGENCIA" | null>(null);
-  const [deliveryId, setDeliveryId] = useState("");
-  const [category, setCategory] = useState<Category | "">("");
+function InformarProblema({ group, respond, onSent, onClose }: { group: PersonalDeliveryGroup3d; respond: Respond; onSent: () => void; onClose: () => void }) {
+  const [deliveryId, setDeliveryId] = useState(group.items.length === 1 ? group.items[0].delivery_id : "");
+  const [problem, setProblem] = useState<Problem | "">("");
   const [details, setDetails] = useState("");
-  const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
-  const [signedGroup, setSignedGroup] = useState<string | null>(null);
-  const [signedIds, setSignedIds] = useState<Set<string>>(new Set());
-  const [signatureStatus, setSignatureStatus] = useState<"loading" | "ready" | "error">("loading");
-  // Biometria do celular (passkey 3F) é o caminho padrão quando o funcionário já a ativou.
-  const [hasBiometric, setHasBiometric] = useState(false);
-  const key = useRef<string | null>(null);
-  const lock = useRef(false);
+  const [sent, setSent] = useState(false);
+  const key = useRef(crypto.randomUUID());
+  const ready = Boolean(deliveryId && problem && (problem !== "OUTRO" || details.trim()));
+  async function send() {
+    if (!ready || busy) return;
+    setBusy(true); setError("");
+    try {
+      // Sem texto, a própria escolha vira a descrição (ninguém precisa digitar).
+      await respond(group.group_id, "DIVERGENCIA", deliveryId, problem, details.trim() || problems[problem as Problem], key.current);
+      setSent(true); onSent();
+    } catch {
+      setError(typeof navigator !== "undefined" && !navigator.onLine ? "Sem internet. Nada foi enviado. Tente de novo." : "Não deu certo agora. Tente de novo em instantes.");
+    } finally { setBusy(false); }
+  }
+  if (sent) return <TelaCheia title="Aviso enviado" onBack={onClose} backLabel="Fechar">
+    <div className={styles.done} role="status"><CheckCircle2 aria-hidden="true" size={72}/><h2>Aviso enviado!</h2>
+      <p>A Gestão vai verificar e responder. Nada foi cobrado de você.</p></div>
+    <button type="button" className={styles.bigGo} onClick={onClose}>OK</button>
+  </TelaCheia>;
+  const item = group.items.find(row => row.delivery_id === deliveryId);
+  return <TelaCheia title="Falta algo ou veio errado?" onBack={onClose} busy={busy}>
+    {group.items.length > 1 && <div role="group" aria-label="Qual item?"><p className={styles.small}>1. Qual item?</p>
+      <div className={styles.bigActions}>{group.items.map(row => <button key={row.delivery_id} type="button" className={styles.big}
+        aria-pressed={deliveryId === row.delivery_id} onClick={() => setDeliveryId(row.delivery_id)}>{row.item_name}</button>)}</div></div>}
+    {group.items.length === 1 && item && <ul className={styles.items}><li><HardHat aria-hidden="true" size={26}/><span>{item.item_name}<small>{itemLine(item)}</small></span></li></ul>}
+    <div role="group" aria-label="O que aconteceu?"><p className={styles.small}>{group.items.length > 1 ? "2. " : ""}O que aconteceu?</p>
+      <div className={styles.bigActions}>{(Object.entries(problems) as [Problem, string][]).map(([value, label]) =>
+        <button key={value} type="button" className={styles.big} aria-pressed={problem === value} onClick={() => setProblem(value)}>{label}</button>)}</div></div>
+    {problem && <label className={styles.field}>{problem === "OUTRO" ? "Explique o problema" : "Quer explicar? (não é obrigatório)"}
+      <textarea value={details} onChange={event => setDetails(event.target.value)} maxLength={240} rows={3}/></label>}
+    {error && <p className={styles.fail} role="alert">{error}</p>}
+    <button type="button" className={styles.bigGo} onClick={() => void send()} disabled={!ready || busy}>{busy ? "Enviando…" : "Enviar para a Gestão"}</button>
+    <p className={styles.small}>A entrega original fica guardada. Avisar um problema não gera punição nem cobrança.</p>
+  </TelaCheia>;
+}
+
+export function EpiRecebimento({ read, respond, confirmWithPassword, getAccessToken, sharedDevice = false, onConfirmed, view = "pendentes" }: Props) {
+  const { state, refresh } = usePersonalDetail(read);
+  const [confirming, setConfirming] = useState<PersonalDeliveryGroup3d | null>(null);
+  const [reporting, setReporting] = useState<PersonalDeliveryGroup3d | null>(null);
+  const [signed, setSigned] = useState<Set<string> | null | "erro">(null);
   useEffect(() => {
-    if (!getAccessToken) return;
+    if (view !== "confirmadas" || !getAccessToken) return;
     let active = true;
     void (async () => {
-      try {
-        const token = await getAccessToken();
-        const result = await signatureRequest3f<SignatureState3f>(token, { action: "state" });
-        if (active) { setSignedIds(new Set(result.events.map(event => event.group_id)));
-          setHasBiometric(result.methods.some(method => !method.revoked_at)); setSignatureStatus("ready"); }
-      } catch { if (active) setSignatureStatus("error"); }
+      try { const result = await signatureRequest3f<SignatureState3f>(await getAccessToken(), { action: "state" });
+        if (active) setSigned(new Set(result.events.map(event => event.group_id))); }
+      catch { if (active) setSigned("erro"); }
     })();
     return () => { active = false; };
-  }, [getAccessToken]);
-  const choose = useCallback((groupId: string, action: "CONFIRMADO" | "DIVERGENCIA") => {
-    setSignedGroup(null); setSelected(groupId); setMode(action); setDeliveryId(""); setCategory(""); setDetails(""); setAgreed(false);
-    setError(""); setNotice(""); key.current = crypto.randomUUID();
-  }, []);
-  const biometricDefault = !sharedDevice && Boolean(getAccessToken) && signatureStatus === "ready" && hasBiometric;
-  function dismiss() { setSelected(null); setMode(null); setError(""); key.current = null; }
-  async function send(groupId: string) {
-    if (lock.current || !mode || (mode === "CONFIRMADO" && !agreed) ||
-      (mode === "DIVERGENCIA" && (!deliveryId || !category || !details.trim()))) return;
-    lock.current = true; setBusy(true); setError("");
-    try {
-      await respond(groupId, mode, mode === "DIVERGENCIA" ? deliveryId : null,
-        mode === "DIVERGENCIA" ? category : null, mode === "DIVERGENCIA" ? details.trim() : null,
-        key.current ??= crypto.randomUUID());
-      setNotice(mode === "CONFIRMADO" ? "Recebimento confirmado." : "Divergência informada à Gestão.");
-      dismiss(); refresh(); onConfirmed?.();
-    } catch {
-      setError(typeof navigator !== "undefined" && !navigator.onLine ?
-        "Não foi possível registrar agora. Verifique a conexão." :
-        "Não foi possível concluir agora. Atualize os dados e tente novamente.");
-      refresh();
-    } finally { lock.current = false; setBusy(false); }
+  }, [view, getAccessToken]);
+  const sheets = <>
+    {confirming && <ConfirmarRecebimento group={confirming} getAccessToken={getAccessToken} sharedDevice={sharedDevice}
+      confirmWithPassword={confirmWithPassword} onDone={() => { refresh(); onConfirmed?.(); }} onClose={() => { setConfirming(null); refresh(); }}/>}
+    {reporting && <InformarProblema group={reporting} respond={respond} onSent={() => { refresh(); onConfirmed?.(); }} onClose={() => { setReporting(null); refresh(); }}/>}
+  </>;
+  if (state.status === "loading") return <>{view === "pendentes" && <p className={styles.wait} role="status">Procurando entregas…</p>}{sheets}</>;
+  if (state.status === "error") return <><div className={styles.block} role="alert"><p><WifiOff aria-hidden="true" size={20}/> Não foi possível ver suas entregas agora.</p>
+    <div className={styles.bigActions}><button type="button" className={styles.bigSoft} onClick={refresh}>Tentar de novo</button></div></div>{sheets}</>;
+  if (view === "confirmadas") {
+    const done = state.data.filter(group => group.feedback_status === "CONFIRMADO");
+    return <section className={styles.block} aria-labelledby="entregas-confirmadas">
+      <h2 id="entregas-confirmadas">Entregas já confirmadas</h2>
+      {done.length === 0 ? <p>Nenhuma entrega confirmada ainda.</p> :
+        <ul className={styles.rows}>{done.map(group => <li key={group.group_id} className={styles.row}>
+          <span className={styles.rowIcon}><PackageCheck aria-hidden="true" size={24}/></span>
+          <div className={styles.rowText}><strong>Entrega de {day(group.delivered_at)}</strong>
+            <small>{group.items.map(item => item.item_name).join(", ")}</small></div>
+          <span className={styles.rowChip}>{signed instanceof Set && signed.has(group.group_id) ? "Confirmado com a digital" :
+            signed === "erro" ? "Confirmado · forma indisponível" : "Confirmado"}</span></li>)}</ul>}
+    </section>;
   }
-  return <section className={styles.personalCard} aria-labelledby="epi-recebimento-heading">
-    <div className={styles.epiSectionHead}><div><p className={styles.workLabel}>ENTREGAS DO LABORATÓRIO</p><h2 id="epi-recebimento-heading">Recebimento de EPIs</h2></div><PackageCheck aria-hidden="true" size={25}/></div>
-    <p>A Gestão registra a entrega após a entrega física. Você pode confirmar o recebimento ou informar uma divergência. Sua confirmação não cria uma entrega nem constitui assinatura digital qualificada.</p>
-    {notice&&<p className={styles.exchangeSuccess} role="status">{notice}</p>}
-    {error&&<p className={styles.exchangeError} role="alert">{error}</p>}
-    {state.status === "loading" ? <p role="status">Consultando suas entregas…</p> :
-      state.status === "error" ? <div role="alert"><WifiOff aria-hidden="true" size={25}/><p>Entregas temporariamente indisponíveis.</p><button type="button" onClick={refresh}>Tentar novamente</button></div> :
-      state.data.length === 0 ? <p>Nenhuma entrega deste fluxo registrada para você.</p> :
-      <ul className={styles.exchangeList}>{state.data.map(group => <li key={group.group_id}>
-        <div><strong>Entrega registrada em {day(group.delivered_at)}</strong>
-          <span className={styles.exchangeStatus}>{signedIds.has(group.group_id) && group.feedback_status === "CONFIRMADO" ?
-            "Confirmado com biometria do celular" : group.feedback_status === "CONFIRMADO" && getAccessToken && signatureStatus !== "ready" ?
-            "Recebimento confirmado · tipo de confirmação indisponível" : group.feedback_status ? stateLabel[group.feedback_status] : "Confirmação pendente"}</span>
-          {group.feedback_at && <small>Manifestação registrada em {day(group.feedback_at)}</small>}
-          {group.public_message && <p>Mensagem da Gestão: {group.public_message}</p>}
-          <small>Função no registro: {nomeProfissao(group.profession)}</small>
-          <ul aria-label="Itens registrados nesta entrega">{group.items.map(item => <li key={item.delivery_id}>
-            {item.item_name} · {item.quantity} {item.unit}{item.variant ? ` · tamanho/variante ${item.variant}` : ""}{item.ca_number ? ` · CA ${item.ca_number}` : ""}
-          </li>)}</ul>
-          {selected === group.group_id && mode && <div className={styles.exchangeForm}>
-            <h3>{mode === "CONFIRMADO" ? "Conferir e confirmar recebimento" : "Informar divergência"}</h3>
-            {mode === "CONFIRMADO" ? <label><input type="checkbox" checked={agreed} onChange={event => setAgreed(event.target.checked)}/> Conferi os itens e confirmo o recebimento registrado acima.</label> : <>
-              <label htmlFor={`delivery-${group.group_id}`}>Item da divergência</label>
-              <select id={`delivery-${group.group_id}`} value={deliveryId} onChange={event => setDeliveryId(event.target.value)} required>
-                <option value="">Selecione o item</option>{group.items.map(item => <option key={item.delivery_id} value={item.delivery_id}>{item.item_name} · {item.variant ?? "sem tamanho"}</option>)}
-              </select>
-              <label htmlFor={`category-${group.group_id}`}>O que aconteceu?</label>
-              <select id={`category-${group.group_id}`} value={category} onChange={event => setCategory(event.target.value as Category)} required>
-                <option value="">Selecione</option>{(Object.entries(labels) as [Category,string][]).map(([value,label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
-              <label htmlFor={`details-${group.group_id}`}>Descreva a divergência</label>
-              <textarea id={`details-${group.group_id}`} value={details} onChange={event => setDetails(event.target.value)} maxLength={240} rows={3} required/>
-              <small>A entrega original será preservada. O relato não gera punição ou cobrança automática.</small>
-            </>}
-            <div className={styles.exchangeActions}><button type="button" onClick={dismiss} disabled={busy}>Cancelar</button>
-              <button type="button" onClick={() => void send(group.group_id)} disabled={busy || (mode === "CONFIRMADO" ? !agreed : !deliveryId || !category || !details.trim())}>{busy ? "Enviando…" : mode === "CONFIRMADO" ? "Confirmar recebimento" : "Enviar divergência"}</button></div>
-          </div>}
-          {signedGroup === group.group_id && getAccessToken && <EpiAssinatura3f groupId={group.group_id}
-            getToken={getAccessToken} onCancel={() => setSignedGroup(null)} onSigned={() => {
-              setSignedIds(previous => new Set(previous).add(group.group_id));
-              setSignedGroup(null); setNotice("Recebimento confirmado com biometria do celular."); refresh();
-            }}/>}
-        </div>
-        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA") &&
-          <div className={styles.exchangeActions}>
-            {biometricDefault ? <>
-              <button type="button" className={styles.biometricPrimary} onClick={() => { setSelected(null); setMode(null); setSignedGroup(group.group_id); setError(""); setNotice(""); }}><Fingerprint aria-hidden="true" size={20}/> Confirmar com biometria</button>
-              <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar sem biometria</button>
-            </> : <button type="button" onClick={() => choose(group.group_id,"CONFIRMADO")}>Confirmar recebimento</button>}
-            <button type="button" onClick={() => choose(group.group_id,"DIVERGENCIA")}>Informar divergência</button>
-          </div>}
-        {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA") &&
-          !sharedDevice && getAccessToken && signatureStatus === "ready" && !hasBiometric &&
-          <p className={styles.signatureNote}>Dica: ative a biometria do celular em <Link href="/colaborador/perfil#perfil-seguranca">Meu Perfil → Segurança</Link> para confirmar entregas com a sua digital, rosto ou senha da tela.</p>}
-      </li>)}</ul>}
-  </section>;
+  const pending = state.data.filter(isPending);
+  const waiting = state.data.filter(isWaiting);
+  return <>
+    {pending.length === 0 && waiting.length === 0 ? <p className={styles.ok} role="status"><CheckCircle2 aria-hidden="true" size={22}/> Nenhuma entrega para conferir.</p> : null}
+    {pending.map(group => <section key={group.group_id} className={`${styles.block} ${styles.blockTodo}`} aria-labelledby={`entrega-${group.group_id}`}>
+      <span className={styles.tag}>Para fazer agora</span>
+      <h2 id={`entrega-${group.group_id}`}>Você recebeu estes EPIs?</h2>
+      <p>Entrega de {day(group.delivered_at)}</p>
+      {group.public_message && <p className={styles.wait}>Recado da Gestão: {group.public_message}</p>}
+      <ul className={styles.items} aria-label="Itens desta entrega">{group.items.map(item => <li key={item.delivery_id}>
+        <HardHat aria-hidden="true" size={26}/><span>{item.item_name}<small>{itemLine(item)}</small></span></li>)}</ul>
+      <div className={styles.bigActions}>
+        <button type="button" className={styles.bigOk} onClick={() => setConfirming(group)}>Recebi tudo</button>
+        <button type="button" className={styles.big} onClick={() => setReporting(group)}>Falta algo ou veio errado</button>
+      </div>
+    </section>)}
+    {waiting.map(group => <section key={group.group_id} className={styles.block} aria-labelledby={`aguardando-${group.group_id}`}>
+      <span className={`${styles.tag} ${styles.tagInfo}`}>Aguardando a Gestão</span>
+      <h2 id={`aguardando-${group.group_id}`}>Você avisou um problema</h2>
+      <p>Entrega de {day(group.delivered_at)}: {group.items.map(item => item.item_name).join(", ")}. A Gestão vai responder aqui.</p>
+    </section>)}
+    {sheets}
+  </>;
 }

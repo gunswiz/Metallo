@@ -1,46 +1,57 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ScrollText } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { ScrollText, WifiOff } from "lucide-react";
 import type { EpiAwareness3i } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { usePersonalDetail } from "./use-personal-detail";
-import styles from "./colaborador.module.css";
+import styles from "./simples.module.css";
 
-// Marco 3I: termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1).
-// Aceito uma única vez pelo próprio funcionário; o texto e o hash vêm do servidor.
-const day = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+// Marco 3I/3J: termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1).
+// Marco 3J: deixou de ser um cartão. É a primeira tela de Meus EPIs e precisa ser lida até o fim e aceita
+// para continuar. Aceito uma única vez pelo próprio funcionário; o texto e o hash vêm do servidor.
+export const termDay = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" }).format(new Date(value));
 
-export function TermoCienciaEpi({ read, accept }: {
+export function TermoCienciaEpi({ read, accept, children }: {
   read: () => Promise<EpiAwareness3i>;
   accept: (termSha256: string, idempotencyKey: string) => Promise<string>;
+  children: (acceptedAt: string) => ReactNode;
 }) {
   const { state, refresh } = usePersonalDetail(read);
-  const [agreed, setAgreed] = useState(false);
+  // Depois de aceito, a tela não volta a bloquear quando a lista é atualizada (foco, digital etc.).
+  const [acceptedAt, setAcceptedAt] = useState<string | null>(null);
+  const [reachedEnd, setReachedEnd] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [acceptedNow, setAcceptedNow] = useState<string | null>(null);
   const key = useRef<string | null>(null);
   const lock = useRef(false);
+  const box = useRef<HTMLDivElement | null>(null);
+  const known = state.status === "ready" ? state.data.accepted_at : null;
+  const passed = acceptedAt ?? known;
+  const check = useCallback(() => {
+    const el = box.current;
+    if (el && el.scrollTop + el.clientHeight >= el.scrollHeight - 24) setReachedEnd(true);
+  }, []);
+  useEffect(() => { if (state.status === "ready" && !passed) check(); }, [state, passed, check]);
+  if (passed) return <>{children(passed)}</>;
   async function send(term: EpiAwareness3i) {
-    if (lock.current || !agreed) return;
+    if (lock.current || !reachedEnd) return;
     lock.current = true; setBusy(true); setError("");
-    try { setAcceptedNow(await accept(term.term_sha256, key.current ??= crypto.randomUUID())); refresh(); }
+    try { setAcceptedAt(await accept(term.term_sha256, key.current ??= crypto.randomUUID())); }
     catch { setError(typeof navigator !== "undefined" && !navigator.onLine ?
-      "Sem conexão. O termo não foi registrado." : "Não foi possível registrar agora. Atualize e tente novamente."); }
+      "Sem internet. O termo não foi registrado. Tente de novo." : "Não deu certo agora. Tente de novo em instantes."); }
     finally { lock.current = false; setBusy(false); }
   }
-  return <section className={styles.personalCard} aria-labelledby="epi-termo-heading" id="epi-termo">
-    <div className={styles.epiSectionHead}><div><p className={styles.workLabel}>NR-6 · ITEM 6.6.1</p><h2 id="epi-termo-heading">Termo de ciência sobre EPI</h2></div><ScrollText aria-hidden="true" size={25}/></div>
-    {state.status === "loading" ? <p role="status">Consultando o termo…</p> :
-      state.status === "error" ? <div role="alert"><p>Termo temporariamente indisponível.</p><button type="button" onClick={refresh}>Tentar novamente</button></div> :
-      (acceptedNow ?? state.data.accepted_at) ? <p className={styles.exchangeSuccess} role="status">Termo aceito em {day((acceptedNow ?? state.data.accepted_at)!)}.</p> :
-      <div className={styles.exchangeForm}>
-        <p>{state.data.term_text}</p>
-        {error && <p className={styles.exchangeError} role="alert">{error}</p>}
-        <label><input type="checkbox" checked={agreed} onChange={event => setAgreed(event.target.checked)}/> Li e estou ciente dos meus deveres quanto ao EPI.</label>
-        <div className={styles.exchangeActions}>
-          <button type="button" onClick={() => void send(state.data)} disabled={busy || !agreed}>{busy ? "Registrando…" : "Aceitar termo"}</button>
-        </div>
-      </div>}
+  if (state.status === "loading") return <div className={styles.wait} role="status">Abrindo seus EPIs…</div>;
+  if (state.status === "error") return <div className={styles.block} role="alert"><WifiOff aria-hidden="true" size={30}/>
+    <h2>Não foi possível abrir agora</h2><p>Confira a internet e tente de novo.</p>
+    <div className={styles.bigActions}><button type="button" className={styles.bigGo} onClick={refresh}>Tentar de novo</button></div></div>;
+  return <section className={styles.term} aria-labelledby="epi-termo-heading" id="epi-termo">
+    <span className={`${styles.tag} ${styles.tagInfo}`}><ScrollText aria-hidden="true" size={16}/> NR-6 · item 6.6.1</span>
+    <h2 id="epi-termo-heading">Antes de ver seus EPIs, leia este termo</h2>
+    <div className={styles.termText} ref={box} onScroll={check} tabIndex={0} aria-label="Texto do termo">{state.data.term_text}</div>
+    {error && <p className={styles.fail} role="alert">{error}</p>}
+    <button type="button" className={styles.bigOk} onClick={() => void send(state.data)} disabled={busy || !reachedEnd}>
+      {busy ? "Registrando…" : "Li e concordo"}</button>
+    {!reachedEnd && <p className={styles.hint}>Arraste o texto até o fim para liberar o botão.</p>}
   </section>;
 }

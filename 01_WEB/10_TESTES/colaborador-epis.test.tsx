@@ -41,28 +41,31 @@ const entry = (item_name: string, current_status: "active" | "replaced" = "activ
   current_status, closed_at: current_status === "active" ? null : "2026-09-01T12:00:00Z",
 });
 beforeEach(() => {
-  localStorage.clear(); state.acceptedAt = null; state.actor = "joao"; state.rows = [entry("Capacete João"), entry("Luva anterior", "replaced")]; state.failure = false;
+  localStorage.clear(); state.acceptedAt = "2026-10-01T12:00:00Z"; state.actor = "joao"; state.rows = [entry("Capacete João"), entry("Luva anterior", "replaced")]; state.failure = false;
   state.replace.mockReset(); state.signOut.mockReset(); state.rpc.mockReset(); state.pointRequest.mockReset();
   state.signOut.mockResolvedValue({ error: null }); state.pointRequest.mockResolvedValue({ status: 200, body: { status: "SESSAO_ENCERRADA" } });
 });
 afterEach(cleanup);
 
-it("mostra somente entregas em uso e histórico encerrado, sem campos administrativos", async () => {
+it("mostra lista curta dos EPIs em uso; histórico encerrado fica em Mais opções, sem campos administrativos", async () => {
   render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
-  expect(await screen.findByRole("heading", { name: "Capacete João" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Luva anterior" })).toBeInTheDocument();
-  expect(screen.getByText("Substituído")).toBeInTheDocument();
-  expect(screen.getAllByText("CA registrado")).toHaveLength(2);
-  expect(screen.getAllByText("Registrado em")).toHaveLength(2);
-  expect(screen.getByRole("heading", { name: "Registros ativos" })).toBeInTheDocument();
-  expect(screen.queryByText("Recebido em")).not.toBeInTheDocument();
-  expect(within(screen.getByRole("region", { name: "Registros ativos" })).queryByText(/CPF|ASO|salário|estoque|fornecedor|hash/i)).not.toBeInTheDocument();
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "EPIs com você (1)" })).toBeInTheDocument();
+  expect(screen.getByText(/1 unidade · tamanho M · CA 12345 · desde 12\/08\/2026/)).toBeInTheDocument();
+  // Lista enxuta: o histórico não ocupa a tela até a pessoa pedir.
+  expect(screen.queryByText("Luva anterior")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Mais opções" }));
+  expect(screen.getByText("Luva anterior")).toBeInTheDocument();
+  expect(screen.getByText(/Substituído em 01\/09\/2026/)).toBeInTheDocument();
+  expect(screen.getByText(/Termo de ciência sobre EPI \(NR-6\) aceito em/)).toBeInTheDocument();
+  expect(within(screen.getByRole("region", { name: "EPIs com você (1)" })).queryByText(/CPF|ASO|salário|estoque|fornecedor|hash/i)).not.toBeInTheDocument();
   expect(state.rpc.mock.calls.filter(call => call[0] === "my_personal_epi").every(call => call.length === 1)).toBe(true);
 });
 it("sem EPI mantém portal e mostra vazio amigável mesmo sem equipe ou obra", async () => {
   state.rows = [];
   render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
-  expect(await screen.findByText("Nenhuma entrega ativa registrada no momento.")).toBeInTheDocument();
+  expect(await screen.findByText("Nenhum EPI com você no momento.")).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Mais opções" }));
   expect(screen.getByText("Nenhuma entrega encerrada no histórico.")).toBeInTheDocument();
   expect(state.signOut).not.toHaveBeenCalled();
 });
@@ -156,16 +159,36 @@ it("foco da janela durante marcação de ponto revalida sem esconder o portal; s
   } finally { encerrar(); }
 });
 
-it("termo de ciência NR-6 aparece pendente, exige marcar ciência e registra o aceite uma vez", async () => {
+it("termo de ciência NR-6 é a primeira tela: bloqueia a lista até aceitar e registra o aceite uma vez", async () => {
+  state.acceptedAt = null;
   render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
   expect(await screen.findByText("Termo sintético NR-6 6.6.1")).toBeInTheDocument();
-  const button = screen.getByRole("button", { name: "Aceitar termo" });
-  expect(button).toBeDisabled();
-  fireEvent.click(screen.getByRole("checkbox", { name: /Li e estou ciente/ }));
-  fireEvent.click(button);
-  expect(await screen.findByText(/Termo aceito em/)).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Antes de ver seus EPIs, leia este termo" })).toBeInTheDocument();
+  // Sem aceitar, nada de EPI aparece nem é consultado.
+  expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
+  expect(state.rpc.mock.calls.some(([name]) => name === "my_personal_epi")).toBe(false);
+  fireEvent.click(screen.getByRole("button", { name: "Li e concordo" }));
+  expect(await screen.findByText("Capacete João")).toBeInTheDocument();
   const accepts = state.rpc.mock.calls.filter(([name]) => name === "accept_epi_awareness_3i");
   expect(accepts).toHaveLength(1);
   expect(accepts[0][1]).toMatchObject({ p_term_sha256: "a".repeat(64) });
-  expect(screen.queryByRole("button", { name: "Aceitar termo" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Li e concordo" })).not.toBeInTheDocument();
+});
+
+it("termo longo só libera o botão depois de rolado até o fim", async () => {
+  state.acceptedAt = null;
+  const height = vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(2000);
+  const client = vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(400);
+  try {
+    render(<ColaboradorApp screen="epis" anonKey="anon-local" />);
+    const text = await screen.findByLabelText("Texto do termo");
+    const button = screen.getByRole("button", { name: "Li e concordo" });
+    expect(button).toBeDisabled();
+    expect(screen.getByText("Arraste o texto até o fim para liberar o botão.")).toBeInTheDocument();
+    text.scrollTop = 800; fireEvent.scroll(text);
+    expect(button).toBeDisabled();
+    text.scrollTop = 1600; fireEvent.scroll(text);
+    expect(button).toBeEnabled();
+    expect(state.rpc.mock.calls.some(([name]) => name === "accept_epi_awareness_3i")).toBe(false);
+  } finally { height.mockRestore(); client.mockRestore(); }
 });

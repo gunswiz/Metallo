@@ -1,38 +1,25 @@
 "use client";
 
-import { HardHat, PackageCheck, WifiOff } from "lucide-react";
+import { useCallback, useState, type ReactNode } from "react";
+import { ChevronDown, ChevronUp, HardHat, WifiOff } from "lucide-react";
 import type { EpiAwareness3i, ExchangeableEpi, ExchangeCreateOutcome, ExchangeRequest, PersonalDeliveryGroup3d, PersonalEpi } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { EpiRecebimento } from "./epi-recebimento";
-import { EpiTroca } from "./epi-troca";
+import { openExchange, PedidosTroca, PedirTroca } from "./epi-troca";
 import { EpiRelatorios } from "./epi-relatorios";
-import { TermoCienciaEpi } from "./termo-ciencia-epi";
+import { termDay, TermoCienciaEpi } from "./termo-ciencia-epi";
 import type { EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 import { usePersonalDetail } from "./use-personal-detail";
-import styles from "./colaborador.module.css";
+import { itemLine } from "./epi-assinatura-3f";
+import styles from "./simples.module.css";
 
-const reason: Record<PersonalEpi["delivery_reason"], string> = {
-  initial: "Entrega inicial", replacement: "Reposição", additional: "Entrega adicional",
-};
+// Marco 3J — Meus EPIs simples (para quem tem pouca prática com celular):
+// 1) termo obrigatório na primeira vez; 2) "Para fazer agora" no topo; 3) lista curta com "Pedir troca";
+// 4) histórico, PDF e detalhes guardados em "Mais opções".
 const outcome: Record<Exclude<PersonalEpi["current_status"], "active">, string> = {
   returned: "Devolvido", replaced: "Substituído", lost: "Registrado como perdido",
   damaged: "Registrado como danificado", consumed: "Encerrado como consumido",
 };
-function day(value: string) { return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value)); }
-function quantity(value: number, unit: string) {
-  if (unit === "par") return `${value} ${value === 1 ? "par" : "pares"}`;
-  if (unit === "un") return `${value} ${value === 1 ? "unidade" : "unidades"}`;
-  return `${value} ${unit}`;
-}
-
-function EpiFacts({ item, historical }: { item: PersonalEpi; historical: boolean }) {
-  return <dl className={styles.epiFacts}>
-    <div><dt>Quantidade</dt><dd>{quantity(item.quantity, item.unit)}</dd></div>
-    {item.ca_number?.trim() && <div><dt>CA registrado</dt><dd>{item.ca_number}</dd></div>}
-    {item.variant?.trim() && <div><dt>Tamanho / variante</dt><dd>{item.variant}</dd></div>}
-    <div><dt>Registrado em</dt><dd>{day(item.delivered_at)}</dd></div>
-    {historical && item.closed_at && <div><dt>Encerrado em</dt><dd>{day(item.closed_at)}</dd></div>}
-  </dl>;
-}
+const day = (value: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
 
 type ExchangeActions = {
   readEligible: () => Promise<ExchangeableEpi[]>;
@@ -40,31 +27,84 @@ type ExchangeActions = {
   create: (deliveryId: string, reason: string, note: string, key: string) => Promise<ExchangeCreateOutcome>;
   cancel: (requestId: string) => Promise<void>;
 };
-export function MeusEpis({ readEpis, exchange, receiving, readReport, awareness }: { readEpis: () => Promise<PersonalEpi[]>; exchange?: ExchangeActions;
+type Receiving = { read: () => Promise<PersonalDeliveryGroup3d[]>; getAccessToken?: () => Promise<string>; sharedDevice?: boolean; onConfirmed?: () => void;
+  confirmWithPassword?: (groupId: string, password: string, key: string) => Promise<void>;
+  respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA",
+    deliveryId: string | null, category: string | null, details: string | null, key: string) => Promise<number> };
+
+// Liga cada EPI ativo ao registro que permite pedir troca (mesmo nome, tamanho e horário de entrega).
+function pairExchange(items: PersonalEpi[], eligible: ExchangeableEpi[]) {
+  const free = [...eligible];
+  return items.map(item => {
+    const index = free.findIndex(row => row.item_name === item.item_name && (row.variant ?? null) === (item.variant ?? null) &&
+      new Date(row.recorded_at).getTime() === new Date(item.delivered_at).getTime());
+    return index < 0 ? null : free.splice(index, 1)[0];
+  });
+}
+
+function Content({ readEpis, exchange, receiving, readReport, awareness, acceptedAt }: Parameters<typeof MeusEpis>[0] & { acceptedAt: string | null }) {
+  const { state, refresh } = usePersonalDetail(readEpis);
+  const readEligible = exchange?.readEligible, readRequests = exchange?.readRequests;
+  const readExchange = useCallback(async () => {
+    if (!readEligible || !readRequests) return null;
+    const [eligible, requests] = await Promise.all([readEligible(), readRequests()]);
+    return { eligible, requests };
+  }, [readEligible, readRequests]);
+  const trade = usePersonalDetail(readExchange);
+  const [trading, setTrading] = useState<ExchangeableEpi | null>(null);
+  const [more, setMore] = useState(false);
+  const exchangeData = trade.state.status === "ready" ? trade.state.data : null;
+  const current = state.status === "ready" ? state.data.filter(item => item.current_status === "active") : [];
+  const history = state.status === "ready" ? state.data.filter(item => item.current_status !== "active") : [];
+  const pairs = exchangeData ? pairExchange(current, exchangeData.eligible) : current.map(() => null);
+  const afterChange = () => { trade.refresh(); };
+  let list: ReactNode;
+  if (state.status === "loading") list = <p className={styles.wait} role="status">Consultando seus EPIs…</p>;
+  else if (state.status === "error") list = <div role="alert"><p><WifiOff aria-hidden="true" size={20}/> Dados de EPIs temporariamente indisponíveis.</p>
+    <div className={styles.bigActions}><button type="button" className={styles.bigSoft} onClick={refresh}>Tentar novamente</button></div></div>;
+  else if (current.length === 0) list = <p>Nenhum EPI com você no momento.</p>;
+  else list = <ul className={styles.rows}>{current.map((item, index) => {
+    const pair = pairs[index];
+    const open = pair && exchangeData?.requests.some(request => request.source_delivery_id === pair.delivery_id && openExchange(request));
+    return <li key={index} className={styles.row}>
+      <span className={styles.rowIcon}><HardHat aria-hidden="true" size={24}/></span>
+      <div className={styles.rowText}><strong>{item.item_name}</strong><small>{itemLine(item)} · desde {day(item.delivered_at)}</small></div>
+      {pair && exchange && (open ? <span className={styles.rowChip}>Troca pedida</span> :
+        <button type="button" className={styles.rowButton} aria-label={`Pedir troca de ${item.item_name}`} onClick={() => setTrading(pair)}>Pedir troca</button>)}
+    </li>;
+  })}</ul>;
+  return <div className={styles.page}>
+    {receiving && <EpiRecebimento {...receiving}/>}
+    {exchange && exchangeData && <PedidosTroca requests={exchangeData.requests} cancel={exchange.cancel} onChanged={afterChange}/>}
+    <section className={styles.block} aria-labelledby="epis-atuais">
+      <h2 id="epis-atuais">EPIs com você{state.status === "ready" ? ` (${current.length})` : ""}</h2>
+      {list}
+      {exchange && trade.state.status === "error" && <p className={styles.small} role="status">Pedidos de troca indisponíveis agora. <button type="button" className={styles.rowButton} onClick={trade.refresh}>Tentar novamente</button></p>}
+    </section>
+    <div className={styles.more}>
+      <button type="button" className={styles.moreToggle} aria-expanded={more} onClick={() => setMore(value => !value)}>
+        Mais opções{more ? <ChevronUp aria-hidden="true"/> : <ChevronDown aria-hidden="true"/>}</button>
+      {more && <div className={styles.moreBody}>
+        <section className={styles.block} aria-labelledby="epis-historico"><h2 id="epis-historico">EPIs que já devolvi ou troquei</h2>
+          {state.status !== "ready" ? <p>Consultando…</p> : history.length === 0 ? <p>Nenhuma entrega encerrada no histórico.</p> :
+            <ul className={styles.rows}>{history.map((item, index) => <li key={index} className={styles.row}>
+              <div className={styles.rowText}><strong>{item.item_name}</strong>
+                <small>{outcome[item.current_status as Exclude<PersonalEpi["current_status"], "active">]}{item.closed_at ? ` em ${day(item.closed_at)}` : ""} · recebido em {day(item.delivered_at)}</small></div></li>)}</ul>}
+        </section>
+        {receiving && <EpiRecebimento {...receiving} view="confirmadas"/>}
+        {exchange && exchangeData && <PedidosTroca requests={exchangeData.requests} onChanged={afterChange} all/>}
+        {readReport && <EpiRelatorios read={readReport} readAwareness={awareness?.read}/>}
+        {acceptedAt && <p className={styles.small}>Termo de ciência sobre EPI (NR-6) aceito em {termDay(acceptedAt)}.</p>}
+      </div>}
+    </div>
+    {trading && exchange && <PedirTroca item={trading} create={exchange.create} onSent={afterChange} onClose={() => { setTrading(null); afterChange(); }}/>}
+  </div>;
+}
+
+export function MeusEpis(props: { readEpis: () => Promise<PersonalEpi[]>; exchange?: ExchangeActions;
   awareness?: { read: () => Promise<EpiAwareness3i>; accept: (termSha256: string, idempotencyKey: string) => Promise<string> };
   readReport?: () => Promise<EpiReportPayload>;
-  receiving?: { read: () => Promise<PersonalDeliveryGroup3d[]>; getAccessToken?: () => Promise<string>; sharedDevice?: boolean; onConfirmed?: () => void;
-    respond: (groupId: string, action: "CONFIRMADO" | "DIVERGENCIA",
-    deliveryId: string | null, category: string | null, details: string | null, key: string) => Promise<number> } }) {
-  const { state, refresh } = usePersonalDetail(readEpis);
-  if (state.status === "loading") return <div className={styles.personalStatus} role="status">Consultando seus EPIs…</div>;
-  if (state.status === "error") return <div className={styles.personalStatus} role="alert"><WifiOff size={32}/><h2>EPIs indisponíveis</h2><p>Dados de EPIs temporariamente indisponíveis.</p><button type="button" onClick={refresh}>Tentar novamente</button></div>;
-  const current = state.data.filter(item => item.current_status === "active");
-  const history = state.data.filter(item => item.current_status !== "active");
-  return <div className={styles.epiLayout}>
-    <section className={styles.personalCard} aria-labelledby="epis-atuais">
-      <div className={styles.epiSectionHead}><div><p className={styles.workLabel}>CONSULTA PESSOAL</p><h2 id="epis-atuais">Registros ativos</h2></div><span className={styles.epiCount}>{current.length}</span></div>
-      {current.length === 0 ? <div className={styles.epiEmpty}><HardHat size={32}/><p>Nenhuma entrega ativa registrada no momento.</p></div> :
-        <ul className={styles.epiGrid}>{current.map((item, index) => <li className={styles.epiItem} key={index}><span className={styles.epiItemIcon}><HardHat size={24}/></span><div><span className={styles.epiState}>Ativo no registro</span><h3>{item.item_name}</h3><EpiFacts item={item} historical={false}/></div></li>)}</ul>}
-    </section>
-    {awareness && <TermoCienciaEpi read={awareness.read} accept={awareness.accept}/>}
-    {receiving && <EpiRecebimento {...receiving}/>}
-    {exchange && <EpiTroca {...exchange}/>}
-    {readReport && <EpiRelatorios read={readReport} readAwareness={awareness?.read}/>}
-    <section className={styles.personalCard} aria-labelledby="epis-historico"><div className={styles.epiSectionHead}><div><p className={styles.workLabel}>ENTREGAS ANTERIORES</p><h2 id="epis-historico">Histórico</h2></div><PackageCheck aria-hidden="true" size={25}/></div>
-      {history.length === 0 ? <p>Nenhuma entrega encerrada no histórico.</p> :
-        <ul className={styles.epiHistory}>{history.map((item, index) => <li key={index}><div className={styles.epiHistoryHeading}><h3>{item.item_name}</h3><span>{outcome[item.current_status as Exclude<PersonalEpi["current_status"], "active">]}</span></div><p>{reason[item.delivery_reason]}</p><EpiFacts item={item} historical/></li>)}</ul>}
-    </section>
-    <p className={styles.epiFootnote}>Consulta de teste. Registros ativos indicam entrega lançada, mesmo quando a confirmação ainda está pendente; o estado de recebimento aparece acima. Entregas anteriores ao 3D ainda podem refletir o catálogo atual. Nenhum lançamento representa operação real da empresa.</p>
-  </div>;
+  receiving?: Receiving }) {
+  if (!props.awareness) return <Content {...props} acceptedAt={null}/>;
+  return <TermoCienciaEpi read={props.awareness.read} accept={props.awareness.accept}>{acceptedAt => <Content {...props} acceptedAt={acceptedAt}/>}</TermoCienciaEpi>;
 }

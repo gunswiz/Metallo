@@ -36,7 +36,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
     if (demo) setVisualScreen(next);
     else router.replace(`/colaborador/${next}`);
   }, [router, demo]);
-  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
+  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
   const sharedDevice = useAparelhoCompartilhado(Boolean(profile) && !demo, () => logout());
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,7 +78,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
               current === "epis" ? <MeusEpis key={profile.employee_id} readEpis={readPersonalEpis}
                 readReport={demo ? undefined : readPersonalReport3e}
                 awareness={demo ? undefined : { read: readEpiAwareness3i, accept: acceptEpiAwareness3i }}
-                receiving={demo ? undefined : {read:readDeliveryGroups3d,respond:respondDelivery3d,getAccessToken,sharedDevice:sharedDevice.shared,onConfirmed:sharedDevice.afterConfirm}}
+                receiving={demo ? undefined : {read:readDeliveryGroups3d,respond:respondDelivery3d,confirmWithPassword:confirmDeliveryWithPassword,getAccessToken,sharedDevice:sharedDevice.shared,onConfirmed:sharedDevice.afterConfirm}}
                 exchange={demo ? undefined : {readEligible:readExchangeableEpis,readRequests:readExchangeRequests,create:createExchangeRequest,cancel:cancelExchangeRequest}}/> :
               current === "itens" ? <MeusItens key={profile.employee_id} read={readPersonalItems3g}
                 actions={demo ? {} : { confirm: confirmPersonalItem3g, report: reportPersonalItem3g }}/>: 

@@ -8,6 +8,7 @@ import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-rep
 import { personalItem3g, type PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 import { communicationDetail3h, communicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import { z } from "zod";
+import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
 export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "comprovantes" | "itens" | "comunicados";
 const visualProfile: PersonalProfile = { employee_id: "synthetic-preview", full_name: "João Sintético", profession: "Profissão de teste", team_name: null };
@@ -279,5 +280,20 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (ticket !== generation.current || endingClient.current || result.error || !result.data.session?.access_token) throw new Error("Sessão inválida.");
     return result.data.session.access_token;
   }, [demo, getClient, profile]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken };
+  // Marco 3J: confirmar recebimento exige digital OU senha. Online, o servidor confere a senha (Edge Function).
+  // No laboratório local (sem a Edge Function), a senha é conferida no Auth local antes de registrar.
+  const confirmDeliveryWithPassword = useCallback(async (groupId: string, password: string, idempotencyKey: string) => {
+    if (online) { await confirmPassword3j(getAccessToken, groupId, password, idempotencyKey); return; }
+    const user = await getClient().auth.getUser();
+    const email = user.data.user?.email;
+    if (!email) throw new PasswordConfirmError("falha");
+    const check = await portalFetch(`${baseUrl}/auth/v1/token?grant_type=password`, { method: "POST",
+      headers: { apikey: anonKey, "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+    if (!check.ok) throw new PasswordConfirmError(check.status === 400 ? "senha_incorreta" : "falha");
+    const temporary = await check.json() as { access_token?: string };
+    if (temporary.access_token) await portalFetch(`${baseUrl}/auth/v1/logout?scope=local`, { method: "POST",
+      headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
+    await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
+  }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
+  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken };
 }

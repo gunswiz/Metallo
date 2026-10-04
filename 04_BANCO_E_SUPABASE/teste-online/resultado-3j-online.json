@@ -1,0 +1,87 @@
+{
+  "at": "2026-10-04T10:52:42.246Z",
+  "scope": "Marco 3J no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "confirmação direta pela API (sem digital nem senha) é recusada",
+      "ok": true
+    },
+    {
+      "name": "…e a entrega continua pendente",
+      "ok": true
+    },
+    {
+      "name": "informar problema (divergência) continua sem exigir senha",
+      "ok": true
+    },
+    {
+      "name": "sem login recusado",
+      "ok": true
+    },
+    {
+      "name": "origem externa recusada",
+      "ok": true
+    },
+    {
+      "name": "campo extra no corpo recusado",
+      "ok": true
+    },
+    {
+      "name": "senha errada recusada com aviso claro",
+      "ok": true
+    },
+    {
+      "name": "…e nada foi confirmado",
+      "ok": true
+    },
+    {
+      "name": "Maria, com a própria senha, não confirma a entrega de outra pessoa",
+      "ok": true
+    },
+    {
+      "name": "…e nada foi confirmado",
+      "ok": true
+    },
+    {
+      "name": "senha correta confirma o recebimento",
+      "ok": true
+    },
+    {
+      "name": "entrega aparece como CONFIRMADO",
+      "ok": true
+    },
+    {
+      "name": "registro guarda o método senha-reautenticacao",
+      "ok": true
+    },
+    {
+      "name": "sessão criada para conferir a senha foi encerrada (não sobra sessão extra)",
+      "ok": true
+    },
+    {
+      "name": "repetição da mesma intenção não duplica",
+      "ok": true
+    },
+    {
+      "name": "nova confirmação de entrega já confirmada é recusada",
+      "ok": true
+    },
+    {
+      "name": "tabelas privadas do 3J não aparecem na API pública",
+      "ok": true
+    },
+    {
+      "name": "registro de confirmação por senha é imutável",
+      "ok": false
+    },
+    {
+      "name": "após 5 senhas erradas, bloqueia por 15 minutos",
+      "ok": true
+    },
+    {
+      "name": "…e nada foi confirmado",
+      "ok": true
+    }
+  ],
+  "result": "1 FALHA(S)"
+}

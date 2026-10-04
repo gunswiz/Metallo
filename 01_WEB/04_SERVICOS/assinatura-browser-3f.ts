@@ -78,3 +78,36 @@ export async function confirmSignature3f(start: PreparedSignature3f) {
   return signatureRequest3f<{ signature_event_id: string; feedback_id: string }>(start.token,
     { action: "sign_finish", challenge_id: start.challenge_id, response });
 }
+
+// Marco 3J (Colaborador simples): o desafio é buscado ANTES do toque, quando a tela de confirmação abre.
+// Assim o toque no botão chama a digital na hora (celulares exigem que a janela da digital nasça do toque).
+export type PreparedRegistration3f = { challenge_id: string; options: PublicKeyCredentialCreationOptionsJSON; token: string };
+export async function prepareRegistration3f(getToken: () => Promise<string>) {
+  const token = await getToken();
+  const start = await signatureRequest3f<Omit<PreparedRegistration3f, "token">>(token, { action: "register_start" });
+  return { ...start, token };
+}
+export async function finishRegistration3f(start: PreparedRegistration3f) {
+  const response = await startRegistration({ optionsJSON: start.options });
+  return signatureRequest3f<{ saved: true }>(start.token,
+    { action: "register_finish", challenge_id: start.challenge_id, response });
+}
+export function biometricSupported() {
+  return typeof window !== "undefined" && window.isSecureContext && typeof window.PublicKeyCredential === "function";
+}
+// Confirmação com a senha da conta (teste online): o servidor confere a senha e só então registra.
+export class PasswordConfirmError extends Error {
+  constructor(public readonly code: "senha_incorreta" | "muitas_tentativas" | "falha") { super(code); }
+}
+export async function confirmPassword3j(getToken: () => Promise<string>, groupId: string, password: string, key: string) {
+  const endpoint = endpoint3f(window.location.origin);
+  if (!endpoint) throw new PasswordConfirmError("falha");
+  const token = await getToken();
+  const response = await fetch(endpoint, { method: "POST", cache: "no-store", credentials: "omit", redirect: "error",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ action: "password_confirm", group_id: groupId, password, idempotency_key: key }),
+    signal: AbortSignal.timeout(20000) });
+  if (response.ok) return response.json() as Promise<{ feedback_id: string; method: "senha" }>;
+  const body = await response.json().catch(() => ({})) as { code?: string };
+  throw new PasswordConfirmError(body.code === "senha_incorreta" || body.code === "muitas_tentativas" ? body.code : "falha");
+}

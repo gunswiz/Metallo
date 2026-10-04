@@ -246,6 +246,37 @@ function revoke(token: string, credentialId: string) {
   });
 }
 
+// Marco 3J: confirmação com a SENHA da conta (para quem não usa digital ou está no aparelho do almoxarifado).
+// A senha é conferida no Auth; a sessão criada para conferir é encerrada na hora. Limite: 5 erros em 15 minutos.
+async function passwordConfirm(token: string, groupId: string, password: string, key: string) {
+  const who = await withActor(token, async (tx, a) => {
+    const [row] = await q<{ email: string }>(tx, "select email from auth.users where id=$1::text::uuid", [a.accountId]);
+    const [fails] = await q<{ n: string }>(tx, `select count(*)::text n from private.epi_tentativa_senha_3j
+      where account_id=$1::text::uuid and not ok and at>clock_timestamp()-interval '15 minutes'`, [a.accountId]);
+    if (Number(fails.n) >= 5) throw new Error("muitas_tentativas");
+    return { actor: a, email: row?.email ?? "" };
+  });
+  const url = Deno.env.get("SUPABASE_URL")!, anon = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const check = await fetch(`${url}/auth/v1/token?grant_type=password`, { method: "POST",
+    headers: { apikey: anon, "Content-Type": "application/json" }, body: JSON.stringify({ email: who.email, password }) });
+  const ok = check.ok;
+  if (ok) {
+    const session = await check.json() as { access_token?: string };
+    if (session.access_token) await fetch(`${url}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: anon, Authorization: `Bearer ${session.access_token}` } });
+  } else await check.text();
+  await q(sql as unknown as Tx, "insert into private.epi_tentativa_senha_3j(account_id,ok) values($1::text::uuid,$2::text::boolean)", [who.actor.accountId, String(ok)]);
+  if (!ok) throw new Error("senha_incorreta");
+  return withActor(token, async (tx, a) => {
+    if (a.accountId !== who.actor.accountId) throw new Error("Sessão inválida.");
+    await q(tx, "select pg_catalog.set_config('metallo.confirmacao_3j','ok',true)");
+    const [fb] = await q<{ id: string }>(tx, "select public.respond_epi_delivery_3d($1::text::uuid,'CONFIRMADO',null,null,null,$2::text::uuid)::text id", [groupId, key]);
+    await q(tx, `insert into private.epi_confirmacao_senha_3j(group_id,feedback_id,account_id,employee_id,method)
+      values($1::text::uuid,$2::text::bigint,$3::text::uuid,$4::text::uuid,'senha-reautenticacao')
+      on conflict (group_id) do nothing`, [groupId, fb.id, a.accountId, a.employeeId]);
+    return { feedback_id: fb.id, method: "senha" };
+  });
+}
+
 const id = z.uuid();
 const credentialText = z.string().regex(/^[A-Za-z0-9_-]{20,2048}$/);
 const webauthn = z.object({ id: credentialText, rawId: credentialText, type: z.literal("public-key"),
@@ -261,6 +292,7 @@ const payloadSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("sign_start"), group_id: id, credential_id: credentialText.optional() }).strict(),
   z.object({ action: z.literal("sign_finish"), challenge_id: id, response: authenticationResponse }).strict(),
   z.object({ action: z.literal("revoke"), credential_id: credentialText }).strict(),
+  z.object({ action: z.literal("password_confirm"), group_id: id, password: z.string().min(1).max(200), idempotency_key: id }).strict(),
 ]);
 
 const baseHeaders = { "Cache-Control": "no-store, max-age=0", "X-Content-Type-Options": "nosniff",
@@ -291,8 +323,12 @@ Deno.serve(async (request) => {
       case "sign_start": return answer(await signStart(token, body.group_id, body.credential_id));
       case "sign_finish": return answer(await signFinish(token, body.challenge_id, body.response as unknown as AuthenticationResponseJSON));
       case "revoke": return answer(await revoke(token, body.credential_id));
+      case "password_confirm": return answer(await passwordConfirm(token, body.group_id, body.password, body.idempotency_key));
     }
-  } catch {
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    if (code === "senha_incorreta") return answer({ error: "Senha incorreta.", code }, 400);
+    if (code === "muitas_tentativas") return answer({ error: "Muitas tentativas. Aguarde 15 minutos ou use a digital.", code }, 429);
     return answer({ error: "Não foi possível validar esta ação. Atualize os dados e tente novamente." }, 400);
   }
 });

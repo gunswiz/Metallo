@@ -6,12 +6,14 @@ import { EpiRecebimento } from "@/app/colaborador/[[...screen]]/epi-recebimento"
 import type { PersonalDeliveryGroup3d } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { signatureRequest3f } from "@/04_SERVICOS/assinatura-browser-3f";
 
-vi.mock("@/04_SERVICOS/assinatura-browser-3f", () => ({ signatureRequest3f: vi.fn(), confirmSignature3f: vi.fn(), prepareSignature3f: vi.fn() }));
+vi.mock("@/04_SERVICOS/assinatura-browser-3f", async importOriginal => ({
+  ...(await importOriginal<typeof import("@/04_SERVICOS/assinatura-browser-3f")>()),
+  signatureRequest3f: vi.fn(), confirmSignature3f: vi.fn(), prepareSignature3f: vi.fn(), prepareRegistration3f: vi.fn(), biometricSupported: () => true }));
 const group = "72e6de19-388c-4c39-9f6c-39f0df8e1280";
 const groups: PersonalDeliveryGroup3d[] = [{ group_id: group, delivered_at: "2026-09-29T13:30:00Z", profession: "Soldador",
   feedback_status: null, feedback_at: null, public_message: null,
   items: [{ delivery_id: "a65b5104-e00c-4302-9073-f18b8747ee7f", item_name: "Luva", ca_number: "CA-1", quantity: 1, unit: "par", variant: null, current_status: "active" }] }];
-beforeEach(() => { sessionStorage.clear(); vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "c", method: "Passkey", created_at: "2026-09-29T12:00:00Z", revoked_at: null }], events: [] }); });
+beforeEach(() => { sessionStorage.clear(); vi.mocked(signatureRequest3f).mockClear(); vi.mocked(signatureRequest3f).mockResolvedValue({ methods: [{ id: "c", method: "Passkey", created_at: "2026-09-29T12:00:00Z", revoked_at: null }], events: [] }); });
 afterEach(() => { cleanup(); vi.useRealTimers(); });
 
 it("sem marcação de aparelho compartilhado, nada sai sozinho", async () => {
@@ -41,15 +43,15 @@ it("aparelho compartilhado sai alguns segundos depois de registrar o recebimento
   await act(async () => { await vi.advanceTimersByTimeAsync(SHARED_AFTER_CONFIRM_MS + 10); });
   expect(logout).toHaveBeenCalledTimes(1);
 });
-it("no aparelho compartilhado, não oferece biometria do aparelho e avisa após confirmar", async () => {
-  const onConfirmed = vi.fn(), respond = vi.fn(async () => 1);
-  render(<EpiRecebimento read={async () => groups} respond={respond} getAccessToken={async () => "jwt"} sharedDevice onConfirmed={onConfirmed}/>);
-  const button = await screen.findByRole("button", { name: "Confirmar recebimento" });
-  await waitFor(() => expect(signatureRequest3f).toHaveBeenCalled());
-  expect(screen.queryByRole("button", { name: "Confirmar com biometria" })).not.toBeInTheDocument();
-  expect(screen.queryByText(/ative a biometria do celular/)).not.toBeInTheDocument();
-  fireEvent.click(button); fireEvent.click(screen.getByRole("checkbox"));
-  fireEvent.click(screen.getByRole("button", { name: "Confirmar recebimento" }));
+it("no aparelho compartilhado, confirma somente com senha (nunca a digital do aparelho) e avisa após confirmar", async () => {
+  const onConfirmed = vi.fn(), respond = vi.fn(async () => 1), confirmWithPassword = vi.fn(async () => {});
+  render(<EpiRecebimento read={async () => groups} respond={respond} confirmWithPassword={confirmWithPassword} getAccessToken={async () => "jwt"} sharedDevice onConfirmed={onConfirmed}/>);
+  fireEvent.click(await screen.findByRole("button", { name: "Recebi tudo" }));
+  expect(screen.queryByRole("button", { name: /digital/ })).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText("Digite sua senha para confirmar"), { target: { value: "senha" } });
+  fireEvent.click(screen.getByRole("button", { name: "Confirmar com a senha" }));
   await waitFor(() => expect(onConfirmed).toHaveBeenCalledTimes(1));
-  expect(respond).toHaveBeenCalledTimes(1);
+  expect(confirmWithPassword).toHaveBeenCalledTimes(1);
+  expect(respond).not.toHaveBeenCalled();
+  expect(signatureRequest3f).not.toHaveBeenCalled();
 });

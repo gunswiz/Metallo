@@ -1,0 +1,56 @@
+/* Marco 3J — Colaborador simples: botões grandes, pouco texto, uma ação por vez. */
+.page{display:grid;gap:18px;max-width:720px;min-width:0}
+.block{min-width:0;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.block h2{margin:0 0 12px;font-size:22px;line-height:1.25}
+.block p{margin:0;color:var(--soft);font-size:17px;line-height:1.5}
+.blockTodo{border-color:rgba(247,184,75,.65);background:linear-gradient(180deg,rgba(247,184,75,.10),var(--panel) 70%)}
+.tag{display:inline-block;margin-bottom:8px;padding:4px 10px;border-radius:999px;font-size:14px;font-weight:850;background:rgba(247,184,75,.18);color:#ffd18a}
+.tagOk{background:rgba(51,160,90,.18);color:#b2e8c4}
+.tagInfo{background:var(--accent-soft);color:var(--highlight)}
+.items{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.items li{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--panel-2);font-size:18px;font-weight:750;overflow-wrap:anywhere}
+.items li small{display:block;margin-top:2px;color:var(--soft);font-size:15px;font-weight:600}
+.items li>svg{flex:none;color:var(--highlight)}
+.bigActions{display:grid;gap:12px;margin-top:16px}
+.big,.bigGo,.bigOk,.bigSoft{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:64px;padding:12px 18px;border-radius:14px;font-size:20px;font-weight:900;line-height:1.2;text-align:center;border:2px solid transparent}
+.bigGo{background:var(--accent);color:var(--bg-deep)}
+.bigOk{background:#2f9b57;color:#fff}
+.big{background:var(--panel-2);color:var(--ink);border-color:var(--line)}
+.bigSoft{min-height:54px;font-size:18px;background:transparent;color:var(--ink);border-color:var(--line)}
+.big:disabled,.bigGo:disabled,.bigOk:disabled,.bigSoft:disabled{opacity:.55;cursor:not-allowed}
+.big[aria-pressed=true]{border-color:var(--highlight);background:var(--accent-soft);color:var(--ink)}
+.rows{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:12px;min-width:0;padding:14px;border-radius:14px;background:var(--panel-2)}
+.rowIcon{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:12px;color:var(--highlight);background:var(--accent-soft)}
+.rowText{flex:1;min-width:0}
+.rowText strong{display:block;font-size:19px;line-height:1.25;overflow-wrap:anywhere}
+.rowText small{display:block;margin-top:3px;color:var(--soft);font-size:15px;line-height:1.4}
+.rowButton{flex:none;min-height:48px!important;padding:8px 14px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:16px;font-weight:850}
+.rowChip{flex:none;padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--highlight);font-size:14px;font-weight:850;text-align:center}
+.ok,.fail,.wait{display:flex;align-items:flex-start;gap:10px;margin:12px 0 0;padding:14px;border-radius:12px;font-size:17px;font-weight:700;line-height:1.45}
+.ok{color:#b2e8c4;background:rgba(51,160,90,.16)}
+.fail{color:#ffcece;background:rgba(210,65,65,.18)}
+.wait{color:var(--soft);background:var(--panel-2)}
+.more{margin-top:4px}
+.moreToggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:60px;padding:12px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);font-size:18px;font-weight:850}
+.moreBody{display:grid;gap:16px;margin-top:14px}
+.small{color:var(--soft);font-size:15px;line-height:1.5}
+/* Tela cheia (uma tarefa por vez). */
+.sheet{position:fixed;inset:0;z-index:60;overflow-y:auto;background:var(--bg);color:var(--ink);padding:0 16px 32px;overscroll-behavior:contain}
+.sheetHead{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:10px;margin:0 -16px 8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg)}
+.back{display:flex;align-items:center;gap:6px;min-height:52px;padding:6px 12px;border:0;border-radius:12px;background:transparent;color:var(--highlight);font-size:18px;font-weight:850}
+.sheetBody{max-width:640px;margin:0 auto;display:grid;gap:14px}
+.sheetBody h2{margin:10px 0 0;font-size:26px;line-height:1.2}
+.sheetBody>p{margin:0;color:var(--soft);font-size:18px;line-height:1.5}
+.field{display:grid;gap:8px;font-size:18px;font-weight:800}
+.field input,.field textarea{width:100%;min-height:58px;padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--panel-2);color:var(--ink);font:inherit;font-size:20px;font-weight:600}
+.field textarea{min-height:110px;font-size:18px}
+.done{display:grid;justify-items:center;gap:12px;padding:28px 8px;text-align:center}
+.done svg{color:#5fd38a}
+.done h2{margin:0}
+/* Termo obrigatório. */
+.term{display:grid;gap:14px;max-width:720px}
+.term h2{margin:0;font-size:26px;line-height:1.2}
+.termText{max-height:52vh;overflow-y:auto;padding:18px;border:2px solid var(--line);border-radius:14px;background:var(--panel);font-size:19px;line-height:1.65;white-space:pre-line}
+.hint{margin:0;color:var(--soft);font-size:16px;text-align:center}
+@media(max-width:490px){.row{flex-wrap:wrap}.rowButton,.rowChip{margin-left:56px}}
