@@ -1,6 +1,7 @@
 import { PDFDocument, PageSizes, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { itemKindLabel, statusLabel } from "@metallo/core";
 import type { EpiDeliveryReportRow } from "@/05_ACESSO_A_DADOS/Repositorios/metallo-repository";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 const pageWidth = PageSizes.A4[1];
 const pageHeight = PageSizes.A4[0];
@@ -125,7 +126,7 @@ function rowValues(row: EpiDeliveryReportRow, actorNames: Record<string, string>
   const item = row.epi_items;
   return {
     date: dateTime(row.delivered_at),
-    employee: [employee?.full_name, employee?.registration_code, employee?.profession].filter(Boolean).join("\n"),
+    employee: [employee?.full_name, employee?.registration_code, nomeProfissao(employee?.profession)].filter(Boolean).join("\n"),
     team: row.teams?.name ?? "Sem equipe",
     item: [itemKindLabel(item?.item_kind), item?.name, item?.code].filter(Boolean).join("\n"),
     details: [

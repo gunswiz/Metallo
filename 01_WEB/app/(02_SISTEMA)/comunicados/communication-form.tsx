@@ -28,7 +28,7 @@ export function CommunicationForm3h({ teams, works, item, idempotencyKey }: {
     <div className={styles.fields}>
       <label>Público
         <select name="audience" value={audience} onChange={event => setAudience(event.target.value as "ALL" | "TEAM" | "WORK")} disabled={fixedAudience}>
-          <option value="ALL">Todos os colaboradores</option><option value="TEAM">Equipe específica</option><option value="WORK">Obra específica</option>
+          <option value="ALL">Todos os funcionários</option><option value="TEAM">Equipe específica</option><option value="WORK">Obra específica</option>
         </select>
         {fixedAudience && <input type="hidden" name="audience" value={audience} />}
       </label>

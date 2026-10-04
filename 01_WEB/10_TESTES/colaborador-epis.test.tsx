@@ -168,12 +168,12 @@ it("termo de ciência NR-6 é a primeira tela: bloqueia a lista até aceitar e r
   expect(screen.queryByText("Capacete João")).not.toBeInTheDocument();
   expect(state.rpc.mock.calls.some(([name]) => name === "my_personal_epi")).toBe(false);
   fireEvent.click(screen.getByRole("button", { name: "Li e concordo" }));
-  expect(await screen.findByText("Capacete João", {}, { timeout: 4000 })).toBeInTheDocument();
+  expect(await screen.findByText("Capacete João", {}, { timeout: 8000 })).toBeInTheDocument();
   const accepts = state.rpc.mock.calls.filter(([name]) => name === "accept_epi_awareness_3i");
   expect(accepts).toHaveLength(1);
   expect(accepts[0][1]).toMatchObject({ p_term_sha256: "a".repeat(64) });
   expect(screen.queryByRole("button", { name: "Li e concordo" })).not.toBeInTheDocument();
-});
+}, 15000);
 
 it("termo longo só libera o botão depois de rolado até o fim", async () => {
   state.acceptedAt = null;

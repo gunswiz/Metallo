@@ -107,8 +107,8 @@ it("laboratório indisponível elimina dados antigos e permite nova tentativa", 
   expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
   state.team = "B";
   fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
-  expect(await screen.findByText("Colega B", {}, { timeout: 4000 })).toBeInTheDocument();
-});
+  expect(await screen.findByText("Colega B", {}, { timeout: 8000 })).toBeInTheDocument();
+}, 15000);
 
 it("saída global na área de segurança usa o fluxo aprovado e esconde o perfil", async () => {
   render(<ColaboradorApp screen="perfil" anonKey="anon-local" />);

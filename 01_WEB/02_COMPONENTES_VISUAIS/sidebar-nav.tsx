@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Users,
   UserRoundCog,
+  Inbox,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,6 +36,7 @@ const entries: Array<{
   { href: "/movimentacoes", label: "Movimentações", icon: ClipboardList, capability: "inventory:read" },
   { href: "/consumo", label: "Consumo", icon: ChartNoAxesCombined, capability: "inventory:read" },
   { href: "/relatorios", label: "Relatórios", icon: ChartNoAxesCombined, capability: "inventory:read" },
+  { href: "/pedidos", label: "Pedidos dos funcionários", icon: Inbox, capability: "epi:write", newFeature: true },
   { href: "/comunicados", label: "Comunicados", icon: Megaphone, capability: "admin:manage", newFeature: true },
   { href: "/ponto-laboratorio", label: "Ponto (teste)", icon: Clock3, capability: "admin:manage", newFeature: true },
   { href: "/usuarios", label: "Usuários", icon: UserRoundCog, capability: "admin:manage" },

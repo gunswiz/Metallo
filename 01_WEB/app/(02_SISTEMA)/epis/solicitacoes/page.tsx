@@ -28,6 +28,7 @@ export default async function RequestsPage({ searchParams }: { searchParams: Sea
   return <>
     <PageHeader eyebrow="COSEM" title="Solicitações de EPI e itens" description="Acompanhe pendências e entregue o tamanho solicitado a partir do estoque disponível." actions={<Link className="button ghost" href="/epis">Voltar aos EPIs</Link>} />
     {raw.success && <div className="alert success" role="status">Operação concluída. A lista foi atualizada.</div>}
+    {canWrite && exchanges.length > 0 && <div className="alert" role="note">Os pedidos feitos pelo app do Funcionário também aparecem, mais simples, em <Link href="/pedidos">Pedidos dos funcionários</Link>.</div>}
     <section className="panel"><div className="panel-body"><form className="form-grid" method="get">
       <label>Situação<select name="status" defaultValue={status}><option value="pending">Pendentes</option><option value="fulfilled">Atendidas</option><option value="cancelled">Canceladas</option><option value="all">Todas</option></select></label>
       <label>Funcionário<select name="employee" defaultValue={employeeId ?? ""}><option value="">Todos</option>{choices.employees.map((entry) => <option key={entry.id} value={entry.id}>{entry.full_name}</option>)}</select></label>

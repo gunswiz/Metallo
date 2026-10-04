@@ -52,3 +52,8 @@ export const adminCommunication3h = communicationSummary3h.omit({ first_viewed_a
   recipient_count: z.number().int().nonnegative(), viewed_count: z.number().int().nonnegative(),
 });
 export type AdminCommunication3h = z.infer<typeof adminCommunication3h>;
+
+// O app passou a se chamar "Funcionário". O banco ainda devolve "Todos os colaboradores" para o público geral.
+export function nomePublico3h(audience: string | null | undefined, name: string | null | undefined) {
+  return audience === "ALL" ? "Todos os funcionários" : name ?? "";
+}

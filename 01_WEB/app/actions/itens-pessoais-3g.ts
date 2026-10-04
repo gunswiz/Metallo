@@ -25,7 +25,7 @@ const delivery = z.object({ employeeId: z.uuid(), itemId: z.uuid(), quantity: z.
       context.addIssue({ code: "custom", path: ["note"], message: "Descreva o outro motivo." });
   });
 const decision = z.object({ requestId: z.coerce.number().int().positive(), action: z.enum(["EXCHANGE_APPROVED", "EXCHANGE_REFUSED"]),
-  note: z.string().trim().max(240).default(""), idempotencyKey: z.uuid(), employeeId: z.uuid() });
+  note: z.string().trim().max(240).default(""), idempotencyKey: z.uuid(), employeeId: z.uuid(), voltar: z.enum(["pedidos"]).optional() });
 const closure = z.object({ deliveryId: z.uuid(), employeeId: z.uuid(), action: z.enum(["RETURNED", "REPLACED"]),
   relatedDeliveryId: z.union([z.uuid(), z.literal("")]).default(""), note: z.string().trim().max(240).default(""),
   returnDestination: z.enum(["STOCK_REUSABLE", "EVALUATION", "DAMAGED", "DISCARDED", "OTHER", ""]).default(""),
@@ -52,7 +52,7 @@ export async function deliverPersonalItem3g(_previous: OperationState, formData:
 }
 export async function decidePersonalItem3g(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: decision, capability: "epi:write", formData,
-    paths: ["/ferramentas", "/funcionarios"], destination: data => `/funcionarios/${data.employeeId}/itens?decided=1`,
+    paths: ["/ferramentas", "/funcionarios", "/pedidos"], destination: data => data.voltar === "pedidos" ? "/pedidos?ok=1" : `/funcionarios/${data.employeeId}/itens?decided=1`,
     operation: (client, data) => {
       requirePersonalItemLab3g();
       return client.rpc("decide_personal_item_3g" as never, { p_request_id: data.requestId,

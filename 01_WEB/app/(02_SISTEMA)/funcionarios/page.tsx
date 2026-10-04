@@ -12,6 +12,7 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { can } from "@metallo/core";
 import { Plus } from "lucide-react";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 function asoState(expiry: string | null) {
   if (!expiry) return { value: "maintenance", label: "ASO não informado" };
@@ -43,7 +44,7 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Se
     <>
       <PageHeader eyebrow="PESSOAS E SEGURANÇA" title="Funcionários" description="Função, equipe, fardamento, EPI, itens pessoais e validade do ASO." actions={can(profile, "admin:manage") ? <Link className="button primary" href="/funcionarios/novo"><Plus size={16} />Novo funcionário</Link> : undefined} />
       <section className="panel"><div className="panel-body"><SearchToolbar placeholder="Nome, matrícula ou profissão" q={input.q} /></div>
-        {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Funcionário</th><th>Função</th><th>Equipe</th><th>Tamanhos</th><th>ASO</th><th></th></tr></thead><tbody>{result.data.map((employee) => { const aso = asoState(employee.aso_expiry_date); return <tr key={employee.id}><td><span className="primary-cell">{employee.full_name}</span><span className="secondary-cell">{employee.registration_code ?? "Sem matrícula"}</span></td><td>{employee.profession}</td><td><span className="primary-cell">Trabalhando com: {employee.working_team_name}</span><span className="secondary-cell">Origem: {employee.teams?.name ?? "—"}</span></td><td>Farda {employee.shirt_size ?? "—"} · Bota {employee.shoe_size ?? "—"}</td><td><StatusBadge value={aso.value} label={aso.label} /></td><td><Link className="text-link" href={`/funcionarios/${employee.id}`}>Abrir perfil</Link></td></tr>; })}</tbody></table></div>}
+        {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Funcionário</th><th>Função</th><th>Equipe</th><th>Tamanhos</th><th>ASO</th><th></th></tr></thead><tbody>{result.data.map((employee) => { const aso = asoState(employee.aso_expiry_date); return <tr key={employee.id}><td><span className="primary-cell">{employee.full_name}</span><span className="secondary-cell">{employee.registration_code ?? "Sem matrícula"}</span></td><td>{nomeProfissao(employee.profession)}</td><td><span className="primary-cell">Trabalhando com: {employee.working_team_name}</span><span className="secondary-cell">Origem: {employee.teams?.name ?? "—"}</span></td><td>Farda {employee.shirt_size ?? "—"} · Bota {employee.shoe_size ?? "—"}</td><td><StatusBadge value={aso.value} label={aso.label} /></td><td><Link className="text-link" href={`/funcionarios/${employee.id}`}>Abrir perfil</Link></td></tr>; })}</tbody></table></div>}
         <Pagination {...result} q={input.q} />
       </section>
     </>

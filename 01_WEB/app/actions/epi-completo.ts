@@ -12,6 +12,8 @@ const exchangeActionSchema = z.object({
   action: z.enum(["EM_ANALISE", "APROVADA", "RECUSADA"]),
   publicMessage: z.string().trim().max(240).default(""),
   internalNote: z.string().trim().max(240).default(""),
+  // Marco 3J: a mesma ação pode ser usada na tela "Pedidos dos funcionários" e volta para ela.
+  voltar: z.enum(["pedidos"]).optional(),
 }).refine(value => value.action !== "RECUSADA" || !!value.publicMessage, { message: "Informe o motivo público da recusa." });
 
 const preparation3dSchema = z.object({
@@ -22,6 +24,7 @@ const register3dSchema = z.object({ preparationId: z.uuid(), idempotencyKey: z.u
 const feedback3dSchema = z.object({
   groupId: z.uuid(), action: z.enum(["EM_ANALISE", "RESOLVIDA", "RECUSA"]), idempotencyKey: z.uuid(),
   publicMessage: z.string().trim().max(240).default(""), internalNote: z.string().trim().max(240).default(""),
+  voltar: z.enum(["pedidos"]).optional(),
 }).refine(value => value.action === "EM_ANALISE" || !!value.publicMessage, { message: "Informe a mensagem ao funcionário." });
 
 export async function prepareEpiKit3d(_previous: OperationState, formData: FormData) {
@@ -47,7 +50,7 @@ export async function registerEpiDelivery3d(_previous: OperationState, formData:
 }
 export async function manageEpiFeedback3d(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: feedback3dSchema, capability: "epi:write", formData,
-    paths: ["/epis/entrega-em-lote"], destination: "/epis/entrega-em-lote?feedback=1",
+    paths: ["/epis/entrega-em-lote", "/pedidos"], destination: data => data.voltar === "pedidos" ? "/pedidos?ok=1" : "/epis/entrega-em-lote?feedback=1",
     operation: (client, data) => {
       if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("manage_epi_delivery_feedback_3d" as never, { p_group_id: data.groupId,
@@ -59,7 +62,7 @@ export async function manageEpiFeedback3d(_previous: OperationState, formData: F
 
 export async function manageExchangeRequest(_previous: OperationState, formData: FormData) {
   return executeValidated({ schema: exchangeActionSchema, capability: "epi:write", formData,
-    paths: ["/epis/solicitacoes"], destination: "/epis/solicitacoes?success=exchange",
+    paths: ["/epis/solicitacoes", "/pedidos"], destination: data => data.voltar === "pedidos" ? "/pedidos?ok=1" : "/epis/solicitacoes?success=exchange",
     operation: async (client, data) => {
       if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Somente laboratório local.");
       return client.rpc("manage_epi_exchange_request" as never, {

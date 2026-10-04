@@ -145,7 +145,7 @@ it("laboratório offline mantém tela de login acessível e não exibe obra anti
   mocks.getUser.mockRejectedValue(new Error("Failed to fetch"));
   render(<ColaboradorApp screen="obra" anonKey="anon-local" />);
   expect(await screen.findByRole("alert")).toHaveTextContent("Não foi possível conectar ao servidor");
-  expect(screen.getByText("Entrar no Colaborador")).toBeInTheDocument();
+  expect(screen.getByText("Entrar no app do Funcionário")).toBeInTheDocument();
   expect(mocks.replace).not.toHaveBeenCalledWith("/colaborador/login");
   expect(screen.queryByText(joaoWork.work_name)).not.toBeInTheDocument();
   expect(mocks.rpc).not.toHaveBeenCalled();

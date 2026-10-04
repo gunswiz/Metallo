@@ -1,15 +1,21 @@
-import { Boxes, HardHat, PackageOpen, Users, UserRound, Wrench } from "lucide-react";
+import { Boxes, HardHat, Inbox, PackageOpen, Users, UserRound, Wrench } from "lucide-react";
 import { can, formatDateTime, movementLabel } from "@metallo/core";
 import { MetricCard } from "@/02_COMPONENTES_VISUAIS/metric-card";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
+import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos-funcionarios";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
   const includeEpi = can(profile, "epi:read");
   const service = await getMetalloService();
   const data = await service.dashboard(includeEpi);
+  // Marco 3J: quantos pedidos do app do Funcionário esperam resposta (só laboratório e teste online).
+  const pedidos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
+    await lerPedidosFuncionarios().then(result => result.aguardando, () => null) : null;
 
   return (
     <>
@@ -19,6 +25,7 @@ export default async function DashboardPage() {
         description="Dados operacionais do mesmo ambiente utilizado pelas equipes em campo."
       />
       <section className="metric-grid">
+        {pedidos !== null && <MetricCard label="pedidos dos funcionários esperando resposta" value={pedidos} href="/pedidos" icon={Inbox} />}
         <MetricCard label="unidades de materiais" value={data.materialUnits} href="/materiais" icon={PackageOpen} />
         <MetricCard label="equipamentos ativos" value={data.assets} href="/equipamentos" icon={Wrench} />
         <MetricCard label="equipamentos em uso" value={data.assetsInUse} href="/equipamentos" icon={Boxes} />

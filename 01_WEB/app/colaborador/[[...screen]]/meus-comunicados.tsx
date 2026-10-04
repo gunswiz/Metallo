@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Megaphone, Pin } from "lucide-react";
-import type { CommunicationDetail3h, CommunicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
+import { nomePublico3h, type CommunicationDetail3h, type CommunicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import styles from "./comunicados.module.css";
 import portal from "./colaborador.module.css";
 
@@ -10,7 +10,7 @@ type Read = (unreadOnly: boolean, offset: number) => Promise<CommunicationSummar
 type Open = (id: string) => Promise<CommunicationDetail3h>;
 const demoDate = "2026-09-30T12:00:00+00:00";
 const demoItems: CommunicationSummary3h[] = [
-  { id: "11111111-1111-4111-8111-111111111111", title: "Reunião de segurança da semana", audience: "ALL", audience_name: "Todos os colaboradores", pinned: true, published_at: demoDate, updated_at: null, expires_at: null, version: 2, first_viewed_at: null },
+  { id: "11111111-1111-4111-8111-111111111111", title: "Reunião de segurança da semana", audience: "ALL", audience_name: "Todos os funcionários", pinned: true, published_at: demoDate, updated_at: null, expires_at: null, version: 2, first_viewed_at: null },
   { id: "22222222-2222-4222-8222-222222222222", title: "Orientações para a equipe", audience: "TEAM", audience_name: "Equipe de teste", pinned: false, published_at: demoDate, updated_at: null, expires_at: null, version: 2, first_viewed_at: null },
 ];
 function date(value: string) { return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short" }).format(new Date(value)); }
@@ -80,7 +80,7 @@ export function MeusComunicados({ read, open, demo }: { read: Read; open: Open; 
       <button type="button" className={styles.back} onClick={() => { setSelected(null); void load(filter); }}><ArrowLeft size={18}/> Voltar aos comunicados</button>
       <div className={styles.badges}>{selected.pinned && <span><Pin size={15}/> Fixado</span>}</div>
       <h2 ref={heading} tabIndex={-1}>{selected.title}</h2>
-      <p className={styles.meta}>{selected.audience_name} · Publicado em {date(selected.published_at)}</p>
+      <p className={styles.meta}>{nomePublico3h(selected.audience, selected.audience_name)} · Publicado em {date(selected.published_at)}</p>
       {selected.updated_at && <p className={styles.meta}>Atualizado em {date(selected.updated_at)} · versão {selected.version}</p>}
       <div className={styles.message}>{selected.message}</div>
       <p className={styles.footnote}>Visualizado em {date(selected.first_viewed_at!)}. Este registro não é assinatura nem aceite.</p>
@@ -93,7 +93,7 @@ export function MeusComunicados({ read, open, demo }: { read: Read; open: Open; 
       {!busy && !rows.length && !error && <div className={styles.empty}><Megaphone size={28}/><h2>{filter === "unread" ? "Nenhum comunicado novo" : "Nenhum comunicado disponível"}</h2><p>Os avisos destinados a você aparecerão aqui.</p></div>}
       <ul className={styles.list}>{rows.map(item => <li key={item.id}><button type="button" disabled={busy} onClick={() => void show(item)}>
         <span className={styles.badges}>{item.pinned && <span><Pin size={14}/> Fixado</span>}{!item.first_viewed_at && <span>Novo</span>}</span>
-        <strong>{item.title}</strong><small>{item.audience_name} · {date(item.published_at)}</small>
+        <strong>{item.title}</strong><small>{nomePublico3h(item.audience, item.audience_name)} · {date(item.published_at)}</small>
         {item.updated_at && <small>Atualizado em {date(item.updated_at)}</small>}
         <ArrowRight className={styles.arrow} size={20}/>
       </button></li>)}</ul>

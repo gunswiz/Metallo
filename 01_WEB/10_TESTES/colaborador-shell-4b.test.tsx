@@ -34,7 +34,7 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 it("drawer abre com foco, nome completo longo e sem equipe; sem IDs técnicos", () => {
   render(<ShellHarness/>); fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
-  const menu = screen.getByRole("dialog", { name: "Menu do Metallo Colaborador" });
+  const menu = screen.getByRole("dialog", { name: "Menu do Metallo Funcionário" });
   expect(within(menu).getByText(name)).toBeVisible(); expect(within(menu).getByText("Sem equipe atribuída")).toBeVisible();
   expect(menu.textContent).not.toContain(profile.employee_id); expect(screen.getByRole("button", { name: "Fechar menu" })).toHaveFocus();
   expect(document.body.style.overflow).toBe("hidden");

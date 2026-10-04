@@ -34,7 +34,7 @@ export async function buildOnlineReceipt4d(record: OnlineRecord4d, logoBytes?: U
   draw(`${pointDate(event.marking_at)} · ${pointTime(event.marking_at)}`, 510, 22, true, brand);
   draw("Fortaleza · UTC-03:00 · hora do servidor no início da marcação (não do aparelho)", 490, 9, false, soft);
   draw(`Gravação concluída: ${pointDate(event.recorded_at)} às ${pointTime(event.recorded_at)}`, 466, 11);
-  draw("Coletor: aplicativo Metallo Colaborador (navegador), online.", 448, 11);
+  draw("Coletor: aplicativo Metallo Funcionário (navegador), online.", 448, 11);
   draw("CÓDIGO DE INTEGRIDADE (SHA-256 DA CADEIA DE REGISTROS)", 414, 9, true, soft);
   draw(event.payload_hash.slice(0, 32), 396, 10, true); draw(event.payload_hash.slice(32), 382, 10, true);
   draw("Cada registro guarda o código do anterior: apagar ou alterar um original quebra a cadeia.", 364, 9, false, soft);

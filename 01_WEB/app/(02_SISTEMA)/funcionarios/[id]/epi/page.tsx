@@ -5,6 +5,7 @@ import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { epiPrintedSupplies, epiReportFailure, projectEpiReport, reportDate, resolveEpiPeriod, type EpiReportType } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
+import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 type Query = { type?: string; preset?: string; from?: string; to?: string };
 const presets = [
@@ -58,7 +59,7 @@ export default async function EmployeeEpiReportPage({ params, searchParams }:
       <p>{type === "current" ? `Situação em ${reportDate(raw.generated_at)}` :
         period.preset === "all" ? "Todo o histórico" : `Relatório filtrado por período: ${period.label}`}</p>
     </div></header><div className="panel-body">
-      <p><strong>Funcionário:</strong> {raw.employee.name} · <strong>Função atual:</strong> {raw.employee.profession || "Não registrada"}
+      <p><strong>Funcionário:</strong> {raw.employee.name} · <strong>Função atual:</strong> {nomeProfissao(raw.employee.profession) || "Não registrada"}
         {raw.employee.registration && <> · <strong>Matrícula:</strong> {raw.employee.registration}</>}</p>
       <p><strong>Equipe atual:</strong> {raw.employee.team ?? "Sem equipe atribuída"}</p>
       <p><strong>{type === "current" ? "EPIs ativos" : "Fornecimentos no período"}:</strong> {supplies.length}</p>

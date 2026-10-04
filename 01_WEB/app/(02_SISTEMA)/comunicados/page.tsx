@@ -6,6 +6,7 @@ import { readAdminCommunications3h, readCommunicationTargets3h } from "@/05_ACES
 import { archiveCommunication3h, publishCommunication3h } from "@/app/actions/comunicados-3h";
 import { CommunicationForm3h } from "./communication-form";
 import styles from "./comunicados.module.css";
+import { nomePublico3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 
 function date(value: string | null) { return value ? new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" }).format(new Date(value)) : "—"; }
 export default async function CommunicationsPage({ searchParams }: {
@@ -25,7 +26,7 @@ export default async function CommunicationsPage({ searchParams }: {
     </details></div></section>
     <section className="panel"><div className="panel-body"><h2>Comunicados criados</h2><p>Destinatários e visualizações refletem o vínculo atual. O histórico técnico de aberturas é preservado.</p>
       {!items.length ? <p>Nenhum comunicado nesta página.</p> : <div className={styles.list}>{items.map(item => <article className={styles.item} key={item.id}>
-        <div className={styles.itemHead}><div><strong>{item.title}</strong><p>{item.audience_name ?? "Público indisponível"} · {item.status === "DRAFT" ? "Rascunho" : item.status === "ARCHIVED" ? "Arquivado" : "Publicado"}{item.pinned ? " · Fixado" : ""}</p></div><span>v{item.version}</span></div>
+        <div className={styles.itemHead}><div><strong>{item.title}</strong><p>{nomePublico3h(item.audience, item.audience_name) || "Público indisponível"} · {item.status === "DRAFT" ? "Rascunho" : item.status === "ARCHIVED" ? "Arquivado" : "Publicado"}{item.pinned ? " · Fixado" : ""}</p></div><span>v{item.version}</span></div>
         <dl className={styles.stats}><div><dt>Publicado</dt><dd>{date(item.published_at)}</dd></div><div><dt>Expira</dt><dd>{date(item.expires_at)}</dd></div><div><dt>{item.status === "PUBLISHED" ? "Destinatários atuais" : "Público potencial atual"}</dt><dd>{item.recipient_count}</dd></div><div><dt>Visualizaram</dt><dd>{item.viewed_count}</dd></div>{item.status === "PUBLISHED" && <div><dt>Ainda não visualizaram</dt><dd>{Math.max(0, item.recipient_count - item.viewed_count)}</dd></div>}</dl>
         {item.updated_at && <p className={styles.meta}>Atualizado em {date(item.updated_at)}</p>}
         {item.status !== "ARCHIVED" && <div className={styles.itemActions}>

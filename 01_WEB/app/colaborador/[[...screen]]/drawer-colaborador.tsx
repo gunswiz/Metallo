@@ -80,7 +80,7 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
     onClick={event => { onClose(); if (demo) { event.preventDefault(); go(item.screen); } }}>
     <item.icon size={20} aria-hidden="true"/><span>{item.label}{item.note && <> <small>{item.note}</small></>}</span>
   </Link>;
-  return <dialog id="colaborador-menu" ref={dialog} className={styles.drawer} aria-label="Menu do Metallo Colaborador"
+  return <dialog id="colaborador-menu" ref={dialog} className={styles.drawer} aria-label="Menu do Metallo Funcionário"
     onCancel={event => { event.preventDefault(); onClose(); }}
     onClick={event => { if (event.target !== dialog.current) return; const rect = dialog.current.getBoundingClientRect(); if (event.clientX > rect.right || event.clientX < rect.left || event.clientY < rect.top || event.clientY > rect.bottom) onClose(); }}
     onKeyDown={event => {
@@ -92,7 +92,7 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     }}>
     <div className={styles.drawerHeader}><BrandLogo/><button ref={close} type="button" className={styles.menuToggle} aria-label="Fechar menu" onClick={onClose}><X size={24}/></button></div>
-    <div className={styles.drawerIdentity}><strong>{profile.full_name}</strong><span>Colaborador</span><small>{profile.team_name?.trim() || "Sem equipe atribuída"}</small></div>
+    <div className={styles.drawerIdentity}><strong>{profile.full_name}</strong><span>Funcionário</span><small>{profile.team_name?.trim() || "Sem equipe atribuída"}</small></div>
     <nav aria-label="Navegação principal">
       {itemLink({ screen: "inicio", label: "Início", icon: Home })}
       {groups.map(group => <section key={group.label} aria-label={group.label} className={styles.drawerGroup}><h2>{group.label}</h2>{group.items.filter(item => !demo || !["ponto", "registros", "comprovantes"].includes(item.screen)).map(itemLink)}</section>)}

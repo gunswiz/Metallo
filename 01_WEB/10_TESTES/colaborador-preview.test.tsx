@@ -266,7 +266,7 @@ it("informa perda de conexão sem exibir dados pessoais", async () => {
 it("login inválido apresenta erro amigável", async () => {
   mocks.signIn.mockResolvedValue({ data: {}, error: new Error("Invalid login credentials") });
   render(<ColaboradorApp screen="login" anonKey="anon-local" />);
-  await screen.findByText("Entrar no Colaborador");
+  await screen.findByText("Entrar no app do Funcionário");
   fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: "joao@example.invalid" } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: "errada" } });
   fireEvent.click(screen.getByRole("button", { name: "Entrar" }));

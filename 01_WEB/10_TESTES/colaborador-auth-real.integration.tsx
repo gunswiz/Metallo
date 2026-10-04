@@ -83,7 +83,7 @@ it.each(["joao", "maria"])("%s: login SDK, JWT, DTO mínimo próprio, refresh e 
 it.each(["joao", "maria"])("%s: UI usa Auth real e limpa memória/storage na saída", async key => {
   const a = accounts[key];
   render(<ColaboradorApp screen="login" anonKey={fixtures.anon} />);
-  await screen.findByText("Entrar no Colaborador");
+  await screen.findByText("Entrar no app do Funcionário");
   await waitFor(() => expect(screen.getByRole("button", { name: "Entrar" })).toBeEnabled());
   fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: a.email } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: a.password } });
@@ -102,7 +102,7 @@ it.each(["joao", "maria"])("%s: UI usa Auth real e limpa memória/storage na sa�
 it.each(["errada", "inexistente", "revogada", "banida"])("login %s produz mensagem amigável e nenhum perfil", async kind => {
   const a = accounts[kind] ?? accounts.joao;
   render(<ColaboradorApp screen="login" anonKey={fixtures.anon} />);
-  await screen.findByText("Entrar no Colaborador");
+  await screen.findByText("Entrar no app do Funcionário");
   await waitFor(() => expect(screen.getByRole("button", { name: "Entrar" })).toBeEnabled());
   fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: kind === "inexistente" ? "ausente-1b@example.invalid" : a.email } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: kind === "errada" ? "incorreta-sintetica" : a.password } });
@@ -227,7 +227,7 @@ it("laboratório realmente parado: login abre, erro amigável e nenhuma requisi�
   execFileSync(process.execPath, [resolve(lab, "../../node_modules/supabase/dist/supabase.js"), "stop", "--workdir", lab, "--project-id", "laboratorio-marco-1a"], { stdio: "pipe", timeout: 45000 });
   const start = network.length;
   render(<ColaboradorApp screen="login" anonKey={fixtures.anon} />);
-  await screen.findByText("Entrar no Colaborador");
+  await screen.findByText("Entrar no app do Funcionário");
   await waitFor(() => expect(screen.getByRole("button", { name: "Entrar" })).toBeEnabled());
   fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: accounts.expira.email } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: accounts.expira.password } });
