@@ -55,3 +55,13 @@ sessão e o fluxo se perdia. Agora:
 
 ## Reset do teste online (ordem)
 `limpar-dados-teste-online.sql` → `ponto-4d.sql` → `3j-confirmacao-autenticada.sql` → `semear-teste-online.mjs`.
+
+## Revisão (04/10/2026, tarde)
+- **Gestão › Pedidos dos funcionários** (`/pedidos`, item no menu e contador no painel; só laboratório e teste online):
+  trocas de EPI, problemas avisados na entrega, itens pessoais (trocas e problemas) e entregas ainda não confirmadas,
+  com resposta direta na própria tela. Antes isso ficava espalhado (fim de EPIs › Solicitações, fim de Entrega de EPI,
+  ficha de cada funcionário). As ações existentes ganharam o campo opcional `voltar=pedidos`.
+- Função do funcionário aparece pelo nome em português (lista de Funcionários, Equipes, ficha EPI e PDF).
+- O app passa a se chamar **Funcionário** nas telas (endereço e nomes internos continuam `colaborador` para não
+  quebrar links e senhas salvas). Público geral dos comunicados: "Todos os funcionários".
+- O nível de acesso "Colaborador" da Gestão (somente leitura) é outra coisa e não foi renomeado.
