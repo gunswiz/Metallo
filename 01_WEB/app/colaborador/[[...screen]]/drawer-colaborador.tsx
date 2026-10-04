@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
-import { Home, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
+import { Home, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
 import type { PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
 import type { PersonalProfile } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
@@ -19,6 +19,7 @@ const groups: { label: string; items: Item[] }[] = [
     { screen: "epis", label: "Meus EPIs", icon: PackageCheck },
     { screen: "itens", label: "Meus itens pessoais", icon: Toolbox },
     { screen: "epis", hash: "epi-troca-heading", label: "Solicitar troca de EPI", icon: RotateCcw },
+    { screen: "treinamentos", label: "Treinamentos e exames", icon: GraduationCap },
   ] },
   { label: "Trabalho", items: [
     { screen: "equipe", label: "Minha equipe", icon: UsersRound },

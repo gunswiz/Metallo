@@ -10,6 +10,7 @@ import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos-funcionarios";
+import { lerVisaoTreinamentos5a } from "@/05_ACESSO_A_DADOS/Supabase/treinamentos-5a";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
@@ -22,6 +23,12 @@ export default async function DashboardPage() {
   const pedidosAbertos = obra?.orders.filter(order => !finais.includes(order.status)).length ?? 0;
   const aReceber = obra?.orders.filter(order => ["ordered", "partial"].includes(order.status)).length ?? 0;
   const alertas = profile.role === "admin" ? obra?.alerts ?? [] : [];
+  // Marco 5A: ASO e treinamentos vencidos/vencendo (só laboratório e teste online).
+  const treinos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
+    await lerVisaoTreinamentos5a().catch(() => null) : null;
+  const vencidos = treinos?.filter(ficha => ficha.situacao === "VENCIDO").length ?? 0;
+  const faltando = treinos?.filter(ficha => ficha.situacao === "FALTANDO").length ?? 0;
+  const vencendo = treinos?.filter(ficha => ficha.situacao === "VENCE_EM_BREVE").length ?? 0;
   const atalhos = ACOES_LANCAR.filter(acao => acao.pode(profile)).slice(0, 4);
   // Marco 3J: quantos pedidos do app do Funcionário esperam resposta (só laboratório e teste online).
   const pedidos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
@@ -42,10 +49,13 @@ export default async function DashboardPage() {
         <header className="panel-header"><div><h2 id="pendencias-titulo">Precisa de você</h2><p>Toque para resolver.</p></div></header>
         <div className="panel-body todo-list">
           {pedidos !== null && pedidos > 0 && <Link className="todo-item" href="/pedidos"><span className="todo-count">{pedidos}</span><span className="todo-text"><strong>Pedidos dos funcionários</strong><small>Trocas e avisos feitos pelo app esperando resposta</small></span></Link>}
+          {vencidos > 0 && <Link className="todo-item" href="/treinamentos?filtro=vencido"><span className="todo-count">{vencidos}</span><span className="todo-text"><strong>ASO ou treinamento vencido</strong><small>Não deve fazer a atividade até regularizar</small></span></Link>}
+          {faltando > 0 && <Link className="todo-item" href="/treinamentos?filtro=faltando"><span className="todo-count">{faltando}</span><span className="todo-text"><strong>Falta ASO ou treinamento obrigatório</strong><small>Cadastre o que falta para a função</small></span></Link>}
+          {vencendo > 0 && <Link className="todo-item" href="/treinamentos?filtro=breve"><span className="todo-count">{vencendo}</span><span className="todo-text"><strong>Vencem em até 30 dias</strong><small>Agende a reciclagem ou o exame</small></span></Link>}
           {aReceber > 0 && <Link className="todo-item" href="/lancar/receber"><span className="todo-count">{aReceber}</span><span className="todo-text"><strong>Pedidos para receber</strong><small>Compras providenciadas que ainda não chegaram por completo</small></span></Link>}
           {pedidosAbertos > 0 && <Link className="todo-item" href="/pedidos-adm"><span className="todo-count">{pedidosAbertos}</span><span className="todo-text"><strong>Pedidos à ADM em andamento</strong><small>Acompanhe a aprovação e a compra</small></span></Link>}
           {alertas.map(alerta => <Link className="todo-item" key={alerta.id} href={SECAO_ANTIGA[alerta.section] ?? "/obras"}><span className="todo-count">!</span><span className="todo-text"><strong>{alerta.title}</strong><small>{alerta.description}</small></span></Link>)}
-          {!(pedidos ?? 0) && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
+          {!(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
         </div>
       </section>
       <section className="metric-grid">

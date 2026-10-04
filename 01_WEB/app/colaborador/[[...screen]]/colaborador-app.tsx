@@ -13,6 +13,7 @@ import { MeuPerfil } from "./meu-perfil";
 import { MinhaEquipe } from "./minha-equipe";
 import { MeuPontoOnline } from "./meu-ponto-online";
 import { MeusEpis } from "./meus-epis";
+import { MeusTreinamentos } from "./meus-treinamentos";
 import { MeusItens } from "./meus-itens";
 import { MeusComunicados } from "./meus-comunicados";
 import { MeusRegistros } from "./meus-registros";
@@ -36,7 +37,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
     if (demo) setVisualScreen(next);
     else router.replace(`/colaborador/${next}`);
   }, [router, demo]);
-  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
+  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, getAccessToken } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
   const sharedDevice = useAparelhoCompartilhado(Boolean(profile) && !demo, () => logout());
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,11 +69,11 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
           {current === "inicio" && <div className={styles.homeLayout}>
             <div className={styles.homeGreeting}><p className={styles.eyebrow}>METALLO FUNCIONÁRIO</p><h1>Olá, {firstName(profile.full_name)}</h1></div>
             {demo ? <p className={styles.pointWarning}>Registro de ponto indisponível nesta prévia visual.</p> : <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name} presentation="home"/>}
-            <PendenciasColaborador key={`pending-${profile.employee_id}`} items={readPersonalItems3g} deliveries={demo ? undefined : readDeliveryGroups3d} communications={readCommunications3h}/>
+            <PendenciasColaborador key={`pending-${profile.employee_id}`} items={readPersonalItems3g} deliveries={demo ? undefined : readDeliveryGroups3d} communications={readCommunications3h} trainings={demo ? undefined : readTrainings5a}/>
           </div>}
           {current !== "inicio" && current !== "login" && <>
             <Link href="/colaborador/inicio" onClick={demo ? (event) => { event.preventDefault(); go("inicio"); } : undefined} className={styles.back}><ArrowLeft size={19}/> Voltar ao início</Link>
-            <div className={styles.detailHeader}><p className={styles.eyebrow}>MEU ESPAÇO</p><h1>{current === "perfil" ? "Meu Perfil" : current === "equipe" ? "Minha Equipe" : current === "epis" ? "Meus EPIs" : current === "itens" ? "Meus Itens Pessoais" : current === "comunicados" ? "Comunicados" : current === "ponto" ? "Meu Ponto" : current === "registros" ? "Meus registros" : current === "comprovantes" ? "Comprovantes" : "Obras"}</h1><p>{current === "obra" ? "Consulte a obra vinculada a você no momento." : current === "epis" ? "Confira os EPIs registrados em seu nome." : current === "itens" ? "Acompanhe entregas, confirmação e solicitações dos seus itens de trabalho." : current === "comunicados" ? "Leia os avisos destinados a você. Abrir um aviso registra apenas visualização." : current === "registros" ? "Consulte suas marcações, incluindo os últimos 60 dias." : current === "comprovantes" ? "Recibos individuais e extração das últimas 48 horas." : current === "ponto" ? "Ensaio online com dados fictícios, sem valor trabalhista." : "Informações pessoais da sua conta de teste."}</p></div>
+            <div className={styles.detailHeader}><p className={styles.eyebrow}>MEU ESPAÇO</p><h1>{current === "perfil" ? "Meu Perfil" : current === "equipe" ? "Minha Equipe" : current === "epis" ? "Meus EPIs" : current === "itens" ? "Meus Itens Pessoais" : current === "comunicados" ? "Comunicados" : current === "treinamentos" ? "Treinamentos e ASO" : current === "ponto" ? "Meu Ponto" : current === "registros" ? "Meus registros" : current === "comprovantes" ? "Comprovantes" : "Obras"}</h1><p>{current === "obra" ? "Consulte a obra vinculada a você no momento." : current === "epis" ? "Confira os EPIs registrados em seu nome." : current === "itens" ? "Acompanhe entregas, confirmação e solicitações dos seus itens de trabalho." : current === "comunicados" ? "Leia os avisos destinados a você. Abrir um aviso registra apenas visualização." : current === "treinamentos" ? "Seu exame médico (ASO) e seus treinamentos de segurança." : current === "registros" ? "Consulte suas marcações, incluindo os últimos 60 dias." : current === "comprovantes" ? "Recibos individuais e extração das últimas 48 horas." : current === "ponto" ? "Ensaio online com dados fictícios, sem valor trabalhista." : "Informações pessoais da sua conta de teste."}</p></div>
             {current === "registros" || current === "comprovantes" ? <MeusRegistros key={`${profile.employee_id}-${current}`} getToken={getAccessToken} presentation={current === "comprovantes" ? "receipts" : "history"}/> : current === "perfil" ? <MeuPerfil key={profile.employee_id} profile={profile} demo={demo} busy={busy} go={go} logout={logout} readCurrentWork={readCurrentWork} readTeamSummary={readTeamSummary} getAccessToken={demo ? undefined : getAccessToken}/> :
               current === "equipe" ? <MinhaEquipe key={profile.employee_id} readTeamSummary={readTeamSummary}/> :
               current === "epis" ? <MeusEpis key={profile.employee_id} readEpis={readPersonalEpis}
@@ -82,6 +83,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
                 exchange={demo ? undefined : {readEligible:readExchangeableEpis,readRequests:readExchangeRequests,create:createExchangeRequest,cancel:cancelExchangeRequest}}/> :
               current === "itens" ? <MeusItens key={profile.employee_id} read={readPersonalItems3g}
                 actions={demo ? {} : { confirm: confirmPersonalItem3g, report: reportPersonalItem3g }}/>: 
+              current === "treinamentos" ? <MeusTreinamentos key={profile.employee_id} read={readTrainings5a}/> :
               current === "comunicados" ? <MeusComunicados key={profile.employee_id} read={readCommunications3h} open={openCommunication3h} demo={demo}/>: 
               <div className={styles.detailCard}>{current === "ponto" ? <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name}/> : <MinhaObra key={profile.employee_id} demo={demo} readWork={readCurrentWork}/>}</div>}
           </>}

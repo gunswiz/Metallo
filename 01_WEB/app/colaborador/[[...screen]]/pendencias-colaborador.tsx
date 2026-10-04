@@ -6,6 +6,7 @@ import { ArrowRight, Bell } from "lucide-react";
 import type { PersonalDeliveryGroup3d } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import type { PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 import type { CommunicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
+import type { Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { usePersonalDetail } from "./use-personal-detail";
 import styles from "./colaborador.module.css";
 
@@ -13,13 +14,15 @@ type Sources = {
   items: () => Promise<PersonalItem3g[]>;
   deliveries?: () => Promise<PersonalDeliveryGroup3d[]>;
   communications: (unread: boolean, offset: number) => Promise<CommunicationSummary3h[]>;
+  trainings?: () => Promise<Ficha5a>;
 };
 // Somente resumos de consultas pessoais existentes; nenhum estado é criado ou alterado.
-export function PendenciasColaborador({ items, deliveries, communications }: Sources) {
-  const sources = useRef({ items, deliveries, communications });
-  useEffect(() => { sources.current = { items, deliveries, communications }; }, [items, deliveries, communications]);
+export function PendenciasColaborador({ items, deliveries, communications, trainings }: Sources) {
+  const sources = useRef({ items, deliveries, communications, trainings });
+  useEffect(() => { sources.current = { items, deliveries, communications, trainings }; }, [items, deliveries, communications, trainings]);
   const read = useCallback(async () => {
-    const results = await Promise.allSettled([sources.current.items(), sources.current.deliveries?.() ?? Promise.resolve([]), sources.current.communications(true, 0)]);
+    const results = await Promise.allSettled([sources.current.items(), sources.current.deliveries?.() ?? Promise.resolve([]), sources.current.communications(true, 0),
+      sources.current.trainings?.() ?? Promise.resolve(null)]);
     const pending: { href: string; label: string }[] = [];
     const personalItems = results[0], epiGroups = results[1], notices = results[2];
     if (personalItems.status === "fulfilled") {
@@ -28,11 +31,19 @@ export function PendenciasColaborador({ items, deliveries, communications }: Sou
     }
     if (epiGroups.status === "fulfilled") {
       const count = epiGroups.value.filter(group => group.feedback_status === null).length;
-      if (count) pending.push({ href: "/colaborador/epis#epi-recebimento-heading", label: `${count} ${count === 1 ? "entrega de EPI aguardando confirmação" : "entregas de EPI aguardando confirmação"}` });
+      if (count) pending.push({ href: "/colaborador/epis", label: `${count} ${count === 1 ? "entrega de EPI aguardando confirmação" : "entregas de EPI aguardando confirmação"}` });
     }
     if (notices.status === "fulfilled" && notices.value.length) {
       const count = notices.value.length;
       pending.push({ href: "/colaborador/comunicados", label: `${count}${count === 20 ? "+" : ""} ${count === 1 ? "comunicado não lido" : "comunicados não lidos"}` });
+    }
+    const ficha = results[3];
+    if (ficha.status === "fulfilled" && ficha.value && ficha.value.situacao !== "EM_DIA") {
+      // Na tela inicial, sem detalhe de saúde: só o aviso e o caminho.
+      const label = { VENCIDO: "Exame ou treinamento vencido. Procure a segurança do trabalho.",
+        FALTANDO: "Falta exame ou treinamento obrigatório da sua função.",
+        VENCE_EM_BREVE: "Exame ou treinamento vence em breve." }[ficha.value.situacao];
+      pending.unshift({ href: "/colaborador/treinamentos", label });
     }
     return { pending, incomplete: results.some(result => result.status === "rejected") };
   }, []);

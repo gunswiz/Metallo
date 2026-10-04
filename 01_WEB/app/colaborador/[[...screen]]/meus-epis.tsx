@@ -75,9 +75,9 @@ function Content({ readEpis, exchange, receiving, readReport, awareness, accepte
   })}</ul>;
   return <div className={styles.page}>
     {receiving && <EpiRecebimento {...receiving}/>}
-    {exchange && exchangeData && <PedidosTroca requests={exchangeData.requests} cancel={exchange.cancel} onChanged={afterChange}/>}
+    <div id="epi-solicitacoes">{exchange && exchangeData && <PedidosTroca requests={exchangeData.requests} cancel={exchange.cancel} onChanged={afterChange}/>}</div>
     <section className={styles.block} aria-labelledby="epis-atuais">
-      <h2 id="epis-atuais">EPIs com você{state.status === "ready" ? ` (${current.length})` : ""}</h2>
+      <h2 id="epis-atuais"><span id="epi-troca-heading"/>EPIs com você{state.status === "ready" ? ` (${current.length})` : ""}</h2>
       {list}
       {exchange && trade.state.status === "error" && <p className={styles.small} role="status">Pedidos de troca indisponíveis agora. <button type="button" className={styles.rowButton} onClick={trade.refresh}>Tentar novamente</button></p>}
     </section>

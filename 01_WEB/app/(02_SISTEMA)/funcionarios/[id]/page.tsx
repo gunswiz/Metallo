@@ -7,6 +7,8 @@ import { StatusBadge } from "@/02_COMPONENTES_VISUAIS/status-badge";
 import { SubmitButton } from "@/02_COMPONENTES_VISUAIS/submit-button";
 import { requireCapability, requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 const uniformSizes = ["M", "G", "GG", "XG", "XXG"];
 const shoeSizes = Array.from({ length: 9 }, (_, index) => String(index + 38));
@@ -45,7 +47,7 @@ export default async function EmployeeDetailPage({ params, searchParams }: { par
     {query.delivered && <div className="alert success" role="status">Entrega registrada e vinculada ao funcionário.</div>}
     {query.closed && <div className="alert success" role="status">Situação do item atualizada no histórico.</div>}
     {query.error && <div className="alert error" role="alert">Não foi possível salvar. Confira os campos e as datas informadas.</div>}
-    <div className="module-tabs"><Link href={`/funcionarios/${employee.id}/kit`}>Kit e itens faltantes</Link><Link href={`/epis/solicitacoes?employee=${employee.id}`}>Solicitações</Link>{canWrite && <><Link href={`/epis/entrega-em-lote?employee=${employee.id}`}>Nova entrega de EPI</Link><Link href={`/funcionarios/${employee.id}/itens`}>Itens pessoais</Link></>}</div>
+    <div className="module-tabs"><Link href={`/funcionarios/${employee.id}/kit`}>Kit e itens faltantes</Link><Link href={`/epis/solicitacoes?employee=${employee.id}`}>Solicitações</Link>{canWrite && <><Link href={`/epis/entrega-em-lote?employee=${employee.id}`}>Nova entrega de EPI</Link><Link href={`/funcionarios/${employee.id}/itens`}>Itens pessoais</Link>{recursosNovosLiberados(getSupabaseEnv().url) && <Link href={`/treinamentos?funcionario=${employee.id}`}>Treinamentos e ASO</Link>}</>}</div>
     {canWrite && <Link className="button primary" href={`/funcionarios/${employee.id}/epi`}>Ficha e histórico de EPI</Link>}
     {canAdmin && <AsoNotice expiry={employee.aso_expiry_date} />}
     <section className="detail-hero"><dl className="definition-grid">

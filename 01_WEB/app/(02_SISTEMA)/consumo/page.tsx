@@ -25,17 +25,39 @@ export default async function ConsumptionPage({ searchParams }: { searchParams: 
   const reports = analyzeConsumptionByUnit(rows, range, category);
   const categories = [...new Set(rows.map(consumptionCategory))].sort();
 
+  const period = ["today", "7", "30", "month", "custom"].includes(query.period ?? "") ? query.period! : "30";
+  // Marco 3K: período em botões (um toque); o resto fica em "Mais filtros".
+  const link = (changes: Record<string, string | undefined>) => {
+    const params = new URLSearchParams();
+    const merged = { period, team: teamId, item: itemId, category, from: query.from, to: query.to, ...changes };
+    for (const [key, value] of Object.entries(merged)) if (value) params.set(key, value);
+    if (merged.period !== "custom") { params.delete("from"); params.delete("to"); }
+    return `/consumo?${params.toString()}`;
+  };
+  const periodos = [["today", "Hoje"], ["7", "7 dias"], ["30", "30 dias"], ["month", "Este mês"], ["custom", "Escolher datas"]] as const;
+  const extras = Boolean(teamId || itemId || category || period === "custom");
+  const resumo = [periodos.find(([id]) => id === period)?.[1], teams.find(team => team.id === teamId)?.name ?? "todas as equipes",
+    materials.data.find(item => item.id === itemId)?.name, category].filter(Boolean).join(" · ");
+
   return <>
-    <PageHeader eyebrow="ANÁLISE VISUAL" title="Consumo" description="Acompanhe quanto cada material consumiu, com caixas, unidades e outras medidas separadas." actions={<Link className="button primary" href="/movimentacoes/nova?type=consumption"><ArrowLeftRight size={16} />Registrar consumo</Link>} />
-    <section className="panel analytics-filter"><form className="panel-body toolbar">
-      <select className="filter-select" name="period" defaultValue={query.period ?? "30"} aria-label="Período"><option value="today">Hoje</option><option value="7">7 dias</option><option value="30">30 dias</option><option value="month">Mês atual</option><option value="custom">Personalizado</option></select>
-      <label className="compact-field">De<input name="from" type="date" lang="pt-BR" defaultValue={query.from ?? inputDate(range.currentStart)} /></label>
-      <label className="compact-field">Até<input name="to" type="date" lang="pt-BR" defaultValue={query.to ?? inputDate(new Date(range.currentEnd.getTime() - 86_400_000))} /></label>
-      <select className="filter-select" name="team" defaultValue={teamId ?? ""} aria-label="Equipe"><option value="">Todas as equipes</option>{teams.map((team) => <option value={team.id} key={team.id}>{team.name}</option>)}</select>
-      <select className="filter-select" name="item" defaultValue={itemId ?? ""} aria-label="Material"><option value="">Todos os materiais</option>{materials.data.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select>
-      <select className="filter-select" name="category" defaultValue={category ?? ""} aria-label="Categoria"><option value="">Todas as categorias</option>{categories.map((name) => <option key={name}>{name}</option>)}</select>
-      <button className="button secondary" type="submit">Aplicar filtros</button>
-    </form></section>
+    <PageHeader eyebrow="OBRAS E RELATÓRIOS" title="Consumo" description="Quanto cada material foi usado. Caixas, unidades e outras medidas aparecem separadas."
+      actions={<Link className="button primary" href="/lancar/consumo"><ArrowLeftRight size={16} />Registrar consumo</Link>} />
+    <section className="panel consumo-filtros" aria-label="Filtros do consumo"><div className="panel-body">
+      <nav className="chip-row" aria-label="Período">{periodos.map(([id, label]) =>
+        <Link key={id} className={period === id ? "chip active" : "chip"} aria-current={period === id ? "true" : undefined} href={link({ period: id })}>{label}</Link>)}</nav>
+      <p className="filtro-resumo">Mostrando: <strong>{resumo}</strong>{extras && <> · <Link href="/consumo">Limpar filtros</Link></>}</p>
+      <details className="mais-filtros" open={extras || undefined}><summary>Mais filtros (equipe, material, categoria{period === "custom" ? ", datas" : ""})</summary>
+        <form className="form-grid" method="get">
+          <input type="hidden" name="period" value={period}/>
+          {period === "custom" && <><label>De<input name="from" type="date" lang="pt-BR" defaultValue={query.from ?? inputDate(range.currentStart)} /></label>
+          <label>Até<input name="to" type="date" lang="pt-BR" defaultValue={query.to ?? inputDate(new Date(range.currentEnd.getTime() - 86_400_000))} /></label></>}
+          <label>Equipe<select name="team" defaultValue={teamId ?? ""}><option value="">Todas as equipes</option>{teams.map((team) => <option value={team.id} key={team.id}>{team.name}</option>)}</select></label>
+          <label>Material<select name="item" defaultValue={itemId ?? ""}><option value="">Todos os materiais</option>{materials.data.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select></label>
+          <label>Categoria<select name="category" defaultValue={category ?? ""}><option value="">Todas as categorias</option>{categories.map((name) => <option key={name}>{name}</option>)}</select></label>
+          <div className="form-actions"><button className="button primary" type="submit">Mostrar</button></div>
+        </form>
+      </details>
+    </div></section>
     <ConsumptionDashboard reports={reports} periodLabel={range.label} />
   </>;
 }

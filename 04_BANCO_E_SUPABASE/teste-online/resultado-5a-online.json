@@ -1,0 +1,79 @@
+{
+  "at": "2026-10-04T19:31:25.198Z",
+  "scope": "Marco 5A no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "funcionário consulta a própria ficha",
+      "ok": true
+    },
+    {
+      "name": "ficha do app não traz id do funcionário nem equipe",
+      "ok": true
+    },
+    {
+      "name": "funcionário não abre a visão da Gestão",
+      "ok": true
+    },
+    {
+      "name": "funcionário não registra treinamento",
+      "ok": true
+    },
+    {
+      "name": "tabelas de treinamento fora da API pública",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê a visão geral",
+      "ok": true
+    },
+    {
+      "name": "Gestão registra treinamento",
+      "ok": true
+    },
+    {
+      "name": "repetição da mesma tentativa não duplica",
+      "ok": true
+    },
+    {
+      "name": "validade calculada pelo tipo (NR-35 = 24 meses)",
+      "ok": true
+    },
+    {
+      "name": "só um registro ativo por tipo; anterior vira histórico",
+      "ok": true
+    },
+    {
+      "name": "data futura recusada",
+      "ok": true
+    },
+    {
+      "name": "validade antes da data do treinamento recusada",
+      "ok": true
+    },
+    {
+      "name": "dados do treinamento não podem ser alterados",
+      "ok": true
+    },
+    {
+      "name": "histórico não pode ser apagado",
+      "ok": true
+    },
+    {
+      "name": "Maria não cancela registro (não é Gestão)",
+      "ok": true
+    },
+    {
+      "name": "Gestão cancela com motivo",
+      "ok": true
+    },
+    {
+      "name": "cancelado some da ficha, mas fica no histórico",
+      "ok": true
+    },
+    {
+      "name": "só administrador altera tipos",
+      "ok": true
+    }
+  ],
+  "result": "18/18 OK"
+}

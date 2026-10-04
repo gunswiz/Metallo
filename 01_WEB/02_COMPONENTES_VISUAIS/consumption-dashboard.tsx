@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Boxes, CalendarDays, Users } from "lucide-react";
 import type { ConsumptionUnitReport } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
 import { consumptionCategory } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
@@ -15,7 +16,7 @@ export function ConsumptionDashboard({ reports, periodLabel }: { reports: Consum
     reports.find((entry) => entry.total > 0)?.unit ?? reports[0]?.unit ?? "un",
   );
   const report = reports.find((entry) => entry.unit === selectedUnit) ?? reports[0];
-  if (!report) return <section className="panel consumption-chart-empty"><strong>Nenhum consumo encontrado</strong><p>Ajuste o período ou os filtros para consultar os lançamentos.</p></section>;
+  if (!report) return <section className="panel consumption-chart-empty"><strong>Nenhum consumo neste período</strong><p>Escolha outro período acima ou registre o consumo de hoje.</p><Link className="button primary" href="/lancar/consumo">Registrar consumo</Link></section>;
   const unitLabel = consumptionUnitLabel(report.unit);
   const previousChange = report.percentChange === null
     ? "Sem consumo anterior"

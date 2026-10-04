@@ -8,15 +8,21 @@ import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-rep
 import { personalItem3g, type PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 import { communicationDetail3h, communicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import { z } from "zod";
+import { ficha5a, type Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
-export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "comprovantes" | "itens" | "comunicados";
+export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "comprovantes" | "itens" | "comunicados" | "treinamentos";
 const visualProfile: PersonalProfile = { employee_id: "synthetic-preview", full_name: "João Sintético", profession: "Profissão de teste", team_name: null };
 const visualEpis: PersonalEpi[] = [
   { item_name: "Capacete de segurança", ca_number: "12345", quantity: 1, unit: "un", variant: "M", delivered_at: "2026-08-12T12:00:00Z", delivery_reason: "initial", current_status: "active", closed_at: null },
   { item_name: "Luva de proteção", ca_number: "67890", quantity: 2, unit: "par", variant: "G", delivered_at: "2026-08-20T12:00:00Z", delivery_reason: "replacement", current_status: "active", closed_at: null },
   { item_name: "Luva de proteção", ca_number: "67890", quantity: 1, unit: "par", variant: "M", delivered_at: "2026-06-10T12:00:00Z", delivery_reason: "initial", current_status: "replaced", closed_at: "2026-08-20T12:00:00Z" },
 ];
+const visualTrainings5a: Ficha5a = { name: "João Sintético", profession: "welder", situacao: "VENCE_EM_BREVE",
+  aso: { aso_exam_date: "2026-01-10", aso_expiry_date: "2027-01-10", situacao: "EM_DIA" },
+  trainings: [{ id: "33333333-3333-4333-8333-333333333333", type_code: "NR35", name: "Trabalho em altura", nr: "NR-35",
+    completed_on: "2024-10-20", expires_on: "2026-10-20", provider: null, workload_hours: 8, situacao: "VENCE_EM_BREVE", required: true }],
+  missing: [] };
 const visualItems3g: PersonalItem3g[] = [
   { delivery_id: "11111111-1111-4111-8111-111111111111", item_name: "Trena 5 m", quantity: 1, unit: "un",
     variant: "5 m", delivered_at: "2026-09-29T12:00:00Z", confirmed_at: null, status: "AGUARDANDO_CONFIRMACAO", events: [] },
@@ -213,7 +219,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -244,6 +250,8 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (typeof data !== "string" || !Number.isFinite(Date.parse(data))) throw new Error("Confirmação do termo inválida.");
     return data;
   }, [exchangeRpc]);
+  // Marco 5A: ASO e treinamentos do próprio funcionário (somente leitura).
+  const readTrainings5a = useCallback(async () => demo ? visualTrainings5a : ficha5a.parse(await exchangeRpc("my_trainings_5a")), [demo, exchangeRpc]);
   const readPersonalReport3e = useCallback(async () => epiReportPayloadSchema.parse(await exchangeRpc("my_epi_report_3e")), [exchangeRpc]);
   const readPersonalItems3g = useCallback(async () => demo ? visualItems3g :
     z.array(personalItem3g).parse(await exchangeRpc("my_personal_items_3g")), [demo, exchangeRpc]);
@@ -295,5 +303,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
     await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
   }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, getAccessToken };
+  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, getAccessToken };
 }
