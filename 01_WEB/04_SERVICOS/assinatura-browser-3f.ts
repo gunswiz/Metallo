@@ -3,7 +3,14 @@
 import { startAuthentication, startRegistration, WebAuthnAbortService } from "@simplewebauthn/browser";
 import type { PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/browser";
 
-const endpoint = "/api/laboratorio/assinatura-epi";
+import { TESTE_ONLINE_ASSINATURA_3F, TESTE_ONLINE_COLABORADOR_ORIGIN } from "@/09_CONFIGURACOES/ambiente-teste-online";
+
+// Laboratório: rota local. Teste online: Edge Function do projeto de teste. Nenhum outro endereço.
+function endpoint3f(origin: string) {
+  if (origin === "http://localhost:3101") return "/api/laboratorio/assinatura-epi";
+  if (origin === TESTE_ONLINE_COLABORADOR_ORIGIN) return TESTE_ONLINE_ASSINATURA_3F;
+  return null;
+}
 export type SignatureMethod3f = { id: string; method: "Passkey"; created_at: string; revoked_at: string | null };
 export type SignatureEvent3f = { signature_event_id: string; group_id: string; verified_at: string };
 export type SignatureState3f = { methods: SignatureMethod3f[]; events: SignatureEvent3f[] };
@@ -15,8 +22,8 @@ export type PreparedSignature3f = { challenge_id: string; options: PublicKeyCred
   payload: SignedPayload3f; token: string };
 
 export async function signatureRequest3f<T>(token: string, body: object, signal?: AbortSignal): Promise<T> {
-  if (window.location.origin !== "http://localhost:3101")
-    throw new Error("Abra a prévia em http://localhost:3101 para usar sua credencial neste computador.");
+  const endpoint = endpoint3f(window.location.origin);
+  if (!endpoint) throw new Error("Abra a prévia em http://localhost:3101 para usar sua credencial neste computador.");
   const response = await fetch(endpoint, { method: "POST", cache: "no-store", credentials: "omit",
     redirect: "error", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(body), signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) :

@@ -31,7 +31,7 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
     void (async () => {
       try { const token = await getToken(); const value = await signatureRequest3f<SignatureState3f>(token, { action: "state" });
         if (active) { setState(value); setInitialError(""); } }
-      catch { if (active) setInitialError("Métodos temporariamente indisponíveis. Confira sua conexão ou abra em localhost."); }
+      catch { if (active) setInitialError("Métodos temporariamente indisponíveis. Confira sua conexão e tente novamente."); }
     })();
     return () => { active = false; };
   }, [getToken]);
@@ -43,7 +43,7 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
     setBusy(true); setError(""); setNotice("");
     try {
       if (!window.isSecureContext || !window.PublicKeyCredential)
-        throw new Error("Este navegador não oferece passkey nesta prévia.");
+        throw new Error("Este navegador não oferece biometria/passkey.");
       await registerPasskey3f(getToken, {
         onStart: () => { if (attempt.current === currentAttempt) {
           cancelableAttempt.current = true; setCanCancel(true); } },
@@ -79,7 +79,7 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
   }
   async function reloadMethods() {
     try { await refresh(); setError(""); }
-    catch { setInitialError("Métodos temporariamente indisponíveis. Confira sua conexão ou abra em localhost."); }
+    catch { setInitialError("Métodos temporariamente indisponíveis. Confira sua conexão e tente novamente."); }
   }
   async function revoke(credentialId: string) {
     if (busy || !window.confirm("Revogar este método? Confirmações anteriores serão preservadas.")) return;

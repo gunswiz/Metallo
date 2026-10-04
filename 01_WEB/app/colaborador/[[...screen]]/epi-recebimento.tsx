@@ -120,7 +120,7 @@ export function EpiRecebimento({ read, respond, getAccessToken, sharedDevice = f
           {signedGroup === group.group_id && getAccessToken && <EpiAssinatura3f groupId={group.group_id}
             getToken={getAccessToken} onCancel={() => setSignedGroup(null)} onSigned={() => {
               setSignedIds(previous => new Set(previous).add(group.group_id));
-              setSignedGroup(null); setNotice("Recebimento confirmado com biometria do celular no laboratório."); refresh();
+              setSignedGroup(null); setNotice("Recebimento confirmado com biometria do celular."); refresh();
             }}/>}
         </div>
         {selected !== group.group_id && signedGroup !== group.group_id && (group.feedback_status === null || group.feedback_status === "RESOLVIDA" || group.feedback_status === "RECUSA") &&

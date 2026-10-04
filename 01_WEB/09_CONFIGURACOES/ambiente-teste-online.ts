@@ -3,6 +3,9 @@
 // ou os recursos novos para o projeto de produção (Almoxarifado Online).
 export const LAB_SUPABASE_URL = "http://127.0.0.1:54321";
 export const TESTE_ONLINE_SUPABASE_URL = "https://cvimwiqokkujfhwynhmt.supabase.co";
+export const TESTE_ONLINE_COLABORADOR_ORIGIN = "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev";
+/** Biometria do celular (3F) no teste online: Edge Function com o RP do Colaborador de teste. */
+export const TESTE_ONLINE_ASSINATURA_3F = `${TESTE_ONLINE_SUPABASE_URL}/functions/v1/assinatura-epi-3f`;
 
 /** Recursos ainda não liberados na produção (EPI 3D–3I, comunicados, itens pessoais). */
 export function recursosNovosLiberados(supabaseUrl: string | undefined) {
