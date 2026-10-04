@@ -19,9 +19,10 @@ async function forward(request: NextRequest, path: string[], timing: ReturnType<
   const body = request.method === "POST" ? await request.text() : undefined;
   if (body !== undefined && (body.length > 2048 || request.headers.get("content-type") !== "application/json")) return fail("PEDIDO_INVALIDO", 400);
   try {
-    const response = await timing.measure("core_http", () => pointLaboratoryFetch(destino.base("v4a") + endpoint, { method: request.method, headers: { ...timing.headers, Authorization: authorization, Origin: destino.origin, "Content-Type": "application/json" }, body, cache: "no-store", redirect: "error", signal: AbortSignal.any([request.signal, AbortSignal.timeout(60000)]) }));
+    const response = await timing.measure("core_http", () => pointLaboratoryFetch(destino.base("v4a") + endpoint, { method: request.method, headers: { ...timing.headers, Authorization: authorization, Origin: destino.origin, "Content-Type": "application/json" }, body, cache: "no-store", redirect: destino.online ? "manual" : "error", signal: AbortSignal.any([request.signal, AbortSignal.timeout(60000)]) }));
+    if (response.status >= 300 && response.status < 400) return fail("SERVIDOR_INDISPONIVEL", 503);
     return new NextResponse(await response.text(), { status: response.status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
-  } catch (error) { timing.failure(error); return fail("SERVIDOR_INDISPONIVEL", 503); }
+  } catch (error) { timing.failure(error); if (destino.online) console.error("ponto-online: falha no encaminhamento", error instanceof Error ? error.name + ": " + error.message : "erro"); return fail("SERVIDOR_INDISPONIVEL", 503); }
 }
 async function traced(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const timing = labTiming(request, "point"); const response = await forward(request, (await context.params).path, timing); timing.finish(response.status); return response;

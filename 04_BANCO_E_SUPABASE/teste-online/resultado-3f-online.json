@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-04T08:15:22.227Z",
+  "at": "2026-10-04T08:54:39.181Z",
   "scope": "Marco 3F no teste online (dados fictícios)",
   "checks": [
     {
@@ -63,7 +63,7 @@
       "ok": true
     },
     {
-      "name": "hash canônico idêntico ao do servidor",
+      "name": "conteúdo assinado traz a entrega e os itens",
       "ok": true
     },
     {

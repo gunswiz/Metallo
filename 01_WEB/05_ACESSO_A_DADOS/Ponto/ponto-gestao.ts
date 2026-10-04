@@ -19,7 +19,7 @@ export async function readPointManagement(): Promise<PointManagement> {
   if (session.error || !session.data.session?.access_token) throw new Error("Sessão indisponível.");
   const target = online ? `${TESTE_ONLINE_PONTO_4D}/gestao` : "http://127.0.0.1:3106/lab-point/v4a/management";
   const origin = online ? TESTE_ONLINE_GESTAO_ORIGIN : "http://127.0.0.1:3102";
-  const response = await fetch(target, { headers: { Authorization: `Bearer ${session.data.session.access_token}`, Origin: origin }, cache: "no-store", redirect: "error", signal: AbortSignal.timeout(8000) });
+  const response = await fetch(target, { headers: { Authorization: `Bearer ${session.data.session.access_token}`, Origin: origin }, cache: "no-store", redirect: online ? "manual" : "error", signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error("Leitura do ponto não autorizada ou indisponível.");
   const parsed = management.parse(await response.json());
   return { events: parsed.events, integrity: parsed.integrity ?? null, online };
