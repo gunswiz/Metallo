@@ -49,7 +49,7 @@ export function SidebarNav({ profile, onNavigate }: { profile: SessionProfile; o
           {grupo.label && <button type="button" className={temAtual ? "sidebar-group-toggle current" : "sidebar-group-toggle"}
             aria-expanded={aberto} aria-controls={`menu-${grupo.id}`} onClick={() => alternar(grupo.id)}>
             <GroupIcon size={19} aria-hidden /><span>{grupo.label}</span><ChevronDown size={17} aria-hidden className="sidebar-chevron"/></button>}
-          {aberto && <div className="sidebar-group-items" id={`menu-${grupo.id}`}>{grupo.itens.map(item => {
+          {aberto && <div className={grupo.label ? "sidebar-group-items" : "sidebar-group-top"} id={`menu-${grupo.id}`}>{grupo.itens.map(item => {
             const on = ativo(pathname, item.href);
             const Icon = ICONES[item.icone] ?? Boxes;
             return <Link key={item.href} href={item.href} className={on ? "active" : undefined} aria-current={on ? "page" : undefined} onClick={onNavigate}>

@@ -658,3 +658,4 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .sidebar-group-items { display: grid; gap: 3px; margin: 2px 0 6px 14px; padding-left: 8px; border-left: 1px solid var(--line-soft); }
 .sidebar-group + .sidebar-group { margin-top: 2px; }
 .mobile-sheet .sidebar-group-toggle { min-height: 54px; font-size: 1.05rem; }
+.sidebar-group-top { display: grid; gap: 3px; margin-bottom: 8px; }
