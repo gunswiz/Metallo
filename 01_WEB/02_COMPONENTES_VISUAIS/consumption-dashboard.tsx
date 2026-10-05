@@ -162,21 +162,20 @@ export function ConsumptionDashboard({ reports, periodLabel }: { reports: Consum
       <div className="panel-body"><GraficoDias report={report} /></div>
     </section>
 
+    <section className="panel cs-painel">
+      <header className="panel-header"><div><h2>Para onde foi o consumo</h2><p>Participação de cada material no total em {unidade}. Passe o mouse na legenda para destacar.</p></div></header>
+      <div className="panel-body"><Rosca fatias={fatias} total={total} unit={report.unit} /></div>
+    </section>
+
     <div className="cs-grade-2">
       <section className="panel cs-painel">
-        <header className="panel-header"><div><h2>Para onde foi o consumo</h2><p>Participação de cada material no total em {unidade}.</p></div></header>
-        <div className="panel-body"><Rosca fatias={fatias} total={total} unit={report.unit} /></div>
+        <header className="panel-header"><div><h2>Por equipe</h2><p>Quem consumiu, em {unidade}.</p></div></header>
+        <div className="panel-body"><Barras itens={report.teams} total={total} unit={report.unit} /></div>
       </section>
-      <div className="cs-coluna">
-        <section className="panel cs-painel">
-          <header className="panel-header"><div><h2>Por equipe</h2><p>Quem consumiu, em {unidade}.</p></div></header>
-          <div className="panel-body"><Barras itens={report.teams} total={total} unit={report.unit} /></div>
-        </section>
-        <section className="panel cs-painel">
-          <header className="panel-header"><div><h2>Por categoria</h2><p>Tipo de material, em {unidade}.</p></div></header>
-          <div className="panel-body"><Barras itens={report.categoryTotals} total={total} unit={report.unit} /></div>
-        </section>
-      </div>
+      <section className="panel cs-painel">
+        <header className="panel-header"><div><h2>Por categoria</h2><p>Tipo de material, em {unidade}.</p></div></header>
+        <div className="panel-body"><Barras itens={report.categoryTotals} total={total} unit={report.unit} /></div>
+      </section>
     </div>
 
     <section className="panel cs-painel">
