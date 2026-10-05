@@ -30,6 +30,9 @@ const feedback = z.object({
   id: z.number().int(), group_id: z.uuid(), delivery_id: z.uuid().nullable(),
   type: z.enum(["CONFIRMADO", "DIVERGENCIA", "EM_ANALISE", "RESOLVIDA", "RECUSA"]),
   category: optionalText, at: dateTime,
+  // 3M: como foi confirmado e o código de verificação (SHA-256 do conteúdo, gravado na hora da confirmação).
+  method: z.enum(["digital", "senha"]).nullable().optional(),
+  code: z.string().regex(/^[0-9a-f]{64}$/).nullable().optional(),
 });
 const exchange = z.object({
   id: z.uuid(), source_delivery_id: z.uuid(), item_name: z.string(), ca: optionalText,
@@ -121,7 +124,12 @@ export const epiReportResponsible = (row: EpiReportPayload["deliveries"][number]
     : "Responsável pela entrega: não registrado nominalmente no histórico.";
 
 export type EpiPrintedSupply = { title: "ENTREGA" | "ENTREGA PARA TROCA" | "SUBSTITUIÇÃO"; at: string;
-  item: string; ca: string; quantity: string; responsible: string; receipt: string };
+  item: string; ca: string; quantity: string; responsible: string; receipt: string; code: string | null };
+
+// 3M: código de verificação em grupos de 4 (64 caracteres), fácil de ler e conferir em voz alta.
+export function epiVerificationCode(code: string | null | undefined) {
+  return code && /^[0-9a-f]{64}$/.test(code) ? code.toUpperCase().match(/.{4}/g)!.join(" ") : null;
+}
 
 // Situação da confirmação do funcionário para cada entrega. Na via impressa, substitui a
 // assinatura manuscrita: o registro eletrônico é aceito pela NR-6 (item 6.5.1, alínea "d").
@@ -138,7 +146,10 @@ function latestFeedbackByGroup(feedback: FeedbackRow[]) {
 export function epiReceiptLabel(groupId: string | null, state: FeedbackRow | null | undefined) {
   if (!groupId) return "Sem confirmação eletrônica registrada";
   if (!state) return "Confirmação do funcionário pendente";
-  if (state.type === "CONFIRMADO") return `Recebimento confirmado pelo funcionário no portal em ${reportDate(state.at)}`;
+  if (state.type === "CONFIRMADO") return state.method === "digital"
+    ? `Recebimento confirmado pelo funcionário com a digital em ${reportDate(state.at)}`
+    : state.method === "senha" ? `Recebimento confirmado pelo funcionário com a senha pessoal em ${reportDate(state.at)}`
+    : `Recebimento confirmado pelo funcionário no portal em ${reportDate(state.at)}`;
   if (state.type === "RESOLVIDA") return "Divergência resolvida; confirmação pendente";
   if (state.type === "RECUSA") return "Recusa registrada pela Gestão; confirmação do funcionário pendente";
   return "Divergência informada pelo funcionário, em andamento";
@@ -172,7 +183,9 @@ export function epiPrintedSupplies(report: EpiReport): EpiPrintedSupply[] {
         item: row.item_name, ca, quantity: epiReportQuantity(row.quantity, row.unit),
         responsible: row.responsible_name_snapshot?.trim() || "Não registrado",
         // Tamanho/variante (M, G, GG, 42…) fica só na trilha técnica: decisão do responsável para não poluir a via impressa.
-        receipt: epiReceiptLabel(row.group_id, row.group_id ? latest.get(row.group_id) : null) };
+        receipt: epiReceiptLabel(row.group_id, row.group_id ? latest.get(row.group_id) : null),
+        code: (() => { const state = row.group_id ? latest.get(row.group_id) : null;
+          return state?.type === "CONFIRMADO" ? state.code ?? null : null; })() };
     });
 }
 
@@ -229,6 +242,8 @@ export function projectEpiReport(raw: unknown, type: EpiReportType, period: EpiP
       item: selected?.item_name ?? (items.length === 1 ? items[0].item_name : "Grupo de entrega"),
       originAt: items[0]?.delivered_at,
       details: [row.category ? `Categoria: ${categoryLabel[row.category] ?? "Categoria não identificada no formato do relatório"}` : "",
+        row.type === "CONFIRMADO" && row.method ? `Forma: ${row.method === "digital" ? "digital do celular" : "senha pessoal"}` : "",
+        row.type === "CONFIRMADO" && row.code ? `Código de verificação: ${epiVerificationCode(row.code)}` : "",
         items[0] ? `Entrega relacionada: ${reportDate(items[0].delivered_at)}` : ""].filter(Boolean),
     });
   }

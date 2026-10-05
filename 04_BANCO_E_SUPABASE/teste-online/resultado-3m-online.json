@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-05T11:27:03.183Z",
+  "scope": "Marco 3M no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "confirmação por senha devolve código de 64 caracteres",
+      "ok": true
+    },
+    {
+      "name": "código gravado no banco é o mesmo devolvido",
+      "ok": true
+    },
+    {
+      "name": "código = SHA-256 do conteúdo gravado (dá para refazer a conta)",
+      "ok": true
+    },
+    {
+      "name": "conteúdo traz versão 3F-v1, o funcionário, a entrega e os itens",
+      "ok": true
+    },
+    {
+      "name": "mudar a quantidade muda o código",
+      "ok": true
+    },
+    {
+      "name": "código guardado não pode ser apagado nem trocado",
+      "ok": true
+    },
+    {
+      "name": "Gestão: ficha traz forma 'senha' e o mesmo código",
+      "ok": true
+    },
+    {
+      "name": "App: a própria ficha do funcionário traz o mesmo código",
+      "ok": true
+    },
+    {
+      "name": "Maria não lê a ficha (nem o código) de outra pessoa pela Gestão",
+      "ok": true
+    },
+    {
+      "name": "confirmação com a digital aparece como 'digital' com o código da assinatura",
+      "ok": true
+    },
+    {
+      "name": "confirmação antiga por senha continua sem código (não se inventa depois)",
+      "ok": true
+    }
+  ]
+}

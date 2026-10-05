@@ -1,10 +1,10 @@
 import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from "pdf-lib";
-import { epiPrintedSupplies, reportDate, type EpiReport } from "./epi-report-3e";
+import { epiPrintedSupplies, epiVerificationCode, reportDate, type EpiReport } from "./epi-report-3e";
 import { nomeProfissao } from "@/03_FUNCOES_E_LOGICA/Cadastros/profissao";
 
 const safe = (value: unknown) => String(value ?? "Não registrado").normalize("NFC")
   .replace(/[^\x20-\x7e\xa0-\xff]/g, " ").replace(/\s+/g, " ").trim();
-export const EPI_REPORT_FORMAT_VERSION = "3E-LAB-v3";
+export const EPI_REPORT_FORMAT_VERSION = "3E-LAB-v4";
 const filenameId = (id: string) => id.replace(/[^a-z0-9-]/gi, "").slice(0, 36);
 export function epiReportFilename(report: EpiReport) {
   return `${report.type === "current" ? "ficha-atual" : "historico"}-epi-${filenameId(report.payload.report_id)}.pdf`;
@@ -80,6 +80,9 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
       `CA: ${row.ca}  |  Quantidade: ${row.quantity}`,
       `Responsável pela entrega: ${row.responsible}`,
       row.receipt,
+      // 3M: código gravado na hora da confirmação; confirmações antigas por senha não têm (não se inventa depois).
+      row.code ? `Código de verificação: ${epiVerificationCode(row.code)}` :
+        row.receipt.startsWith("Recebimento confirmado") ? "Código de verificação: não disponível (confirmação anterior a esta função)" : "",
     ].filter(Boolean) }));
   if (!cards.length) {
     ensure(58);
@@ -128,10 +131,17 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
   const awareness = awarenessAcceptedAt === undefined ? "" : awarenessAcceptedAt
     ? `Termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1) aceito pelo funcionário no portal em ${reportDate(awarenessAcceptedAt)}.`
     : "Termo de ciência dos deveres do trabalhador quanto ao EPI (NR-6, item 6.6.1): ainda não aceito pelo funcionário.";
-  ensure(48 + (fit(notice, regular, 8, width).length + (awareness ? fit(awareness, regular, 8, width).length : 0)) * 12);
+  const codeNotice = supplies.some(row => row.code)
+    ? "Código de verificação: resumo digital (SHA-256) do que o funcionário confirmou (itens, quantidade, C.A. e data), " +
+      "gravado no sistema no momento da confirmação. Se alguém alterar a entrega depois, o código deixa de corresponder ao registro. " +
+      "Na confirmação com a digital, o celular do funcionário assina esse conteúdo; a digital nunca sai do aparelho."
+    : "";
+  ensure(48 + (fit(notice, regular, 8, width).length + (codeNotice ? fit(codeNotice, regular, 8, width).length : 0) +
+    (awareness ? fit(awareness, regular, 8, width).length : 0)) * 12);
   y -= 4;
   line("REGISTRO ELETRÔNICO", 9, true, brand);
   line(notice, 8, false, muted);
+  if (codeNotice) { y -= 2; line(codeNotice, 8, false, muted); }
   if (awareness) { y -= 2; line(awareness, 8, true, ink); }
   const pages = pdf.getPages();
   pages.forEach((p, index) => {

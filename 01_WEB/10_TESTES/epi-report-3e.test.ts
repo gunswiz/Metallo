@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { PDFDocument, PDFPage } from "pdf-lib";
 import { describe, expect, it, vi } from "vitest";
 import { buildEpiReport3ePdf, epiReportFilename } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e-pdf";
-import { epiPrintedSupplies, epiReceiptLabel, reportDate, epiReportFailure, epiReportQuantity, epiReportResponsible, projectEpiReport, resolveEpiPeriod, type EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
+import { epiPrintedSupplies, epiVerificationCode, epiReceiptLabel, reportDate, epiReportFailure, epiReportQuantity, epiReportResponsible, projectEpiReport, resolveEpiPeriod, type EpiReportPayload } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-report-3e";
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const payload: EpiReportPayload = {
@@ -156,10 +156,10 @@ describe("Marco 3E - ficha e histórico", () => {
     expect(printed).toEqual([
       { title: "ENTREGA", at: raw.deliveries[0].delivered_at, item: "Capacete sintético", ca: "12345",
         quantity: "1 unidade", responsible: "Não registrado",
-        receipt: `Recebimento confirmado pelo funcionário no portal em ${reportDate("2026-01-10T13:00:00Z")}` },
+        receipt: `Recebimento confirmado pelo funcionário no portal em ${reportDate("2026-01-10T13:00:00Z")}`, code: null },
       { title: "ENTREGA PARA TROCA", at: raw.deliveries[1].delivered_at, item: "Capacete sintético", ca: "67890",
         quantity: "2 unidades", responsible: "Não registrado",
-        receipt: "Divergência resolvida; confirmação pendente" },
+        receipt: "Divergência resolvida; confirmação pendente", code: null },
     ]);
     expect(JSON.stringify(printed)).not.toMatch(/00000000-|Grupo 00|Entrega 00|DESGASTE|TAMANHO|L-9|Marca de teste/);
     await buildEpiReport3ePdf(report);
@@ -344,5 +344,38 @@ describe("Marco 3I - recusa e termo no relatório", () => {
     const pdf = await PDFDocument.load(await buildEpiReport3ePdf(report, undefined, "2026-01-05T12:00:00Z"));
     expect(pdf.getPageCount()).toBeGreaterThan(0);
     await buildEpiReport3ePdf(projectEpiReport(raw, "current", all), undefined, null);
+  });
+});
+
+describe("Marco 3M - código de verificação na ficha de EPI", () => {
+  const hash = "9f3a12bc77d01e44" + "a".repeat(48);
+  it("confirmação com a digital mostra a forma e o código em grupos de 4", async () => {
+    const raw = structuredClone(payload);
+    raw.feedback[0] = { ...raw.feedback[0], method: "digital", code: hash };
+    const report = projectEpiReport(raw, "history", all);
+    const [first, second] = epiPrintedSupplies(report);
+    expect(first.receipt).toBe(`Recebimento confirmado pelo funcionário com a digital em ${reportDate("2026-01-10T13:00:00Z")}`);
+    expect(first.code).toBe(hash);
+    expect(epiVerificationCode(hash)).toBe("9F3A 12BC 77D0 1E44 " + Array(12).fill("AAAA").join(" "));
+    expect(second.code).toBeNull(); // entrega sem confirmação não ganha código
+    const event = report.events.find(item => item.kind === "confirmacao")!;
+    expect(event.details).toEqual(expect.arrayContaining(["Forma: digital do celular", `Código de verificação: ${epiVerificationCode(hash)}`]));
+    const pdf = await PDFDocument.load(await buildEpiReport3ePdf(report));
+    expect(pdf.getPageCount()).toBeGreaterThan(0);
+  });
+  it("confirmação com senha mostra a forma; sem código gravado, não inventa um", async () => {
+    const raw = structuredClone(payload);
+    raw.feedback[0] = { ...raw.feedback[0], method: "senha", code: null };
+    const report = projectEpiReport(raw, "current", all);
+    const [first] = epiPrintedSupplies(report);
+    expect(first.receipt).toBe(`Recebimento confirmado pelo funcionário com a senha pessoal em ${reportDate("2026-01-10T13:00:00Z")}`);
+    expect(first.code).toBeNull();
+    await buildEpiReport3ePdf(report);
+  });
+  it("código fora do formato é recusado e não vai para o PDF", () => {
+    const raw = structuredClone(payload);
+    raw.feedback[0] = { ...raw.feedback[0], method: "digital", code: "codigo-falso" };
+    expect(() => projectEpiReport(raw, "current", all)).toThrow();
+    expect(epiVerificationCode("XYZ")).toBeNull();
   });
 });

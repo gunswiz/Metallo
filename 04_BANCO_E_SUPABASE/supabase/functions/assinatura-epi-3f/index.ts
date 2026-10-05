@@ -230,7 +230,7 @@ function signFinish(token: string, challengeId: string, response: Authentication
         JSON.stringify({ id: response.id, clientDataJSON: response.response.clientDataJSON,
           authenticatorData: response.response.authenticatorData, signature: response.response.signature }), String(verifiedCounter)]);
     await q(tx, "update private.epi_signature_challenges_3f set consumed_at=now() where id=$1::text::uuid", [challenge.id]);
-    return { signature_event_id: eventId, feedback_id: feedback[0].id };
+    return { signature_event_id: eventId, feedback_id: feedback[0].id, code: challenge.payload_hash };
   });
 }
 
@@ -269,11 +269,16 @@ async function passwordConfirm(token: string, groupId: string, password: string,
   return withActor(token, async (tx, a) => {
     if (a.accountId !== who.actor.accountId) throw new Error("Sessão inválida.");
     await q(tx, "select pg_catalog.set_config('metallo.confirmacao_3j','ok',true)");
+    // Código de verificação (3M): o mesmo resumo SHA-256 do formato 3F-v1, gravado na hora da confirmação.
+    const projection = canonicalDelivery3f(await deliverySnapshot(tx, a, groupId), key);
     const [fb] = await q<{ id: string }>(tx, "select public.respond_epi_delivery_3d($1::text::uuid,'CONFIRMADO',null,null,null,$2::text::uuid)::text id", [groupId, key]);
-    await q(tx, `insert into private.epi_confirmacao_senha_3j(group_id,feedback_id,account_id,employee_id,method)
-      values($1::text::uuid,$2::text::bigint,$3::text::uuid,$4::text::uuid,'senha-reautenticacao')
-      on conflict (group_id) do nothing`, [groupId, fb.id, a.accountId, a.employeeId]);
-    return { feedback_id: fb.id, method: "senha" };
+    await q(tx, `insert into private.epi_confirmacao_senha_3j(group_id,feedback_id,account_id,employee_id,method,
+        payload_version,payload_canonical,payload_hash)
+      values($1::text::uuid,$2::text::bigint,$3::text::uuid,$4::text::uuid,'senha-reautenticacao','3F-v1',$5::text,$6::text)
+      on conflict (group_id) do nothing`, [groupId, fb.id, a.accountId, a.employeeId, projection.canonical, projection.hash]);
+    const [saved] = await q<{ payload_hash: string | null }>(tx,
+      "select payload_hash from private.epi_confirmacao_senha_3j where group_id=$1::text::uuid", [groupId]);
+    return { feedback_id: fb.id, method: "senha", code: saved?.payload_hash ?? null };
   });
 }
 
