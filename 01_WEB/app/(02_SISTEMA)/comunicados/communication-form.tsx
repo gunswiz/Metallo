@@ -19,7 +19,8 @@ export function CommunicationForm3h({ teams, works, item, idempotencyKey }: {
   const [intentKey] = useState(idempotencyKey);
   const [state, formAction, pending] = useActionState<CommunicationSaveState3h, FormData>(saveCommunication3h, { error: null });
   const fixedAudience = item?.status === "PUBLISHED";
-  return <form action={formAction} className={styles.form} aria-busy={pending}>
+  const publico = audience === "TEAM" ? (teams.find(team => team.id === teamId)?.name ?? "uma equipe") : audience === "WORK" ? (works.find(work => work.id === workId)?.name ?? "uma obra") : "Todos os funcionários";
+  return <div className={styles.editor}><form action={formAction} className={styles.form} aria-busy={pending}>
     <input type="hidden" name="id" value={item?.id ?? ""} />
     <input type="hidden" name="expectedVersion" value={item?.version ?? ""} />
     <input type="hidden" name="idempotencyKey" value={intentKey} />
@@ -48,12 +49,24 @@ export function CommunicationForm3h({ teams, works, item, idempotencyKey }: {
         <input name="expiresAt" type="datetime-local" step="any" value={expiresAt} onChange={event => setExpiresAt(event.target.value)}/>
       </label>
     </div>
-    <label className={styles.check}><input type="checkbox" name="pinned" checked={pinned} onChange={event => setPinned(event.target.checked)} />Fixar no topo</label>
+    <label className={styles.check}><input type="checkbox" name="pinned" checked={pinned} onChange={event => setPinned(event.target.checked)} /><span>Fixar no topo <small>(aparece primeiro para o funcionário)</small></span></label>
     <div className={styles.actions}>
       <button className="button secondary" type="submit" name="intent" value="draft" disabled={pending}>{pending ? "Processando…" : item ? "Salvar correção" : "Salvar rascunho"}</button>
       {(!item || item.status === "DRAFT") && <button className="button primary" type="submit" name="intent" value="publish" disabled={pending}>{pending ? "Processando…" : "Publicar comunicado"}</button>}
     </div>
     {state.error && <p role="alert" aria-live="polite" className="alert error">{state.error}</p>}
     {fixedAudience && <p className={styles.hint}>O público de um comunicado publicado não muda. Correções ficam registradas em revisão.</p>}
-  </form>;
+  </form>
+  <aside className={styles.preview} aria-label="Prévia de como o funcionário vê no app">
+    <span className={styles.previewLabel}>Como o funcionário vê no app</span>
+    <div className={styles.phone}>
+      <div className={styles.phoneTop}>Avisos</div>
+      <article className={styles.notice}>
+        {pinned && <span className={styles.pin}>Fixado</span>}
+        <strong>{title.trim() || "Título do comunicado"}</strong>
+        <p>{message.trim() || "A mensagem aparece aqui, do jeito que você escrever."}</p>
+        <small>Para: {publico}{expiresAt ? ` · até ${expiresAt.slice(8, 10)}/${expiresAt.slice(5, 7)}` : ""}</small>
+      </article>
+    </div>
+  </aside></div>;
 }

@@ -48,7 +48,26 @@ export default async function TreinamentosPage({ searchParams }: { searchParams:
         <button className="button secondary" type="submit">Procurar</button></form>
     </div></section>}
     {pessoa && <p><Link className="button ghost" href="/treinamentos">← Ver todos</Link></p>}
-    <section className="stock-cards" aria-label="Funcionários">
+    {!pessoa && lista.length > 0 && <section className="panel so-computador" aria-label="Funcionários (tabela)"><div className="data-table-wrap"><table className="data-table training-table">
+      <thead><tr><th>Funcionário</th><th>Situação</th><th>ASO</th><th>Treinamentos (NR)</th><th>Ações</th></tr></thead>
+      <tbody>{lista.map(ficha => <tr key={ficha.employee_id}>
+        <td><span className="primary-cell">{ficha.name}</span><span className="secondary-cell">{nomeProfissao(ficha.profession)} · {ficha.team_name ?? "Sem equipe"}</span></td>
+        <td><span className={`status-badge ${tom(ficha.situacao)}`}>{rotuloSituacao5a[ficha.situacao]}</span></td>
+        <td><span className={`tr-chip ${tom(ficha.aso.situacao)}`}>{ficha.aso.aso_expiry_date ? dataBr5a(ficha.aso.aso_expiry_date) : "não informado"}</span>
+          {ficha.aso.aso_expiry_date && <span className="secondary-cell">{prazo5a(ficha.aso.aso_expiry_date)}</span>}</td>
+        <td><div className="tr-chips">
+          {ficha.trainings.map(item => <span key={item.id} className={`tr-chip ${tom(item.situacao)}`} title={`${item.name} · feito em ${dataBr5a(item.completed_on)} · ${prazo5a(item.expires_on)}`}>
+            <b>{item.nr ?? item.name}</b>{item.expires_on ? ` até ${dataBr5a(item.expires_on)}` : " sem vencimento"}</span>)}
+          {ficha.missing.map(item => <span key={item.type_code} className="tr-chip bad" title={`${item.name} · obrigatório para a função`}><b>{item.nr ?? item.name}</b> falta</span>)}
+          {ficha.trainings.length + ficha.missing.length === 0 && <span className="muted">Nenhum exigido</span>}
+        </div></td>
+        <td><div className="tr-acoes">
+          <Link className="button secondary" href={`/treinamentos?funcionario=${ficha.employee_id}#registrar`}>Registrar</Link>
+          <Link className="button ghost" href={`/treinamentos?funcionario=${ficha.employee_id}`}>Detalhes</Link>
+        </div></td>
+      </tr>)}</tbody>
+    </table></div></section>}
+    <section className={pessoa || lista.length === 0 ? "stock-cards training-detail" : "stock-cards so-celular"} aria-label="Funcionários">
       {lista.length === 0 && <p className="muted">Ninguém nesta situação.</p>}
       {lista.map(ficha => <article className="stock-card training-card" key={ficha.employee_id}>
         <div className="training-head"><div><h3>{ficha.name}</h3><small>{nomeProfissao(ficha.profession)} · {ficha.team_name ?? "Sem equipe"}</small></div>

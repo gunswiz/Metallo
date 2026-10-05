@@ -77,6 +77,26 @@ function trend(rows: ConsumptionRow[], range: ConsumptionRange) {
   return points;
 }
 
+// Marco 3L: série para o gráfico principal. Até 45 dias, uma barra por dia; acima, uma por semana.
+function dailySeries(rows: ConsumptionRow[], range: ConsumptionRange) {
+  const stepDays = range.days > 45 ? 7 : 1;
+  const short = (date: Date) => date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+  const points: Array<{ label: string; fullLabel: string; value: number; start: string }> = [];
+  for (let cursor = new Date(range.currentStart); cursor < range.currentEnd; cursor = new Date(cursor.getTime() + stepDays * dayMs)) {
+    const end = new Date(Math.min(range.currentEnd.getTime(), cursor.getTime() + stepDays * dayMs));
+    const value = sum(rows.filter((row) => { const date = new Date(row.created_at); return date >= cursor && date < end; }));
+    const fullLabel = stepDays === 1
+      ? cursor.toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" }).replace(".", "")
+      : `Semana de ${short(cursor)} a ${short(new Date(end.getTime() - dayMs))}`;
+    points.push({ label: short(cursor), fullLabel, value, start: cursor.toISOString() });
+  }
+  return { bucket: stepDays === 1 ? "dia" as const : "semana" as const, points };
+}
+
+function activeDays(rows: ConsumptionRow[]) {
+  return new Set(rows.map((row) => new Date(row.created_at).toLocaleDateString("pt-BR"))).size;
+}
+
 export function analyzeConsumption(rows: ConsumptionRow[], range: ConsumptionRange, selectedUnit?: string, selectedCategory?: string) {
   const units = [...new Set(rows.map((row) => consumptionUnit(row.items?.unit)))].sort();
   const normalizedSelection = selectedUnit ? consumptionUnit(selectedUnit) : undefined;
@@ -100,6 +120,9 @@ export function analyzeConsumption(rows: ConsumptionRow[], range: ConsumptionRan
     teams: group(current, (row) => row.origin?.name ?? "Sem equipe"),
     categoryTotals: group(current, consumptionCategory),
     rows: current,
+    previousRows: previous,
+    daily: dailySeries(current, range),
+    activeDays: activeDays(current),
   };
 }
 
@@ -112,16 +135,24 @@ export function analyzeConsumptionByUnit(rows: ConsumptionRow[], range: Consumpt
   const units = [...new Set(scoped.map((row) => consumptionUnit(row.items?.unit)))].sort();
   return units.map((unit) => {
     const analysis = analyzeConsumption(scoped, range, unit);
-    const materials = new Map<string, { id: string; label: string; code: string; value: number }>();
+    const materials = new Map<string, { id: string; label: string; code: string; category: string; value: number; previous: number }>();
+    const entry = (row: ConsumptionRow) => materials.get(row.item_id) ?? {
+      id: row.item_id,
+      label: row.items?.name ?? "Material removido",
+      code: row.items?.code ?? "",
+      category: consumptionCategory(row),
+      value: 0,
+      previous: 0,
+    };
     for (const row of analysis.rows) {
-      const material = materials.get(row.item_id) ?? {
-        id: row.item_id,
-        label: row.items?.name ?? "Material removido",
-        code: row.items?.code ?? "",
-        value: 0,
-      };
+      const material = entry(row);
       material.value += Number(row.quantity || 0);
       materials.set(row.item_id, material);
+    }
+    // Período anterior só entra para comparar materiais que tiveram consumo agora.
+    for (const row of analysis.previousRows) {
+      const material = materials.get(row.item_id);
+      if (material) material.previous += Number(row.quantity || 0);
     }
     return { ...analysis, materials: [...materials.values()].sort((a, b) => b.value - a.value) };
   });

@@ -89,15 +89,25 @@ it("Registrar consumo é uma tela só de consumo, com o formulário já aberto",
   expect(screen.queryByText(/Uma obra pode reunir várias equipes/)).not.toBeInTheDocument();
 });
 
-it("Estoque das obras: cartões por local, com busca, sem formulários misturados", () => {
+it("Estoque das obras: tabela no computador, cartões no celular, com busca, sem formulários misturados", () => {
   render(<SiteOperations initial={data} profile={consulta} mode="stock"/>);
-  expect(screen.getByRole("heading", { name: "Obra Norte" })).toBeInTheDocument();
-  expect(screen.getByText("10 un")).toBeInTheDocument();
-  expect(screen.getByText("4 kg")).toBeInTheDocument();
+  // Celular: um cartão por local.
+  const cartao = () => within(screen.getByRole("heading", { name: "Obra Norte" }).closest("article")!);
+  expect(cartao().getByText("10 un")).toBeInTheDocument();
+  expect(cartao().getByText("4 kg")).toBeInTheDocument();
+  // Computador: tabela material × local (as duas versões existem; o CSS mostra uma de cada vez).
+  const tabela = within(screen.getAllByRole("table")[0]);
+  expect(tabela.getByRole("columnheader", { name: "Obra Norte" })).toBeInTheDocument();
+  const linhaDisco = within(tabela.getByText("Disco de corte").closest("tr")!);
+  expect(linhaDisco.getAllByText("10 un")).toHaveLength(2); // Obra Norte + coluna Total
+  expect(linhaDisco.getByText("0 un")).toHaveClass("zero"); // Equipe Sul zerada em vermelho
+  expect(tabela.getByRole("columnheader", { name: "Total" })).toBeInTheDocument();
+  expect(within(tabela.getByText("Eletrodo").closest("tr")!).getAllByText("4 kg").length).toBeGreaterThan(0);
   expect(screen.queryByRole("heading", { name: /Movimentar|Receber|Entrega/ })).not.toBeInTheDocument();
   fireEvent.change(screen.getByLabelText("Procurar item"), { target: { value: "eletro" } });
   expect(screen.queryByText("10 un")).not.toBeInTheDocument();
-  expect(screen.getByText("4 kg")).toBeInTheDocument();
+  expect(cartao().getByText("4 kg")).toBeInTheDocument();
+  expect(within(screen.getAllByRole("table")[0]).queryByText("Disco de corte")).not.toBeInTheDocument();
 });
 
 it("Pedidos à ADM separa em andamento e concluídos", () => {
