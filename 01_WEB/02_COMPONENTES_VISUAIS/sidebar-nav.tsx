@@ -1,6 +1,7 @@
 "use client";
 
-import { Boxes } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Boxes, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { can } from "@metallo/core";
@@ -19,20 +20,44 @@ export function gruposVisiveis(profile: SessionProfile): GrupoMenu[] {
     .filter(grupo => grupo.itens.length > 0);
 }
 
+// Marco 3K: grupos recolhíveis. Toque no nome do grupo (ex.: Pessoas) para abrir ou fechar.
+// O grupo da tela atual abre sozinho; a escolha fica guardada neste navegador.
+const CHAVE_MENU = "metallo-menu-grupos";
+function lerAbertos(): string[] {
+  try { const value = JSON.parse(localStorage.getItem(CHAVE_MENU) ?? "[]"); return Array.isArray(value) ? value.filter(x => typeof x === "string") : []; }
+  catch { return []; }
+}
 export function SidebarNav({ profile, onNavigate }: { profile: SessionProfile; onNavigate?: () => void }) {
   const pathname = usePathname();
+  const grupos = gruposVisiveis(profile);
+  const atual = grupos.find(grupo => grupo.label && grupo.itens.some(item => ativo(pathname, item.href)))?.id;
+  const [guardados, setGuardados] = useState<string[] | null>(null);
+  useEffect(() => { const timer = window.setTimeout(() => setGuardados(lerAbertos()), 0); return () => window.clearTimeout(timer); }, []);
+  const abertos = new Set([...(guardados ?? []), ...(atual ? [atual] : [])]);
+  function alternar(id: string) {
+    const next = abertos.has(id) ? [...abertos].filter(x => x !== id) : [...abertos, id];
+    setGuardados(next);
+    try { localStorage.setItem(CHAVE_MENU, JSON.stringify(next)); } catch { /* só conveniência */ }
+  }
   return (
     <nav className="sidebar-nav" aria-label="Navegação principal">
-      {gruposVisiveis(profile).map(grupo => <div className="sidebar-group" key={grupo.id}>
-        {grupo.label && <p className="sidebar-section-label">{grupo.label}</p>}
-        {grupo.itens.map(item => {
-          const on = ativo(pathname, item.href);
-          const Icon = ICONES[item.icone] ?? Boxes;
-          return <Link key={item.href} href={item.href} className={on ? "active" : undefined} aria-current={on ? "page" : undefined} onClick={onNavigate}>
-            <Icon size={19} aria-hidden /><span>{item.label}</span>
-          </Link>;
-        })}
-      </div>)}
+      {grupos.map(grupo => {
+        const aberto = !grupo.label || abertos.has(grupo.id);
+        const GroupIcon = grupo.icone ? ICONES[grupo.icone] ?? Boxes : Boxes;
+        const temAtual = grupo.id === atual;
+        return <div className="sidebar-group" key={grupo.id}>
+          {grupo.label && <button type="button" className={temAtual ? "sidebar-group-toggle current" : "sidebar-group-toggle"}
+            aria-expanded={aberto} aria-controls={`menu-${grupo.id}`} onClick={() => alternar(grupo.id)}>
+            <GroupIcon size={19} aria-hidden /><span>{grupo.label}</span><ChevronDown size={17} aria-hidden className="sidebar-chevron"/></button>}
+          {aberto && <div className="sidebar-group-items" id={`menu-${grupo.id}`}>{grupo.itens.map(item => {
+            const on = ativo(pathname, item.href);
+            const Icon = ICONES[item.icone] ?? Boxes;
+            return <Link key={item.href} href={item.href} className={on ? "active" : undefined} aria-current={on ? "page" : undefined} onClick={onNavigate}>
+              <Icon size={19} aria-hidden /><span>{item.label}</span>
+            </Link>;
+          })}</div>}
+        </div>;
+      })}
     </nav>
   );
 }

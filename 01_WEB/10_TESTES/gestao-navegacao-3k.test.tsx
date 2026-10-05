@@ -61,8 +61,13 @@ it("celular: barra com 4 botões grandes; Menu abre a lista completa com Sair", 
   expect(within(bar).getByRole("link", { name: "Pedidos" })).toHaveAttribute("aria-current", "page");
   fireEvent.click(within(bar).getByRole("button", { name: "Menu" }));
   const menu = screen.getByRole("dialog", { name: "Menu completo" });
+  // Grupos recolhidos: só o grupo da tela atual (Pedidos) vem aberto.
+  expect(within(menu).getByRole("link", { name: "Máquinas alugadas" })).toBeInTheDocument();
+  expect(within(menu).queryByRole("link", { name: "Usuários" })).not.toBeInTheDocument();
+  fireEvent.click(within(menu).getByRole("button", { name: "Administração" }));
   expect(within(menu).getByRole("link", { name: "Usuários" })).toBeInTheDocument();
   expect(within(menu).getByRole("button", { name: "Sair" })).toBeInTheDocument();
+  fireEvent.click(within(menu).getByRole("button", { name: "Estoque" }));
   fireEvent.click(within(menu).getByRole("link", { name: "Estoque das obras" }));
   expect(screen.queryByRole("dialog", { name: "Menu completo" })).not.toBeInTheDocument();
 });
@@ -119,4 +124,26 @@ it("tabelas ganham o nome da coluna em cada célula (cartões no celular)", asyn
   expect([...rows[0].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Função", "Ações"]);
   expect([...rows[1].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Ações"]);
   document.body.innerHTML = "";
+});
+
+it("menu lateral: toque no nome do grupo abre e fecha; grupo da tela atual abre sozinho; escolha fica guardada", async () => {
+  const { SidebarNav } = await import("@/02_COMPONENTES_VISUAIS/sidebar-nav");
+  nav.path = "/treinamentos";
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", LAB_SUPABASE_URL);
+  const view = render(<SidebarNav profile={admin}/>);
+  const pessoas = screen.getByRole("button", { name: "Pessoas" });
+  expect(pessoas).toHaveAttribute("aria-expanded", "true");
+  expect(screen.getByRole("link", { name: "Treinamentos e ASO" })).toHaveAttribute("aria-current", "page");
+  // Início e Lançar ficam sempre à mostra; os outros grupos começam fechados.
+  expect(screen.getByRole("link", { name: "Lançar" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Estoque" })).toHaveAttribute("aria-expanded", "false");
+  expect(screen.queryByRole("link", { name: "Materiais" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Estoque" }));
+  expect(screen.getByRole("link", { name: "Materiais" })).toBeInTheDocument();
+  expect(JSON.parse(localStorage.getItem("metallo-menu-grupos") ?? "[]")).toContain("estoque");
+  view.unmount();
+  render(<SidebarNav profile={admin}/>);
+  expect(await screen.findByRole("link", { name: "Materiais" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Estoque" }));
+  expect(screen.queryByRole("link", { name: "Materiais" })).not.toBeInTheDocument();
 });
