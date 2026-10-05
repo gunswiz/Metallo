@@ -133,6 +133,11 @@ it("tabelas ganham o nome da coluna em cada célula (cartões no celular)", asyn
   const rows = document.querySelectorAll("tbody tr");
   expect([...rows[0].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Função", "Ações"]);
   expect([...rows[1].children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Funcionário", "Ações"]);
+  // Linha de total (tfoot) também ganha o nome das colunas, para não espremer no celular.
+  document.body.innerHTML = `<table class="data-table"><thead><tr><th>Material</th><th>Consumo</th><th>Variação</th></tr></thead>
+    <tbody><tr><td>Disco</td><td>10</td><td>+5%</td></tr></tbody><tfoot><tr><th>Total</th><td>701</td><td>-2%</td></tr></tfoot></table>`;
+  rotularTabelas(document);
+  expect([...document.querySelector("tfoot tr")!.children].map(cell => (cell as HTMLElement).dataset.label)).toEqual(["Material", "Consumo", "Variação"]);
   document.body.innerHTML = "";
 });
 

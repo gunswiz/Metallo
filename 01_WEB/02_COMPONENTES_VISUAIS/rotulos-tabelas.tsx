@@ -8,7 +8,7 @@ export function rotularTabelas(root: ParentNode) {
   for (const table of root.querySelectorAll<HTMLTableElement>("table.data-table")) {
     const titulos = [...table.querySelectorAll("thead th")].map(th => th.textContent?.trim() ?? "");
     if (!titulos.length) continue;
-    for (const row of table.querySelectorAll("tbody tr")) {
+    for (const row of table.querySelectorAll("tbody tr, tfoot tr")) {
       let coluna = 0;
       for (const cell of row.children) {
         const titulo = titulos[coluna] ?? "";

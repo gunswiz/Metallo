@@ -797,3 +797,10 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   .training-table td { overflow-wrap: anywhere; }
 }
 @media (max-width: 820px) { .cs-kpis > .cs-kpi:last-child:nth-child(even) { grid-column: 1 / -1; } }
+/* 3L: linha de total (tfoot) também vira cartão no celular, com o nome de cada coluna. */
+@media (max-width: 820px) {
+  .data-table tfoot tr { display: grid; gap: 8px; }
+  .data-table tfoot th { display: block; text-align: left; color: var(--text); font-size: 1rem; font-weight: 800; letter-spacing: 0; text-transform: none; white-space: normal; background: transparent; }
+  .data-table tfoot td { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; min-width: 0; text-align: right; }
+  .data-table tfoot td:empty { display: none; }
+}
