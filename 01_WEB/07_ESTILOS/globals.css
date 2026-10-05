@@ -804,3 +804,16 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   .data-table tfoot td { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; min-width: 0; text-align: right; }
   .data-table tfoot td:empty { display: none; }
 }
+
+/* Marco 3N — Nova obra */
+.nova-obra { max-width: 760px; }
+.nova-obra-escolha { display: grid; gap: 12px; margin: 8px 0; padding: 0; border: 0; }
+.nova-obra-escolha legend { margin-bottom: 8px; font-weight: 800; color: var(--text); font-size: var(--font-body); }
+.nova-obra-opcao { display: flex !important; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); cursor: pointer; }
+.nova-obra-opcao:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.nova-obra-opcao:has(input:disabled) { opacity: .55; cursor: default; }
+.nova-obra-opcao input { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+.nova-obra-opcao span { display: grid; gap: 4px; }
+.nova-obra-opcao small { color: var(--muted); font-size: var(--font-caption); font-weight: 500; }
+.nova-obra-sub { margin-left: 34px; }
+@media (max-width: 820px) { .nova-obra-sub { margin-left: 0; } }

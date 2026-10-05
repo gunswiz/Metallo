@@ -17,19 +17,6 @@ export function CadastroObras({
   return (
     <>
       <SiteOperationForm
-        title="Cadastrar obra e definir seu estoque"
-        command="create_worksite"
-        submit={submit}
-        fields={[
-          { name: "name", label: "Nome da obra" },
-          {
-            ...teamField,
-            label: "Equipe / local que guarda o estoque",
-            options: data.teams.filter((t) => !t.worksite_id && !t.central),
-          },
-        ]}
-      />
-      <SiteOperationForm
         title="Vincular mais uma equipe à obra"
         command="link_team"
         submit={submit}
