@@ -36,14 +36,15 @@ function GraficoDias({ report }: { report: ConsumptionUnitReport }) {
   const [ativo, setAtivo] = useState<number | null>(null);
   const pontos = report.daily.points;
   const maior = teto(Math.max(0, ...pontos.map((ponto) => ponto.value)));
-  const media = pontos.length ? report.total / pontos.length : 0;
+  // Mesma média do quadro de cima: por dia trabalhado (dias com consumo); por semana quando o período é longo.
+  const media = report.daily.bucket === "dia" ? (report.activeDays ? report.total / report.activeDays : 0) : (pontos.length ? report.total / pontos.length : 0);
   const passo = Math.max(1, Math.ceil(pontos.length / 6));
   const unidade = consumptionUnitLabel(report.unit);
   const ponto = ativo === null ? null : pontos[ativo];
   return <div className="cs-colunas" onMouseLeave={() => setAtivo(null)}>
     <div className="cs-colunas-area">
       {[1, 0.5, 0].map((fracao) => <div key={fracao} className="cs-grade" style={{ bottom: `${fracao * 100}%` }}><span>{formatNumber(maior * fracao)}</span></div>)}
-      {media > 0 && <div className="cs-media" style={{ bottom: `${(media / maior) * 100}%` }}><span>média {formatNumber(Math.round(media * 10) / 10)} por {report.daily.bucket}</span></div>}
+      {media > 0 && <div className="cs-media" style={{ bottom: `${(media / maior) * 100}%` }}><span>média {formatNumber(Math.round(media * 10) / 10)} por {report.daily.bucket === "dia" ? "dia trabalhado" : "semana"}</span></div>}
       <div className="cs-barras" role="list" aria-label={`Consumo por ${report.daily.bucket} em ${unidade}`}>
         {pontos.map((item, index) => <button type="button" role="listitem" key={item.start} className={`cs-barra${ativo === index ? " ativo" : ""}`}
           aria-label={`${item.fullLabel}: ${consumptionQuantity(item.value, report.unit)}`}
