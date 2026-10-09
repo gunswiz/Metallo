@@ -879,3 +879,4 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .conferir-resultado h2 { display: flex; align-items: center; gap: 8px; }
 .conferir-itens { margin: 8px 0 14px; padding-left: 20px; line-height: 1.7; }
 .privacidade h2 { margin: 18px 0 8px; } .privacidade h3 { margin: 16px 0 6px; } .privacidade ul { padding-left: 22px; line-height: 1.65; }
+.pedido-material-acao input { flex: 1 1 220px; min-width: 0; }

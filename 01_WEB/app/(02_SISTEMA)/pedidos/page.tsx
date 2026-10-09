@@ -10,6 +10,7 @@ import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online
 import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos-funcionarios";
 import { manageEpiFeedback3d, manageExchangeRequest } from "@/app/actions/epi-completo";
 import { decidePersonalItem3g } from "@/app/actions/itens-pessoais-3g";
+import { decidirPedidoMaterial3t } from "@/app/actions/pedido-material";
 
 // Marco 3J: caixa de entrada da Gestão para o app do Funcionário.
 const motivoTroca: Record<string, string> = { DESGASTE: "Desgaste", DANO: "Danificado", PERDA_EXTRAVIO: "Perda ou extravio", OUTRO: "Outro motivo" };
@@ -18,7 +19,7 @@ const problemaEntrega: Record<string, string> = { NAO_RECEBIDO: "Não recebeu", 
   QUANTIDADE: "Quantidade errada", VARIANTE: "Variante diferente", OUTRO: "Outro problema" };
 const motivoItem: Record<string, string> = { WEAR: "Desgaste", DAMAGED: "Danificado", LOST: "Perda ou extravio", OTHER: "Outro" };
 
-export default async function PedidosPage({ searchParams }: { searchParams: Promise<{ ok?: string }> }) {
+export default async function PedidosPage({ searchParams }: { searchParams: Promise<{ ok?: string; erro?: string }> }) {
   await requireCapability("epi:write");
   if (!recursosNovosLiberados(getSupabaseEnv().url)) notFound();
   const query = await searchParams;
@@ -28,6 +29,25 @@ export default async function PedidosPage({ searchParams }: { searchParams: Prom
       description="Tudo o que os funcionários pediram ou avisaram pelo app, em um só lugar. O mais antigo aparece primeiro." />
     {query.ok && <div className="alert success" role="status">Registrado. O funcionário já vê a resposta no app.</div>}
     {data.aguardando === 0 && <div className="alert success" role="status">Nenhum pedido esperando resposta.</div>}
+    {query.erro === "material" && <div className="alert error" role="alert">Não foi possível responder o pedido de material. Para recusar, escreva o motivo.</div>}
+
+    {data.materiais && <section className="panel" id="pedidos-material" aria-labelledby="pedidos-material-titulo"><header className="panel-header"><div>
+      <h2 id="pedidos-material-titulo">Pedidos de material ({data.materiais.filter(p => p.status === "aberto").length})</h2>
+      <p>O funcionário pediu pelo app. Marcar como atendido não mexe no estoque: lance a saída ou o consumo normalmente.</p></div></header>
+      {data.materiais.length === 0 ? <div className="panel-body"><p>Nenhum pedido de material.</p></div> :
+        <div className="panel-body list">{data.materiais.map(p => <article className="list-row" key={p.id}>
+          <div className="list-row-main"><strong>{p.funcionario} · {p.quantidade.toLocaleString("pt-BR")} {p.unidade} de {p.material}</strong>
+            <span>{{ aberto: "Esperando resposta", atendido: "Atendido", recusado: "Recusado", cancelado: "Cancelado pelo funcionário" }[p.status]} · pedido em {formatDateTime(p.created_at)}{p.matricula ? ` · ${p.matricula}` : ""}</span>
+            {p.observacao && <span>O funcionário escreveu: {p.observacao}</span>}
+            {p.resposta && <span>Resposta: {p.resposta}</span>}</div>
+          {p.status === "aberto" && <form action={decidirPedidoMaterial3t} className="inline-action pedido-material-acao">
+            <input type="hidden" name="pedidoId" value={p.id} />
+            <input name="resposta" maxLength={200} placeholder="Resposta ao funcionário (obrigatória se recusar)" aria-label={`Resposta ao pedido de ${p.funcionario}`} />
+            <button className="button primary" type="submit" name="status" value="atendido">Atendido</button>
+            <button className="button ghost" type="submit" name="status" value="recusado">Recusar</button>
+          </form>}
+        </article>)}</div>}
+    </section>}
 
     <section className="panel" aria-labelledby="trocas-epi"><header className="panel-header"><div><h2 id="trocas-epi">Trocas de EPI ({data.trocas.length})</h2>
       <p>Aprovar não entrega nem mexe no estoque: depois de aprovar, registre a entrega da troca.</p></div></header>

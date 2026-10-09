@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-09T11:11:18.232Z",
+  "scope": "Marco 3T — pedido de material (teste online)",
+  "checks": [
+    {
+      "name": "app lista materiais (sem equipamentos)",
+      "ok": true
+    },
+    {
+      "name": "pedido criado; reenvio com a mesma chave não duplica",
+      "ok": true
+    },
+    {
+      "name": "quantidade inválida recusada",
+      "ok": true
+    },
+    {
+      "name": "conta da Gestão não pede material como funcionário",
+      "ok": true
+    },
+    {
+      "name": "Maria não vê o pedido do robô",
+      "ok": true
+    },
+    {
+      "name": "Maria não cancela o pedido do robô",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê o pedido aberto com nome e material",
+      "ok": true
+    },
+    {
+      "name": "funcionário não responde pedido",
+      "ok": true
+    },
+    {
+      "name": "recusar sem motivo é recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão marca como atendido",
+      "ok": true
+    },
+    {
+      "name": "funcionário vê 'atendido' e a resposta",
+      "ok": true
+    },
+    {
+      "name": "funcionário cancela o próprio pedido aberto",
+      "ok": true
+    },
+    {
+      "name": "pedido já respondido não pode ser cancelado",
+      "ok": true
+    }
+  ],
+  "result": "13/13"
+}

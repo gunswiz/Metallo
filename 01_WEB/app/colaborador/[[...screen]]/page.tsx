@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { colaboradorEnvironment } from "@/09_CONFIGURACOES/colaborador-laboratorio";
 import ColaboradorApp from "./colaborador-app";
 
-const screens = new Set(["login", "inicio", "perfil", "equipe", "obra", "epis", "ponto", "registros", "espelho", "comprovantes", "itens", "comunicados", "treinamentos", "privacidade"]);
+const screens = new Set(["login", "inicio", "perfil", "equipe", "obra", "epis", "ponto", "registros", "espelho", "comprovantes", "itens", "comunicados", "treinamentos", "privacidade", "material"]);
 
 export default async function ColaboradorPage({
   params,
@@ -19,6 +19,6 @@ export default async function ColaboradorPage({
   if (online && !host) notFound();
   const path = (await params).screen ?? [];
   if (path.length > 1 || (path[0] && !screens.has(path[0]))) notFound();
-  if (environment.demo && ["ponto", "registros", "espelho", "comprovantes"].includes(path[0])) notFound();
+  if (environment.demo && ["ponto", "registros", "espelho", "comprovantes", "material"].includes(path[0])) notFound();
   return <ColaboradorApp screen={path[0] ?? "inicio"} {...environment} />;
 }

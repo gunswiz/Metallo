@@ -355,3 +355,12 @@
 .privacidade { display: grid; gap: 14px; }
 .privacidade h3 { margin: 0 0 6px; font-size: 1.15rem; }
 .privacidade ul { margin: 0; padding-left: 20px; line-height: 1.6; font-size: 1.05rem; }
+
+/* Marco 3T — Pedir material */
+.pedidoForm { display: grid; gap: 12px; }
+.pedidoForm label { display: grid; gap: 6px; font-weight: 700; font-size: 1.05rem; }
+.pedidoForm select, .pedidoForm input { min-height: 52px; font-size: 1.1rem; padding: 0 12px; border-radius: 12px; }
+.pedidosLista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pedidosLista li { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line, #2a3c4a); border-radius: 12px; }
+.pedidosLista li div { display: grid; gap: 4px; }
+.pedidosLista li p { margin: 0; }

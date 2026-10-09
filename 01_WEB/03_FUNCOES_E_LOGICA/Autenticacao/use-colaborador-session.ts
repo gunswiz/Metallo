@@ -1,7 +1,8 @@
 "use client";
+import { materiais3t, meusPedidos3t } from "@/03_FUNCOES_E_LOGICA/Pedidos/pedido-material-3t";
 import { JORNADA_PADRAO, jornadaSchema, TIPOS_OCORRENCIA, type ExtrasEspelho, type TipoOcorrencia } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { marcacaoEmAndamento } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
 import { disposePortalClient, exchangeableEpis, exchangeRequests, friendlyPortalError, LAB_URL, personalDeliveryGroups3d, personalEpis, personalProfile, personalTeam, personalWork, portalClient, portalFetch, PORTAL_STORAGE_KEY, epiAwareness3i, type PersonalProfile, type PersonalEpi, type ExchangeCreateOutcome } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
 import { pointRequest } from "@/05_ACESSO_A_DADOS/Ponto/ponto-lab";
@@ -12,7 +13,7 @@ import { z } from "zod";
 import { ficha5a, type Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
-export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade";
+export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade" | "material";
 const visualProfile: PersonalProfile = { employee_id: "synthetic-preview", full_name: "João Sintético", profession: "Profissão de teste", team_name: null };
 const visualEpis: PersonalEpi[] = [
   { item_name: "Capacete de segurança", ca_number: "12345", quantity: 1, unit: "un", variant: "M", delivered_at: "2026-08-12T12:00:00Z", delivery_reason: "initial", current_status: "active", closed_at: null },
@@ -220,7 +221,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -261,6 +262,13 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     return { feriados: Object.fromEntries(f.map(x => [x.data, String(x.nome).slice(0, 80)])),
       ocorrencias: Object.fromEntries(o.filter(x => (TIPOS_OCORRENCIA as readonly string[]).includes(x.tipo)).map(x => [x.data, { tipo: x.tipo }])) };
   }, [exchangeRpc]);
+  // Marco 3T: pedir material pelo app.
+  const pedidoMaterial3t = useMemo(() => ({
+    materiais: async () => materiais3t.parse(await exchangeRpc("my_materiais_3t")),
+    meus: async () => meusPedidos3t.parse(await exchangeRpc("my_pedidos_material_3t")),
+    pedir: async (itemId: string, quantidade: number, observacao: string, chave: string) => { await exchangeRpc("create_pedido_material_3t", { p_item_id: itemId, p_quantidade: quantidade, p_observacao: observacao, p_idempotency_key: chave }); },
+    cancelar: async (id: number) => { await exchangeRpc("cancel_pedido_material_3t", { p_id: id }); },
+  }), [exchangeRpc]);
   const readTrainings5a = useCallback(async () => demo ? visualTrainings5a : ficha5a.parse(await exchangeRpc("my_trainings_5a")), [demo, exchangeRpc]);
   const readPersonalReport3e = useCallback(async () => epiReportPayloadSchema.parse(await exchangeRpc("my_epi_report_3e")), [exchangeRpc]);
   const readPersonalItems3g = useCallback(async () => demo ? visualItems3g :
@@ -313,5 +321,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
     await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
   }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, getAccessToken };
+  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken };
 }
