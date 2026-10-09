@@ -18,8 +18,10 @@ const TOLERANCIA_MS = 30_000;
 const CHAVE_SINCRONIA = "metallo-ponto-sincronia-4k";
 export const chaveFila = (employeeId: string) => `metallo-ponto-fila-4k:${employeeId}`;
 export const chaveRecusadas = (employeeId: string) => `metallo-ponto-recusadas-4k:${employeeId}`;
-/** Identifica esta abertura da página: o relógio "contínuo" (performance.now) só vale dentro dela. */
-export const PAGINA_ATUAL = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Math.random());
+/** Identifica esta abertura da página: o relógio "contínuo" (performance.now) só vale dentro dela.
+ *  Gerado só no navegador, na primeira vez que for usado (o servidor da Cloudflare não permite sortear número fora de um pedido). */
+let paginaAtual: string | null = null;
+export function PAGINA_ATUAL() { return paginaAtual ??= crypto.randomUUID(); }
 
 function ler<T>(chave: string, padrao: T): T {
   try { const v = window.localStorage.getItem(chave); return v ? JSON.parse(v) as T : padrao; } catch { return padrao; }
@@ -33,7 +35,7 @@ export function lerSincronia(): Sincronia | null {
   return s && typeof s.server_at === "string" && Number.isFinite(Date.parse(s.server_at)) && Number.isFinite(s.device_at) ? s : null;
 }
 /** Grava a conferência com o servidor. t0/t1 = relógio do celular antes/depois da resposta. */
-export function gravarSincronia(serverAt: string, t0: number, t1: number, monotonic: number, page = PAGINA_ATUAL) {
+export function gravarSincronia(serverAt: string, t0: number, t1: number, monotonic: number, page = PAGINA_ATUAL()) {
   if (!Number.isFinite(Date.parse(serverAt)) || t1 < t0 || t1 - t0 > 15000) return null;
   const s: Sincronia = { server_at: serverAt, device_at: Math.round((t0 + t1) / 2), monotonic, page };
   gravar(CHAVE_SINCRONIA, s);
@@ -47,7 +49,7 @@ export function gravarSincronia(serverAt: string, t0: number, t1: number, monoto
  * - SEM_CONFERENCIA: o celular nunca conferiu a hora com o servidor; vai marcada para a Gestão conferir.
  * Se o tempo contínuo ficar ATRÁS do celular corrigido (o celular dormiu e o contador parou), vale o celular corrigido.
  */
-export function horaParaMarcar(sinc: Sincronia | null, agoraCelular: number, agoraMonotonic: number, page = PAGINA_ATUAL) {
+export function horaParaMarcar(sinc: Sincronia | null, agoraCelular: number, agoraMonotonic: number, page = PAGINA_ATUAL()) {
   if (!sinc) return { hora: new Date(agoraCelular), metodo: "SEM_CONFERENCIA" as MetodoHora, ajuste_ms: null, sincronizado_em: null };
   const servidor = Date.parse(sinc.server_at);
   const ajuste = Math.round(servidor - sinc.device_at);
