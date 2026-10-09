@@ -73,6 +73,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
 
   const endSession = useCallback(async (message = "", redirect = true, scope?: "current" | "global") => {
     const ticket = ++generation.current;
+    console.info("metallo-sessao-fim", { motivo: message.slice(0, 60), scope: scope ?? "local", onLine: navigator.onLine });
     setProfile(null); setError(message); setLoading(false); setBusy(true);
     const previous = client.current;
     endingClient.current = previous;
@@ -168,6 +169,9 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (ticket !== generation.current) return;
       // Sem internet: não encerra a sessão salva; libera só o ponto, que fica guardado no celular.
       const cached = online && target !== "login" && semConexao(cause) ? perfilOffline() : null;
+      // Diagnóstico sem dado pessoal (só o tipo do problema), para conferir o modo sem internet no celular.
+      console.info("metallo-sessao", { alvo: target, semConexao: semConexao(cause), perfilGuardado: Boolean(perfilOffline()),
+        erro: cause && typeof cause === "object" && "name" in cause ? String(cause.name) : typeof cause, onLine: navigator.onLine });
       if (cached) {
         setProfile(previous => previous && previous.employee_id === cached.employee_id && previous.full_name === cached.full_name ? previous : cached);
         setOffline(true); setError("");
