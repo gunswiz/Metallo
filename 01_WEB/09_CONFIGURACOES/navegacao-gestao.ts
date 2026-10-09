@@ -39,12 +39,14 @@ export const GRUPOS_MENU: GrupoMenu[] = [
     { href: "/obras", label: "Obras", capability: "inventory:read", icone: "obras" },
     { href: "/consumo", label: "Consumo", capability: "inventory:read", icone: "consumo" },
     { href: "/relatorios", label: "Relatórios", capability: "inventory:read", icone: "relatorios" },
+    { href: "/conferir-codigo", label: "Conferir código de EPI", capability: "epi:read", icone: "conferir", newFeature: true },
   ] },
   { id: "admin", label: "Administração", icone: "configuracoes", itens: [
     { href: "/usuarios", label: "Usuários", capability: "admin:manage", icone: "usuarios" },
     { href: "/configuracoes", label: "Configurações", capability: "admin:manage", icone: "configuracoes" },
     { href: "/minha-conta", label: "Minha conta", capability: "dashboard:read", icone: "conta" },
     { href: "/ajuda", label: "Guia de uso", capability: "dashboard:read", icone: "ajuda" },
+    { href: "/privacidade", label: "Privacidade (LGPD)", capability: "dashboard:read", icone: "privacidade", newFeature: true },
   ] },
 ];
 

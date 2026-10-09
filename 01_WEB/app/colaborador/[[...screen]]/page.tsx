@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { colaboradorEnvironment } from "@/09_CONFIGURACOES/colaborador-laboratorio";
 import ColaboradorApp from "./colaborador-app";
 
-const screens = new Set(["login", "inicio", "perfil", "equipe", "obra", "epis", "ponto", "registros", "espelho", "comprovantes", "itens", "comunicados", "treinamentos"]);
+const screens = new Set(["login", "inicio", "perfil", "equipe", "obra", "epis", "ponto", "registros", "espelho", "comprovantes", "itens", "comunicados", "treinamentos", "privacidade"]);
 
 export default async function ColaboradorPage({
   params,

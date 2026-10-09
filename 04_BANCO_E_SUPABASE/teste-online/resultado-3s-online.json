@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-09T10:52:29.211Z",
+  "scope": "Marco 3S — conferir código de EPI (teste online)",
+  "checks": [
+    {
+      "name": "código impresso é encontrado e confere",
+      "ok": true
+    },
+    {
+      "name": "mostra os itens confirmados",
+      "ok": true
+    },
+    {
+      "name": "um caractere diferente não encontra nada",
+      "ok": true
+    },
+    {
+      "name": "código incompleto é recusado",
+      "ok": true
+    },
+    {
+      "name": "conta só do app (sem Gestão) não confere",
+      "ok": true
+    }
+  ],
+  "result": "5/5"
+}

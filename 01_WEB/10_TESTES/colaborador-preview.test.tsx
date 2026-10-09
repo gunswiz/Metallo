@@ -52,7 +52,7 @@ it("agrupa a navegação no drawer sem duplicar barra inferior", async () => {
     "/colaborador/inicio", "/colaborador/ponto", "/colaborador/registros", "/colaborador/espelho", "/colaborador/comprovantes",
     "/colaborador/epis", "/colaborador/itens", "/colaborador/epis#epi-troca-heading", "/colaborador/treinamentos",
     "/colaborador/equipe", "/colaborador/obra", "/colaborador/comunicados",
-    "/colaborador/epis#epi-solicitacoes", "/colaborador/perfil", "/colaborador/perfil#perfil-seguranca",
+    "/colaborador/epis#epi-solicitacoes", "/colaborador/perfil", "/colaborador/perfil#perfil-seguranca", "/colaborador/privacidade",
   ]);
   expect(screen.getAllByRole("navigation", { name: "Navegação principal" })).toHaveLength(1);
   for (const group of ["Meu Ponto", "EPI e Itens", "Trabalho", "Solicitações", "Minha Conta"]) expect(within(navigation).getByRole("region", { name: group })).toBeInTheDocument();

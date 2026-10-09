@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
-import { Home, CalendarDays, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
+import { Home, CalendarDays, LockKeyhole, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
 import type { PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
 import type { PersonalProfile } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
@@ -33,6 +33,7 @@ const groups: { label: string; items: Item[] }[] = [
   { label: "Minha Conta", items: [
     { screen: "perfil", label: "Meu perfil", icon: CircleUserRound },
     { screen: "perfil", hash: "perfil-seguranca", label: "Segurança", icon: ShieldCheck },
+    { screen: "privacidade", label: "Privacidade (seus dados)", icon: LockKeyhole },
   ] },
 ];
 

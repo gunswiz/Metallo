@@ -350,3 +350,8 @@
 .espelhoDiaImpar { border-color: rgba(247,184,75,.6) !important; }
 .espelhoFalta { grid-column: 1 / -1; color: #ffd18a; font-weight: 700; }
 .espelhoSaldo { grid-column: 1 / -1; }
+
+/* Marco 3S — Privacidade */
+.privacidade { display: grid; gap: 14px; }
+.privacidade h3 { margin: 0 0 6px; font-size: 1.15rem; }
+.privacidade ul { margin: 0; padding-left: 20px; line-height: 1.6; font-size: 1.05rem; }
