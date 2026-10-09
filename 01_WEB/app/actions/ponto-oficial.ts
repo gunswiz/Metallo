@@ -41,3 +41,20 @@ export async function salvarCpf4f(formData: FormData) {
   revalidatePath(DESTINO);
   redirect(`${DESTINO}?ok=cpf#cpf`);
 }
+
+// Marco 4G: jornada padrão da empresa. Campos "d<dia>_<n>" (dia 1 = segunda … 7 = domingo; n = 1..4), "hh:mm" ou vazio.
+export async function salvarJornada4g(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const dias: Record<string, string[]> = {};
+  for (let d = 1; d <= 7; d++) {
+    const horarios = [1, 2, 3, 4].map(n => texto(formData, `d${d}_${n}`)).filter(Boolean);
+    const ok = horarios.length % 2 === 0 && horarios.every(h => /^([01]\d|2[0-3]):[0-5]\d$/.test(h)) && horarios.every((h, i) => i === 0 || h > horarios[i - 1]);
+    if (!ok) redirect(`${DESTINO}?erro=jornada-invalida#jornada`);
+    dias[String(d)] = horarios;
+  }
+  const { error } = await (await createClient()).rpc("admin_set_jornada_4g" as never, { p_dias: dias } as never);
+  if (error) redirect(`${DESTINO}?erro=jornada-invalida#jornada`);
+  revalidatePath(DESTINO); revalidatePath("/ponto-laboratorio/espelho");
+  redirect(`${DESTINO}?ok=jornada#jornada`);
+}

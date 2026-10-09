@@ -1,0 +1,75 @@
+{
+  "at": "2026-10-09T08:44:28.245Z",
+  "scope": "Marco 4G — jornada e AEJ v002 (prévia) no teste online",
+  "checks": [
+    {
+      "name": "app lê a jornada da empresa (44 h na semana)",
+      "ok": true
+    },
+    {
+      "name": "funcionário não altera a jornada",
+      "ok": true
+    },
+    {
+      "name": "jornada inválida recusada (horário fora de ordem)",
+      "ok": true
+    },
+    {
+      "name": "administrador regrava a mesma jornada",
+      "ok": true
+    },
+    {
+      "name": "duas marcações do robô",
+      "ok": true
+    },
+    {
+      "name": "AEJ gerado para administrador",
+      "ok": true
+    },
+    {
+      "name": "termina com CRLF e sem linha em branco",
+      "ok": true
+    },
+    {
+      "name": "01: cabeçalho com 10 campos e versão 002",
+      "ok": true
+    },
+    {
+      "name": "02: REP-P (tipo 3) com 17 dígitos",
+      "ok": true
+    },
+    {
+      "name": "03: vínculos com CPF de 11 dígitos",
+      "ok": true
+    },
+    {
+      "name": "04: horário seg–qui 540 min e sexta 480 min",
+      "ok": true
+    },
+    {
+      "name": "05: 9 campos, E/S alternando, fonte O",
+      "ok": true
+    },
+    {
+      "name": "05: primeira entrada do dia leva o código do horário",
+      "ok": true
+    },
+    {
+      "name": "08: programa e desenvolvedor",
+      "ok": true
+    },
+    {
+      "name": "99: trailer confere as quantidades",
+      "ok": true
+    },
+    {
+      "name": "linha da assinatura (.p7s) com 100 posições",
+      "ok": true
+    },
+    {
+      "name": "funcionário não gera AEJ",
+      "ok": true
+    }
+  ],
+  "result": "17/17"
+}

@@ -154,7 +154,67 @@ async function gerarAfd(tx: postgres.TransactionSql, w: ReturnType<typeof period
     registros: linhas7.length, sem_cpf: Number(semCpf.n), inpi_registrado: Boolean(emp.inpi) };
 }
 
+// Marco 4G — AEJ (leiaute v002), PRÉVIA: marcações com entrada/saída, horário contratual da empresa e identificação do programa.
+// Ainda sem registro 07 (faltas, DSR, banco de horas): depende do tratamento pelo DP.
+const fmtFort = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hourCycle: "h23" });
+function partesFort(d: Date) { const p = fmtFort.formatToParts(d); const g = (t: string) => p.find(x => x.type === t)!.value;
+  return { dia: `${g("year")}-${g("month")}-${g("day")}`, dh: `${g("year")}-${g("month")}-${g("day")}T${g("hour")}:${g("minute")}:00-0300`,
+    semana: String(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(g("weekday")) + 1) }; }
+const campo = (v: string | number | null | undefined) => String(v ?? "").replace(/[|\r\n]/g, " ");
+const linha = (...campos: (string | number | null | undefined)[]) => campos.map(campo).join("|");
+async function gerarAej(tx: postgres.TransactionSql, w: ReturnType<typeof periodoAfd>) {
+  const [emp] = await q<Empregador & { desenvolvedor_email: string | null }>(tx, "select tipo_documento,documento,cno_caepf,razao_social,inpi,desenvolvedor_documento,desenvolvedor_email from private.empregador_4f where singleton");
+  if (!emp) throw new Falha(409, "EMPREGADOR_NAO_CADASTRADO");
+  const [jor] = await q<{ dias: Record<string, string[]> }>(tx, "select dias from private.jornada_4g where singleton");
+  const dias = jor?.dias ?? {};
+  const marcas = await q<{ employee_id: string; employee_name: string; employee_cpf: string; marking_at: Date }>(tx, `select employee_id::text employee_id, employee_name, employee_cpf, marking_at
+    from ponto.marcacao where afd_hash is not null and marking_at>=$1::text::timestamptz and marking_at<$2::text::timestamptz order by employee_name, employee_id, marking_at, nsr limit 200001`, [w.start, w.end]);
+  if (marcas.length > 200000) throw new Falha(413, "EXTRACAO_MUITO_EXTENSA");
+  // Horários contratuais: um código por horário diferente da semana (ex.: seg–qui e sexta).
+  const codigos = new Map<string, string>(), reg04: string[] = [];
+  const hhmm = (h: string) => h.replace(":", "");
+  const codigoDoDia = (semana: string) => {
+    const h = dias[semana] ?? [];
+    const chave = h.length ? h.join(",") : "SEM_JORNADA";
+    if (!codigos.has(chave)) {
+      const cod = h.length ? `HC${codigos.size + 1}` : "SEM_JORNADA";
+      codigos.set(chave, cod);
+      let dur = 0; for (let i = 0; i + 1 < h.length; i += 2) dur += (Number(h[i + 1].slice(0, 2)) * 60 + Number(h[i + 1].slice(3))) - (Number(h[i].slice(0, 2)) * 60 + Number(h[i].slice(3)));
+      reg04.push(linha("04", cod, dur, ...(h.length ? h.map(hhmm) : ["0000", "0000"])));
+    }
+    return codigos.get(chave)!;
+  };
+  for (let d = 1; d <= 7; d++) if ((dias[String(d)] ?? []).length) codigoDoDia(String(d));
+  const vinculos = new Map<string, number>(), reg03: string[] = [], reg05: string[] = [];
+  let atual = "", seqDia = 0;
+  for (const m of marcas) {
+    if (!vinculos.has(m.employee_id)) { vinculos.set(m.employee_id, vinculos.size + 1); reg03.push(linha("03", vinculos.size, m.employee_cpf, m.employee_name)); }
+    const p = partesFort(new Date(m.marking_at)), chave = `${m.employee_id}|${p.dia}`;
+    if (chave !== atual) { atual = chave; seqDia = 0; }
+    const tp = seqDia % 2 === 0 ? "E" : "S", seq = Math.floor(seqDia / 2) + 1;
+    reg05.push(linha("05", vinculos.get(m.employee_id), p.dh, 1, tp, String(seq).padStart(3, "0"), "O", tp === "E" && seq === 1 ? codigoDoDia(p.semana) : "", ""));
+    seqDia++;
+  }
+  const cnoCaepf = emp.cno_caepf ?? "";
+  const dev = emp.desenvolvedor_documento ?? "";
+  const linhas = [
+    linha("01", emp.tipo_documento, emp.documento, cnoCaepf.length === 14 ? cnoCaepf : "", cnoCaepf.length === 12 ? cnoCaepf : "", emp.razao_social, w.from, w.to, dhAgora(), "002"),
+    linha("02", 1, 3, N(emp.inpi ?? "", 17)), ...reg03, ...reg04, ...reg05,
+    linha("08", "Metallo - ponto (previa de teste)", "0.4G", dev.length === 11 ? 2 : 1, dev, dev && dev === emp.documento ? emp.razao_social : "Desenvolvedor nao informado", emp.desenvolvedor_email ?? ""),
+    linha("99", 1, 1, reg03.length, reg04.length, reg05.length, 0, 0, 1),
+    "ASSINATURA_DIGITAL_EM_ARQUIVO_P7S".padEnd(100, " "),
+  ].map(l => [...l].map(c => (c.codePointAt(0)! < 256 ? c : "?")).join(""));
+  return { filename: `AEJ_${N(emp.documento, 14)}_${w.from.replace(/-/g, "")}_${w.to.replace(/-/g, "")}.txt`, content: linhas.join("\r\n") + "\r\n",
+    vinculos: reg03.length, marcacoes: reg05.length };
+}
+
 async function rota(method: string, path: string, raw: string, token: string, origin: string | null) {
+  if (path === "/gestao/aej") {
+    if (origin !== GESTAO || method !== "POST") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
+    const w = periodoAfd(raw);
+    const p = await pessoa(token);
+    return sql.begin(async tx => { await gestorAtivo(tx, p); return { status: 200, body: await gerarAej(tx, w) }; });
+  }
   if (path === "/gestao/afd") {
     if (origin !== GESTAO || method !== "POST") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
     const w = periodoAfd(raw);

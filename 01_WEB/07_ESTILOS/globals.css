@@ -854,7 +854,6 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .espelho-totais dt { color: var(--muted); font-size: var(--font-small); font-weight: 700; }
 .espelho-totais dd { margin: 6px 0 0; font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .espelho-dias { table-layout: fixed; width: 100%; }
-.espelho-dias th:nth-child(1) { width: 18%; } .espelho-dias th:nth-child(3) { width: 14%; } .espelho-dias th:nth-child(4) { width: 30%; }
 .espelho-dias td:nth-child(2) { font-variant-numeric: tabular-nums; white-space: normal; }
 .espelho-domingo td { background: rgba(255,255,255,.03); }
 .espelho-aviso { line-height: 1.55; }
@@ -865,3 +864,6 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   body { background: #fff !important; color: #000 !important; }
   .espelho-folha, .espelho-folha * { color: #000 !important; background: #fff !important; border-color: #999 !important; }
 }
+.espelho-dias th:nth-child(1) { width: 12%; } .espelho-dias th:nth-child(2) { width: 9%; } .espelho-dias th:nth-child(4) { width: 9%; } .espelho-dias th:nth-child(5) { width: 9%; } .espelho-dias th:nth-child(6) { width: 26%; }
+.jornada-tabela input[type=time] { min-height: 44px; width: 100%; max-width: 130px; }
+.espelho-totais { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important; }

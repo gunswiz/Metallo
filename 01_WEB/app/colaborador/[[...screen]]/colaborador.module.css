@@ -349,3 +349,4 @@
 .espelhoDias li b { font-size: 1.1rem; font-variant-numeric: tabular-nums; }
 .espelhoDiaImpar { border-color: rgba(247,184,75,.6) !important; }
 .espelhoFalta { grid-column: 1 / -1; color: #ffd18a; font-weight: 700; }
+.espelhoSaldo { grid-column: 1 / -1; }

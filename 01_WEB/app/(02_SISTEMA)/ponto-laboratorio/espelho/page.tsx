@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { BotaoImprimir } from "@/02_COMPONENTES_VISUAIS/botao-imprimir";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
-import { espelhosPorFuncionario, horasMinutos, mesAnterior, mesAtual, mesSeguinte, mesValido, nomeDoMes } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import { descreverJornada, espelhosPorFuncionario, horasMinutos, mesAnterior, mesAtual, mesSeguinte, mesValido, nomeDoMes, saldoTexto, TEXTO_SITUACAO } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import { lerJornada4g } from "@/05_ACESSO_A_DADOS/Ponto/oficial-4f";
 import { readPointMirror } from "@/05_ACESSO_A_DADOS/Ponto/ponto-gestao";
 
 // Marco 4E — Espelho de ponto (teste online): marcações originais organizadas por dia. Nada é alterado aqui.
@@ -14,7 +15,8 @@ export default async function EspelhoPontoPage({ searchParams }: { searchParams:
   const mes = mesValido(query.mes) && query.mes! <= atual ? query.mes! : atual;
   const leitura = await readPointMirror(mes).then(eventos => ({ eventos, erro: false }), () => ({ eventos: [], erro: true }));
   const { eventos, erro } = leitura;
-  const pessoas = espelhosPorFuncionario(eventos, mes);
+  const jornada = await lerJornada4g();
+  const pessoas = espelhosPorFuncionario(eventos, mes, new Date(), jornada);
   const escolhido = pessoas.find(p => p.employee_id === query.funcionario);
   const link = (m: string, f?: string) => `/ponto-laboratorio/espelho?mes=${m}${f ? `&funcionario=${f}` : ""}`;
   return <>
@@ -30,14 +32,15 @@ export default async function EspelhoPontoPage({ searchParams }: { searchParams:
 
     {!escolhido ? <section className="panel">
       <header className="panel-header"><div><h2>{pessoas.length} pessoa(s) com marcação em {nomeDoMes(mes).toLocaleLowerCase("pt-BR")}</h2>
-        <p>Toque em &quot;Ver espelho&quot; para abrir dia a dia. &quot;Falta marcar&quot; = dia com número ímpar de marcações (entrada sem saída).</p></div></header>
+        <p>Horário da empresa: {descreverJornada(jornada)}. &quot;Saldo&quot; compara com esse horário (tolerância da CLT aplicada). &quot;Falta marcar&quot; = entrada sem saída.</p></div></header>
       {pessoas.length === 0 ? <div className="panel-body"><p className="muted">Nenhuma marcação neste mês.</p></div> :
       <div className="data-table-wrap"><table className="data-table espelho-resumo">
-        <thead><tr><th>Funcionário</th><th>Dias com marcação</th><th>Horas registradas</th><th>Falta marcar</th><th></th></tr></thead>
+        <thead><tr><th>Funcionário</th><th>Dias com marcação</th><th>Horas registradas</th><th>Saldo</th><th>Falta marcar</th><th></th></tr></thead>
         <tbody>{pessoas.map(p => <tr key={p.employee_id}>
           <td><span className="primary-cell">{p.nome}</span><span className="secondary-cell">{p.matricula ? `Matrícula ${p.matricula}` : "Sem matrícula"}</span></td>
           <td className="numeric">{p.espelho.totais.diasComMarcacao}</td>
           <td className="numeric">{horasMinutos(p.espelho.totais.minutos)}</td>
+          <td className="numeric">{saldoTexto(p.espelho.totais.saldo)}</td>
           <td>{p.espelho.totais.diasImpares ? <span className="status-badge warn">{p.espelho.totais.diasImpares} dia(s)</span> : "—"}</td>
           <td><Link className="button secondary" href={link(mes, p.employee_id)}>Ver espelho</Link></td>
         </tr>)}</tbody>
@@ -50,22 +53,27 @@ export default async function EspelhoPontoPage({ searchParams }: { searchParams:
         <dl className="espelho-totais">
           <div><dt>Dias com marcação</dt><dd>{escolhido.espelho.totais.diasComMarcacao}</dd></div>
           <div><dt>Horas registradas</dt><dd>{horasMinutos(escolhido.espelho.totais.minutos)}</dd></div>
-          <div><dt>Marcações</dt><dd>{escolhido.espelho.totais.marcacoes}</dd></div>
+          <div><dt>Passou do horário</dt><dd>{saldoTexto(escolhido.espelho.totais.extras)}</dd></div>
+          <div><dt>Faltou tempo</dt><dd>{saldoTexto(escolhido.espelho.totais.atrasos)}</dd></div>
+          <div><dt>Saldo do mês</dt><dd>{saldoTexto(escolhido.espelho.totais.saldo)}</dd></div>
           <div><dt>Dias com falta de marcação</dt><dd>{escolhido.espelho.totais.diasImpares}</dd></div>
+          <div><dt>Dias úteis sem marcação</dt><dd>{escolhido.espelho.totais.diasSemMarcacao}</dd></div>
         </dl>
       </div>
       <div className="data-table-wrap"><table className="data-table espelho-dias">
-        <thead><tr><th>Dia</th><th>Marcações</th><th>Horas</th><th>Observação</th></tr></thead>
+        <thead><tr><th>Dia</th><th>Previsto</th><th>Marcações</th><th>Horas</th><th>Saldo</th><th>Observação</th></tr></thead>
         <tbody>{escolhido.espelho.dias.filter(d => !d.futuro).map(d => <tr key={d.data} className={d.domingo ? "espelho-domingo" : undefined}>
           <td><strong>{d.data.slice(8)}/{d.data.slice(5, 7)}</strong> <span className="secondary-cell">{d.diaSemana}</span></td>
+          <td className="secondary-cell">{d.previsto ? horasMinutos(d.previsto) : "Folga"}</td>
           <td>{d.horarios.length ? d.horarios.join(" · ") : "—"}</td>
           <td className="numeric">{d.minutos ? horasMinutos(d.minutos) : "—"}</td>
-          <td>{d.impar ? "Falta marcar a saída (ou uma marcação a mais)" : d.domingo && !d.horarios.length ? "Domingo" : ""}</td>
+          <td className="numeric">{d.saldo !== null ? saldoTexto(d.saldo) : "—"}</td>
+          <td>{TEXTO_SITUACAO[d.situacao]}</td>
         </tr>)}</tbody>
-        <tfoot><tr><th>Total</th><td>{escolhido.espelho.totais.marcacoes} marcações</td><td className="numeric">{horasMinutos(escolhido.espelho.totais.minutos)}</td><td></td></tr></tfoot>
+        <tfoot><tr><th>Total</th><td>{horasMinutos(escolhido.espelho.totais.previsto)}</td><td>{escolhido.espelho.totais.marcacoes} marcações</td><td className="numeric">{horasMinutos(escolhido.espelho.totais.minutos)}</td><td className="numeric">{saldoTexto(escolhido.espelho.totais.saldo)}</td><td></td></tr></tfoot>
       </table></div>
-      <div className="panel-body"><p className="muted espelho-aviso">Espelho de teste, sem valor oficial. Mostra só o tempo entre as marcações (1ª–2ª, 3ª–4ª…).
-        Hora extra, adicional noturno, intervalo e banco de horas dependem da jornada combinada e da convenção — conferir com o DP.
+      <div className="panel-body"><p className="muted espelho-aviso">Espelho de teste, sem valor oficial. Saldo = horas feitas menos o horário da empresa ({descreverJornada(jornada)}),
+        com a tolerância da CLT (até 5 min por marcação, 10 no dia). O valor da hora extra (adicional), banco de horas, feriados e atestados ficam com o DP.
         Não substitui o controle de ponto que a empresa usa hoje.</p></div>
     </section>}
   </>;

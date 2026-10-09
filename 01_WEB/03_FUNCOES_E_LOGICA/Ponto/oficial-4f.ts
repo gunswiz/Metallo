@@ -36,4 +36,6 @@ export const MENSAGENS_4F: Record<string, string> = {
   "afd-periodo": "Escolha um período válido (até 366 dias).",
   "afd-empresa": "Cadastre os dados da empresa antes de gerar o AFD.",
   "afd-falhou": "Não foi possível gerar o AFD agora.",
+  "jornada-invalida": "Confira os horários: em pares (entrada e saída), em ordem, no formato 07:00.",
+  "aej-falhou": "Não foi possível gerar o AEJ agora.",
 };

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { TESTE_ONLINE_GESTAO_ORIGIN, TESTE_ONLINE_PONTO_4D, TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
+import { JORNADA_PADRAO, jornadaSchema, type Jornada } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
 // Marco 4F: empresa, CPF (sempre mascarado na tela) e AFD. Só teste online e só administrador (o banco confere).
 export function oficialLiberado4f() { return getSupabaseEnv().url === TESTE_ONLINE_SUPABASE_URL; }
@@ -30,4 +31,22 @@ export async function gerarAfd4f(from: string, to: string) {
     cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(30000) });
   if (!response.ok) { const body = await response.json().catch(() => ({})); throw new Error(typeof body.error === "string" ? body.error : "FALHOU"); }
   return afdResposta.parse(await response.json());
+}
+
+// Marco 4G: jornada padrão (horário contratual) e AEJ.
+export async function lerJornada4g(): Promise<Jornada> {
+  const r = await (await createClient()).rpc("jornada_padrao_4g" as never);
+  const parsed = jornadaSchema.safeParse(r.data);
+  return !r.error && parsed.success ? parsed.data : JORNADA_PADRAO;
+}
+export const aejResposta = z.object({ filename: z.string().regex(/^AEJ_\d{14}_\d{8}_\d{8}\.txt$/), content: z.string().max(40_000_000),
+  vinculos: z.number().int().nonnegative(), marcacoes: z.number().int().nonnegative() }).strict();
+export async function gerarAej4g(from: string, to: string) {
+  const client = await createClient(), session = await client.auth.getSession();
+  if (session.error || !session.data.session?.access_token) throw new Error("SESSAO_INVALIDA");
+  const response = await fetch(`${TESTE_ONLINE_PONTO_4D}/gestao/aej`, { method: "POST", body: JSON.stringify({ from, to }),
+    headers: { Authorization: `Bearer ${session.data.session.access_token}`, Origin: TESTE_ONLINE_GESTAO_ORIGIN, "Content-Type": "application/json" },
+    cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(30000) });
+  if (!response.ok) { const body = await response.json().catch(() => ({})); throw new Error(typeof body.error === "string" ? body.error : "FALHOU"); }
+  return aejResposta.parse(await response.json());
 }
