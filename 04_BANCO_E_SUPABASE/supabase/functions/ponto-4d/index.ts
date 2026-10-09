@@ -21,7 +21,8 @@ const auth = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_
 class Falha extends Error { constructor(public status: number, public code: string) { super(code); } }
 const STATUS: Record<string, number> = { SESSAO_INVALIDA: 401, SESSAO_ENCERRADA: 401, CONTEXTO_INATIVO: 403, ACESSO_NAO_AUTORIZADO: 403,
   INTENCAO_NAO_AUTORIZADA: 403, INTENCAO_CONFLITANTE: 409, INTENCAO_EXPIRADA: 409, PEDIDO_INVALIDO: 400, PERIODO_INVALIDO: 400,
-  REGISTRO_NAO_ENCONTRADO: 404, SEM_REGISTROS_48H: 404, EXTRACAO_MUITO_EXTENSA: 413, ORIGINAL_IMUTAVEL: 409 };
+  REGISTRO_NAO_ENCONTRADO: 404, SEM_REGISTROS_48H: 404, EXTRACAO_MUITO_EXTENSA: 413, ORIGINAL_IMUTAVEL: 409,
+  CPF_NAO_CADASTRADO: 409, EMPREGADOR_NAO_CADASTRADO: 409 };
 const q = <T>(tx: postgres.Sql | postgres.TransactionSql, text: string, params: (string | null)[] = []) =>
   tx.unsafe(text, params) as unknown as Promise<T[]>;
 
@@ -115,7 +116,51 @@ async function gestorAtivo(tx: postgres.TransactionSql, p: Pessoa) {
   if (!ok.admin || !ok.sessao) throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
 }
 
+// Marco 4F — AFD (leiaute v004, REP-P), PRÉVIA sem valor oficial: falta registro no INPI e assinatura .p7s (CAdES ICP-Brasil).
+function crc16Kermit(texto: string) {
+  let crc = 0;
+  // Bytes em ISO-8859-1 (como o arquivo é gravado); caractere fora da tabela vira "?".
+  for (const ch of texto) { const code = ch.codePointAt(0)!; crc ^= code < 256 ? code : 63; for (let i = 0; i < 8; i++) crc = crc & 1 ? (crc >>> 1) ^ 0x8408 : crc >>> 1; }
+  return crc.toString(16).toUpperCase().padStart(4, "0");
+}
+const A = (v: string | null | undefined, n: number) => [...(v ?? "")].map(c => (c.codePointAt(0)! < 256 ? c : "?")).join("").slice(0, n).padEnd(n, " ");
+const N = (v: string | number | null | undefined, n: number) => String(v ?? "").replace(/\D/g, "").slice(-n).padStart(n, "0");
+function dhAgora() {
+  const p = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+  const g = (t: string) => p.find(x => x.type === t)!.value;
+  return `${g("year")}-${g("month")}-${g("day")}T${g("hour")}:${g("minute")}:00-0300`;
+}
+function periodoAfd(raw: string) {
+  const b = corpo(raw, ["from", "to"]);
+  for (const v of [b.from, b.to]) if (typeof v !== "string" || !/^20\d{2}-\d{2}-\d{2}$/.test(v) || iso(`${v}T12:00:00Z`).slice(0, 10) !== v) throw new Falha(400, "PERIODO_INVALIDO");
+  const dias = (Date.parse(b.to as string) - Date.parse(b.from as string)) / 86400000;
+  if (dias < 0 || dias > 366) throw new Falha(400, "PERIODO_INVALIDO");
+  return { from: b.from as string, to: b.to as string, start: iso(`${b.from}T00:00:00-03:00`), end: iso(new Date(Date.parse(`${b.to}T00:00:00-03:00`) + 86400000)) };
+}
+type Empregador = { tipo_documento: number; documento: string; cno_caepf: string | null; razao_social: string; inpi: string | null; desenvolvedor_documento: string | null };
+async function gerarAfd(tx: postgres.TransactionSql, w: ReturnType<typeof periodoAfd>) {
+  const [emp] = await q<Empregador>(tx, "select tipo_documento,documento,cno_caepf,razao_social,inpi,desenvolvedor_documento from private.empregador_4f where singleton");
+  if (!emp) throw new Falha(409, "EMPREGADOR_NAO_CADASTRADO");
+  const linhas7 = await q<{ linha: string; afd_hash: string }>(tx, `select ponto.afd_linha7(m) linha, m.afd_hash from ponto.marcacao m
+    where m.afd_hash is not null and m.marking_at>=$1::text::timestamptz and m.marking_at<$2::text::timestamptz order by m.nsr limit 200001`, [w.start, w.end]);
+  if (linhas7.length > 200000) throw new Falha(413, "EXTRACAO_MUITO_EXTENSA");
+  const [semCpf] = await q<{ n: string }>(tx, `select count(*)::text n from ponto.marcacao where afd_hash is null and marking_at>=$1::text::timestamptz and marking_at<$2::text::timestamptz`, [w.start, w.end]);
+  const dev = emp.desenvolvedor_documento ?? "";
+  const cab = "000000000" + "1" + String(emp.tipo_documento) + A(emp.documento, 14) + (emp.cno_caepf ? N(emp.cno_caepf, 14) : A("", 14)) + A(emp.razao_social, 150)
+    + N(emp.inpi ?? "", 17) + w.from + w.to + dhAgora() + "004" + (dev.length === 11 ? "2" : "1") + A(dev, 14) + A("", 30);
+  const linhas = [cab + crc16Kermit(cab), ...linhas7.map(l => l.linha + l.afd_hash),
+    "999999999" + "0".repeat(45) + N(linhas7.length, 9) + "9", "ASSINATURA_DIGITAL_EM_ARQUIVO_P7S".padEnd(100, " ")];
+  return { filename: `AFD${N(emp.inpi ?? "", 17)}${N(emp.documento, 14)}REP_P.txt`, content: linhas.join("\r\n") + "\r\n",
+    registros: linhas7.length, sem_cpf: Number(semCpf.n), inpi_registrado: Boolean(emp.inpi) };
+}
+
 async function rota(method: string, path: string, raw: string, token: string, origin: string | null) {
+  if (path === "/gestao/afd") {
+    if (origin !== GESTAO || method !== "POST") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
+    const w = periodoAfd(raw);
+    const p = await pessoa(token);
+    return sql.begin(async tx => { await gestorAtivo(tx, p); return { status: 200, body: await gerarAfd(tx, w) }; });
+  }
   if (path === "/gestao/espelho") {
     if (origin !== GESTAO || method !== "POST") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
     const w = mes(raw);

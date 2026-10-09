@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-09T08:20:54.235Z",
+  "scope": "Marco 4F — CPF, empresa e AFD v004 (prévia) no teste online",
+  "checks": [
+    {
+      "name": "Gestão vê CPF só mascarado",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lê a lista de CPF",
+      "ok": true
+    },
+    {
+      "name": "CPF inválido recusado",
+      "ok": true
+    },
+    {
+      "name": "remover CPF do robô",
+      "ok": true
+    },
+    {
+      "name": "sem CPF a marcação é recusada (CPF_NAO_CADASTRADO)",
+      "ok": true
+    },
+    {
+      "name": "CPF de volta",
+      "ok": true
+    },
+    {
+      "name": "com CPF marca normalmente",
+      "ok": true
+    },
+    {
+      "name": "AFD gerado para administrador",
+      "ok": true
+    },
+    {
+      "name": "termina com CRLF, sem linha em branco no meio",
+      "ok": true
+    },
+    {
+      "name": "cabeçalho tipo 1 com 302 posições, versão 004 e CRC-16 correto",
+      "ok": true
+    },
+    {
+      "name": "período do cabeçalho",
+      "ok": true
+    },
+    {
+      "name": "registros tipo 7 com 137 posições",
+      "ok": true
+    },
+    {
+      "name": "DH com segundos 00 e fuso -0300",
+      "ok": true
+    },
+    {
+      "name": "CPF do robô nas marcações dele (12 posições)",
+      "ok": true
+    },
+    {
+      "name": "coletor 02 (navegador) e on-line",
+      "ok": true
+    },
+    {
+      "name": "NSR em ordem crescente",
+      "ok": true
+    },
+    {
+      "name": "hash SHA-256 de cada registro encadeia com o anterior",
+      "ok": true
+    },
+    {
+      "name": "trailer tipo 9 conta os registros 7",
+      "ok": true
+    },
+    {
+      "name": "linha da assinatura indica .p7s (100 posições)",
+      "ok": true
+    },
+    {
+      "name": "funcionário não gera AFD",
+      "ok": true
+    },
+    {
+      "name": "período inválido recusado",
+      "ok": true
+    },
+    {
+      "name": "integridade do ponto (inclui a corrente do AFD) continua íntegra",
+      "ok": true
+    }
+  ],
+  "result": "22/22"
+}

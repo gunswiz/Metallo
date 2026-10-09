@@ -11,7 +11,7 @@ import { MeusRegistros } from "./meus-registros";
 type Pending = { key: string; location?: LocationInput };
 function errorMessage(error: unknown) {
   const code = error instanceof Error ? error.message : "";
-  return /SESSAO_INVALIDA/.test(code) ? "Sessão expirada. Entre novamente." : /SESSAO_ENCERRADA/.test(code) ? "Sessão encerrada. Entre novamente." : /REVOGAD|INATIVO|AUTORIZAD/.test(code) ? "Acesso negado. Seu vínculo pessoal precisa estar ativo." : /INTENCAO_EXPIRADA/.test(code) ? "A intenção expirou sem confirmação. Inicie uma nova marcação." : /CONFLITANTE|PEDIDO_INVALIDO/.test(code) ? "Pedido inválido. A marcação não foi confirmada." : "Servidor indisponível ou conexão interrompida. Resultado ainda não confirmado.";
+  return /CPF_NAO_CADASTRADO/.test(code) ? "Seu CPF ainda não está cadastrado. Peça ao escritório para cadastrar e tente de novo. A marcação não foi feita." : /SESSAO_INVALIDA/.test(code) ? "Sessão expirada. Entre novamente." : /SESSAO_ENCERRADA/.test(code) ? "Sessão encerrada. Entre novamente." : /REVOGAD|INATIVO|AUTORIZAD/.test(code) ? "Acesso negado. Seu vínculo pessoal precisa estar ativo." : /INTENCAO_EXPIRADA/.test(code) ? "A intenção expirou sem confirmação. Inicie uma nova marcação." : /CONFLITANTE|PEDIDO_INVALIDO/.test(code) ? "Pedido inválido. A marcação não foi confirmada." : "Servidor indisponível ou conexão interrompida. Resultado ainda não confirmado.";
 }
 export function MeuPontoOnline({ getToken, employeeId, name, presentation = "full" }: { getToken: () => Promise<string>; employeeId: string; name: string; presentation?: "full" | "home" }) {
   const [events, setEvents] = useState<PointReceipt[]>([]), [receipt, setReceipt] = useState<PointReceipt | null>(null);
@@ -60,7 +60,7 @@ export function MeuPontoOnline({ getToken, employeeId, name, presentation = "ful
       await confirmed(result.event);
     } catch (error) {
       if (!alive.current) return;
-      if (error instanceof Error && /INTENCAO_EXPIRADA|PEDIDO_INVALIDO|CONFLITANTE/.test(error.message)) { pending.current = null; setRetry(false); setMessage(errorMessage(error)); return; }
+      if (error instanceof Error && /INTENCAO_EXPIRADA|PEDIDO_INVALIDO|CONFLITANTE|CPF_NAO_CADASTRADO/.test(error.message)) { pending.current = null; setRetry(false); setMessage(errorMessage(error)); return; }
       if (error instanceof Error && /SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(error.message)) { setEvents([]); setReceipt(null); pending.current = null; setRetry(false); setMessage(errorMessage(error)); return; }
       try { const recovered = await onlinePointRequest(`/intent/${operation.key}`, await token(), { signal }); await confirmed(recovered.event); }
       catch { if (alive.current) { setRetry(true); setMessage(navigator.onLine ? errorMessage(error) : "Sem conexão. Nenhuma confirmação recebida; não existe fila offline."); } }
