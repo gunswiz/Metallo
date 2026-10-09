@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
-import { Home, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
+import { Home, CalendarDays, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X } from "lucide-react";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
 import type { PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
 import type { PersonalProfile } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
@@ -13,6 +13,7 @@ const groups: { label: string; items: Item[] }[] = [
   { label: "Meu Ponto", items: [
     { screen: "ponto", label: "Registrar ponto", icon: Clock3 },
     { screen: "registros", label: "Meus registros", icon: FileText },
+    { screen: "espelho", label: "Meu espelho do mês", icon: CalendarDays },
     { screen: "comprovantes", label: "Comprovantes", icon: Download },
   ] },
   { label: "EPI e Itens", items: [
@@ -96,7 +97,7 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
     <div className={styles.drawerIdentity}><strong>{profile.full_name}</strong><span>Funcionário</span><small>{profile.team_name?.trim() || "Sem equipe atribuída"}</small></div>
     <nav aria-label="Navegação principal">
       {itemLink({ screen: "inicio", label: "Início", icon: Home })}
-      {groups.map(group => <section key={group.label} aria-label={group.label} className={styles.drawerGroup}><h2>{group.label}</h2>{group.items.filter(item => !demo || !["ponto", "registros", "comprovantes"].includes(item.screen)).map(itemLink)}</section>)}
+      {groups.map(group => <section key={group.label} aria-label={group.label} className={styles.drawerGroup}><h2>{group.label}</h2>{group.items.filter(item => !demo || !["ponto", "registros", "espelho", "comprovantes"].includes(item.screen)).map(itemLink)}</section>)}
     </nav>
     <button type="button" className={styles.drawerExit} disabled={busy} onClick={() => { onClose(); void logout(); }}><LogOut size={20} aria-hidden="true"/>Sair</button>
     <small className={styles.drawerDisclaimer}>SIMULAÇÃO SEM VALOR OFICIAL</small>

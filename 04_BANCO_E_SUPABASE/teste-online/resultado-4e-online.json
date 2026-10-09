@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-09T08:07:49.195Z",
+  "scope": "Marco 4E — espelho de ponto no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "duas marcações do robô gravadas",
+      "ok": true
+    },
+    {
+      "name": "app: espelho do mês traz as marcações da própria pessoa",
+      "ok": true
+    },
+    {
+      "name": "app: espelho só tem um funcionário (a própria pessoa)",
+      "ok": true
+    },
+    {
+      "name": "app: sem localização nem hash no espelho",
+      "ok": true
+    },
+    {
+      "name": "app: Maria não vê marcações do robô",
+      "ok": true
+    },
+    {
+      "name": "app: mês inválido recusado",
+      "ok": true
+    },
+    {
+      "name": "app: campo extra recusado",
+      "ok": true
+    },
+    {
+      "name": "app: origem externa recusada",
+      "ok": true
+    },
+    {
+      "name": "app: sem login recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão (admin): espelho do mês com várias pessoas",
+      "ok": true
+    },
+    {
+      "name": "Gestão: funcionário comum não abre o espelho geral",
+      "ok": true
+    },
+    {
+      "name": "Gestão: origem do app recusada",
+      "ok": true
+    },
+    {
+      "name": "Gestão: GET recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão: rota antiga continua funcionando",
+      "ok": true
+    }
+  ],
+  "result": "14/14"
+}

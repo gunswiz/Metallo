@@ -5,6 +5,7 @@ import { anyReceiptFilename, buildAnyReceipt, buildAnyReceiptZip } from "@/03_FU
 import { labTiming } from "@/03_FUNCOES_E_LOGICA/Ponto/telemetria-laboratorio-4c";
 import { logoPdfBytes } from "@/03_FUNCOES_E_LOGICA/Relatorios/logo-pdf";
 import { destinoPonto } from "@/05_ACESSO_A_DADOS/Ponto/destino-ponto";
+import { respostaEspelho } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 const headers = { "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff", "Referrer-Policy": "no-referrer" };
@@ -20,8 +21,8 @@ async function forward(request: NextRequest, path: string[], timing: ReturnType<
   if (!destino) return fail("ROTA_NAO_ENCONTRADA", 404);
   if (destino === "INDISPONIVEL") return fail("SERVIDOR_INDISPONIVEL", 503);
   const endpoint = path.join("/");
-  if (request.headers.get("host") !== destino.host || new URL(request.url).search || !/^(list|last48|receipt\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i.test(endpoint) ||
-      request.method !== (endpoint === "list" ? "POST" : "GET") || request.method === "POST" && request.headers.get("origin") !== destino.origin) return fail("PEDIDO_INVALIDO", 400);
+  if (request.headers.get("host") !== destino.host || new URL(request.url).search || !/^(list|espelho|last48|receipt\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i.test(endpoint) ||
+      request.method !== (endpoint === "list" || endpoint === "espelho" ? "POST" : "GET") || request.method === "POST" && request.headers.get("origin") !== destino.origin) return fail("PEDIDO_INVALIDO", 400);
   const authorization = request.headers.get("authorization") ?? "";
   if (!/^Bearer [A-Za-z0-9_.-]{20,8192}$/.test(authorization)) return fail("SESSAO_INVALIDA", 401);
   let body: string | undefined;
@@ -38,6 +39,8 @@ async function forward(request: NextRequest, path: string[], timing: ReturnType<
     if (!response.ok) { const json = await response.json(); return fail(/^[A-Z0-9_]+$/.test(json.error ?? "") ? json.error : "SERVIDOR_INDISPONIVEL", response.status); }
     const payload = await response.json();
     if (endpoint === "list") return NextResponse.json(recordPage.parse(payload), { headers });
+    // Marco 4E: espelho do mês (só as marcações da própria pessoa; a Edge Function confere sessão e vínculo).
+    if (endpoint === "espelho") return NextResponse.json(respostaEspelho.parse(payload), { headers });
     const logo = logoPdfBytes();
     let bytes: Uint8Array, filename: string, type: string;
     if (endpoint === "last48") { bytes = await timing.measure("ZIP_PDF_generation", () => buildAnyReceiptZip(recordBatch.parse(payload).events, logo)); filename = destino.online ? "comprovantes-teste-ultimas-48h.zip" : "recibos-laboratorio-ultimas-48h.zip"; type = "application/zip"; }

@@ -4,6 +4,7 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { LAB_SUPABASE_URL, TESTE_ONLINE_GESTAO_ORIGIN, TESTE_ONLINE_PONTO_4D, TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { pointReceipt } from "./ponto-online";
+import { mesValido, respostaEspelho } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
 const integrity = z.object({ ok: z.boolean(), total: z.number().int().nonnegative(), reason: z.string().nullable() }).strict();
 const management = z.object({ events: z.array(pointReceipt.extend({ employee_name: z.string() })), integrity: integrity.optional() });
@@ -23,4 +24,17 @@ export async function readPointManagement(): Promise<PointManagement> {
   if (!response.ok) throw new Error("Leitura do ponto não autorizada ou indisponível.");
   const parsed = management.parse(await response.json());
   return { events: parsed.events, integrity: parsed.integrity ?? null, online };
+}
+
+// Marco 4E: espelho de ponto do mês (todas as pessoas). Só no teste online; a Edge Function confere admin ativo e sessão.
+export async function readPointMirror(month: string) {
+  if (getSupabaseEnv().url !== TESTE_ONLINE_SUPABASE_URL) throw new Error("Espelho disponível somente no teste online.");
+  if (!mesValido(month)) throw new Error("Mês inválido.");
+  const client = await createClient(), session = await client.auth.getSession();
+  if (session.error || !session.data.session?.access_token) throw new Error("Sessão indisponível.");
+  const response = await fetch(`${TESTE_ONLINE_PONTO_4D}/gestao/espelho`, { method: "POST", body: JSON.stringify({ month }),
+    headers: { Authorization: `Bearer ${session.data.session.access_token}`, Origin: TESTE_ONLINE_GESTAO_ORIGIN, "Content-Type": "application/json" },
+    cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(15000) });
+  if (!response.ok) throw new Error("Leitura do espelho não autorizada ou indisponível.");
+  return respostaEspelho.parse(await response.json()).events;
 }

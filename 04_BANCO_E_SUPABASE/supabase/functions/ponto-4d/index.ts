@@ -97,7 +97,37 @@ function filtro(raw: string) {
   return { period: input.period as string, from: input.from as string | undefined, to: input.to as string | undefined, offset: offset as number };
 }
 
+// Marco 4E (espelho de ponto): mês "AAAA-MM" no fuso de Fortaleza. Só leitura dos originais.
+function mes(raw: string) {
+  const month = corpo(raw, ["month"]).month;
+  if (typeof month !== "string" || !/^20\d{2}-(0[1-9]|1[0-2])$/.test(month)) throw new Falha(400, "PERIODO_INVALIDO");
+  const [y, m] = month.split("-").map(Number);
+  const next = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;
+  return { start: iso(`${month}-01T00:00:00-03:00`), end: iso(`${next}-01T00:00:00-03:00`) };
+}
+const espelhoItem = (m: Marcacao) => ({ event_id: m.event_id, nsr: Number(m.nsr), employee_id: m.employee_id, employee_name: m.employee_name,
+  employee_code: m.employee_code, marking_at: iso(m.marking_at), recorded_at: iso(m.recorded_at) });
+
+async function gestorAtivo(tx: postgres.TransactionSql, p: Pessoa) {
+  await q(tx, "select pg_catalog.set_config('request.jwt.claim.sub',$1::text,true)", [p.user]);
+  const [ok] = await q<{ admin: boolean; sessao: boolean }>(tx, `select public.is_active_admin() admin,
+    exists(select 1 from auth.sessions s where s.id=$1::text::uuid and s.user_id=$2::text::uuid and (s.not_after is null or s.not_after>now())) sessao`, [p.session, p.user]);
+  if (!ok.admin || !ok.sessao) throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
+}
+
 async function rota(method: string, path: string, raw: string, token: string, origin: string | null) {
+  if (path === "/gestao/espelho") {
+    if (origin !== GESTAO || method !== "POST") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
+    const w = mes(raw);
+    const p = await pessoa(token);
+    return sql.begin(async tx => {
+      await gestorAtivo(tx, p);
+      const rows = await q<Marcacao>(tx, `select ${colunas} from ponto.marcacao where marking_at>=$1::text::timestamptz and marking_at<$2::text::timestamptz
+        order by employee_name, marking_at, nsr limit 20001`, [w.start, w.end]);
+      if (rows.length > 20000) throw new Falha(413, "EXTRACAO_MUITO_EXTENSA");
+      return { status: 200, body: { events: rows.map(espelhoItem), window: w } };
+    });
+  }
   if (path === "/gestao") {
     if (origin !== GESTAO || method !== "GET") throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
     const p = await pessoa(token);
@@ -169,6 +199,15 @@ async function rota(method: string, path: string, raw: string, token: string, or
     const rows = await pessoal(p, tx => q<Marcacao>(tx, `select ${colunas} from ponto.marcacao where event_id=$1::text::uuid and auth_user_id=$2::text::uuid`, [receipt[1], p.user]));
     if (!rows[0]) throw new Falha(404, "REGISTRO_NAO_ENCONTRADO");
     return { status: 200, body: registro(rows[0]) };
+  }
+  if (method === "POST" && path === "/v4b/espelho") {
+    const w = mes(raw);
+    return pessoal(p, async tx => {
+      const rows = await q<Marcacao>(tx, `select ${colunas} from ponto.marcacao where auth_user_id=$1::text::uuid and marking_at>=$2::text::timestamptz
+        and marking_at<$3::text::timestamptz order by marking_at, nsr limit 1001`, [p.user, w.start, w.end]);
+      if (rows.length > 1000) throw new Falha(413, "EXTRACAO_MUITO_EXTENSA");
+      return { status: 200, body: { events: rows.map(espelhoItem), window: w } };
+    });
   }
   if (method === "GET" && path === "/v4b/authorize") { await pessoal(p, async () => true); return { status: 200, body: { authorized: true } }; }
   throw new Falha(404, "ROTA_NAO_ENCONTRADA");

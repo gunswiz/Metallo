@@ -49,7 +49,7 @@ it("agrupa a navegação no drawer sem duplicar barra inferior", async () => {
   fireEvent.click(await screen.findByRole("button", { name: "Abrir menu" }));
   const navigation = screen.getByRole("navigation", { name: "Navegação principal" });
   expect(within(navigation).getAllByRole("link").map(link => link.getAttribute("href"))).toEqual([
-    "/colaborador/inicio", "/colaborador/ponto", "/colaborador/registros", "/colaborador/comprovantes",
+    "/colaborador/inicio", "/colaborador/ponto", "/colaborador/registros", "/colaborador/espelho", "/colaborador/comprovantes",
     "/colaborador/epis", "/colaborador/itens", "/colaborador/epis#epi-troca-heading", "/colaborador/treinamentos",
     "/colaborador/equipe", "/colaborador/obra", "/colaborador/comunicados",
     "/colaborador/epis#epi-solicitacoes", "/colaborador/perfil", "/colaborador/perfil#perfil-seguranca",
