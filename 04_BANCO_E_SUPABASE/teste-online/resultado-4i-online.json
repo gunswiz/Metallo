@@ -1,0 +1,67 @@
+{
+  "at": "2026-10-09T10:30:14.221Z",
+  "scope": "Marco 4I — AFD com registros tipo 2 e 5 (teste online)",
+  "checks": [
+    {
+      "name": "Gestão vê o responsável só mascarado",
+      "ok": true
+    },
+    {
+      "name": "a função antiga de salvar a empresa não grava mais",
+      "ok": true
+    },
+    {
+      "name": "funcionário não salva a empresa",
+      "ok": true
+    },
+    {
+      "name": "alterar o local gera registro tipo 2",
+      "ok": true
+    },
+    {
+      "name": "voltar o local gera outro registro tipo 2",
+      "ok": true
+    },
+    {
+      "name": "salvar sem mudança não gera registro",
+      "ok": true
+    },
+    {
+      "name": "alterar CPF gera registro tipo 5",
+      "ok": true
+    },
+    {
+      "name": "voltar o CPF gera outro tipo 5",
+      "ok": true
+    },
+    {
+      "name": "AFD traz registros tipo 2 (331 posições) e tipo 5 (118 posições)",
+      "ok": true
+    },
+    {
+      "name": "CRC-16 dos tipos 2 e 5 confere",
+      "ok": true
+    },
+    {
+      "name": "tipo 5: operação A e nome do robô",
+      "ok": true
+    },
+    {
+      "name": "tipo 2: CNPJ e razão social da empresa",
+      "ok": true
+    },
+    {
+      "name": "tudo em ordem crescente de NSR, sem repetir",
+      "ok": true
+    },
+    {
+      "name": "trailer conta tipos 2, 5 e 7",
+      "ok": true
+    },
+    {
+      "name": "integridade: NSR contínuo somando marcações e cadastros",
+      "ok": true
+    }
+  ],
+  "result": "15/15"
+}

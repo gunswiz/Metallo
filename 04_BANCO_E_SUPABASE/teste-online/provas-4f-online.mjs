@@ -43,7 +43,7 @@ check("AFD gerado para administrador", afd.status === 200 && /^AFD\d{17}\d{14}RE
 const linhas = afd.data.content.split("\r\n");
 check("termina com CRLF, sem linha em branco no meio", linhas.at(-1) === "" && linhas.slice(0, -1).every(l => l.length > 0));
 const [cab, ...resto] = linhas.slice(0, -1);
-const trailer = resto.at(-2), assinatura = resto.at(-1), tipo7 = resto.slice(0, -2);
+const trailer = resto.at(-2), assinatura = resto.at(-1), tipo7 = resto.slice(0, -2).filter(l => l[9] === "7"); // Marco 4I: tipos 2 e 5 também podem aparecer
 check("cabeçalho tipo 1 com 302 posições, versão 004 e CRC-16 correto", cab.length === 302 && cab.slice(0, 10) === "0000000001" && cab.slice(250, 253) === "004" && crc(cab.slice(0, 298)) === cab.slice(298));
 check("período do cabeçalho", cab.slice(206, 216) === hoje && cab.slice(216, 226) === hoje);
 check("registros tipo 7 com 137 posições", tipo7.length >= 2 && tipo7.every(l => l.length === 137 && l[9] === "7"));

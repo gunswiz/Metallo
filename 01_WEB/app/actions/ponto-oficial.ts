@@ -17,14 +17,14 @@ export async function salvarEmpresa4f(formData: FormData) {
   if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
   const documento = soDigitos(texto(formData, "documento")), dev = soDigitos(texto(formData, "desenvolvedor"));
   const razao = texto(formData, "razao").replace(/\s+/g, " "), local = texto(formData, "local").replace(/\s+/g, " ");
-  const cno = soDigitos(texto(formData, "cno")), inpi = soDigitos(texto(formData, "inpi"));
+  const cno = soDigitos(texto(formData, "cno")), inpi = soDigitos(texto(formData, "inpi")), responsavel = soDigitos(texto(formData, "responsavel"));
   const tipo = documento.length === 11 ? 2 : 1;
   const docOk = tipo === 1 ? cnpjValido(documento) : cpfValido(documento);
-  const devOk = !dev || (dev.length === 14 ? cnpjValido(dev) : cpfValido(dev));
+  const devOk = (!dev || (dev.length === 14 ? cnpjValido(dev) : cpfValido(dev))) && (!responsavel || cpfValido(responsavel));
   if (!docOk || !devOk || razao.length < 2 || razao.length > 150 || local.length < 2 || local.length > 100 || cno.length > 14 || inpi.length > 17
     || /[\u0000-\u001f]/.test(razao + local)) redirect(`${DESTINO}?erro=empresa-invalida`);
-  const { error } = await (await createClient()).rpc("admin_set_employer_4f" as never, { p_tipo: tipo, p_documento: documento, p_cno: cno,
-    p_razao: razao, p_local: local, p_inpi: inpi, p_dev: dev } as never);
+  const { error } = await (await createClient()).rpc("admin_set_employer_4i" as never, { p_tipo: tipo, p_documento: documento, p_cno: cno,
+    p_razao: razao, p_local: local, p_inpi: inpi, p_dev: dev, p_responsavel: responsavel } as never);
   if (error) redirect(`${DESTINO}?erro=falhou`);
   revalidatePath(DESTINO);
   redirect(`${DESTINO}?ok=empresa`);

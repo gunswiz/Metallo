@@ -31,7 +31,7 @@ export function latin1(texto: string) { return Uint8Array.from([...texto].map(c 
 export const MENSAGENS_4F: Record<string, string> = {
   "cpf-invalido": "CPF inválido. Confira os 11 números.",
   "cpf-em-uso": "Este CPF já está cadastrado para outra pessoa.",
-  "empresa-invalida": "Confira os dados da empresa: CNPJ (14 números) ou CPF (11), razão social e local.",
+  "empresa-invalida": "Confira os dados da empresa: CNPJ (14 números) ou CPF (11), razão social, local e o CPF do responsável.",
   falhou: "Não foi possível salvar agora. Tente de novo.",
   "afd-periodo": "Escolha um período válido (até 366 dias).",
   "afd-empresa": "Cadastre os dados da empresa antes de gerar o AFD.",

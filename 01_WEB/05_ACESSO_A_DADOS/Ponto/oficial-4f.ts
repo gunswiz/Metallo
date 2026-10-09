@@ -8,13 +8,13 @@ import { JORNADA_PADRAO, jornadaSchema, TIPOS_OCORRENCIA, type Jornada } from "@
 // Marco 4F: empresa, CPF (sempre mascarado na tela) e AFD. Só teste online e só administrador (o banco confere).
 export function oficialLiberado4f() { return getSupabaseEnv().url === TESTE_ONLINE_SUPABASE_URL; }
 const empresa = z.array(z.object({ tipo_documento: z.number().int(), documento: z.string(), cno_caepf: z.string().nullable(), razao_social: z.string(),
-  local_prestacao: z.string(), inpi: z.string().nullable(), desenvolvedor_documento: z.string().nullable(), updated_at: z.string() }));
+  local_prestacao: z.string(), inpi: z.string().nullable(), desenvolvedor_documento: z.string().nullable(), updated_at: z.string(), responsavel_mascarado: z.string().nullable() }));
 const cpfs = z.array(z.object({ employee_id: z.string().uuid(), full_name: z.string(), registration_code: z.string().nullable(), cpf_mascarado: z.string().nullable() }));
 export const afdResposta = z.object({ filename: z.string().regex(/^AFD\d{17}\d{14}REP_P\.txt$/), content: z.string().max(40_000_000),
-  registros: z.number().int().nonnegative(), sem_cpf: z.number().int().nonnegative(), inpi_registrado: z.boolean() }).strict();
+  registros: z.number().int().nonnegative(), cadastros: z.number().int().nonnegative(), sem_cpf: z.number().int().nonnegative(), inpi_registrado: z.boolean() }).strict();
 
 export async function lerEmpresa4f() {
-  const r = await (await createClient()).rpc("admin_employer_4f" as never);
+  const r = await (await createClient()).rpc("admin_employer_4i" as never);
   if (r.error) throw new Error("Não foi possível ler a empresa.");
   return empresa.parse(r.data)[0] ?? null;
 }

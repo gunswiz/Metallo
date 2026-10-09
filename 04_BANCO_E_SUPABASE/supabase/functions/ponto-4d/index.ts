@@ -141,17 +141,23 @@ type Empregador = { tipo_documento: number; documento: string; cno_caepf: string
 async function gerarAfd(tx: postgres.TransactionSql, w: ReturnType<typeof periodoAfd>) {
   const [emp] = await q<Empregador>(tx, "select tipo_documento,documento,cno_caepf,razao_social,inpi,desenvolvedor_documento from private.empregador_4f where singleton");
   if (!emp) throw new Falha(409, "EMPREGADOR_NAO_CADASTRADO");
-  const linhas7 = await q<{ linha: string; afd_hash: string }>(tx, `select ponto.afd_linha7(m) linha, m.afd_hash from ponto.marcacao m
+  const linhas7 = await q<{ nsr: string; linha: string; afd_hash: string }>(tx, `select m.nsr::text nsr, ponto.afd_linha7(m) linha, m.afd_hash from ponto.marcacao m
     where m.afd_hash is not null and m.marking_at>=$1::text::timestamptz and m.marking_at<$2::text::timestamptz order by m.nsr limit 200001`, [w.start, w.end]);
   if (linhas7.length > 200000) throw new Falha(413, "EXTRACAO_MUITO_EXTENSA");
   const [semCpf] = await q<{ n: string }>(tx, `select count(*)::text n from ponto.marcacao where afd_hash is null and marking_at>=$1::text::timestamptz and marking_at<$2::text::timestamptz`, [w.start, w.end]);
   const dev = emp.desenvolvedor_documento ?? "";
   const cab = "000000000" + "1" + String(emp.tipo_documento) + A(emp.documento, 14) + (emp.cno_caepf ? N(emp.cno_caepf, 14) : A("", 14)) + A(emp.razao_social, 150)
     + N(emp.inpi ?? "", 17) + w.from + w.to + dhAgora() + "004" + (dev.length === 11 ? "2" : "1") + A(dev, 14) + A("", 30);
-  const linhas = [cab + crc16Kermit(cab), ...linhas7.map(l => l.linha + l.afd_hash),
-    "999999999" + "0".repeat(45) + N(linhas7.length, 9) + "9", "ASSINATURA_DIGITAL_EM_ARQUIVO_P7S".padEnd(100, " ")];
+  // Marco 4I: cadastros da empresa (tipo 2) e dos funcionários (tipo 5) gravados no período, na mesma numeração.
+  const cadastros = await q<{ nsr: string; tipo: number; linha: string; crc: string }>(tx, `select nsr::text nsr, tipo, linha, crc from ponto.evento_afd
+    where recorded_at>=$1::text::timestamptz and recorded_at<$2::text::timestamptz order by nsr limit 200001`, [w.start, w.end]);
+  const corpoAfd = [...cadastros.map(e => ({ nsr: Number(e.nsr), texto: e.linha + e.crc })), ...linhas7.map(l => ({ nsr: Number(l.nsr), texto: l.linha + l.afd_hash }))]
+    .sort((a, b) => a.nsr - b.nsr).map(r => r.texto);
+  const qt = (t: number) => N(cadastros.filter(e => Number(e.tipo) === t).length, 9);
+  const linhas = [cab + crc16Kermit(cab), ...corpoAfd,
+    "999999999" + qt(2) + N(0, 9) + N(0, 9) + qt(5) + N(0, 9) + N(linhas7.length, 9) + "9", "ASSINATURA_DIGITAL_EM_ARQUIVO_P7S".padEnd(100, " ")];
   return { filename: `AFD${N(emp.inpi ?? "", 17)}${N(emp.documento, 14)}REP_P.txt`, content: linhas.join("\r\n") + "\r\n",
-    registros: linhas7.length, sem_cpf: Number(semCpf.n), inpi_registrado: Boolean(emp.inpi) };
+    registros: linhas7.length, cadastros: cadastros.length, sem_cpf: Number(semCpf.n), inpi_registrado: Boolean(emp.inpi) };
 }
 
 // Marco 4G — AEJ (leiaute v002), PRÉVIA: marcações com entrada/saída, horário contratual da empresa e identificação do programa.

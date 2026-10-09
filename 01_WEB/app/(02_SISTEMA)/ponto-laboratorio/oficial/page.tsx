@@ -36,6 +36,8 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
         <label>CNO ou CAEPF (se tiver)<input name="cno" inputMode="numeric" maxLength={14} defaultValue={empresa?.cno_caepf ?? ""} /></label>
         <label>Registro do programa no INPI<input name="inpi" inputMode="numeric" maxLength={17} defaultValue={empresa?.inpi ?? ""} placeholder="Ainda não registrado" />
           <small className="field-hint">Sem o registro no INPI o ponto não pode ser oficial (REP-P).</small></label>
+        <label>CPF do responsável pelos cadastros<input name="responsavel" inputMode="numeric" maxLength={14} autoComplete="off" placeholder={empresa?.responsavel_mascarado ?? "000.000.000-00"} />
+          <small className="field-hint">Vai no AFD em cada cadastro de empresa e funcionário. {empresa?.responsavel_mascarado ? `Atual: ${empresa.responsavel_mascarado}. Em branco = mantém.` : "Obrigatório."}</small></label>
         <label>CNPJ do desenvolvedor do programa<input name="desenvolvedor" inputMode="numeric" maxLength={18} defaultValue={empresa?.desenvolvedor_documento ?? ""} /></label>
         <div className="form-actions"><button className="button primary" type="submit">Salvar empresa</button></div>
       </form></div>
@@ -102,8 +104,8 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
           <div className="form-actions"><button className="button primary" type="submit" name="tipo" value="afd"><Download size={16} aria-hidden />Baixar AFD</button>
             <button className="button secondary" type="submit" name="tipo" value="aej"><Download size={16} aria-hidden />Baixar AEJ</button></div>
         </form>
-        <p className="muted espelho-aviso"><strong>Ainda não é o arquivo oficial:</strong> falta o registro do programa no INPI, a assinatura digital (.p7s, certificado ICP-Brasil)
-          e os registros de cadastro da empresa e dos funcionários (tipos 2 e 5) na mesma numeração. Marcações antigas, feitas antes do CPF, ficam fora do arquivo.
+        <p className="muted espelho-aviso"><strong>Ainda não é o arquivo oficial:</strong> falta o registro do programa no INPI e a assinatura digital (.p7s, certificado ICP-Brasil).
+          Os cadastros da empresa e dos funcionários (tipos 2 e 5) já entram na mesma numeração. Marcações antigas, feitas antes do CPF, ficam fora do arquivo.
           No AEJ, o registro 07 traz os domingos (descanso semanal), as faltas não justificadas e as folgas no lugar de feriado lançadas no espelho; banco de horas ainda não.</p>
       </div>
     </section>
