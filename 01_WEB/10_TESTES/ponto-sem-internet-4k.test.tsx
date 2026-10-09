@@ -131,3 +131,17 @@ describe("avisos no celular do funcionário", () => {
     expect(await screen.findByText(/Aviso de teste enviado/)).toBeInTheDocument();
   });
 });
+
+describe("lista de chamadas permitidas do app", () => {
+  it("toda função que o app chama está liberada no portalFetch (achado no teste com o emulador)", async () => {
+    const hook = readFileSync("03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session.ts", "utf8");
+    const nomes = new Set([...(hook.match(/const exchangeRpc = useCallback\(async \(name: ([^,]+?), args/)?.[1].matchAll(/"([a-z0-9_]+)"/g) ?? [])].map(m => m[1]));
+    for (const m of hook.matchAll(/\.rpc\("([a-z0-9_]+)"/g)) nomes.add(m[1]);
+    expect(nomes.size).toBeGreaterThan(20);
+    const { portalFetch } = await import("@/05_ACESSO_A_DADOS/Supabase/colaborador-local");
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}"));
+    for (const nome of nomes) await expect(portalFetch(`http://127.0.0.1:54321/rest/v1/rpc/${nome}`, { method: "POST", body: "{}" })).resolves.toBeInstanceOf(Response);
+    await expect(portalFetch("http://127.0.0.1:54321/functions/v1/avisos-funcionario", { method: "POST", body: "{}" })).resolves.toBeInstanceOf(Response);
+    fetchMock.mockRestore();
+  });
+});
