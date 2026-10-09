@@ -67,3 +67,32 @@ Tudo no **teste online** (Supabase `cvimwiqokkujfhwynhmt`, dados fictícios). Na
   - Horário de trabalho: quinta 10h sim; 19h, domingo e feriado não.
   - Coleta de avisos: 14 (3 comunicados, 10 entregas, 1 pedido). Nenhum sairia às 20h, e não repete.
 - **Testes web:** `ponto-sem-internet-4k.test.tsx` mais o ajuste em `ponto-online.test.tsx`.
+
+## Teste em celular Android (emulador do Android Studio, Chrome de verdade) — 09/10
+
+O celular virtual `Metallo_API_36` (Android 16, Chrome com serviços do Google) foi comandado pelo DevTools (`tmp/cdp.mjs`) e pelo adb.
+
+| O que foi testado | Resultado |
+|---|---|
+| Hora na tela | O relógio do celular estava em outro fuso; o app mostrou a hora certa de Fortaleza e "Hora conferida com a hora oficial do Brasil". |
+| Bater ponto em **modo avião** | Ficou guardado no celular ("Guardados no celular (1)"). |
+| Fechar e abrir o app **sem internet** | O app abriu (service worker), a sessão não caiu e deu para bater outro ponto. |
+| Internet volta | "2 pontos guardados no celular foram enviados e registrados" — sozinho, sem tocar em nada. |
+| No banco | Marcação 1: RELOGIO_CONTINUO; marcação 2 (depois de reabrir): RELOGIO_DO_CELULAR (ajuste de 1,6 s). As duas sem "conferir"; desvio no envio abaixo de 1 s. AFD com "sem internet". |
+| Gestão no celular | Painel do ponto mostra "Hora oficial: Certa", a coluna Internet e o aviso de "conferir". |
+| Avisos do funcionário | Ligar pela tela, aviso de teste, "Novo comunicado" e "Seu pedido de … foi atendido" (a Gestão atendeu e o aviso chegou pelo agendamento). Tocar no aviso abre a tela certa. |
+| Avisos da Gestão (3P) | Ligar e enviar teste: chegou. |
+| Pedir material (3T) e Meu espelho (4G/4H) | Funcionando no celular. |
+
+**Defeitos achados só no celular e já corrigidos:**
+
+1. **Erro 500 no app (commit 01d462b).** Um número aleatório era criado ao carregar o código, e o Worker da Cloudflare não permite isso.
+2. **Chamadas recusadas pelo app (b52a946).** A lista de endereços permitidos do app não tinha as funções do espelho (4G/4H), de pedir material (3T) e dos avisos (3U). Antes disso, o pedido de material pelo app não funcionava de verdade. Um teste novo garante que toda função usada esteja na lista.
+3. **Sessão caindo sem rede (3ee1c94).** Em modo avião o Auth devolvia outro texto de erro e o app encerrava a sessão. Agora, com o celular sem rede, o app entra no modo sem internet.
+
+**Não testado no emulador:**
+
+- **Digital (3F):** exige cadastrar bloqueio de tela e digital no celular virtual. Isso é configuração de segurança do aparelho, então não foi mexido.
+- **Localização com GPS:** o Chrome do emulador está sem permissão de localização. O ponto continua funcionando ("permissão negada" não impede).
+
+**Aviso do Chrome:** "senha encontrada em vazamento". A senha de teste `12345678` é fraca. Na produção, senha forte.
