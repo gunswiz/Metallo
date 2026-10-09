@@ -140,7 +140,8 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       const supabase = getClient();
       const user = await supabase.auth.getUser();
       if (ticket !== generation.current) return;
-      if (user.error && /fetch|network|timeout|abort/i.test(user.error.message)) throw user.error;
+      // Sem internet (inclusive quando o Auth devolve outro texto de erro): não é sessão encerrada; vai para o modo sem internet.
+      if (user.error && (/fetch|network|timeout|abort/i.test(user.error.message) || (online && semConexao(user.error)))) throw user.error;
       if (user.error || !user.data.user) {
         if (target === "login") {
           try {
