@@ -58,3 +58,49 @@ export async function salvarJornada4g(formData: FormData) {
   revalidatePath(DESTINO); revalidatePath("/ponto-laboratorio/espelho");
   redirect(`${DESTINO}?ok=jornada#jornada`);
 }
+
+// Marco 4H: feriados (administrador) e ocorrências do dia por funcionário (atestado, férias, folga, faltas).
+const DATA = /^20\d{2}-\d{2}-\d{2}$/;
+export async function salvarFeriado4h(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const data = texto(formData, "data"), nome = texto(formData, "nome").replace(/\s+/g, " "), tipo = texto(formData, "tipo");
+  if (!DATA.test(data) || nome.length < 2 || nome.length > 80 || !["nacional", "estadual", "municipal", "empresa"].includes(tipo)) redirect(`${DESTINO}?erro=feriado-invalido#feriados`);
+  const { error } = await (await createClient()).rpc("admin_set_feriado_4h" as never, { p_data: data, p_nome: nome, p_tipo: tipo } as never);
+  if (error) redirect(`${DESTINO}?erro=feriado-invalido#feriados`);
+  revalidatePath(DESTINO); revalidatePath("/ponto-laboratorio/espelho");
+  redirect(`${DESTINO}?ok=feriado#feriados`);
+}
+export async function removerFeriado4h(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const data = texto(formData, "data");
+  if (!DATA.test(data)) redirect(`${DESTINO}?erro=feriado-invalido#feriados`);
+  const { error } = await (await createClient()).rpc("admin_remove_feriado_4h" as never, { p_data: data } as never);
+  if (error) redirect(`${DESTINO}?erro=falhou#feriados`);
+  revalidatePath(DESTINO); revalidatePath("/ponto-laboratorio/espelho");
+  redirect(`${DESTINO}?ok=feriado-removido#feriados`);
+}
+
+const TIPOS = ["atestado", "ferias", "folga", "falta_justificada", "falta", "folga_feriado"];
+const voltarEspelho = (mes: string, funcionario: string, extra: string) => `/ponto-laboratorio/espelho?mes=${mes}&funcionario=${funcionario}&${extra}`;
+export async function salvarOcorrencia4h(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const id = texto(formData, "employeeId"), data = texto(formData, "data"), tipo = texto(formData, "tipo"), obs = texto(formData, "observacao").slice(0, 200);
+  const mes = data.slice(0, 7);
+  if (!UUID.test(id) || !DATA.test(data) || !TIPOS.includes(tipo) || /[\u0000-\u001f]/.test(obs)) redirect(voltarEspelho(mes, id, "erro=ocorrencia"));
+  const { error } = await (await createClient()).rpc("admin_set_ocorrencia_4h" as never, { p_employee_id: id, p_data: data, p_tipo: tipo, p_observacao: obs } as never);
+  if (error) redirect(voltarEspelho(mes, id, "erro=ocorrencia"));
+  revalidatePath("/ponto-laboratorio/espelho");
+  redirect(voltarEspelho(mes, id, "ok=ocorrencia"));
+}
+export async function cancelarOcorrencia4h(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const ocorrencia = Number(texto(formData, "ocorrenciaId")), id = texto(formData, "employeeId"), mes = texto(formData, "mes");
+  if (!Number.isInteger(ocorrencia) || ocorrencia <= 0 || !UUID.test(id) || !/^20\d{2}-\d{2}$/.test(mes)) redirect("/ponto-laboratorio/espelho");
+  const { error } = await (await createClient()).rpc("admin_cancelar_ocorrencia_4h" as never, { p_id: ocorrencia } as never);
+  revalidatePath("/ponto-laboratorio/espelho");
+  redirect(voltarEspelho(mes, id, error ? "erro=ocorrencia" : "ok=ocorrencia-cancelada"));
+}

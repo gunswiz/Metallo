@@ -40,11 +40,18 @@ export function minutosPrevistos(horarios: string[]) { let t = 0; for (let i = 0
 /** +1h05 / −0h20 / 0h00 */
 export function saldoTexto(minutos: number) { return `${minutos > 0 ? "+" : minutos < 0 ? "−" : ""}${horasMinutos(Math.abs(minutos))}`; }
 
-export type SituacaoDia = "normal" | "tolerado" | "extra" | "atraso" | "sem_marcacao" | "falta_marcar" | "em_andamento" | "folga" | "fora_jornada" | "futuro";
+export type SituacaoDia = "normal" | "tolerado" | "extra" | "atraso" | "sem_marcacao" | "falta_marcar" | "em_andamento" | "folga" | "fora_jornada" | "futuro"
+  | "feriado" | "feriado_trabalhado" | "abonado" | "falta";
+// Marco 4H — ocorrências lançadas pela Gestão (tratamento). Não mexem nas marcações originais.
+export const TIPOS_OCORRENCIA = ["atestado", "ferias", "folga", "falta_justificada", "falta", "folga_feriado"] as const;
+export type TipoOcorrencia = (typeof TIPOS_OCORRENCIA)[number];
+export const NOME_OCORRENCIA: Record<TipoOcorrencia, string> = { atestado: "Atestado", ferias: "Férias", folga: "Folga", falta_justificada: "Falta justificada",
+  falta: "Falta (não justificada)", folga_feriado: "Folga no lugar de feriado" };
+export type ExtrasEspelho = { feriados?: Record<string, string>; ocorrencias?: Record<string, { tipo: TipoOcorrencia; id?: number }> };
 export type DiaEspelho = { data: string; diaSemana: string; domingo: boolean; futuro: boolean; horarios: string[]; nsrs: number[]; minutos: number; impar: boolean;
-  previstos: string[]; previsto: number; saldo: number | null; situacao: SituacaoDia };
+  previstos: string[]; previsto: number; saldo: number | null; situacao: SituacaoDia; feriado?: string; ocorrencia?: { tipo: TipoOcorrencia; id?: number } };
 export type Espelho = { mes: string; dias: DiaEspelho[]; totais: { marcacoes: number; diasComMarcacao: number; minutos: number; diasImpares: number;
-  previsto: number; extras: number; atrasos: number; saldo: number; diasSemMarcacao: number } };
+  previsto: number; extras: number; atrasos: number; saldo: number; diasSemMarcacao: number; faltas: number; abonos: number } };
 
 /**
  * Saldo do dia (CLT art. 58 §1º): variações de até 5 minutos em cada marcação, somando no máximo 10 no dia, não contam.
@@ -60,7 +67,7 @@ export function saldoDoDia(marcas: number[], previstos: string[]) {
   return { saldo: trabalhado - previsto, tolerado: false };
 }
 
-export function montarEspelho(events: Pick<MarcacaoEspelho, "marking_at" | "nsr">[], mes: string, agora = new Date(), jornada: Jornada = JORNADA_PADRAO): Espelho {
+export function montarEspelho(events: Pick<MarcacaoEspelho, "marking_at" | "nsr">[], mes: string, agora = new Date(), jornada: Jornada = JORNADA_PADRAO, extras: ExtrasEspelho = {}): Espelho {
   const [ano, m] = mes.split("-").map(Number);
   const totalDias = new Date(Date.UTC(ano, m, 0)).getUTCDate();
   const hoje = diaFmt.format(agora);
@@ -80,23 +87,29 @@ export function montarEspelho(events: Pick<MarcacaoEspelho, "marking_at" | "nsr"
     let minutos = 0;
     // Pares em sequência: entrada→saída. Minutos inteiros, como o relógio mostra (segundos não contam).
     for (let i = 0; i + 1 < marcas.length; i += 2) minutos += marcas[i + 1] - marcas[i];
-    const previstos = jornada[String(semana === 0 ? 7 : semana)] ?? [];
+    const feriado = extras.feriados?.[data], ocorrencia = extras.ocorrencias?.[data];
+    // Feriado: não há jornada prevista no dia.
+    const previstos = feriado ? [] : jornada[String(semana === 0 ? 7 : semana)] ?? [];
     const previsto = minutosPrevistos(previstos), futuro = data > hoje, impar = lista.length % 2 === 1;
     let saldo: number | null = null, situacao: SituacaoDia;
-    if (futuro) situacao = "futuro";
+    if (ocorrencia && !futuro && ocorrencia.tipo === "falta") { saldo = minutos - minutosPrevistos(jornada[String(semana === 0 ? 7 : semana)] ?? []); situacao = "falta"; }
+    else if (ocorrencia && !futuro) { saldo = 0; situacao = "abonado"; }
+    else if (futuro) situacao = feriado ? "feriado" : "futuro";
+    else if (feriado) { situacao = lista.length ? "feriado_trabalhado" : "feriado"; saldo = lista.length && !impar ? minutos : null; }
     else if (!lista.length) situacao = previsto ? (data === hoje ? "em_andamento" : "sem_marcacao") : "folga";
     else if (impar || lista.length < previstos.length && data === hoje) situacao = data === hoje ? "em_andamento" : "falta_marcar";
     else if (!previsto) { saldo = minutos; situacao = "fora_jornada"; }
     else { const r = saldoDoDia(marcas, previstos); saldo = r.saldo; situacao = r.saldo > 0 ? "extra" : r.saldo < 0 ? "atraso" : r.tolerado ? "tolerado" : "normal"; }
     dias.push({ data, diaSemana: SEMANA[semana], domingo: semana === 0, futuro, horarios, nsrs: lista.map(x => x.nsr), minutos, impar,
-      previstos, previsto, saldo, situacao });
+      previstos, previsto, saldo, situacao, ...(feriado ? { feriado } : {}), ...(ocorrencia ? { ocorrencia } : {}) });
   }
   return { mes, dias, totais: {
     marcacoes: dias.reduce((s, d) => s + d.horarios.length, 0), diasComMarcacao: dias.filter(d => d.horarios.length).length,
     minutos: dias.reduce((s, d) => s + d.minutos, 0), diasImpares: dias.filter(d => d.situacao === "falta_marcar").length,
     previsto: dias.filter(d => !d.futuro && d.data < hoje).reduce((s, d) => s + d.previsto, 0),
     extras: dias.reduce((s, d) => s + Math.max(0, d.saldo ?? 0), 0), atrasos: dias.reduce((s, d) => s + Math.min(0, d.saldo ?? 0), 0),
-    saldo: dias.reduce((s, d) => s + (d.saldo ?? 0), 0), diasSemMarcacao: dias.filter(d => d.situacao === "sem_marcacao").length } };
+    saldo: dias.reduce((s, d) => s + (d.saldo ?? 0), 0), diasSemMarcacao: dias.filter(d => d.situacao === "sem_marcacao").length,
+    faltas: dias.filter(d => d.situacao === "falta").length, abonos: dias.filter(d => d.situacao === "abonado").length } };
 }
 
 export type ResumoFuncionario = { employee_id: string; nome: string; matricula: string | null; espelho: Espelho };
@@ -104,14 +117,22 @@ export const TEXTO_SITUACAO: Record<SituacaoDia, string> = {
   normal: "", tolerado: "Dentro da tolerância (até 5 min por marcação, 10 no dia)", extra: "Passou do horário", atraso: "Faltou tempo (atraso ou saída antes)",
   sem_marcacao: "Sem marcação — falta, folga, atestado ou feriado? Conferir", falta_marcar: "Falta uma marcação (entrada ou saída)",
   em_andamento: "Dia em andamento", folga: "", fora_jornada: "Trabalhou em dia sem jornada", futuro: "",
+  feriado: "Feriado", feriado_trabalhado: "Trabalhou no feriado", abonado: "Abonado", falta: "Falta (não justificada)",
 };
+/** Texto da observação do dia, com o nome do feriado ou da ocorrência. */
+export function textoDoDia(d: DiaEspelho) {
+  if (d.ocorrencia) return NOME_OCORRENCIA[d.ocorrencia.tipo];
+  if (d.feriado) return `${TEXTO_SITUACAO[d.situacao]}: ${d.feriado}`;
+  return TEXTO_SITUACAO[d.situacao];
+}
 
-export function espelhosPorFuncionario(events: MarcacaoEspelho[], mes: string, agora = new Date(), jornada: Jornada = JORNADA_PADRAO): ResumoFuncionario[] {
+export function espelhosPorFuncionario(events: MarcacaoEspelho[], mes: string, agora = new Date(), jornada: Jornada = JORNADA_PADRAO,
+  feriados: Record<string, string> = {}, ocorrencias: Record<string, Record<string, { tipo: TipoOcorrencia; id?: number }>> = {}): ResumoFuncionario[] {
   const grupos = new Map<string, MarcacaoEspelho[]>();
   for (const e of events) grupos.set(e.employee_id, [...(grupos.get(e.employee_id) ?? []), e]);
   return [...grupos.entries()].map(([id, lista]) => {
     const ultimo = lista.reduce((a, b) => (a.nsr > b.nsr ? a : b));
-    return { employee_id: id, nome: ultimo.employee_name, matricula: ultimo.employee_code, espelho: montarEspelho(lista, mes, agora, jornada) };
+    return { employee_id: id, nome: ultimo.employee_name, matricula: ultimo.employee_code, espelho: montarEspelho(lista, mes, agora, jornada, { feriados, ocorrencias: ocorrencias[id] ?? {} }) };
   }).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 
@@ -126,4 +147,10 @@ export function descreverJornada(jornada: Jornada) {
     if (ultimo && ultimo.texto === texto && ultimo.ate === d - 1) ultimo.ate = d; else grupos.push({ de: d, ate: d, texto });
   }
   return grupos.filter(g => g.texto).map(g => `${nomes[g.de - 1]}${g.ate > g.de ? ` a ${nomes[g.ate - 1]}` : ""} ${g.texto}`).join("; ");
+}
+
+/** "2026-10" → { de: "2026-10-01", ate: "2026-10-31" } */
+export function intervaloDoMes(mes: string) {
+  const [a, m] = mes.split("-").map(Number);
+  return { de: `${mes}-01`, ate: `${mes}-${String(new Date(Date.UTC(a, m, 0)).getUTCDate()).padStart(2, "0")}` };
 }

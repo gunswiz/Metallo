@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { TESTE_ONLINE_GESTAO_ORIGIN, TESTE_ONLINE_PONTO_4D, TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
-import { JORNADA_PADRAO, jornadaSchema, type Jornada } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import { JORNADA_PADRAO, jornadaSchema, TIPOS_OCORRENCIA, type Jornada } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
 // Marco 4F: empresa, CPF (sempre mascarado na tela) e AFD. Só teste online e só administrador (o banco confere).
 export function oficialLiberado4f() { return getSupabaseEnv().url === TESTE_ONLINE_SUPABASE_URL; }
@@ -40,7 +40,7 @@ export async function lerJornada4g(): Promise<Jornada> {
   return !r.error && parsed.success ? parsed.data : JORNADA_PADRAO;
 }
 export const aejResposta = z.object({ filename: z.string().regex(/^AEJ_\d{14}_\d{8}_\d{8}\.txt$/), content: z.string().max(40_000_000),
-  vinculos: z.number().int().nonnegative(), marcacoes: z.number().int().nonnegative() }).strict();
+  vinculos: z.number().int().nonnegative(), marcacoes: z.number().int().nonnegative(), ausencias: z.number().int().nonnegative() }).strict();
 export async function gerarAej4g(from: string, to: string) {
   const client = await createClient(), session = await client.auth.getSession();
   if (session.error || !session.data.session?.access_token) throw new Error("SESSAO_INVALIDA");
@@ -49,4 +49,18 @@ export async function gerarAej4g(from: string, to: string) {
     cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(30000) });
   if (!response.ok) { const body = await response.json().catch(() => ({})); throw new Error(typeof body.error === "string" ? body.error : "FALHOU"); }
   return aejResposta.parse(await response.json());
+}
+
+// Marco 4H: feriados e ocorrências (atestado, férias, folga, faltas) — só leitura aqui; gravar é pela action.
+const feriadosLista = z.array(z.object({ data: z.string(), nome: z.string(), tipo: z.enum(["nacional", "estadual", "municipal", "empresa"]) }));
+const ocorrenciasLista = z.array(z.object({ id: z.coerce.number(), employee_id: z.string().uuid(), data: z.string(), tipo: z.enum(TIPOS_OCORRENCIA),
+  observacao: z.string().nullable(), created_at: z.string() }));
+export async function lerFeriados4h(de: string, ate: string) {
+  const r = await (await createClient()).rpc("feriados_4h" as never, { p_de: de, p_ate: ate } as never);
+  return r.error ? [] : feriadosLista.parse(r.data);
+}
+export async function lerOcorrencias4h(de: string, ate: string) {
+  const r = await (await createClient()).rpc("admin_ocorrencias_4h" as never, { p_de: de, p_ate: ate } as never);
+  if (r.error) throw new Error("Não foi possível ler as ocorrências.");
+  return ocorrenciasLista.parse(r.data);
 }

@@ -5,16 +5,17 @@ import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { MENSAGENS_4F, mostrarCnpj } from "@/03_FUNCOES_E_LOGICA/Ponto/oficial-4f";
 import { mesAtual } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
-import { lerCpfs4f, lerEmpresa4f, lerJornada4g, oficialLiberado4f } from "@/05_ACESSO_A_DADOS/Ponto/oficial-4f";
+import { lerCpfs4f, lerEmpresa4f, lerFeriados4h, lerJornada4g, oficialLiberado4f } from "@/05_ACESSO_A_DADOS/Ponto/oficial-4f";
 import { horasMinutos, minutosPrevistos } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
-import { salvarCpf4f, salvarEmpresa4f, salvarJornada4g } from "@/app/actions/ponto-oficial";
+import { removerFeriado4h, salvarCpf4f, salvarEmpresa4f, salvarFeriado4h, salvarJornada4g } from "@/app/actions/ponto-oficial";
 
 // Marco 4F — o que o ponto precisa para virar oficial: empresa, CPF de cada funcionário e o arquivo AFD (prévia).
 export default async function PontoOficialPage({ searchParams }: { searchParams: Promise<{ ok?: string; erro?: string }> }) {
   await requireCapability("admin:manage");
   if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
   const query = await searchParams;
-  const [empresa, pessoas, jornada] = await Promise.all([lerEmpresa4f(), lerCpfs4f(), lerJornada4g()]);
+  const ano = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Fortaleza", year: "numeric" }).format(new Date());
+  const [empresa, pessoas, jornada, feriados] = await Promise.all([lerEmpresa4f(), lerCpfs4f(), lerJornada4g(), lerFeriados4h(`${ano}-01-01`, `${ano}-12-31`)]);
   const semanal = Object.values(jornada).reduce((t, h) => t + minutosPrevistos(h), 0);
   const DIAS = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
   const semCpf = pessoas.filter(p => !p.cpf_mascarado).length;
@@ -23,7 +24,7 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
     <PageHeader eyebrow="PONTO · TESTE SEM VALOR OFICIAL" title="Dados do ponto oficial"
       description="Empresa, CPF de cada funcionário e o arquivo AFD para a fiscalização (Portaria 671). Tudo aqui é teste, com dados fictícios."
       actions={<><Link className="button ghost" href="/ponto-laboratorio">Ver marcações</Link><Link className="button ghost" href="/ponto-laboratorio/espelho">Espelho de ponto</Link></>} />
-    {query.ok && <div className="alert success" role="status">{query.ok === "empresa" ? "Dados da empresa salvos." : query.ok === "jornada" ? "Jornada salva." : "CPF salvo."}</div>}
+    {query.ok && <div className="alert success" role="status">{({ empresa: "Dados da empresa salvos.", jornada: "Jornada salva.", feriado: "Feriado salvo.", "feriado-removido": "Feriado retirado." } as Record<string, string>)[query.ok] ?? "CPF salvo."}</div>}
     {query.erro && <div className="alert error" role="alert">{MENSAGENS_4F[query.erro] ?? MENSAGENS_4F.falhou}</div>}
 
     <section className="panel" aria-labelledby="empresa-titulo">
@@ -71,8 +72,27 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
       </form>
     </section>
 
+    <section className="panel" id="feriados" aria-labelledby="feriados-titulo">
+      <header className="panel-header"><div><h2 id="feriados-titulo">4. Feriados de {ano}</h2>
+        <p>Os nacionais já estão cadastrados. Inclua os do estado e da cidade de cada obra (ex.: Data Magna do Ceará) e os dias que a empresa liberar.</p></div></header>
+      <div className="data-table-wrap"><table className="data-table feriados-tabela">
+        <thead><tr><th>Data</th><th>Feriado</th><th>Tipo</th><th></th></tr></thead>
+        <tbody>{feriados.map(f => <tr key={f.data}>
+          <td><strong>{f.data.slice(8)}/{f.data.slice(5, 7)}</strong> <span className="secondary-cell">{new Date(`${f.data}T12:00:00Z`).toLocaleDateString("pt-BR", { weekday: "short", timeZone: "UTC" }).replace(".", "")}</span></td>
+          <td>{f.nome}</td><td>{{ nacional: "Nacional", estadual: "Estadual", municipal: "Municipal", empresa: "Da empresa" }[f.tipo]}</td>
+          <td><form action={removerFeriado4h}><input type="hidden" name="data" value={f.data} /><button className="button ghost" type="submit" aria-label={`Retirar feriado ${f.nome}`}>Retirar</button></form></td>
+        </tr>)}</tbody>
+      </table></div>
+      <div className="panel-body"><form action={salvarFeriado4h} className="form-grid">
+        <label>Data<input type="date" name="data" required /></label>
+        <label>Nome do feriado<input name="nome" required maxLength={80} placeholder="Ex.: Data Magna do Ceará" /></label>
+        <label>Tipo<select name="tipo" defaultValue="estadual"><option value="estadual">Estadual</option><option value="municipal">Municipal</option><option value="empresa">Da empresa</option><option value="nacional">Nacional</option></select></label>
+        <div className="form-actions"><button className="button primary" type="submit">Incluir feriado</button></div>
+      </form></div>
+    </section>
+
     <section className="panel" id="afd" aria-labelledby="afd-titulo">
-      <header className="panel-header"><div><h2 id="afd-titulo">4. Arquivos para a fiscalização e a folha (prévia)</h2>
+      <header className="panel-header"><div><h2 id="afd-titulo">5. Arquivos para a fiscalização e a folha (prévia)</h2>
         <p><strong>AFD</strong> (versão 004): as marcações originais com CPF, NSR e código de cada registro — é o que a fiscalização pede.
           <strong> AEJ</strong> (versão 002): a jornada tratada (entradas, saídas e horário contratual) — é o que vai para a folha.</p></div></header>
       <div className="panel-body">
@@ -84,7 +104,7 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
         </form>
         <p className="muted espelho-aviso"><strong>Ainda não é o arquivo oficial:</strong> falta o registro do programa no INPI, a assinatura digital (.p7s, certificado ICP-Brasil)
           e os registros de cadastro da empresa e dos funcionários (tipos 2 e 5) na mesma numeração. Marcações antigas, feitas antes do CPF, ficam fora do arquivo.
-          No AEJ ainda faltam faltas, folgas, feriados e banco de horas (registro 07), que dependem do tratamento pelo DP.</p>
+          No AEJ, o registro 07 traz os domingos (descanso semanal), as faltas não justificadas e as folgas no lugar de feriado lançadas no espelho; banco de horas ainda não.</p>
       </div>
     </section>
   </>;

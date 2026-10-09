@@ -155,7 +155,7 @@ async function gerarAfd(tx: postgres.TransactionSql, w: ReturnType<typeof period
 }
 
 // Marco 4G — AEJ (leiaute v002), PRÉVIA: marcações com entrada/saída, horário contratual da empresa e identificação do programa.
-// Ainda sem registro 07 (faltas, DSR, banco de horas): depende do tratamento pelo DP.
+// Registro 07 (Marco 4H): domingos (DSR), faltas não justificadas e folgas no lugar de feriado lançadas pela Gestão. Banco de horas ainda não.
 const fmtFort = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short", hourCycle: "h23" });
 function partesFort(d: Date) { const p = fmtFort.formatToParts(d); const g = (t: string) => p.find(x => x.type === t)!.value;
   return { dia: `${g("year")}-${g("month")}-${g("day")}`, dh: `${g("year")}-${g("month")}-${g("day")}T${g("hour")}:${g("minute")}:00-0300`,
@@ -185,27 +185,39 @@ async function gerarAej(tx: postgres.TransactionSql, w: ReturnType<typeof period
     return codigos.get(chave)!;
   };
   for (let d = 1; d <= 7; d++) if ((dias[String(d)] ?? []).length) codigoDoDia(String(d));
-  const vinculos = new Map<string, number>(), reg03: string[] = [], reg05: string[] = [];
+  const vinculos = new Map<string, number>(), reg03: string[] = [], reg05: string[] = [], reg07: string[] = [];
+  const vinculo = (id: string, cpf: string, nome: string) => { if (!vinculos.has(id)) { vinculos.set(id, vinculos.size + 1); reg03.push(linha("03", vinculos.size, cpf, nome)); } return vinculos.get(id)!; };
+  const ocorr = await q<{ employee_id: string; full_name: string; cpf: string; data: string; tipo: string }>(tx, `select o.employee_id::text employee_id, e.full_name, c.cpf, o.data::text data, o.tipo
+    from private.ocorrencias_ponto_4h o join public.epi_employees e on e.id = o.employee_id join private.employee_cpf_4f c on c.employee_id = o.employee_id
+    where o.cancelled_at is null and o.data between $1::text::date and $2::text::date and o.tipo in ('falta', 'folga_feriado') order by e.full_name, o.data`, [w.from, w.to]);
   let atual = "", seqDia = 0;
   for (const m of marcas) {
-    if (!vinculos.has(m.employee_id)) { vinculos.set(m.employee_id, vinculos.size + 1); reg03.push(linha("03", vinculos.size, m.employee_cpf, m.employee_name)); }
+    vinculo(m.employee_id, m.employee_cpf, m.employee_name);
     const p = partesFort(new Date(m.marking_at)), chave = `${m.employee_id}|${p.dia}`;
     if (chave !== atual) { atual = chave; seqDia = 0; }
     const tp = seqDia % 2 === 0 ? "E" : "S", seq = Math.floor(seqDia / 2) + 1;
     reg05.push(linha("05", vinculos.get(m.employee_id), p.dh, 1, tp, String(seq).padStart(3, "0"), "O", tp === "E" && seq === 1 ? codigoDoDia(p.semana) : "", ""));
     seqDia++;
   }
+  for (const o of ocorr) vinculo(o.employee_id, o.cpf, o.full_name);
+  // DSR: domingos do período, para cada vínculo. Depois as faltas (2) e folgas no lugar de feriado (4).
+  const domingos: string[] = [];
+  for (let t = Date.parse(`${w.from}T12:00:00Z`); t <= Date.parse(`${w.to}T12:00:00Z`); t += 86400000) if (new Date(t).getUTCDay() === 0) domingos.push(new Date(t).toISOString().slice(0, 10));
+  for (const [id, n] of vinculos) {
+    const eventos = [...domingos.map(d => ({ d, t: 1 })), ...ocorr.filter(o => o.employee_id === id).map(o => ({ d: o.data, t: o.tipo === "falta" ? 2 : 4 }))].sort((a, b) => a.d.localeCompare(b.d) || a.t - b.t);
+    for (const e of eventos) reg07.push(linha("07", n, e.t, e.d, "", ""));
+  }
   const cnoCaepf = emp.cno_caepf ?? "";
   const dev = emp.desenvolvedor_documento ?? "";
   const linhas = [
     linha("01", emp.tipo_documento, emp.documento, cnoCaepf.length === 14 ? cnoCaepf : "", cnoCaepf.length === 12 ? cnoCaepf : "", emp.razao_social, w.from, w.to, dhAgora(), "002"),
-    linha("02", 1, 3, N(emp.inpi ?? "", 17)), ...reg03, ...reg04, ...reg05,
+    linha("02", 1, 3, N(emp.inpi ?? "", 17)), ...reg03, ...reg04, ...reg05, ...reg07,
     linha("08", "Metallo - ponto (previa de teste)", "0.4G", dev.length === 11 ? 2 : 1, dev, dev && dev === emp.documento ? emp.razao_social : "Desenvolvedor nao informado", emp.desenvolvedor_email ?? ""),
-    linha("99", 1, 1, reg03.length, reg04.length, reg05.length, 0, 0, 1),
+    linha("99", 1, 1, reg03.length, reg04.length, reg05.length, 0, reg07.length, 1),
     "ASSINATURA_DIGITAL_EM_ARQUIVO_P7S".padEnd(100, " "),
   ].map(l => [...l].map(c => (c.codePointAt(0)! < 256 ? c : "?")).join(""));
   return { filename: `AEJ_${N(emp.documento, 14)}_${w.from.replace(/-/g, "")}_${w.to.replace(/-/g, "")}.txt`, content: linhas.join("\r\n") + "\r\n",
-    vinculos: reg03.length, marcacoes: reg05.length };
+    vinculos: reg03.length, marcacoes: reg05.length, ausencias: reg07.length };
 }
 
 async function rota(method: string, path: string, raw: string, token: string, origin: string | null) {

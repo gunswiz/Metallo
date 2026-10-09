@@ -1,5 +1,5 @@
 "use client";
-import { JORNADA_PADRAO, jornadaSchema } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import { JORNADA_PADRAO, jornadaSchema, TIPOS_OCORRENCIA, type ExtrasEspelho, type TipoOcorrencia } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { marcacaoEmAndamento } from "@/03_FUNCOES_E_LOGICA/Ponto/marcacao-em-andamento";
@@ -220,7 +220,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -254,6 +254,13 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
   // Marco 5A: ASO e treinamentos do próprio funcionário (somente leitura).
   // Marco 4G: jornada padrão da empresa (para o saldo do espelho). Sem dado pessoal.
   const readJornada4g = useCallback(async () => { const r = jornadaSchema.safeParse(await exchangeRpc("jornada_padrao_4g")); return r.success ? r.data : JORNADA_PADRAO; }, [exchangeRpc]);
+  // Marco 4H: feriados do período e ocorrências da própria pessoa (atestado, férias, folga, faltas) para o espelho.
+  const readExtrasEspelho4h = useCallback(async (de: string, ate: string): Promise<ExtrasEspelho> => {
+    const [feriados, ocorrencias] = await Promise.all([exchangeRpc("feriados_4h", { p_de: de, p_ate: ate }), exchangeRpc("my_ocorrencias_4h", { p_de: de, p_ate: ate })]);
+    const f = Array.isArray(feriados) ? feriados as { data: string; nome: string }[] : [], o = Array.isArray(ocorrencias) ? ocorrencias as { data: string; tipo: TipoOcorrencia }[] : [];
+    return { feriados: Object.fromEntries(f.map(x => [x.data, String(x.nome).slice(0, 80)])),
+      ocorrencias: Object.fromEntries(o.filter(x => (TIPOS_OCORRENCIA as readonly string[]).includes(x.tipo)).map(x => [x.data, { tipo: x.tipo }])) };
+  }, [exchangeRpc]);
   const readTrainings5a = useCallback(async () => demo ? visualTrainings5a : ficha5a.parse(await exchangeRpc("my_trainings_5a")), [demo, exchangeRpc]);
   const readPersonalReport3e = useCallback(async () => epiReportPayloadSchema.parse(await exchangeRpc("my_epi_report_3e")), [exchangeRpc]);
   const readPersonalItems3g = useCallback(async () => demo ? visualItems3g :
@@ -306,5 +313,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
     await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
   }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, getAccessToken };
+  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, getAccessToken };
 }

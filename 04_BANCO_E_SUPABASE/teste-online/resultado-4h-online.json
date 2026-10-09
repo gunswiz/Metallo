@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-09T09:37:36.277Z",
+  "scope": "Marco 4H — feriados, ocorrências e AEJ registro 07 (teste online)",
+  "checks": [
+    {
+      "name": "10 feriados nacionais de 2026 visíveis para quem está logado",
+      "ok": true
+    },
+    {
+      "name": "funcionário não cadastra feriado",
+      "ok": true
+    },
+    {
+      "name": "administrador cadastra feriado estadual de teste",
+      "ok": true
+    },
+    {
+      "name": "administrador retira (desativa) o feriado de teste",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lança ocorrência",
+      "ok": true
+    },
+    {
+      "name": "administrador lança falta não justificada",
+      "ok": true
+    },
+    {
+      "name": "funcionário vê a própria ocorrência (sem a observação interna)",
+      "ok": true
+    },
+    {
+      "name": "AEJ traz DSR nos domingos (04/10 e 11/10) e a falta (tipo 2)",
+      "ok": true
+    },
+    {
+      "name": "trailer conta os registros 07",
+      "ok": true
+    },
+    {
+      "name": "trocar a ocorrência do dia cancela a anterior (fica uma ativa)",
+      "ok": true
+    },
+    {
+      "name": "cancelar ocorrência",
+      "ok": true
+    },
+    {
+      "name": "sem a falta, o AEJ não traz mais o tipo 2 daquele dia",
+      "ok": true
+    }
+  ],
+  "result": "12/12"
+}

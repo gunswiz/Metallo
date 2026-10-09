@@ -867,3 +867,8 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .espelho-dias th:nth-child(1) { width: 12%; } .espelho-dias th:nth-child(2) { width: 9%; } .espelho-dias th:nth-child(4) { width: 9%; } .espelho-dias th:nth-child(5) { width: 9%; } .espelho-dias th:nth-child(6) { width: 26%; }
 .jornada-tabela input[type=time] { min-height: 44px; width: 100%; max-width: 130px; }
 .espelho-totais { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important; }
+.espelho-alerta { color: #ffd18a; font-weight: 700; }
+.espelho-acao { margin-top: 6px; }
+.espelho-acao summary { cursor: pointer; color: var(--accent); font-weight: 700; min-height: 32px; }
+.espelho-acao .inline-action { margin-top: 6px; }
+.espelho-acao .inline-action input { min-width: 0; flex: 1 1 160px; }
