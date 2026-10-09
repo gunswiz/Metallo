@@ -833,3 +833,12 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .avisos-celular .avisos-msg { color: #d5e2ea; font-weight: 700; }
 .avisos-botoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 @media (max-width: 820px) { .avisos-celular { flex-wrap: wrap; } .avisos-botoes { width: 100%; } .avisos-botoes .button { flex: 1; } }
+
+/* Marco 3Q — Consumo em R$ */
+.cs-unidades button.cs-reais { border-color: #2f6b4f; }
+.cs-unidades button.cs-reais[aria-pressed=true] { background: rgba(25,158,112,.18); border-color: #199e70; }
+.cs-aviso-reais a, .cs-dica-precos a { color: inherit; font-weight: 800; text-decoration: underline; }
+.cs-dica-precos { margin: 0 0 14px; color: var(--muted); font-size: var(--font-small); }
+.precos-tabela { table-layout: fixed; width: 100%; }
+.precos-tabela input { width: 100%; max-width: 160px; min-height: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+.precos-acoes { position: sticky; bottom: 0; display: flex; gap: 12px; align-items: center; justify-content: flex-end; padding: 14px 18px; background: var(--panel); border-top: 1px solid var(--line); }

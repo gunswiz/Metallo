@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
-import type { ConsumptionUnitReport } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
-import { consumptionCategory } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
+import type { ConsumoEmReais, ConsumptionUnitReport } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
+import { consumptionCategory, UNIDADE_REAIS } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
 import { consumptionQuantity, consumptionUnitLabel } from "@/03_FUNCOES_E_LOGICA/unidadesConsumo";
 import { formatNumber } from "./analytics-charts";
 import { consumptionPercent } from "./consumption-donut";
@@ -44,7 +44,7 @@ function GraficoDias({ report }: { report: ConsumptionUnitReport }) {
   return <div className="cs-colunas" onMouseLeave={() => setAtivo(null)}>
     <div className="cs-colunas-area">
       {[1, 0.5, 0].map((fracao) => <div key={fracao} className="cs-grade" style={{ bottom: `${fracao * 100}%` }}><span>{formatNumber(maior * fracao)}</span></div>)}
-      {media > 0 && <div className="cs-media" style={{ bottom: `${(media / maior) * 100}%` }}><span>média {formatNumber(Math.round(media * 10) / 10)} por {report.daily.bucket === "dia" ? "dia trabalhado" : "semana"}</span></div>}
+      {media > 0 && <div className="cs-media" style={{ bottom: `${(media / maior) * 100}%` }}><span>média {report.unit === UNIDADE_REAIS ? consumptionQuantity(media, report.unit) : formatNumber(Math.round(media * 10) / 10)} por {report.daily.bucket === "dia" ? "dia trabalhado" : "semana"}</span></div>}
       <div className="cs-barras" role="list" aria-label={`Consumo por ${report.daily.bucket} em ${unidade}`}>
         {pontos.map((item, index) => <button type="button" role="listitem" key={item.start} className={`cs-barra${ativo === index ? " ativo" : ""}`}
           aria-label={`${item.fullLabel}: ${consumptionQuantity(item.value, report.unit)}`}
@@ -80,8 +80,8 @@ function Rosca({ fatias, total, unit }: { fatias: Fatia[]; total: number; unit: 
           onMouseEnter={() => setAtivo(index)} />)}
       </svg>
       <div className="cs-rosca-centro" aria-hidden="true">
-        {destaque ? <><span>{destaque.label}</span><strong>{formatNumber(destaque.value)}</strong><span>{consumptionPercent(destaque.value, total)} do total</span></>
-          : <><span>Total</span><strong>{formatNumber(total)}</strong><span>{consumptionUnitLabel(unit, total)}</span></>}
+        {destaque ? <><span>{destaque.label}</span><strong>{unit === UNIDADE_REAIS ? consumptionQuantity(destaque.value, unit) : formatNumber(destaque.value)}</strong><span>{consumptionPercent(destaque.value, total)} do total</span></>
+          : <><span>Total</span><strong>{unit === UNIDADE_REAIS ? consumptionQuantity(total, unit) : formatNumber(total)}</strong><span>{unit === UNIDADE_REAIS ? "estimado" : consumptionUnitLabel(unit, total)}</span></>}
       </div>
     </div>
     <ul className="cs-legenda">
@@ -105,11 +105,21 @@ function Barras({ itens, total, unit }: { itens: Array<{ label: string; value: n
   </li>)}</ul>;
 }
 
-export function ConsumptionDashboard({ reports, periodLabel }: { reports: ConsumptionUnitReport[]; periodLabel: string }) {
+// Valor grande do quadro: em R$ já vem com o símbolo; nas outras medidas, número + medida.
+function Valor({ value, unit }: { value: number; unit: string }) {
+  if (unit === UNIDADE_REAIS) return <>{consumptionQuantity(value, unit)}</>;
+  return <>{formatNumber(Math.round(value * 10) / 10)} <small>{consumptionUnitLabel(unit, value)}</small></>;
+}
+
+export function ConsumptionDashboard({ reports, periodLabel, reais = null, podeEditarPrecos = false }: {
+  reports: ConsumptionUnitReport[]; periodLabel: string; reais?: ConsumoEmReais | null; podeEditarPrecos?: boolean }) {
   const comConsumo = reports.filter((entry) => entry.total > 0);
-  const [selectedUnit, setSelectedUnit] = useState(() =>
+  const temReais = Boolean(reais?.report && reais.report.total > 0);
+  // Marco 3Q: com preços cadastrados, o painel abre em R$ (tudo somado); as medidas continuam nos botões.
+  const [selectedUnit, setSelectedUnit] = useState(() => temReais ? UNIDADE_REAIS :
     comConsumo.find((entry) => entry.unit === "un")?.unit ?? comConsumo[0]?.unit ?? reports[0]?.unit ?? "un");
-  const report = reports.find((entry) => entry.unit === selectedUnit) ?? reports[0];
+  const report = (selectedUnit === UNIDADE_REAIS && temReais ? reais!.report! : null) ?? reports.find((entry) => entry.unit === selectedUnit) ?? reports[0];
+  const emReais = report?.unit === UNIDADE_REAIS;
   if (!report || comConsumo.length === 0) return <section className="panel consumption-chart-empty"><strong>Nenhum consumo neste período</strong><p>Escolha outro período acima ou registre o consumo de hoje.</p><Link className="button primary" href="/lancar/consumo">Registrar consumo</Link></section>;
 
   const unidade = consumptionUnitLabel(report.unit);
@@ -128,30 +138,39 @@ export function ConsumptionDashboard({ reports, periodLabel }: { reports: Consum
   return <>
     <nav className="cs-unidades" aria-label="Medida analisada">
       <span>Medida:</span>
+      {temReais && <button type="button" className="cs-reais" aria-pressed={emReais} onClick={() => setSelectedUnit(UNIDADE_REAIS)}>
+        <strong>Em R$</strong><small>{consumptionQuantity(reais!.report!.total, UNIDADE_REAIS)}</small>
+      </button>}
       {reports.map((entry) => <button type="button" key={entry.unit} aria-pressed={entry.unit === report.unit} onClick={() => setSelectedUnit(entry.unit)} disabled={entry.total === 0}>
         <strong>{consumptionUnitLabel(entry.unit, 2)}</strong><small>{formatNumber(entry.total)}</small>
       </button>)}
-      <p>Caixas, unidades, kg e litros não se somam: cada medida tem seu próprio painel.</p>
+      <p>{temReais ? "Em R$ tudo se soma. Nas medidas (caixas, unidades, kg, litros) cada uma tem seu próprio painel." : "Caixas, unidades, kg e litros não se somam: cada medida tem seu próprio painel."}</p>
     </nav>
+    {emReais && reais && <div className={`alert ${reais.semPreco.length ? "warn" : "success"} cs-aviso-reais`} role="note">
+      <strong>Valor estimado pelo preço atual de cada material.</strong>{" "}
+      {reais.semPreco.length ? <>{reais.semPreco.length} de {reais.materiaisNoPeriodo} material(is) usados no período ainda sem preço não entram no total: {reais.semPreco.slice(0, 5).map((m) => m.label).join(", ")}{reais.semPreco.length > 5 ? "…" : ""}.</> : "Todos os materiais usados no período têm preço."}
+      {podeEditarPrecos && <> <Link href="/materiais/precos">Cadastrar preços</Link></>}
+    </div>}
+    {!temReais && podeEditarPrecos && <p className="cs-dica-precos">Quer ver o consumo em R$? <Link href="/materiais/precos">Cadastre o preço dos materiais</Link>.</p>}
 
     <section className="cs-kpis" aria-label={`Resumo em ${unidade}`}>
       <article className="cs-kpi destaque">
-        <span>Total consumido · {periodLabel}</span>
-        <strong>{formatNumber(total)} <small>{consumptionUnitLabel(report.unit, total)}</small></strong>
+        <span>{emReais ? "Gasto estimado" : "Total consumido"} · {periodLabel}</span>
+        <strong><Valor value={total} unit={report.unit} /></strong>
         <Variacao atual={total} anterior={report.previousTotal} texto="vs. período anterior" />
       </article>
       <article className="cs-kpi">
         <span>Média por dia trabalhado</span>
-        <strong>{formatNumber(Math.round(mediaDia * 10) / 10)} <small>{consumptionUnitLabel(report.unit, mediaDia)}</small></strong>
+        <strong><Valor value={mediaDia} unit={report.unit} /></strong>
         <em>{report.activeDays} dia(s) com consumo</em>
       </article>
       <article className="cs-kpi">
-        <span>Equipe que mais consumiu</span>
+        <span>{emReais ? "Equipe com maior gasto" : "Equipe que mais consumiu"}</span>
         <strong className="texto">{equipe?.label ?? "—"}</strong>
         <em>{equipe ? `${consumptionQuantity(equipe.value, report.unit)} · ${consumptionPercent(equipe.value, total)} do total` : ""}</em>
       </article>
       <article className="cs-kpi">
-        <span>Material mais consumido</span>
+        <span>{emReais ? "Material que mais pesou no custo" : "Material mais consumido"}</span>
         <strong className="texto">{material?.label ?? "—"}</strong>
         <em>{material ? `${consumptionQuantity(material.value, report.unit)} · ${consumptionPercent(material.value, total)} do total` : ""}</em>
       </article>
@@ -197,7 +216,7 @@ export function ConsumptionDashboard({ reports, periodLabel }: { reports: Consum
 
     <details className="panel consumption-history-details"><summary>Ver lançamentos que formam os totais · {unidade}</summary>
       <div className="panel-header"><div><p>{report.rows.length > 100 ? `Exibindo os 100 mais recentes de ${report.rows.length} lançamentos. Os totais acima incluem todos.` : `${report.rows.length} lançamento(s) no período, em ${unidade}.`}</p></div></div>
-      <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Data do consumo</th><th>Material</th><th>Equipe</th><th>Categoria</th><th>Quantidade</th></tr></thead>
+      <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Data do consumo</th><th>Material</th><th>Equipe</th><th>Categoria</th><th>{emReais ? "Valor estimado" : "Quantidade"}</th></tr></thead>
         <tbody>{report.rows.slice().reverse().slice(0, 100).map((row) => <tr key={row.id}><td>{new Date(row.created_at).toLocaleString("pt-BR", { timeZone: "America/Fortaleza", dateStyle: "short", timeStyle: "short" })}</td><td><span className="primary-cell">{row.items?.name ?? "Material removido"}</span><span className="secondary-cell">{row.items?.code}</span></td><td>{row.origin?.name ?? "Sem equipe"}</td><td>{consumptionCategory(row)}</td><td className="numeric consumption-quantity">{consumptionQuantity(Number(row.quantity), report.unit)}</td></tr>)}</tbody>
       </table></div>
     </details>

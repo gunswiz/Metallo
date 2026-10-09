@@ -3,7 +3,9 @@ import { ArrowLeftRight } from "lucide-react";
 import { ConsumptionDashboard } from "@/02_COMPONENTES_VISUAIS/consumption-dashboard";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
-import { analyzeConsumptionByUnit, consumptionCategory, resolveConsumptionRange } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
+import { analyzeConsumptionByUnit, analyzeConsumptionInReais, consumptionCategory, resolveConsumptionRange } from "@/03_FUNCOES_E_LOGICA/calcularConsumo";
+import { can } from "@metallo/core";
+import { lerPrecos3q, precosLiberados3q } from "@/05_ACESSO_A_DADOS/Supabase/precos-3q";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 
 type Query = { period?: string; from?: string; to?: string; team?: string; item?: string; category?: string };
@@ -13,7 +15,7 @@ function inputDate(date: Date) {
 }
 
 export default async function ConsumptionPage({ searchParams }: { searchParams: Promise<Query> }) {
-  await requireCapability("inventory:read");
+  const profile = await requireCapability("inventory:read");
   const query = await searchParams;
   const range = resolveConsumptionRange(query.period, query.from, query.to);
   const service = await getMetalloService();
@@ -24,6 +26,10 @@ export default async function ConsumptionPage({ searchParams }: { searchParams: 
   const category = query.category?.slice(0, 80);
   const reports = analyzeConsumptionByUnit(rows, range, category);
   const categories = [...new Set(rows.map(consumptionCategory))].sort();
+  // Marco 3Q: gasto em R$ (administrador e engenheiro; o banco devolve lista vazia para os demais).
+  const precos = await lerPrecos3q();
+  const reais = precos.length ? analyzeConsumptionInReais(rows, range, precos, category) : null;
+  const podeEditarPrecos = precosLiberados3q() && can(profile, "admin:manage");
 
   const period = ["today", "7", "30", "month", "custom"].includes(query.period ?? "") ? query.period! : "30";
   // Marco 3K: período em botões (um toque); o resto fica em "Mais filtros".
@@ -58,6 +64,6 @@ export default async function ConsumptionPage({ searchParams }: { searchParams: 
         </form>
       </details>
     </div></section>
-    <ConsumptionDashboard reports={reports} periodLabel={range.label} />
+    <ConsumptionDashboard reports={reports} periodLabel={range.label} reais={reais} podeEditarPrecos={podeEditarPrecos} />
   </>;
 }

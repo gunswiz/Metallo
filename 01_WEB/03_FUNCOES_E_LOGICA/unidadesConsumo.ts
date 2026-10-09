@@ -24,10 +24,12 @@ export function consumptionUnit(raw: string | null | undefined) {
 }
 
 export function consumptionUnitLabel(unit: string, quantity?: number) {
+  if (unit === "R$") return "reais";
   const forms = labels[unit];
   return forms ? forms[quantity === 1 ? 0 : 1] : unit;
 }
 
 export function consumptionQuantity(quantity: number, unit: string) {
+  if (unit === "R$") return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(quantity);
   return `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(quantity)} ${consumptionUnitLabel(unit, quantity)}`;
 }

@@ -9,16 +9,18 @@ import { parsePage, type SearchParams } from "@/03_FUNCOES_E_LOGICA/lerFiltrosEP
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { can } from "@metallo/core";
+import { precosLiberados3q } from "@/05_ACESSO_A_DADOS/Supabase/precos-3q";
 
 export default async function MaterialsPage({ searchParams }: { searchParams: SearchParams }) {
   const input = await parsePage(searchParams);
   const profile = await requireProfile();
   const canOperate = can(profile, "materials:write");
+  const precos = precosLiberados3q() && can(profile, "admin:manage");
   const service = await getMetalloService();
   const result = await service.listMaterials(input);
   return (
     <>
-      <PageHeader eyebrow="ALMOXARIFADO" title="Materiais" description="Catálogo, estoque distribuído e níveis mínimos por equipe." actions={canOperate ? <><Link className="button secondary" href="/movimentacoes/nova"><ArrowLeftRight size={16} />Movimentar</Link><Link className="button primary" href="/materiais/novo"><Plus size={16} />Novo material</Link></> : undefined} />
+      <PageHeader eyebrow="ALMOXARIFADO" title="Materiais" description="Catálogo, estoque distribuído e níveis mínimos por equipe." actions={canOperate ? <>{precos && <Link className="button ghost" href="/materiais/precos">Preços</Link>}<Link className="button secondary" href="/movimentacoes/nova"><ArrowLeftRight size={16} />Movimentar</Link><Link className="button primary" href="/materiais/novo"><Plus size={16} />Novo material</Link></> : undefined} />
       <section className="panel">
         <div className="panel-body"><SearchToolbar placeholder="Nome, código ou categoria" q={input.q} /></div>
         {result.data.length === 0 ? <EmptyState /> : <div className="data-table-wrap"><table className="data-table">

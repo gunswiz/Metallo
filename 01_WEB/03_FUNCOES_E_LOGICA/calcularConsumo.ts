@@ -159,3 +159,26 @@ export function analyzeConsumptionByUnit(rows: ConsumptionRow[], range: Consumpt
 }
 
 export type ConsumptionUnitReport = ReturnType<typeof analyzeConsumptionByUnit>[number];
+
+// Marco 3Q: consumo em R$ (estimado pelo preço atual de cada material). Em reais tudo se soma: caixas, kg, litros…
+export const UNIDADE_REAIS = "R$";
+export type PrecoMaterial = { item_id: string; unit_price: number };
+
+export function analyzeConsumptionInReais(rows: ConsumptionRow[], range: ConsumptionRange, prices: PrecoMaterial[], selectedCategory?: string) {
+  const preco = new Map(prices.map((price) => [price.item_id, Number(price.unit_price)]));
+  const noPeriodo = rows.filter((row) => {
+    const date = new Date(row.created_at);
+    return date >= range.currentStart && date < range.currentEnd && (!selectedCategory || consumptionCategory(row) === selectedCategory);
+  });
+  const semPreco = new Map<string, { id: string; label: string; code: string }>();
+  for (const row of noPeriodo) if (!preco.has(row.item_id)) semPreco.set(row.item_id, { id: row.item_id, label: row.items?.name ?? "Material removido", code: row.items?.code ?? "" });
+  const emReais = rows.filter((row) => preco.has(row.item_id)).map((row) => ({
+    ...row,
+    quantity: Math.round(Number(row.quantity || 0) * preco.get(row.item_id)! * 100) / 100,
+    items: row.items ? { ...row.items, unit: UNIDADE_REAIS } : { id: row.item_id, name: "Material removido", code: "", unit: UNIDADE_REAIS, category: null },
+  }));
+  const report = analyzeConsumptionByUnit(emReais, range, selectedCategory).find((entry) => entry.unit === UNIDADE_REAIS) ?? null;
+  const materiaisNoPeriodo = new Set(noPeriodo.map((row) => row.item_id)).size;
+  return { report, semPreco: [...semPreco.values()].sort((a, b) => a.label.localeCompare(b.label, "pt-BR")), materiaisNoPeriodo };
+}
+export type ConsumoEmReais = ReturnType<typeof analyzeConsumptionInReais>;
