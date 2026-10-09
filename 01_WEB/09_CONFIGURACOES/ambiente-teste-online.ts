@@ -26,3 +26,6 @@ export function loginDeTeste(valor: string) {
   const v = valor.trim().toLowerCase();
   return v.includes("@") ? v : `${v}@${TESTE_ONLINE_DOMINIO_LOGIN}`;
 }
+
+/** Marco 3P: chave PÚBLICA dos avisos no celular (Web Push) do teste online. A privada fica só no Vault do Supabase. */
+export const TESTE_ONLINE_VAPID_PUBLICA = "BDAdJU5pTkwqGAbvCcCGcnBi56NJrm8NWrjR8UdNWTbVNAeW7qOgm9y3wU91WYablPTkbRkk10SfDRRa1qjkSDg";

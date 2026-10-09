@@ -11,6 +11,8 @@ import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos-funcionarios";
 import { lerVisaoTreinamentos5a } from "@/05_ACESSO_A_DADOS/Supabase/treinamentos-5a";
+import { domingoEmFortaleza, horaFortaleza, lerEquipesSemConsumoHoje3p } from "@/05_ACESSO_A_DADOS/Supabase/avisos-3p";
+import { AvisosCelular } from "@/02_COMPONENTES_VISUAIS/avisos-celular";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
@@ -33,6 +35,10 @@ export default async function DashboardPage() {
   // Marco 3J: quantos pedidos do app do Funcionário esperam resposta (só laboratório e teste online).
   const pedidos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
     await lerPedidosFuncionarios().then(result => result.aguardando, () => null) : null;
+  // Marco 3P: consumo de hoje ainda não lançado (a partir das 14h; segunda a sábado).
+  const novos = recursosNovosLiberados(getSupabaseEnv().url);
+  const semConsumo = novos && horaFortaleza() >= 14 && !domingoEmFortaleza() ?
+    (await lerEquipesSemConsumoHoje3p().catch(() => null)) ?? [] : [];
 
   return (
     <>
@@ -48,6 +54,7 @@ export default async function DashboardPage() {
       <section className="panel" id="pendencias" aria-labelledby="pendencias-titulo">
         <header className="panel-header"><div><h2 id="pendencias-titulo">Precisa de você</h2><p>Toque para resolver.</p></div></header>
         <div className="panel-body todo-list">
+          {semConsumo.length > 0 && <Link className="todo-item" href="/lancar/consumo"><span className="todo-count">{semConsumo.length}</span><span className="todo-text"><strong>Consumo de hoje ainda não lançado</strong><small>{semConsumo.map(equipe => equipe.team_name).join(", ")}</small></span></Link>}
           {pedidos !== null && pedidos > 0 && <Link className="todo-item" href="/pedidos"><span className="todo-count">{pedidos}</span><span className="todo-text"><strong>Pedidos dos funcionários</strong><small>Trocas e avisos feitos pelo app esperando resposta</small></span></Link>}
           {vencidos > 0 && <Link className="todo-item" href="/treinamentos?filtro=vencido"><span className="todo-count">{vencidos}</span><span className="todo-text"><strong>ASO ou treinamento vencido</strong><small>Não deve fazer a atividade até regularizar</small></span></Link>}
           {faltando > 0 && <Link className="todo-item" href="/treinamentos?filtro=faltando"><span className="todo-count">{faltando}</span><span className="todo-text"><strong>Falta ASO ou treinamento obrigatório</strong><small>Cadastre o que falta para a função</small></span></Link>}
@@ -55,9 +62,10 @@ export default async function DashboardPage() {
           {aReceber > 0 && <Link className="todo-item" href="/lancar/receber"><span className="todo-count">{aReceber}</span><span className="todo-text"><strong>Pedidos para receber</strong><small>Compras providenciadas que ainda não chegaram por completo</small></span></Link>}
           {pedidosAbertos > 0 && <Link className="todo-item" href="/pedidos-adm"><span className="todo-count">{pedidosAbertos}</span><span className="todo-text"><strong>Pedidos à ADM em andamento</strong><small>Acompanhe a aprovação e a compra</small></span></Link>}
           {alertas.map(alerta => <Link className="todo-item" key={alerta.id} href={SECAO_ANTIGA[alerta.section] ?? "/obras"}><span className="todo-count">!</span><span className="todo-text"><strong>{alerta.title}</strong><small>{alerta.description}</small></span></Link>)}
-          {!(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
+          {!semConsumo.length && !(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
         </div>
       </section>
+      {novos && <AvisosCelular compacto />}
       <section className="metric-grid">
         {pedidos !== null && <MetricCard label="pedidos dos funcionários esperando resposta" value={pedidos} href="/pedidos" icon={Inbox} />}
         <MetricCard label="unidades de materiais" value={data.materialUnits} href="/materiais" icon={PackageOpen} />

@@ -824,3 +824,12 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .acesso-tabela .operation-details > summary { padding: 8px 12px; font-size: var(--font-small); }
 .acesso-tabela .operation-details > form { padding: 0 12px 12px; }
 .acesso-acoes { display: grid; gap: 6px; min-width: 220px; }
+
+/* Marco 3P — Avisos no celular */
+.avisos-celular { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; margin-bottom: 18px; border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 14px; background: var(--panel); }
+.avisos-celular > svg { flex: 0 0 auto; color: var(--accent); margin-top: 2px; }
+.avisos-celular > div:nth-child(2) { flex: 1; min-width: 0; }
+.avisos-celular p { margin: 4px 0 0; color: var(--muted); font-size: var(--font-small); line-height: 1.5; }
+.avisos-celular .avisos-msg { color: #d5e2ea; font-weight: 700; }
+.avisos-botoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+@media (max-width: 820px) { .avisos-celular { flex-wrap: wrap; } .avisos-botoes { width: 100%; } .avisos-botoes .button { flex: 1; } }

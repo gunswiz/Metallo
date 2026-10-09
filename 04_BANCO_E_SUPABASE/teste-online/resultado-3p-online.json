@@ -1,0 +1,54 @@
+{
+  "at": "2026-10-09T00:14:04.188Z",
+  "scope": "Marco 3P no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "agendamento sem o segredo é recusado",
+      "ok": true
+    },
+    {
+      "name": "agendamento com segredo errado é recusado",
+      "ok": true
+    },
+    {
+      "name": "teste sem login é recusado",
+      "ok": true
+    },
+    {
+      "name": "Início: gestor vê as equipes sem consumo hoje",
+      "ok": true
+    },
+    {
+      "name": "João (conta do app) não vê a lista da Gestão",
+      "ok": true
+    },
+    {
+      "name": "conta do app (João) não liga avisos da Gestão",
+      "ok": true
+    },
+    {
+      "name": "endereço que não é https é recusado",
+      "ok": true
+    },
+    {
+      "name": "gestor liga os avisos neste aparelho",
+      "ok": true
+    },
+    {
+      "name": "contagem de aparelhos do gestor",
+      "ok": true
+    },
+    {
+      "name": "aviso de teste é cifrado e enviado ao serviço do aparelho",
+      "ok": true
+    },
+    {
+      "name": "João sem aparelho recebe aviso claro",
+      "ok": true
+    },
+    {
+      "name": "gestor desliga os avisos deste aparelho",
+      "ok": true
+    }
+  ]
+}

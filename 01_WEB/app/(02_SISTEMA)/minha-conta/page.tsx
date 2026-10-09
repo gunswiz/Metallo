@@ -5,6 +5,9 @@ import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { changeMyEmail } from "@/app/actions/minha-conta";
+import { AvisosCelular } from "@/02_COMPONENTES_VISUAIS/avisos-celular";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 export default async function MyAccountPage({ searchParams }: { searchParams: Promise<{ confirmation?: string }> }) {
   const profile = await requireProfile();
   const { data, error } = await (await createClient()).auth.getUser();
@@ -15,6 +18,7 @@ export default async function MyAccountPage({ searchParams }: { searchParams: Pr
     <section className="panel"><header className="panel-header"><h2>E-mail de acesso</h2></header><div className="panel-body"><p>Endereço atual: {data.user.email}</p><OperationForm action={changeMyEmail} label="Solicitar alteração de e-mail">
       <label>Novo e-mail<input name="email" type="email" required autoComplete="email" /></label><label>Confirme o novo e-mail<input name="confirmation" type="email" required autoComplete="off" /></label>
     </OperationForm></div></section>
+    {recursosNovosLiberados(getSupabaseEnv().url) && <AvisosCelular />}
     <section className="panel"><header className="panel-header"><h2>Senha e ajuda</h2></header><div className="panel-body"><Link className="button secondary" href="/atualizar-senha">Alterar minha senha</Link> <Link className="button ghost" href="/ajuda">Guia do Metallo</Link></div></section>
   </>;
 }
