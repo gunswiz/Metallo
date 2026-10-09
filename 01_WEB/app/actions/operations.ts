@@ -21,12 +21,22 @@ import {
   epiDeliveryCloseSchema,
 } from "@metallo/validation";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
+import { lerContrato3r, lerValorEquipamento3r } from "@/03_FUNCOES_E_LOGICA/Equipamentos/aluguel-3r";
+import { aluguelLiberado3r, salvarDetalhesAluguel3r } from "@/05_ACESSO_A_DADOS/Supabase/aluguel-3r";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { parseUserPermissions } from "@/03_FUNCOES_E_LOGICA/validarPermissoes";
 
 const text = (data: FormData, name: string) => String(data.get(name) ?? "").trim();
 const optional = (data: FormData, name: string) => text(data, name) || undefined;
 const nullable = (data: FormData, name: string) => text(data, name) || null;
+
+// Marco 3R: contrato e valor real do equipamento alugado (opcionais). undefined = campo inválido.
+function extrasAluguel(formData: FormData) {
+  if (!aluguelLiberado3r() || formData.get("ownershipType") !== "rented" || !formData.has("contractNumber")) return null;
+  const contrato = lerContrato3r(String(formData.get("contractNumber") ?? ""));
+  const valor = lerValorEquipamento3r(String(formData.get("realValue") ?? ""));
+  return contrato === undefined || valor === undefined ? undefined : { contrato, valor };
+}
 
 function operationError(destination: string, error: { message: string } | null) {
   if (!error) return;
@@ -63,9 +73,10 @@ export async function createEquipment(formData: FormData) {
     ownershipType: text(formData, "ownershipType"), rentalCompany: optional(formData, "rentalCompany"),
     rentalStartDate: nullable(formData, "rentalStartDate"), rentalEndDate: nullable(formData, "rentalEndDate"),
   });
-  if (!parsed.success) redirect("/equipamentos/novo?error=dados-invalidos");
+  const extras = extrasAluguel(formData);
+  if (!parsed.success || extras === undefined) redirect("/equipamentos/novo?error=dados-invalidos");
   const supabase = await createClient();
-  const { error } = await supabase.rpc("create_equipment_for_team_v2", {
+  const { data: novoId, error } = await supabase.rpc("create_equipment_for_team_v2", {
     p_code: parsed.data.code, p_name: parsed.data.name, p_asset_code: parsed.data.assetCode,
     p_serial_number: parsed.data.serialNumber, p_description: parsed.data.description,
     p_category: parsed.data.category, p_team_id: parsed.data.teamId, p_user_notes: parsed.data.notes,
@@ -73,6 +84,10 @@ export async function createEquipment(formData: FormData) {
     p_rental_start_date: parsed.data.rentalStartDate ?? undefined, p_rental_end_date: parsed.data.rentalEndDate ?? undefined,
   });
   operationError("/equipamentos/novo", error);
+  if (extras && typeof novoId === "string" && (extras.contrato || extras.valor)) {
+    // O equipamento já foi criado; se o contrato falhar, leva para a tela dele para completar.
+    if (await salvarDetalhesAluguel3r(novoId, extras.contrato, extras.valor)) redirect(`/equipamentos/${novoId}?error=contrato`);
+  }
   revalidatePath("/equipamentos"); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect("/equipamentos?created=1");
 }
@@ -106,7 +121,8 @@ export async function updateEquipment(formData: FormData) {
     rentalStartDate: nullable(formData, "rentalStartDate"), rentalEndDate: nullable(formData, "rentalEndDate"),
   });
   const fallbackId = text(formData, "assetId");
-  if (!parsed.success) redirect(`/equipamentos/${fallbackId}?error=dados-invalidos`);
+  const extras = extrasAluguel(formData);
+  if (!parsed.success || extras === undefined) redirect(`/equipamentos/${fallbackId}?error=dados-invalidos`);
   const supabase = await createClient();
   const { error } = await supabase.rpc("update_equipment_admin_v2", {
     p_item_id: parsed.data.itemId, p_item_code: parsed.data.code, p_item_name: parsed.data.name,
@@ -117,6 +133,7 @@ export async function updateEquipment(formData: FormData) {
     p_rental_start_date: parsed.data.rentalStartDate ?? undefined, p_rental_end_date: parsed.data.rentalEndDate ?? undefined,
   });
   operationError(`/equipamentos/${parsed.data.assetId}`, error);
+  if (extras && await salvarDetalhesAluguel3r(parsed.data.assetId, extras.contrato, extras.valor)) redirect(`/equipamentos/${parsed.data.assetId}?error=contrato`);
   revalidatePath("/equipamentos"); revalidatePath(`/equipamentos/${parsed.data.assetId}`); revalidatePath("/relatorios"); revalidatePath("/dashboard");
   redirect(`/equipamentos/${parsed.data.assetId}?updated=1`);
 }

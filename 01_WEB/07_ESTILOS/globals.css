@@ -842,3 +842,6 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .precos-tabela { table-layout: fixed; width: 100%; }
 .precos-tabela input { width: 100%; max-width: 160px; min-height: 44px; text-align: right; font-variant-numeric: tabular-nums; }
 .precos-acoes { position: sticky; bottom: 0; display: flex; gap: 12px; align-items: center; justify-content: flex-end; padding: 14px 18px; background: var(--panel); border-top: 1px solid var(--line); }
+
+/* Marco 3R — dica abaixo do campo */
+.field-hint { display: block; margin-top: 6px; color: var(--muted); font-size: var(--font-small); font-weight: 500; line-height: 1.4; }

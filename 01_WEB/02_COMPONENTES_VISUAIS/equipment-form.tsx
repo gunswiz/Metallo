@@ -21,6 +21,8 @@ type EquipmentDefaults = {
   rentalCompany?: string | null;
   rentalStartDate?: string | null;
   rentalEndDate?: string | null;
+  contractNumber?: string | null;
+  realValue?: string | null;
 };
 
 export function EquipmentForm({
@@ -28,11 +30,14 @@ export function EquipmentForm({
   teams,
   mode,
   defaults = {},
+  extrasAluguel = false,
 }: {
   action: (formData: FormData) => Promise<void>;
   teams: Team[];
   mode: "create" | "edit";
   defaults?: EquipmentDefaults;
+  /** Marco 3R: mostra "Número do contrato" e "Valor real do equipamento" para alugados. */
+  extrasAluguel?: boolean;
 }) {
   const [ownershipType, setOwnershipType] = useState(defaults.ownershipType === "rented" ? "rented" : "owned");
   const rented = ownershipType === "rented";
@@ -53,6 +58,11 @@ export function EquipmentForm({
         <label>Empresa/fornecedor<input name="rentalCompany" defaultValue={defaults.rentalCompany ?? ""} maxLength={160} required /></label>
         <label>Início da locação<input name="rentalStartDate" type="date" lang="pt-BR" defaultValue={defaults.rentalStartDate ?? ""} /></label>
         <label>Fim previsto<input name="rentalEndDate" type="date" lang="pt-BR" defaultValue={defaults.rentalEndDate ?? ""} /></label>
+        {extrasAluguel && <>
+          <label>Número do contrato<input name="contractNumber" defaultValue={defaults.contractNumber ?? ""} maxLength={60} autoComplete="off" placeholder="Ex.: 2026/0458" /></label>
+          <label>Valor real do equipamento (R$)<input name="realValue" defaultValue={defaults.realValue ?? ""} inputMode="decimal" maxLength={16} autoComplete="off" placeholder="Ex.: 15.000,00" />
+            <small className="field-hint">Quanto a máquina vale (para casos de perda ou dano). Não é o valor do aluguel.</small></label>
+        </>}
       </>}
       {mode === "create" && <label className="full">Descrição do tipo<textarea name="description" defaultValue={defaults.description ?? ""} maxLength={500} /></label>}
       <label className="full">Observação do patrimônio<textarea name="notes" defaultValue={defaults.notes ?? ""} maxLength={500} placeholder="Somente informações visíveis ao usuário" /></label>

@@ -7,6 +7,7 @@ import { SearchToolbar } from "@/02_COMPONENTES_VISUAIS/search-toolbar";
 import { StatusBadge } from "@/02_COMPONENTES_VISUAIS/status-badge";
 import { parsePage, type SearchParams } from "@/03_FUNCOES_E_LOGICA/lerFiltrosEPaginacao";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
+import { lerDetalhesAluguel3r } from "@/05_ACESSO_A_DADOS/Supabase/aluguel-3r";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { can } from "@metallo/core";
 import { OwnershipBadge } from "@/02_COMPONENTES_VISUAIS/ownership-badge";
@@ -19,7 +20,7 @@ export default async function EquipmentPage({ searchParams }: { searchParams: Se
   const profile = await requireProfile();
   const canOperate = can(profile, "equipment:write");
   const service = await getMetalloService();
-  const result = await service.listAssets({ ...input, ownership });
+  const [result, contratos] = await Promise.all([service.listAssets({ ...input, ownership }), lerDetalhesAluguel3r()]);
   return (
     <>
       <PageHeader eyebrow="PATRIMÔNIO" title="Equipamentos" description="Posse atual, condição e histórico individual de cada patrimônio." actions={canOperate ? <><Link className="button secondary" href="/movimentacoes/nova"><ArrowLeftRight size={16} />Transferir</Link><Link className="button primary" href="/equipamentos/novo"><Plus size={16} />Novo equipamento</Link></> : undefined} />
@@ -31,7 +32,7 @@ export default async function EquipmentPage({ searchParams }: { searchParams: Se
           <tbody>{result.data.map((asset) => <tr key={asset.id}>
             <td><span className="primary-cell">{asset.items?.name ?? "Equipamento"}</span><span className="secondary-cell">{asset.items?.code ?? "—"}</span></td>
             <td className="numeric">{asset.asset_code}<span className="secondary-cell">{asset.serial_number ?? "Sem número de série"}</span></td>
-            <td><OwnershipBadge type={asset.ownership_type} />{asset.ownership_type === "rented" && <span className="secondary-cell">{asset.rental_company ?? "Locadora não informada"}</span>}</td>
+            <td><OwnershipBadge type={asset.ownership_type} />{asset.ownership_type === "rented" && <span className="secondary-cell">{asset.rental_company ?? "Locadora não informada"}{contratos.get(asset.id)?.contractNumber ? ` · Contrato ${contratos.get(asset.id)?.contractNumber}` : ""}</span>}</td>
             <td>{asset.items?.category ?? "Sem categoria"}</td><td>{asset.teams?.name ?? "Sem equipe"}</td><td><StatusBadge value={asset.status} /></td>
             <td><Link className="text-link" href={`/equipamentos/${asset.id}`}>Detalhes</Link></td>
           </tr>)}</tbody>
