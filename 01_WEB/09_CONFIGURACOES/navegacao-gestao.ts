@@ -28,6 +28,7 @@ export const GRUPOS_MENU: GrupoMenu[] = [
   ] },
   { id: "pessoas", label: "Pessoas", icone: "equipes", itens: [
     { href: "/funcionarios", label: "Funcionários", capability: "epi:read", icone: "funcionarios" },
+    { href: "/acesso-app", label: "Acesso ao app", capability: "admin:manage", icone: "celular", newFeature: true },
     { href: "/treinamentos", label: "Treinamentos e ASO", capability: "epi:write", icone: "treinamentos", newFeature: true },
     { href: "/apoio", label: "Funcionários em apoio", capability: "epi:read", icone: "apoio" },
     { href: "/equipes", label: "Equipes", capability: "inventory:read", icone: "equipes" },

@@ -817,3 +817,10 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .nova-obra-opcao small { color: var(--muted); font-size: var(--font-caption); font-weight: 500; }
 .nova-obra-sub { margin-left: 34px; }
 @media (max-width: 820px) { .nova-obra-sub { margin-left: 0; } }
+
+/* Marco 3O — Acesso ao app */
+.acesso-tabela td { vertical-align: top; }
+.acesso-tabela .operation-details { margin: 0 0 6px; }
+.acesso-tabela .operation-details > summary { padding: 8px 12px; font-size: var(--font-small); }
+.acesso-tabela .operation-details > form { padding: 0 12px 12px; }
+.acesso-acoes { display: grid; gap: 6px; min-width: 220px; }

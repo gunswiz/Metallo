@@ -1,0 +1,74 @@
+{
+  "at": "2026-10-09T00:05:54.500Z",
+  "scope": "Marco 3O no teste online (dados fictícios)",
+  "checks": [
+    {
+      "name": "Gestão lista funcionários e a situação do acesso",
+      "ok": true
+    },
+    {
+      "name": "funcionário sem conta aparece como 'sem acesso'",
+      "ok": true
+    },
+    {
+      "name": "funcionário (João) não usa a função da Gestão",
+      "ok": true
+    },
+    {
+      "name": "sem login recusado",
+      "ok": true
+    },
+    {
+      "name": "usuário com espaço ou acento é recusado",
+      "ok": true
+    },
+    {
+      "name": "senha curta é recusada",
+      "ok": true
+    },
+    {
+      "name": "usuário já usado é recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão cria o acesso do funcionário",
+      "ok": true
+    },
+    {
+      "name": "não cria segundo acesso para a mesma pessoa",
+      "ok": true
+    },
+    {
+      "name": "funcionário entra no app e vê a própria ficha",
+      "ok": true
+    },
+    {
+      "name": "a conta do app não entra como Gestão",
+      "ok": true
+    },
+    {
+      "name": "Gestão define senha nova",
+      "ok": true
+    },
+    {
+      "name": "senha antiga deixa de valer",
+      "ok": true
+    },
+    {
+      "name": "senha nova funciona",
+      "ok": true
+    },
+    {
+      "name": "Gestão bloqueia o acesso",
+      "ok": true
+    },
+    {
+      "name": "bloqueado não entra mais",
+      "ok": true
+    },
+    {
+      "name": "senha nova em bloqueado é recusada",
+      "ok": true
+    }
+  ]
+}
