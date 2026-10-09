@@ -1,0 +1,17 @@
+{
+  "name": "Metallo — App do Funcionário",
+  "short_name": "Metallo Funcionário",
+  "description": "Ponto, EPIs, comunicados e pedidos do funcionário.",
+  "id": "/colaborador/inicio",
+  "start_url": "/colaborador/inicio",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#041019",
+  "theme_color": "#071520",
+  "orientation": "portrait",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/metallo-app-icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" },
+    { "src": "/metallo-app-icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "maskable" }
+  ]
+}

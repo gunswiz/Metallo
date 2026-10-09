@@ -22,7 +22,8 @@ class Falha extends Error { constructor(public status: number, public code: stri
 const STATUS: Record<string, number> = { SESSAO_INVALIDA: 401, SESSAO_ENCERRADA: 401, CONTEXTO_INATIVO: 403, ACESSO_NAO_AUTORIZADO: 403,
   INTENCAO_NAO_AUTORIZADA: 403, INTENCAO_CONFLITANTE: 409, INTENCAO_EXPIRADA: 409, PEDIDO_INVALIDO: 400, PERIODO_INVALIDO: 400,
   REGISTRO_NAO_ENCONTRADO: 404, SEM_REGISTROS_48H: 404, EXTRACAO_MUITO_EXTENSA: 413, ORIGINAL_IMUTAVEL: 409,
-  CPF_NAO_CADASTRADO: 409, EMPREGADOR_NAO_CADASTRADO: 409 };
+  CPF_NAO_CADASTRADO: 409, EMPREGADOR_NAO_CADASTRADO: 409,
+  FUNCIONARIO_DIFERENTE: 403, MARCACAO_NO_FUTURO: 409, MARCACAO_OFFLINE_ANTIGA: 409, MARCACAO_REPETIDA: 409, LIMITE_OFFLINE: 429 };
 const q = <T>(tx: postgres.Sql | postgres.TransactionSql, text: string, params: (string | null)[] = []) =>
   tx.unsafe(text, params) as unknown as Promise<T[]>;
 
@@ -52,14 +53,14 @@ function normalizeLocation(value: unknown) {
 }
 
 type Marcacao = { nsr: string; event_id: string; employee_name: string; employee_code: string | null; employee_id: string;
-  marking_at: Date; recorded_at: Date; timezone: string; collector: string; location: { status: string; accuracy_meters: number | null }; payload_hash: string };
+  marking_at: Date; recorded_at: Date; timezone: string; collector: string; online: boolean; location: { status: string; accuracy_meters: number | null }; payload_hash: string };
 const iso = (d: Date | string) => new Date(d).toISOString();
 const recibo = (m: Marcacao) => ({ event_id: m.event_id, synthetic_reference: `TESTE-4D-${m.nsr}`, marking_at: iso(m.marking_at), recorded_at: iso(m.recorded_at),
-  timezone: TZ, collector: "BROWSER", online: true, location_status: m.location.status, accuracy_meters: m.location.accuracy_meters ?? null });
+  timezone: TZ, collector: "BROWSER", online: m.online !== false, location_status: m.location.status, accuracy_meters: m.location.accuracy_meters ?? null });
 const registro = (m: Marcacao) => ({ event_id: m.event_id, reference: `TESTE-4D-${m.nsr}`, marking_at: iso(m.marking_at), recorded_at: iso(m.recorded_at),
   timezone: TZ, historical_data: "LIMITED", source: "4D", nsr: Number(m.nsr), payload_hash: m.payload_hash,
-  employee_name: m.employee_name, employee_code: m.employee_code });
-const colunas = `nsr::text nsr,event_id::text event_id,employee_id::text employee_id,employee_name,employee_code,marking_at,recorded_at,timezone,collector,location,payload_hash`;
+  employee_name: m.employee_name, employee_code: m.employee_code, online: m.online !== false });
+const colunas = `nsr::text nsr,event_id::text event_id,employee_id::text employee_id,employee_name,employee_code,marking_at,recorded_at,timezone,collector,online,location,payload_hash`;
 
 // Toda leitura/escrita pessoal confere o vínculo no começo E no fim da mesma transação.
 function pessoal<T>(p: Pessoa, run: (tx: postgres.TransactionSql) => Promise<T>) {
@@ -259,16 +260,23 @@ async function rota(method: string, path: string, raw: string, token: string, or
       const [ok] = await q<{ admin: boolean; sessao: boolean }>(tx, `select public.is_active_admin() admin,
         exists(select 1 from auth.sessions s where s.id=$1::text::uuid and s.user_id=$2::text::uuid and (s.not_after is null or s.not_after>now())) sessao`, [p.session, p.user]);
       if (!ok.admin || !ok.sessao) throw new Falha(403, "ACESSO_NAO_AUTORIZADO");
-      const rows = await q<Marcacao>(tx, `select ${colunas} from ponto.marcacao order by marking_at desc, nsr desc limit 100`);
+      const rows = await q<Marcacao & { conferir: boolean | null; motivos: string[] | null }>(tx, `select m.nsr::text nsr,m.event_id::text event_id,m.employee_id::text employee_id,m.employee_name,m.employee_code,m.marking_at,
+        m.recorded_at,m.timezone,m.collector,m.online,m.location,m.payload_hash,o.conferir,o.motivos from ponto.marcacao m left join ponto.marcacao_offline o on o.event_id=m.event_id
+        order by m.marking_at desc, m.nsr desc limit 100`);
       const [integridade] = await q<{ ok: boolean; total: string; motivo: string | null }>(tx, "select ok,total::text total,motivo from ponto.verificar()");
-      return { status: 200, body: { events: rows.map(m => ({ ...recibo(m), employee_name: m.employee_name })), integrity: { ok: integridade.ok, total: Number(integridade.total), reason: integridade.motivo } } };
+      const [hora] = await q<{ h: unknown }>(tx, "select ponto.hora_atual_4j() h");
+      return { status: 200, body: { events: rows.map(m => ({ ...recibo(m), employee_name: m.employee_name, review: m.conferir === true, review_reasons: m.motivos ?? [] })),
+        integrity: { ok: integridade.ok, total: Number(integridade.total), reason: integridade.motivo }, official_time: hora.h } };
     });
   }
   if (origin !== COLABORADOR) throw new Falha(403, "ORIGEM_INVALIDA");
   const p = await pessoa(token);
   if (method === "GET" && path === "/v4a/clock") {
-    const [row] = await q<{ at: Date }>(sql, "select clock_timestamp() at");
-    return { status: 200, body: { server_at: iso(row.at), timezone: TZ, source: "SERVIDOR_TESTE_ONLINE", hlb_verified: false } };
+    const [row] = await q<{ at: Date; h: { valida: boolean; conferido_em: string | null; diferenca_ms: number | null; incerteza_ms: number | null; fonte: string | null } }>(sql,
+      "select clock_timestamp() at, ponto.hora_atual_4j() h");
+    // Marco 4J: a hora do servidor é conferida a cada 10 min com a Hora Legal Brasileira (NTP.br).
+    return { status: 200, body: { server_at: iso(row.at), timezone: TZ, source: "SERVIDOR_TESTE_ONLINE", hlb_verified: row.h.valida === true,
+      hlb: { checked_at: row.h.conferido_em ? iso(row.h.conferido_em) : null, difference_ms: row.h.diferenca_ms, uncertainty_ms: row.h.incerteza_ms, source: row.h.fonte } } };
   }
   if (method === "POST" && path === "/v4a/begin") {
     const key = corpo(raw, ["idempotency_key"]).idempotency_key as string;
@@ -283,9 +291,30 @@ async function rota(method: string, path: string, raw: string, token: string, or
     const location = normalizeLocation(body.location);
     const [row] = await q<Marcacao & { duplicate: boolean }>(sql, `select (r.marcacao).nsr::text nsr,(r.marcacao).event_id::text event_id,(r.marcacao).employee_id::text employee_id,
       (r.marcacao).employee_name employee_name,(r.marcacao).employee_code employee_code,(r.marcacao).marking_at marking_at,(r.marcacao).recorded_at recorded_at,
-      (r.marcacao).timezone timezone,(r.marcacao).collector collector,(r.marcacao).location location,(r.marcacao).payload_hash payload_hash,r.duplicate
+      (r.marcacao).timezone timezone,(r.marcacao).collector collector,(r.marcacao).online online,(r.marcacao).location location,(r.marcacao).payload_hash payload_hash,r.duplicate
       from ponto.registrar($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::text::jsonb) r`, [p.user, p.session, body.idempotency_key as string, JSON.stringify(location)]);
     return { status: row.duplicate ? 200 : 201, body: { event: recibo(row), duplicate: row.duplicate } };
+  }
+  // Marco 4K: marcação feita SEM internet, enviada quando a conexão volta. A hora vem do celular (corrigida) + prova.
+  if (method === "POST" && path === "/v4a/offline") {
+    const body = corpo(raw, ["idempotency_key", "marking_at", "location", "proof"]);
+    if (!UUID.test((body.idempotency_key as string) ?? "") || typeof body.marking_at !== "string" || !/^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(body.marking_at) ||
+      !Number.isFinite(Date.parse(body.marking_at))) throw new Falha(400, "PEDIDO_INVALIDO");
+    const proof = body.proof as Record<string, unknown> | null;
+    if (!proof || typeof proof !== "object" || Array.isArray(proof)) throw new Falha(400, "PEDIDO_INVALIDO");
+    const allowed = ["employee_id", "metodo", "hora_aparelho", "ajuste_ms", "sincronizado_em", "aparelho_agora"];
+    if (Object.keys(proof).some(k => !allowed.includes(k)) || !UUID.test(String(proof.employee_id ?? "")) ||
+      !["RELOGIO_CONTINUO", "RELOGIO_DO_CELULAR", "SEM_CONFERENCIA"].includes(String(proof.metodo)) ||
+      (proof.ajuste_ms !== null && proof.ajuste_ms !== undefined && !Number.isInteger(proof.ajuste_ms)) ||
+      ["hora_aparelho", "sincronizado_em", "aparelho_agora"].some(k => proof[k] !== null && proof[k] !== undefined && (typeof proof[k] !== "string" || !Number.isFinite(Date.parse(proof[k] as string)))))
+      throw new Falha(400, "PEDIDO_INVALIDO");
+    const location = normalizeLocation(body.location);
+    const [row] = await q<Marcacao & { duplicate: boolean; conferir: boolean }>(sql, `select (r.marcacao).nsr::text nsr,(r.marcacao).event_id::text event_id,(r.marcacao).employee_id::text employee_id,
+      (r.marcacao).employee_name employee_name,(r.marcacao).employee_code employee_code,(r.marcacao).marking_at marking_at,(r.marcacao).recorded_at recorded_at,
+      (r.marcacao).timezone timezone,(r.marcacao).collector collector,(r.marcacao).online online,(r.marcacao).location location,(r.marcacao).payload_hash payload_hash,r.duplicate,r.conferir
+      from ponto.registrar_offline($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::text::timestamptz,$5::text::jsonb,$6::text::jsonb) r`,
+      [p.user, p.session, body.idempotency_key as string, body.marking_at, JSON.stringify(location), JSON.stringify(proof)]);
+    return { status: row.duplicate ? 200 : 201, body: { event: recibo(row), duplicate: row.duplicate, review: row.conferir } };
   }
   if (method === "GET" && path === "/v4a/events") {
     const rows = await pessoal(p, tx => q<Marcacao>(tx, `select ${colunas} from ponto.marcacao where auth_user_id=$1::text::uuid order by marking_at desc limit 50`, [p.user]));

@@ -9,7 +9,7 @@ export async function proxy(request: NextRequest) {
     const pointLabTransport = (process.env.METALLO_COLABORADOR_PREVIEW === "1" || online) && (request.nextUrl.pathname.startsWith("/api/ponto-lab/") || request.nextUrl.pathname.startsWith("/api/ponto-online/") || request.nextUrl.pathname.startsWith("/api/ponto-registros/"));
     const signatureLabTransport = process.env.METALLO_COLABORADOR_PREVIEW === "1" && request.nextUrl.pathname === "/api/laboratorio/assinatura-epi";
     if (online && request.nextUrl.pathname === "/") return NextResponse.redirect(new URL("/colaborador/login", request.url));
-    if (!pointLabTransport && !signatureLabTransport && !request.nextUrl.pathname.startsWith("/colaborador") && !request.nextUrl.pathname.startsWith("/_next/") && !(online && request.nextUrl.pathname.startsWith("/assets/")) && request.nextUrl.pathname !== "/manifest.webmanifest") {
+    if (!pointLabTransport && !signatureLabTransport && !request.nextUrl.pathname.startsWith("/colaborador") && !request.nextUrl.pathname.startsWith("/_next/") && !(online && request.nextUrl.pathname.startsWith("/assets/")) && request.nextUrl.pathname !== "/manifest.webmanifest" && !(online && request.nextUrl.pathname === "/manifest-funcionario.webmanifest")) {
       return new NextResponse(null, { status: 404 });
     }
     const response = NextResponse.next({ request });

@@ -364,3 +364,28 @@
 .pedidosLista li { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line, #2a3c4a); border-radius: 12px; }
 .pedidosLista li div { display: grid; gap: 4px; }
 .pedidosLista li p { margin: 0; }
+
+/* Marco 4J/4K: hora oficial conferida e ponto sem internet */
+.pointOfficial { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--soft); font-size: 14px; line-height: 1.5; }
+.pointOfficial svg { flex-shrink: 0; color: var(--highlight); }
+.pointOffline { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 14px 16px; border: 2px solid var(--highlight); border-radius: 12px; background: var(--accent-soft); color: var(--ink); font-size: 16px; font-weight: 700; line-height: 1.5; }
+.pointOffline svg { flex-shrink: 0; margin-top: 3px; }
+.pointQueue { display: grid; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.pointQueue h2 { margin: 0; font-size: 18px; }
+.pointQueue p { margin: 0; color: var(--soft); line-height: 1.5; }
+.pointQueue ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pointQueue li { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; font-size: 16px; }
+.pointQueue li span { color: var(--soft); }
+.queueButton { min-height: 48px; border: 1px solid var(--accent); border-radius: 9px; background: var(--accent-soft); color: var(--ink); font: inherit; font-weight: 750; cursor: pointer; }
+.offlineBanner { margin: 0 0 12px; padding: 12px 16px; border: 2px solid var(--highlight); border-radius: 12px; background: var(--accent-soft); color: var(--ink); font-size: 16px; font-weight: 700; line-height: 1.5; }
+/* Marco 3U: avisos no celular do funcionário */
+.avisosCard { display: grid; gap: 12px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.avisosTopo { display: flex; gap: 12px; align-items: flex-start; }
+.avisosTopo svg { flex-shrink: 0; color: var(--highlight); margin-top: 3px; }
+.avisosTopo h2 { margin: 0 0 4px; font-size: 19px; }
+.avisosTopo p { margin: 0; color: var(--soft); line-height: 1.55; font-size: 16px; }
+.avisosOpcoes { display: grid; gap: 10px; }
+.avisosOpcoes label { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 17px; }
+.avisosOpcoes input { width: 24px; height: 24px; flex-shrink: 0; }
+.avisosMsg { margin: 0; font-weight: 700; color: var(--highlight); }
+.avisosBotoes { display: grid; gap: 10px; }

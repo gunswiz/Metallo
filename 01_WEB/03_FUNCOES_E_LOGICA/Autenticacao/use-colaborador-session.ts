@@ -10,6 +10,8 @@ import { epiReportPayloadSchema } from "@/03_FUNCOES_E_LOGICA/Relatorios/epi-rep
 import { personalItem3g, type PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/ItensPessoais/contrato-3g";
 import { communicationDetail3h, communicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import { z } from "zod";
+const avisosEstado3u = z.object({ aparelhos: z.number().int().nonnegative(), lembrete_ponto: z.boolean(), outros_avisos: z.boolean() }).strict();
+export type AvisosEstado3u = z.infer<typeof avisosEstado3u>;
 import { ficha5a, type Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
@@ -33,6 +35,27 @@ const visualItems3g: PersonalItem3g[] = [
     events: [{ event_type: "CONFIRMED", category: null, note: null, occurred_at: "2026-09-27T14:00:00Z" }] },
 ];
 
+// Marco 4K: sem internet o app continua aberto só para o ponto (que fica guardado no celular).
+// Guarda o perfil da última entrada confirmada, preso à mesma sessão salva neste aparelho. Sair da conta apaga.
+export const PERFIL_OFFLINE_KEY = `${PORTAL_STORAGE_KEY}-perfil-offline`;
+function salvarPerfilOffline(userId: string, person: PersonalProfile) {
+  try { window.localStorage.setItem(PERFIL_OFFLINE_KEY, JSON.stringify({ user_id: userId, profile: person })); } catch { /* sem espaço: segue online */ }
+}
+export function perfilOffline(): PersonalProfile | null {
+  try {
+    const raw = window.localStorage.getItem(PERFIL_OFFLINE_KEY), sessao = window.localStorage.getItem(PORTAL_STORAGE_KEY);
+    if (!raw || !sessao) return null;
+    const cache = JSON.parse(raw) as { user_id?: unknown; profile?: unknown }, salvo = JSON.parse(sessao) as { user?: { id?: unknown } };
+    if (typeof cache.user_id !== "string" || salvo?.user?.id !== cache.user_id) return null;
+    return personalProfile([cache.profile]);
+  } catch { return null; }
+}
+export function semConexao(cause: unknown) {
+  if (typeof navigator !== "undefined" && !navigator.onLine) return true;
+  const message = cause && typeof cause === "object" && "message" in cause ? String(cause.message) : String(cause ?? "");
+  return /fetch|network|timeout|abort|Load failed/i.test(message);
+}
+
 export function useColaboradorSession(anonKey: string, demo: boolean, screen: PortalScreen, go: (next: PortalScreen) => void, baseUrl: string = LAB_URL) {
   // Teste online: sem servidor de ponto do laboratório; a saída usa o próprio Auth do projeto de teste.
   const online = baseUrl !== LAB_URL;
@@ -40,6 +63,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [offline, setOffline] = useState(false);
   const client = useRef<ReturnType<typeof portalClient> | null>(null);
   const endingClient = useRef<ReturnType<typeof portalClient> | null>(null);
   const generation = useRef(0);
@@ -82,6 +106,8 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       setError(finalMessage);
       window.localStorage.removeItem(PORTAL_STORAGE_KEY);
       window.localStorage.removeItem(`${PORTAL_STORAGE_KEY}-code-verifier`);
+      window.localStorage.removeItem(PERFIL_OFFLINE_KEY);
+      setOffline(false);
       if (redirect) go("login");
       setBusy(false);
     }
@@ -132,17 +158,27 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       if (result.error) throw result.error;
       const person = personalProfile(result.data);
       if (!person) { await endSession("Sua conta não tem acesso ativo. Procure a administração."); return; }
+      if (online && user.data.user) salvarPerfilOffline(user.data.user.id, person);
+      setOffline(false);
       // Revalidação sem mudança mantém a mesma referência: evita reiniciar telas e operações em andamento.
       setProfile(previous => previous && previous.employee_id === person.employee_id && previous.full_name === person.full_name &&
         previous.profession === person.profession && previous.team_name === person.team_name ? previous : person); setError("");
       if (target === "login") go("inicio");
     } catch (cause) {
-      if (ticket === generation.current) await endSession(friendlyPortalError(cause), false);
+      if (ticket !== generation.current) return;
+      // Sem internet: não encerra a sessão salva; libera só o ponto, que fica guardado no celular.
+      const cached = online && target !== "login" && semConexao(cause) ? perfilOffline() : null;
+      if (cached) {
+        setProfile(previous => previous && previous.employee_id === cached.employee_id && previous.full_name === cached.full_name ? previous : cached);
+        setOffline(true); setError("");
+        return;
+      }
+      await endSession(friendlyPortalError(cause), false);
     } finally {
       if (checking.current === ticket) checking.current = null;
       if (ticket === generation.current) setLoading(false);
     }
-  }, [anonKey, baseUrl, demo, endSession, getClient, go, screen]);
+  }, [anonKey, baseUrl, demo, endSession, getClient, go, screen, online]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void verify(); }, 0);
@@ -221,7 +257,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -269,6 +305,18 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     pedir: async (itemId: string, quantidade: number, observacao: string, chave: string) => { await exchangeRpc("create_pedido_material_3t", { p_item_id: itemId, p_quantidade: quantidade, p_observacao: observacao, p_idempotency_key: chave }); },
     cancelar: async (id: number) => { await exchangeRpc("cancel_pedido_material_3t", { p_id: id }); },
   }), [exchangeRpc]);
+  // Marco 3U: avisos no celular do funcionário (aparelho + o que quer receber + teste).
+  const avisos3u = useMemo(() => ({
+    ler: async () => avisosEstado3u.parse(await exchangeRpc("my_push_3u")),
+    salvar: async (endpoint: string, p256dh: string, auth: string) => { await exchangeRpc("save_my_push_3u", { p_endpoint: endpoint, p_p256dh: p256dh, p_auth: auth }); },
+    apagar: async (endpoint: string) => { await exchangeRpc("delete_my_push_3u", { p_endpoint: endpoint }); },
+    preferir: async (lembrete: boolean, outros: boolean) => { await exchangeRpc("set_my_push_prefs_3u", { p_lembrete_ponto: lembrete, p_outros_avisos: outros }); },
+    testar: async () => {
+      if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
+      const r = await getClient().functions.invoke("avisos-funcionario", { body: { acao: "teste" } });
+      return !r.error && (r.data as { ok?: boolean } | null)?.ok === true;
+    },
+  }), [exchangeRpc, demo, profile, getClient]);
   const readTrainings5a = useCallback(async () => demo ? visualTrainings5a : ficha5a.parse(await exchangeRpc("my_trainings_5a")), [demo, exchangeRpc]);
   const readPersonalReport3e = useCallback(async () => epiReportPayloadSchema.parse(await exchangeRpc("my_epi_report_3e")), [exchangeRpc]);
   const readPersonalItems3g = useCallback(async () => demo ? visualItems3g :
@@ -321,5 +369,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
     await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
   }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
-  return { profile, loading, busy, error, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken };
+  return { profile, loading, busy, error, offline, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken, avisos3u };
 }

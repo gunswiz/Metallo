@@ -18,7 +18,7 @@ beforeEach(() => {
   gps.mockImplementation((_ok, fail) => fail({ code: 1 }));
   request.mockImplementation(async path => path === "/clock" ? { server_at: event.marking_at } : path === "/events" ? { events: [] } : { idempotency_key: "key" });
 });
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+afterEach(() => { cleanup(); vi.restoreAllMocks(); window.localStorage.clear(); });
 it("não solicita GPS ao montar, carregar horário ou consultar histórico", async () => { renderPoint(); await waitFor(() => expect(request).toHaveBeenCalled()); expect(gps).not.toHaveBeenCalled(); expect(screen.getByText(/não realiza rastreamento contínuo/)).toBeInTheDocument(); });
 it("GPS negado mantém operação e só mostra sucesso após commit confirmado", async () => {
   let finish!: (value: unknown) => void;
@@ -34,15 +34,45 @@ it("resposta perdida consulta mesma chave e não repete GPS", async () => {
   const post = request.mock.calls.find(([path,,init]) => path === "/events" && init?.method === "POST"); const key = JSON.parse(String(post?.[2]?.body)).idempotency_key;
   expect(request.mock.calls.some(([path]) => path === `/intent/${key}`)).toBe(true);
 });
-it("falha sem confirmação não finge sucesso nem cria fila offline", async () => {
+it("sem internet: não finge sucesso online, guarda no celular e não envia nada", async () => {
   Object.defineProperty(navigator,"onLine",{configurable:true,value:false}); request.mockRejectedValue(Error("offline"));
-  renderPoint(); fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"})); expect(await screen.findByText(/Sem conexão.*não existe fila offline/)).toBeInTheDocument(); expect(gps).not.toHaveBeenCalled(); expect(screen.queryByRole("heading",{name:"Ponto registrado"})).not.toBeInTheDocument(); expect(request.mock.calls.filter(([, ,init])=>init?.method==="POST")).toHaveLength(0);
+  renderPoint(); fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));
+  expect(await screen.findByText(/ficou guardado neste celular/)).toBeInTheDocument();
+  expect(screen.queryByRole("heading",{name:"Ponto registrado"})).not.toBeInTheDocument();
+  expect(request.mock.calls.filter(([, ,init])=>init?.method==="POST")).toHaveLength(0);
+  expect(gps).toHaveBeenCalledTimes(1);
+  const fila = JSON.parse(window.localStorage.getItem("metallo-ponto-fila-4k:joao") ?? "[]");
+  expect(fila).toHaveLength(1); expect(fila[0].proof).toMatchObject({ employee_id: "joao", metodo: "SEM_CONFERENCIA" });
+  expect(screen.getByRole("region",{name:"Pontos guardados no celular"})).toBeInTheDocument();
 });
-it("retry mantém mesma intenção e localização após servidor indisponível", async () => {
-  request.mockImplementation(async(path,_token,init)=>path.startsWith("/intent/")||path==="/events"&&init?.method==="POST"?Promise.reject(Error("indisponível")):path==="/events"?{events:[]}:{server_at:event.marking_at});
-  renderPoint(); fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"})); const retry = await screen.findByRole("button",{name:"Verificar / reenviar a mesma intenção"}); fireEvent.click(retry);
-  await waitFor(()=>expect(request.mock.calls.filter(([path,,init])=>path==="/events"&&init?.method==="POST")).toHaveLength(2));
-  const posts=request.mock.calls.filter(([path,,init])=>path==="/events"&&init?.method==="POST"); expect(posts[0][2]?.body).toBe(posts[1][2]?.body); expect(gps).toHaveBeenCalledTimes(1);
+it("servidor sem resposta: guarda com a MESMA chave e envia sozinho quando a conexão volta", async () => {
+  let fora = true;
+  request.mockImplementation(async(path,_token,init)=>{
+    if (fora && (path.startsWith("/intent/")||path==="/events"&&init?.method==="POST"||path==="/offline")) throw Error("indisponível");
+    if (path==="/offline") return { event: { ...event, online: false }, duplicate: false, review: false };
+    return path==="/events"?{events:[]}:path==="/clock"?{server_at:event.marking_at,hlb_verified:true,hlb:null}:{idempotency_key:"key"};
+  });
+  renderPoint(); fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));
+  expect(await screen.findByText(/ficou guardado neste celular/)).toBeInTheDocument();
+  const post = request.mock.calls.find(([path,,init])=>path==="/events"&&init?.method==="POST"); const key = JSON.parse(String(post?.[2]?.body)).idempotency_key;
+  fora = false; window.dispatchEvent(new Event("online"));
+  expect(await screen.findByText(/guardado no celular foi enviado e registrado/)).toBeInTheDocument();
+  const envio = request.mock.calls.find(([path])=>path==="/offline"); expect(JSON.parse(String(envio?.[2]?.body)).idempotency_key).toBe(key);
+  expect(gps).toHaveBeenCalledTimes(1);
+  expect(JSON.parse(window.localStorage.getItem("metallo-ponto-fila-4k:joao") ?? "[]")).toHaveLength(0);
+});
+it("recusa definitiva sai da fila e avisa para procurar o escritório", async () => {
+  window.localStorage.setItem("metallo-ponto-fila-4k:joao", JSON.stringify([{ key: "00000000-0000-4000-8000-0000000000aa", employee_id: "joao", marking_at: "2026-09-01T10:00:00.000Z", location: null,
+    proof: { employee_id: "joao", metodo: "RELOGIO_DO_CELULAR", hora_aparelho: "2026-09-01T10:00:00.000Z", ajuste_ms: 0, sincronizado_em: "2026-09-01T09:00:00.000Z" } }]));
+  request.mockImplementation(async(path)=>{ if (path==="/offline") throw Error("MARCACAO_OFFLINE_ANTIGA"); return path==="/events"?{events:[]}:{server_at:event.marking_at}; });
+  renderPoint();
+  expect(await screen.findByText(/ficou mais de 7 dias sem internet/)).toBeInTheDocument();
+  expect(screen.getByText(/Procure o escritório/)).toBeInTheDocument();
+  expect(JSON.parse(window.localStorage.getItem("metallo-ponto-fila-4k:joao") ?? "[]")).toHaveLength(0);
+});
+it("mostra a hora conferida com a hora oficial do Brasil", async () => {
+  request.mockImplementation(async path => path === "/clock" ? { server_at: event.marking_at, hlb_verified: true, hlb: { checked_at: "2026-10-01T11:50:00.000Z", difference_ms: 7, uncertainty_ms: 15, source: "NTP.br" } } : { events: [] });
+  renderPoint(); expect(await screen.findByText(/Hora conferida com a hora oficial do Brasil às 08:50 \(diferença de menos de 1 segundo\)/)).toBeInTheDocument();
 });
 it("lock ocupado em outra aba não inicia GPS nem POST", async()=>{
   Object.defineProperty(navigator,"locks",{configurable:true,value:{request:vi.fn(async(_a,_b,run)=>run(null))}});
@@ -97,6 +127,7 @@ it("marcação sinaliza andamento só enquanto não termina (sucesso ou falha)",
   answerGps({code:1});await screen.findByRole("heading",{name:"Ponto registrado"});
   await waitFor(()=>expect(marcacaoEmAndamento()).toBe(false));
   request.mockImplementation(async(path,_token,init)=>init?.method==="POST"?Promise.reject(Error("indisponível")):path==="/events"?{events:[]}:{server_at:event.marking_at});
-  fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));await screen.findByRole("button",{name:"Verificar / reenviar a mesma intenção"});
-  expect(marcacaoEmAndamento()).toBe(false);
+  gps.mockImplementation((_ok,fail)=>fail({code:1}));
+  fireEvent.click(screen.getByRole("button",{name:"Registrar ponto"}));await screen.findByText(/ficou guardado neste celular/);
+  await waitFor(()=>expect(marcacaoEmAndamento()).toBe(false));
 });

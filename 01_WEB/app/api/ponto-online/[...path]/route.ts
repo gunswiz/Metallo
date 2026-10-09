@@ -9,8 +9,8 @@ async function forward(request: NextRequest, path: string[], timing: ReturnType<
   if (!destino) return fail("ROTA_NAO_ENCONTRADA", 404);
   if (destino === "INDISPONIVEL") return fail("SERVIDOR_INDISPONIVEL", 503);
   const endpoint = path.join("/");
-  if (request.headers.get("host") !== destino.host || new URL(request.url).search || !/^(clock|begin|events|intent\/[a-f0-9-]{36})$/i.test(endpoint) ||
-    request.method === "POST" && (!["begin", "events"].includes(endpoint) || request.headers.get("origin") !== destino.origin)) return fail("PEDIDO_INVALIDO", 400);
+  if (request.headers.get("host") !== destino.host || new URL(request.url).search || !/^(clock|begin|events|offline|intent\/[a-f0-9-]{36})$/i.test(endpoint) ||
+    request.method === "POST" && (!["begin", "events", "offline"].includes(endpoint) || request.headers.get("origin") !== destino.origin)) return fail("PEDIDO_INVALIDO", 400);
   const authorization = request.headers.get("authorization") ?? "";
   if (!/^Bearer [A-Za-z0-9_.-]{20,8192}$/.test(authorization)) return fail("SESSAO_INVALIDA", 401);
   // Revisão 4C (03/10): recusa corpo grande antes de ler (o limite antigo só valia depois de ler tudo).

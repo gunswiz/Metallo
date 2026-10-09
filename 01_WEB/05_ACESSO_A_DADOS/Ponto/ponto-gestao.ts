@@ -7,8 +7,12 @@ import { pointReceipt } from "./ponto-online";
 import { mesValido, respostaEspelho } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 
 const integrity = z.object({ ok: z.boolean(), total: z.number().int().nonnegative(), reason: z.string().nullable() }).strict();
-const management = z.object({ events: z.array(pointReceipt.extend({ employee_name: z.string() })), integrity: integrity.optional() });
-export type PointManagement = { events: z.infer<typeof management>["events"]; integrity: z.infer<typeof integrity> | null; online: boolean };
+// Marco 4J: situação da hora oficial. Marco 4K: marcação sem internet que precisa ser conferida.
+export const horaOficialGestao = z.object({ conferido_em: z.string().nullable(), diferenca_ms: z.number().int().nullable(), incerteza_ms: z.number().int().nullable(),
+  situacao: z.enum(["OK", "ATENCAO", "FORA_DO_LIMITE", "SEM_RESPOSTA"]), fonte: z.string().nullable(), valida: z.boolean() }).strict();
+const management = z.object({ events: z.array(pointReceipt.extend({ employee_name: z.string(), review: z.boolean().optional(), review_reasons: z.array(z.string()).optional() })),
+  integrity: integrity.optional(), official_time: horaOficialGestao.optional() });
+export type PointManagement = { events: z.infer<typeof management>["events"]; integrity: z.infer<typeof integrity> | null; online: boolean; officialTime: z.infer<typeof horaOficialGestao> | null };
 
 // Laboratório: servidor local 4A. Teste online (Marco 4D): Edge Function ponto-4d, que confere admin ativo e sessão.
 export async function readPointManagement(): Promise<PointManagement> {
@@ -23,7 +27,7 @@ export async function readPointManagement(): Promise<PointManagement> {
   const response = await fetch(target, { headers: { Authorization: `Bearer ${session.data.session.access_token}`, Origin: origin }, cache: "no-store", redirect: online ? "manual" : "error", signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error("Leitura do ponto não autorizada ou indisponível.");
   const parsed = management.parse(await response.json());
-  return { events: parsed.events, integrity: parsed.integrity ?? null, online };
+  return { events: parsed.events, integrity: parsed.integrity ?? null, online, officialTime: parsed.official_time ?? null };
 }
 
 // Marco 4E: espelho de ponto do mês (todas as pessoas). Só no teste online; a Edge Function confere admin ativo e sessão.
@@ -37,4 +41,14 @@ export async function readPointMirror(month: string) {
     cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(15000) });
   if (!response.ok) throw new Error("Leitura do espelho não autorizada ou indisponível.");
   return respostaEspelho.parse(await response.json()).events;
+}
+
+// Marco 4J: histórico das conferências da hora com a Hora Legal Brasileira (só administrador; o banco confere).
+const conferencias = z.object({ atual: horaOficialGestao, cadeia_ok: z.boolean(), total: z.number().int(), fora_30d: z.number().int(), sem_resposta_30d: z.number().int(),
+  lista: z.array(horaOficialGestao.omit({ valida: true })) });
+export async function lerConferenciasHora4j() {
+  if (getSupabaseEnv().url !== TESTE_ONLINE_SUPABASE_URL) return null;
+  const r = await (await createClient()).rpc("admin_conferencias_hora_4j" as never, { p_limite: 36 } as never);
+  if (r.error) throw new Error("Não foi possível ler a conferência da hora.");
+  return conferencias.parse(r.data);
 }

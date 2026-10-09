@@ -1,0 +1,139 @@
+{
+  "at": "2026-10-09T13:00:19.215Z",
+  "scope": "Marcos 4J, 4K e 3U — hora oficial, ponto sem internet e avisos do funcionário (teste online)",
+  "checks": [
+    {
+      "name": "4J relógio do app informa que a hora foi conferida com a hora oficial",
+      "ok": true
+    },
+    {
+      "name": "4J diferença do servidor para a hora oficial abaixo de 2 s",
+      "ok": true
+    },
+    {
+      "name": "4J conferência recente (menos de 30 min)",
+      "ok": true
+    },
+    {
+      "name": "4J Gestão vê o histórico e a cadeia das conferências está íntegra",
+      "ok": true
+    },
+    {
+      "name": "4J funcionário não vê o histórico da Gestão",
+      "ok": true
+    },
+    {
+      "name": "4J sem login não lê a hora oficial",
+      "ok": true
+    },
+    {
+      "name": "4J funcionário lê a situação atual",
+      "ok": true
+    },
+    {
+      "name": "4K marcação feita sem internet é aceita quando a conexão volta",
+      "ok": true
+    },
+    {
+      "name": "4K mantém a hora em que o funcionário bateu (não a hora da chegada)",
+      "ok": true
+    },
+    {
+      "name": "4K reenviar a mesma marcação não duplica",
+      "ok": true
+    },
+    {
+      "name": "4K duas batidas em menos de 1 minuto: a segunda é recusada",
+      "ok": true
+    },
+    {
+      "name": "4K mais de 7 dias sem internet: recusada",
+      "ok": true
+    },
+    {
+      "name": "4K hora no futuro: recusada",
+      "ok": true
+    },
+    {
+      "name": "4K não envia marcação de outra pessoa",
+      "ok": true
+    },
+    {
+      "name": "4K prova com campo estranho é recusada",
+      "ok": true
+    },
+    {
+      "name": "4K Gestão não usa a rota do funcionário",
+      "ok": true
+    },
+    {
+      "name": "4K relógio do celular mudado: aceita SEM alterar a hora e marca para conferir",
+      "ok": true
+    },
+    {
+      "name": "4K marcação com internet continua igual (online)",
+      "ok": true
+    },
+    {
+      "name": "4K AFD: marcação sem internet sai com 1 na posição 73 e coletor 02",
+      "ok": true
+    },
+    {
+      "name": "4K AFD: marcação com internet sai com 0 na posição 73",
+      "ok": true
+    },
+    {
+      "name": "4K Gestão vê a marcação para conferir e o motivo",
+      "ok": true
+    },
+    {
+      "name": "4K Gestão vê a hora oficial no painel do ponto",
+      "ok": true
+    },
+    {
+      "name": "4K integridade do ponto continua íntegra (NSR e cadeia de hash)",
+      "ok": true
+    },
+    {
+      "name": "4K histórico do funcionário mostra quais foram sem internet",
+      "ok": true
+    },
+    {
+      "name": "3U Gestão (não é funcionário) não liga aviso de funcionário",
+      "ok": true
+    },
+    {
+      "name": "3U endereço que não é https é recusado",
+      "ok": true
+    },
+    {
+      "name": "3U funcionário liga avisos neste aparelho",
+      "ok": true
+    },
+    {
+      "name": "3U aparelho ligado e escolhas padrão (lembrete e outros avisos)",
+      "ok": true
+    },
+    {
+      "name": "3U funcionário escolhe não receber o lembrete do ponto",
+      "ok": true
+    },
+    {
+      "name": "3U botão de teste chama o envio (aparelho de mentira não recebe)",
+      "ok": true
+    },
+    {
+      "name": "3U agendamento sem o segredo é recusado",
+      "ok": true
+    },
+    {
+      "name": "3U teste vindo de outro site é recusado",
+      "ok": true
+    },
+    {
+      "name": "3U funcionário desliga avisos",
+      "ok": true
+    }
+  ],
+  "result": "33/33"
+}

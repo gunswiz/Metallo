@@ -7,6 +7,9 @@ import { MENSAGENS_4F, mostrarCnpj } from "@/03_FUNCOES_E_LOGICA/Ponto/oficial-4
 import { mesAtual } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 import { lerCpfs4f, lerEmpresa4f, lerFeriados4h, lerJornada4g, oficialLiberado4f } from "@/05_ACESSO_A_DADOS/Ponto/oficial-4f";
 import { horasMinutos, minutosPrevistos } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import { lerConferenciasHora4j } from "@/05_ACESSO_A_DADOS/Ponto/ponto-gestao";
+import { diferencaTexto, TEXTO_SITUACAO_HORA } from "@/03_FUNCOES_E_LOGICA/Ponto/fila-offline-4k";
+import { pointDate, pointTime } from "@/03_FUNCOES_E_LOGICA/Ponto/relogio-referencia";
 import { removerFeriado4h, salvarCpf4f, salvarEmpresa4f, salvarFeriado4h, salvarJornada4g } from "@/app/actions/ponto-oficial";
 
 // Marco 4F — o que o ponto precisa para virar oficial: empresa, CPF de cada funcionário e o arquivo AFD (prévia).
@@ -15,7 +18,8 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
   if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
   const query = await searchParams;
   const ano = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Fortaleza", year: "numeric" }).format(new Date());
-  const [empresa, pessoas, jornada, feriados] = await Promise.all([lerEmpresa4f(), lerCpfs4f(), lerJornada4g(), lerFeriados4h(`${ano}-01-01`, `${ano}-12-31`)]);
+  const [empresa, pessoas, jornada, feriados, hora] = await Promise.all([lerEmpresa4f(), lerCpfs4f(), lerJornada4g(), lerFeriados4h(`${ano}-01-01`, `${ano}-12-31`),
+    lerConferenciasHora4j().catch(() => null)]);
   const semanal = Object.values(jornada).reduce((t, h) => t + minutosPrevistos(h), 0);
   const DIAS = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
   const semCpf = pessoas.filter(p => !p.cpf_mascarado).length;
@@ -93,8 +97,25 @@ export default async function PontoOficialPage({ searchParams }: { searchParams:
       </form></div>
     </section>
 
+    <section className="panel" id="hora" aria-labelledby="hora-titulo">
+      <header className="panel-header"><div><h2 id="hora-titulo">5. Hora oficial (Hora Legal Brasileira)</h2>
+        <p>A cada 10 minutos o sistema compara o relógio do servidor — que carimba cada marcação — com o NTP.br (NIC.br), que distribui a hora oficial do
+          Observatório Nacional. A Portaria 671 aceita no máximo 30 segundos de diferença. Cada conferência fica gravada e não pode ser alterada.</p></div></header>
+      <div className="panel-body">{!hora ? <p className="muted">Não foi possível ler a conferência agora.</p> : <>
+        <p role="status"><strong>Agora: {TEXTO_SITUACAO_HORA[hora.atual.situacao]}{hora.atual.conferido_em ? ` — última conferência às ${pointTime(hora.atual.conferido_em)}, diferença de ${diferencaTexto(hora.atual.diferenca_ms)}` : ""}.</strong></p>
+        <p>{hora.cadeia_ok ? `Registro das conferências íntegro (${hora.total} conferências).` : "ALERTA: o registro das conferências foi alterado."} Últimos 30 dias: {hora.fora_30d} fora do limite, {hora.sem_resposta_30d} sem resposta.</p>
+      </>}</div>
+      {hora && hora.lista.length > 0 && <div className="data-table-wrap"><table className="data-table">
+        <thead><tr><th>Quando</th><th>Situação</th><th>Diferença</th><th>Margem</th><th>Fonte</th></tr></thead>
+        <tbody>{hora.lista.map(c => <tr key={`${c.conferido_em}`}><td>{c.conferido_em ? `${pointDate(c.conferido_em)} ${pointTime(c.conferido_em)}` : "—"}</td>
+          <td>{c.situacao === "OK" ? "Certa" : <span className="status-badge warn">{TEXTO_SITUACAO_HORA[c.situacao]}</span>}</td>
+          <td className="numeric">{c.diferenca_ms === null ? "—" : `${c.diferenca_ms > 0 ? "+" : ""}${c.diferenca_ms} ms`}</td>
+          <td className="numeric">{c.incerteza_ms === null ? "—" : `± ${c.incerteza_ms} ms`}</td><td>{c.fonte ?? "—"}</td></tr>)}</tbody>
+      </table></div>}
+    </section>
+
     <section className="panel" id="afd" aria-labelledby="afd-titulo">
-      <header className="panel-header"><div><h2 id="afd-titulo">5. Arquivos para a fiscalização e a folha (prévia)</h2>
+      <header className="panel-header"><div><h2 id="afd-titulo">6. Arquivos para a fiscalização e a folha (prévia)</h2>
         <p><strong>AFD</strong> (versão 004): as marcações originais com CPF, NSR e código de cada registro — é o que a fiscalização pede.
           <strong> AEJ</strong> (versão 002): a jornada tratada (entradas, saídas e horário contratual) — é o que vai para a folha.</p></div></header>
       <div className="panel-body">

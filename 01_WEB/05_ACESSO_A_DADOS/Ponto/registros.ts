@@ -13,6 +13,7 @@ export const onlineRecord4d = z.object({
   timezone: z.literal("America/Fortaleza"), historical_data: z.literal("LIMITED"), source: z.literal("4D"),
   nsr: z.number().int().positive(), payload_hash: z.string().regex(/^[0-9a-f]{64}$/),
   employee_name: z.string().min(3).max(140), employee_code: z.string().max(60).nullable(),
+  online: z.boolean().optional(), // Marco 4K: false = marcada sem internet e enviada depois
 }).strict().refine(value => value.reference === `TESTE-4D-${value.nsr}`, "Referência e NSR divergentes.");
 export type OnlineRecord4d = z.infer<typeof onlineRecord4d>;
 export const anyRecord = z.union([personalRecord, onlineRecord4d]);

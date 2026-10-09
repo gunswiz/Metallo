@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
@@ -20,6 +20,7 @@ import { MeusRegistros } from "./meus-registros";
 import { MeuEspelho } from "./meu-espelho";
 import { Privacidade } from "./privacidade";
 import { PedirMaterial } from "./pedir-material";
+import { AvisosFuncionario, registrarAppOffline } from "./avisos-funcionario";
 import { DrawerColaborador } from "./drawer-colaborador";
 import { PendenciasColaborador } from "./pendencias-colaborador";
 import styles from "./colaborador.module.css";
@@ -40,7 +41,9 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
     if (demo) setVisualScreen(next);
     else router.replace(`/colaborador/${next}`);
   }, [router, demo]);
-  const { profile, loading, busy, error, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
+  const { profile, loading, busy, error, offline, login: signIn, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken, avisos3u } = useColaboradorSession(anonKey, demo, current, go, baseUrl);
+  // Marco 4K: guarda o app no celular para abrir mesmo sem internet (só no teste online, em HTTPS).
+  useEffect(() => { if (online && !demo) registrarAppOffline(); }, [online, demo]);
   const sharedDevice = useAparelhoCompartilhado(Boolean(profile) && !demo, () => logout());
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -69,15 +72,17 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
         <DrawerColaborador key={profile.employee_id} open={menuOpen} onClose={() => setMenuOpen(false)} trigger={menuTrigger} profile={profile} current={current} busy={busy} logout={logout} demo={demo} go={go}/>
         <div className={styles.content}>
           {error && <div className={styles.error} role="alert">{error} <button onClick={() => void verify(current)}>Tentar novamente</button></div>}
+          {offline && <p className={styles.offlineBanner} role="status">Sem internet agora. O ponto continua funcionando e fica guardado no celular. O resto do app volta quando a internet voltar.</p>}
           {current === "inicio" && <div className={styles.homeLayout}>
             <div className={styles.homeGreeting}><p className={styles.eyebrow}>METALLO FUNCIONÁRIO</p><h1>Olá, {firstName(profile.full_name)}</h1></div>
             {demo ? <p className={styles.pointWarning}>Registro de ponto indisponível nesta prévia visual.</p> : <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name} presentation="home"/>}
+            {online && !demo && !offline && <AvisosFuncionario key={`avisos-${profile.employee_id}`} acoes={avisos3u} compacto/>}
             <PendenciasColaborador key={`pending-${profile.employee_id}`} items={readPersonalItems3g} deliveries={demo ? undefined : readDeliveryGroups3d} communications={readCommunications3h} trainings={demo ? undefined : readTrainings5a}/>
           </div>}
           {current !== "inicio" && current !== "login" && <>
             <Link href="/colaborador/inicio" onClick={demo ? (event) => { event.preventDefault(); go("inicio"); } : undefined} className={styles.back}><ArrowLeft size={19}/> Voltar ao início</Link>
             <div className={styles.detailHeader}><p className={styles.eyebrow}>MEU ESPAÇO</p><h1>{current === "perfil" ? "Meu Perfil" : current === "equipe" ? "Minha Equipe" : current === "epis" ? "Meus EPIs" : current === "itens" ? "Meus Itens Pessoais" : current === "comunicados" ? "Comunicados" : current === "treinamentos" ? "Treinamentos e exames" : current === "ponto" ? "Meu Ponto" : current === "registros" ? "Meus registros" : current === "espelho" ? "Meu espelho" : current === "privacidade" ? "Privacidade" : current === "material" ? "Pedir material" : current === "comprovantes" ? "Comprovantes" : "Obras"}</h1><p>{current === "obra" ? "Consulte a obra vinculada a você no momento." : current === "epis" ? "Confira os EPIs registrados em seu nome." : current === "itens" ? "Acompanhe entregas, confirmação e solicitações dos seus itens de trabalho." : current === "comunicados" ? "Leia os avisos destinados a você. Abrir um aviso registra apenas visualização." : current === "treinamentos" ? "Seu exame médico (ASO) e seus treinamentos de segurança." : current === "registros" ? "Consulte suas marcações, incluindo os últimos 60 dias." : current === "espelho" ? "Seus horários do mês, dia por dia, com as horas trabalhadas." : current === "privacidade" ? "Como seus dados são usados e protegidos (LGPD)." : current === "material" ? "Peça o material que vai usar na obra." : current === "comprovantes" ? "Recibos individuais e extração das últimas 48 horas." : current === "ponto" ? "Ensaio online com dados fictícios, sem valor trabalhista." : "Informações pessoais da sua conta de teste."}</p></div>
-            {current === "material" ? <PedirMaterial acoes={pedidoMaterial3t}/> : current === "privacidade" ? <Privacidade/> : current === "espelho" ? <MeuEspelho key={`${profile.employee_id}-espelho`} getToken={getAccessToken} readJornada={readJornada4g} readExtras={readExtrasEspelho4h}/> : current === "registros" || current === "comprovantes" ? <MeusRegistros key={`${profile.employee_id}-${current}`} getToken={getAccessToken} presentation={current === "comprovantes" ? "receipts" : "history"}/> : current === "perfil" ? <MeuPerfil key={profile.employee_id} profile={profile} demo={demo} busy={busy} go={go} logout={logout} readCurrentWork={readCurrentWork} readTeamSummary={readTeamSummary} getAccessToken={demo ? undefined : getAccessToken}/> :
+            {current === "material" ? <PedirMaterial acoes={pedidoMaterial3t}/> : current === "privacidade" ? <Privacidade/> : current === "espelho" ? <MeuEspelho key={`${profile.employee_id}-espelho`} getToken={getAccessToken} readJornada={readJornada4g} readExtras={readExtrasEspelho4h}/> : current === "registros" || current === "comprovantes" ? <MeusRegistros key={`${profile.employee_id}-${current}`} getToken={getAccessToken} presentation={current === "comprovantes" ? "receipts" : "history"}/> : current === "perfil" ? <><MeuPerfil key={profile.employee_id} profile={profile} demo={demo} busy={busy} go={go} logout={logout} readCurrentWork={readCurrentWork} readTeamSummary={readTeamSummary} getAccessToken={demo ? undefined : getAccessToken}/>{online && !demo && <AvisosFuncionario key={`avisos-perfil-${profile.employee_id}`} acoes={avisos3u}/>}</> :
               current === "equipe" ? <MinhaEquipe key={profile.employee_id} readTeamSummary={readTeamSummary}/> :
               current === "epis" ? <MeusEpis key={profile.employee_id} readEpis={readPersonalEpis}
                 readReport={demo ? undefined : readPersonalReport3e}
