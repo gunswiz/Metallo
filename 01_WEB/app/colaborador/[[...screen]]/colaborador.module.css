@@ -411,3 +411,8 @@
 .atestadoDias { display: grid; grid-template-columns: 64px 1fr 64px; gap: 10px; }
 .atestadoDias input { min-height: 56px; text-align: center; font-size: 22px; font-weight: 800; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-deep); color: inherit; }
 .atestadoDias button { font-size: 26px; }
+/* Marco 7A — celular estreito (320 px): nome comprido de material na lista não pode empurrar a tela para fora. */
+.records, .pedidoForm { grid-template-columns: minmax(0, 1fr); }
+.records > *, .pedidoForm > *, .pedidoForm label { min-width: 0; }
+.pedidoForm select, .pedidoForm input, .pedidoForm textarea { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.recordsHeading > div { min-width: 0; overflow-wrap: anywhere; }
