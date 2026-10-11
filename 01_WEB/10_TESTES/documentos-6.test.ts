@@ -61,6 +61,9 @@ describe("6A/6B — contrato do app e segurança", () => {
     expect(local).toContain("\"/functions/v1/arquivos-6\"");
     expect(local).toMatch(/arquivos-6" \? 90000 : 6000/);
   });
+  it("app: a foto pode ser reduzida no celular (imagem blob: liberada só para imagem)", () => {
+    expect(readFileSync("proxy.ts", "utf8")).toContain("img-src 'self' data: blob:;");
+  });
   it("Gestão: envio do PDF confere a origem (contra envio de outro site)", () => {
     const rota = readFileSync("app/(02_SISTEMA)/contracheques/enviar/route.ts", "utf8");
     expect(rota).toContain('request.headers.get("origin") !== request.nextUrl.origin');
