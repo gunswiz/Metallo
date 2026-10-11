@@ -15,6 +15,11 @@ O envio, o download e a abertura estavam certos. Coloquei um contracheque de tes
 - Navegador antigo demais: aparece o aviso "atualize o Google Chrome na Play Store" em vez de tela branca.
 - Menu lateral do app: alternativa para quem não entende `dvh`/`color-mix` (Chrome < 108/111).
 - Foto do atestado já é reduzida no celular (6B). Envio de arquivo com até 90 s (internet fraca).
+- **Telas baixadas só quando abertas** (`colaborador-app.tsx` com `lazy` + `carregar-tela.tsx`): o app inicial caiu de **1.603 kB para 1.101 kB** de código (−31%).
+  Início e Ponto continuam no pacote principal (funcionam sem internet). Se uma tela não baixar, aparece "Não foi possível abrir esta tela agora".
+- **Tela estreita (320 px) e letra grande (zoom 130%)**: conferidas 15 telas do app no emulador. Achado e corrigido: "Pedir material" e "Enviar atestado"
+  passavam da borda (nome comprido de material empurrava a tela) — corrigido no CSS.
+- Gestão no emulador com a nova política de conteúdo: Início, Pedidos, Contracheques, Espelho e Fechamento sem nenhum erro; menu funcionando.
 - Limite conhecido: telas da Gestão no celular usam `:has()` (Chrome 105+) para empilhar linhas; em Chrome mais antigo fica mais apertado (funciona).
 
 ## 7B — Segurança
