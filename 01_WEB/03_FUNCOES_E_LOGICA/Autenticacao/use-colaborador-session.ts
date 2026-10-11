@@ -17,7 +17,7 @@ export type AvisosEstado3u = z.infer<typeof avisosEstado3u>;
 import { ficha5a, type Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
-export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade" | "material" | "contracheques" | "atestado";
+export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade" | "material" | "contracheques" | "atestado" | "ajuda";
 const visualProfile: PersonalProfile = { employee_id: "synthetic-preview", full_name: "João Sintético", profession: "Profissão de teste", team_name: null };
 const visualEpis: PersonalEpi[] = [
   { item_name: "Capacete de segurança", ca_number: "12345", quantity: 1, unit: "un", variant: "M", delivered_at: "2026-08-12T12:00:00Z", delivery_reason: "initial", current_status: "active", closed_at: null },

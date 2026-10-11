@@ -895,3 +895,17 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .contracheque-envio { flex-wrap: wrap; max-width: 420px; }
 .contracheque-envio input[type="file"] { max-width: 240px; }
 .atestado-acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* Marco 8A — folha "Guia do app do funcionário" (tela e impressão) */
+.guia-folha { display: grid; gap: 18px; max-width: 820px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.guia-folha h2 { margin: 0 0 8px; font-size: 1.6rem; }
+.guia-folha h3 { margin: 0 0 6px; font-size: 1.35rem; }
+.guia-folha ol { margin: 8px 0; padding-left: 26px; display: grid; gap: 8px; font-size: 1.1rem; line-height: 1.5; }
+.guia-folha-acesso { margin: 4px 0; font-size: 1.1rem; }
+.guia-folha-dica { margin: 6px 0 0; }
+.guia-folha-topico { break-inside: avoid; page-break-inside: avoid; }
+@media print {
+  .guia-folha { max-width: none; padding: 0; border: 0; background: #fff !important; }
+  .guia-folha, .guia-folha * { color: #000 !important; background: #fff !important; }
+  .guia-folha ol { font-size: 13pt; }
+  body:has(.guia-folha) .page-header { display: none !important; }
+}

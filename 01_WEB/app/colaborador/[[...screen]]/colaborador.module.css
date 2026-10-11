@@ -416,3 +416,30 @@
 .records > *, .pedidoForm > *, .pedidoForm label { min-width: 0; }
 .pedidoForm select, .pedidoForm input, .pedidoForm textarea { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
 .recordsHeading > div { min-width: 0; overflow-wrap: anywhere; }
+/* Marco 8A — guia "Como usar o app" (letra grande, desenho do botão real) */
+.guiaVoltar { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 4px; border: 0; background: none; color: var(--highlight); font: inherit; font-size: 17px; font-weight: 800; cursor: pointer; justify-self: start; }
+.guiaTitulo { font-size: 26px; line-height: 1.2; }
+.guiaResumo { color: var(--soft); font-size: 18px; line-height: 1.5; }
+.guiaPassos { display: grid; gap: 18px; margin: 4px 0 0; padding: 0; list-style: none; }
+.guiaPassos > li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: start; }
+.guiaPassos p { margin: 6px 0 10px; font-size: 19px; line-height: 1.5; }
+.guiaNumero { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: var(--bg-deep); font-size: 22px; font-weight: 900; }
+.guiaDestaque { color: var(--highlight); font-weight: 900; }
+.guiaFigura { padding: 14px; border: 2px dashed var(--line); border-radius: 14px; background: var(--bg-deep); pointer-events: none; user-select: none; }
+.guiaBotaoAzul { display: flex; justify-content: center; align-items: center; min-height: 52px; border-radius: 9px; background: var(--accent); color: var(--bg-deep); font-size: 18px; font-weight: 900; box-shadow: 0 0 0 4px rgba(91, 178, 255, .35); }
+.guiaCampos { display: grid; gap: 10px; }
+.guiaCampos > span:not(.guiaLinha) { display: grid; gap: 4px; font-weight: 700; color: var(--soft); }
+.guiaCampos i { font-style: normal; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); }
+.guiaDialogo { display: grid; gap: 12px; padding: 14px; border-radius: 12px; background: #f2f4f7; color: #1b1f24; font-size: 17px; }
+.guiaDialogo p { margin: 0; }
+.guiaDialogo div { display: flex; justify-content: flex-end; gap: 18px; font-weight: 800; }
+.guiaDialogo b { padding: 6px 10px; border-radius: 8px; color: #0b57d0; box-shadow: 0 0 0 3px rgba(11, 87, 208, .35); }
+.guiaRecibo { display: flex; align-items: center; gap: 10px; color: #92edc6; font-size: 18px; }
+.guiaRecibo span { margin-left: auto; font-size: 20px; font-weight: 900; color: var(--ink); }
+.guiaGuardado { display: flex; gap: 8px; margin: 0 !important; font-size: 16px !important; color: #ffd18a; }
+.guiaMenu { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 800; }
+.guiaAlvo { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 0 0 4px rgba(91, 178, 255, .45); }
+.guiaLinha { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.guiaLinha svg:last-child { margin-left: auto; }
+.guiaDicas { display: grid; gap: 6px; padding: 14px 16px; border-radius: 12px; background: var(--accent-soft); }
+.guiaDicas ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 17px; line-height: 1.5; }

@@ -33,7 +33,8 @@ export default async function AcessoAppPage({ searchParams }: { searchParams: Pr
   const conta = (situacao: string) => todos.filter(item => item.situacao === situacao).length;
   const alvo = todos.find(item => item.employee_id === query.f);
   return <>
-    <PageHeader eyebrow="PESSOAS" title="Acesso ao app" description="Crie o login de cada funcionário no app, troque a senha quando ele esquecer e bloqueie quando ele sair da empresa." />
+    <PageHeader eyebrow="PESSOAS" title="Acesso ao app" description="Crie o login de cada funcionário no app, troque a senha quando ele esquecer e bloqueie quando ele sair da empresa."
+      actions={<Link className="button secondary" href="/ajuda/funcionario">Guia para entregar ao funcionário</Link>} />
     <SubNav profile={profile} grupo="pessoas"/>
     {!lido.success && <div className="alert error" role="alert">Não foi possível carregar a lista agora. Atualize a página.</div>}
     {query.erro && <div className="alert error" role="alert">{errosAcesso3o[query.erro] ?? errosAcesso3o.falha}</div>}

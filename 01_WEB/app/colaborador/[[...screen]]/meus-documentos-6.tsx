@@ -34,7 +34,7 @@ export function MeusContracheques({ acoes }: { acoes: Arquivos6 }) {
     {lista === null ? <p className={styles.pointState}>Carregando…</p> : !lista.length ? <p>Nenhum contracheque ainda. Quando o escritório colocar, ele aparece aqui.</p> :
       <ul className={styles.documentosLista}>{lista.map(c => <li key={c.id}>
         <button type="button" className={styles.documentoBotao} onClick={() => void abrirLink(acoes, c.arquivo_id, setMsg)}>
-          <FileText size={26} aria-hidden/><span><strong>{nomeDoMes(c.competencia)}</strong><small>{NOME_FOLHA[c.tipo_folha]}{c.visto_em ? "" : " · novo"}</small></span>
+          <FileText size={26} aria-hidden/><span><strong>{nomeDoMes(c.competencia)}</strong>{" "}<small>{NOME_FOLHA[c.tipo_folha]}{c.visto_em ? "" : " · novo"}</small></span>
         </button></li>)}</ul>}
     <p className={styles.signatureNote}>Dúvida no contracheque? Fale com o escritório.</p>
   </section>;
