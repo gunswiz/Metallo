@@ -34,9 +34,15 @@ describe("7A — celular antigo", () => {
     expect(compat.split("\n").filter(l => !l.includes("new Function(")).join("\n")).not.toMatch(/=>|\blet\b|\bconst\b|`|\?\.|\?\?/);
   });
   it("o script carrega antes do app e passa pelo filtro do app do funcionário", () => {
-    expect(readFileSync("app/layout.tsx", "utf8")).toContain('<script src="/compat-antigos.js" defer />');
+    expect(readFileSync("app/layout.tsx", "utf8")).toContain('<script src="/compat-antigos.js" />');
     expect(readFileSync("proxy.ts", "utf8")).toContain("compat-antigos\\\\.js$");
     expect(readFileSync("vite.config.ts", "utf8")).toMatch(/build: \{ target: ALVO_NAVEGADORES \}/);
+  });
+  it("telas do app (fora Início e Ponto) só baixam quando abertas, com aviso se não carregar", () => {
+    const app = readFileSync("app/colaborador/[[...screen]]/colaborador-app.tsx", "utf8");
+    expect((app.match(/= lazy\(\(\) => import\(/g) ?? []).length).toBeGreaterThanOrEqual(12);
+    expect(app).toContain('import { MeuPontoOnline } from "./meu-ponto-online";');
+    expect(app).toContain("<TelaComCarga key={current}>");
   });
 });
 

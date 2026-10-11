@@ -20,8 +20,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      {/* Marco 7A: completa funções que celular antigo não tem. "defer" roda antes dos módulos do app (vêm depois na página). */}
-      <head><script src="/compat-antigos.js" defer /></head>
+      {/* Marco 7A: completa funções que celular antigo não tem. Sem "defer" de propósito: precisa rodar antes dos módulos do app,
+          que o servidor coloca antes deste ponto na página (arquivo pequeno, 3 kB, guardado no celular). */}
+      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+      <head><script src="/compat-antigos.js" /></head>
       <body>{children}</body>
     </html>
   );

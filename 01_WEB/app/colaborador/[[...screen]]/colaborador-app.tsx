@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
@@ -8,24 +8,28 @@ import { ArrowLeft, ArrowRight, CircleUserRound, Menu, ShieldCheck } from "lucid
 import { useColaboradorSession, type PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
 import { setSharedDevice, useAparelhoCompartilhado } from "@/03_FUNCOES_E_LOGICA/Autenticacao/aparelho-compartilhado";
 import { loginDeTeste } from "@/09_CONFIGURACOES/ambiente-teste-online";
-import { MinhaObra } from "./minha-obra";
-import { MeuPerfil } from "./meu-perfil";
-import { MinhaEquipe } from "./minha-equipe";
 import { MeuPontoOnline } from "./meu-ponto-online";
-import { MeusEpis } from "./meus-epis";
-import { MeusTreinamentos } from "./meus-treinamentos";
-import { MeusItens } from "./meus-itens";
-import { MeusComunicados } from "./meus-comunicados";
-import { MeusRegistros } from "./meus-registros";
-import { MeuEspelho } from "./meu-espelho";
 import { FechamentoPendente } from "./fechamento-mes";
-import { EnviarAtestado, MeusContracheques } from "./meus-documentos-6";
-import { Privacidade } from "./privacidade";
-import { PedirMaterial } from "./pedir-material";
 import { AvisosFuncionario, registrarAppOffline } from "./avisos-funcionario";
 import { DrawerColaborador } from "./drawer-colaborador";
 import { PendenciasColaborador } from "./pendencias-colaborador";
 import styles from "./colaborador.module.css";
+import { TelaComCarga } from "./carregar-tela";
+
+// Marco 7A: telas que não são o Início/Ponto só são baixadas quando abertas (celular antigo carrega bem menos).
+const MinhaObra = lazy(() => import("./minha-obra").then(m => ({ default: m.MinhaObra })));
+const MeuPerfil = lazy(() => import("./meu-perfil").then(m => ({ default: m.MeuPerfil })));
+const MinhaEquipe = lazy(() => import("./minha-equipe").then(m => ({ default: m.MinhaEquipe })));
+const MeusEpis = lazy(() => import("./meus-epis").then(m => ({ default: m.MeusEpis })));
+const MeusTreinamentos = lazy(() => import("./meus-treinamentos").then(m => ({ default: m.MeusTreinamentos })));
+const MeusItens = lazy(() => import("./meus-itens").then(m => ({ default: m.MeusItens })));
+const MeusComunicados = lazy(() => import("./meus-comunicados").then(m => ({ default: m.MeusComunicados })));
+const MeusRegistros = lazy(() => import("./meus-registros").then(m => ({ default: m.MeusRegistros })));
+const MeuEspelho = lazy(() => import("./meu-espelho").then(m => ({ default: m.MeuEspelho })));
+const Privacidade = lazy(() => import("./privacidade").then(m => ({ default: m.Privacidade })));
+const PedirMaterial = lazy(() => import("./pedir-material").then(m => ({ default: m.PedirMaterial })));
+const EnviarAtestado = lazy(() => import("./meus-documentos-6").then(m => ({ default: m.EnviarAtestado })));
+const MeusContracheques = lazy(() => import("./meus-documentos-6").then(m => ({ default: m.MeusContracheques })));
 
 type Screen = PortalScreen;
 function firstName(name: string) { return name.trim().split(/\s+/)[0] || "Funcionário"; }
@@ -85,7 +89,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
           {current !== "inicio" && current !== "login" && <>
             <Link href="/colaborador/inicio" onClick={demo ? (event) => { event.preventDefault(); go("inicio"); } : undefined} className={styles.back}><ArrowLeft size={19}/> Voltar ao início</Link>
             <div className={styles.detailHeader}><p className={styles.eyebrow}>MEU ESPAÇO</p><h1>{current === "perfil" ? "Meu Perfil" : current === "equipe" ? "Minha Equipe" : current === "epis" ? "Meus EPIs" : current === "itens" ? "Meus Itens Pessoais" : current === "comunicados" ? "Comunicados" : current === "treinamentos" ? "Treinamentos e exames" : current === "ponto" ? "Meu Ponto" : current === "registros" ? "Meus registros" : current === "espelho" ? "Meu espelho" : current === "privacidade" ? "Privacidade" : current === "material" ? "Pedir material" : current === "contracheques" ? "Meus contracheques" : current === "atestado" ? "Enviar atestado" : current === "comprovantes" ? "Comprovantes" : "Obras"}</h1><p>{current === "obra" ? "Consulte a obra vinculada a você no momento." : current === "epis" ? "Confira os EPIs registrados em seu nome." : current === "itens" ? "Acompanhe entregas, confirmação e solicitações dos seus itens de trabalho." : current === "comunicados" ? "Leia os avisos destinados a você. Abrir um aviso registra apenas visualização." : current === "treinamentos" ? "Seu exame médico (ASO) e seus treinamentos de segurança." : current === "registros" ? "Consulte suas marcações, incluindo os últimos 60 dias." : current === "espelho" ? "Seus horários do mês, dia por dia, com as horas trabalhadas." : current === "privacidade" ? "Como seus dados são usados e protegidos (LGPD)." : current === "material" ? "Peça o material que vai usar na obra." : current === "contracheques" ? "Seus contracheques colocados pelo escritório." : current === "atestado" ? "Mande a foto do atestado sem sair de casa." : current === "comprovantes" ? "Recibos individuais e extração das últimas 48 horas." : current === "ponto" ? "Ensaio online com dados fictícios, sem valor trabalhista." : "Informações pessoais da sua conta de teste."}</p></div>
-            {current === "material" ? <PedirMaterial acoes={pedidoMaterial3t}/> : current === "contracheques" ? <MeusContracheques acoes={arquivos6}/> : current === "atestado" ? <EnviarAtestado acoes={arquivos6}/> : current === "privacidade" ? <Privacidade/> : current === "espelho" ? <MeuEspelho key={`${profile.employee_id}-espelho`} getToken={getAccessToken} readJornada={readJornada4g} readExtras={readExtrasEspelho4h} fechamentos={demo ? undefined : fechamentos4l}/> : current === "registros" || current === "comprovantes" ? <MeusRegistros key={`${profile.employee_id}-${current}`} getToken={getAccessToken} presentation={current === "comprovantes" ? "receipts" : "history"}/> : current === "perfil" ? <><MeuPerfil key={profile.employee_id} profile={profile} demo={demo} busy={busy} go={go} logout={logout} readCurrentWork={readCurrentWork} readTeamSummary={readTeamSummary} getAccessToken={demo ? undefined : getAccessToken}/>{online && !demo && <AvisosFuncionario key={`avisos-perfil-${profile.employee_id}`} acoes={avisos3u}/>}</> :
+            <TelaComCarga key={current}>{current === "material" ? <PedirMaterial acoes={pedidoMaterial3t}/> : current === "contracheques" ? <MeusContracheques acoes={arquivos6}/> : current === "atestado" ? <EnviarAtestado acoes={arquivos6}/> : current === "privacidade" ? <Privacidade/> : current === "espelho" ? <MeuEspelho key={`${profile.employee_id}-espelho`} getToken={getAccessToken} readJornada={readJornada4g} readExtras={readExtrasEspelho4h} fechamentos={demo ? undefined : fechamentos4l}/> : current === "registros" || current === "comprovantes" ? <MeusRegistros key={`${profile.employee_id}-${current}`} getToken={getAccessToken} presentation={current === "comprovantes" ? "receipts" : "history"}/> : current === "perfil" ? <><MeuPerfil key={profile.employee_id} profile={profile} demo={demo} busy={busy} go={go} logout={logout} readCurrentWork={readCurrentWork} readTeamSummary={readTeamSummary} getAccessToken={demo ? undefined : getAccessToken}/>{online && !demo && <AvisosFuncionario key={`avisos-perfil-${profile.employee_id}`} acoes={avisos3u}/>}</> :
               current === "equipe" ? <MinhaEquipe key={profile.employee_id} readTeamSummary={readTeamSummary}/> :
               current === "epis" ? <MeusEpis key={profile.employee_id} readEpis={readPersonalEpis}
                 readReport={demo ? undefined : readPersonalReport3e}
@@ -96,7 +100,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
                 actions={demo ? {} : { confirm: confirmPersonalItem3g, report: reportPersonalItem3g }}/>: 
               current === "treinamentos" ? <MeusTreinamentos key={profile.employee_id} read={readTrainings5a}/> :
               current === "comunicados" ? <MeusComunicados key={profile.employee_id} read={readCommunications3h} open={openCommunication3h} demo={demo}/>: 
-              <div className={styles.detailCard}>{current === "ponto" ? <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name}/> : <MinhaObra key={profile.employee_id} demo={demo} readWork={readCurrentWork}/>}</div>}
+              <div className={styles.detailCard}>{current === "ponto" ? <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name}/> : <MinhaObra key={profile.employee_id} demo={demo} readWork={readCurrentWork}/>}</div>}</TelaComCarga>
           </>}
         </div>
         <footer className={styles.shellFootnote}>{online ? "SIMULAÇÃO SEM VALOR OFICIAL. Ambiente de teste online com dados fictícios, separado da produção. Não liberado para funcionários reais. Não é ponto oficial." : <>SIMULAÇÃO SEM VALOR OFICIAL. Não implantado no Supabase remoto. Não liberado para funcionários reais. Não é produção, conformidade REP-P ou autorização de ponto oficial. Não autoriza publicação.</>}</footer>
