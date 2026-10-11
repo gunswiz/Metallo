@@ -34,7 +34,7 @@ export default async function EspelhoPontoPage({ searchParams }: { searchParams:
   return <>
     <PageHeader eyebrow="PONTO · TESTE SEM VALOR OFICIAL" title="Espelho de ponto"
       description="As marcações de cada pessoa organizadas por dia, com o saldo em relação ao horário da empresa. Os registros originais não são alterados."
-      actions={<><Link className="button ghost nao-imprimir" href="/ponto-laboratorio">Ver marcações</Link>{escolhido && <BotaoImprimir />}</>} />
+      actions={<><Link className="button ghost nao-imprimir" href="/ponto-laboratorio">Ver marcações</Link><Link className="button ghost nao-imprimir" href={`/ponto-laboratorio/fechamento?mes=${mes}`}>Fechamento do mês</Link>{escolhido && <BotaoImprimir />}</>} />
     <nav className="espelho-mes nao-imprimir" aria-label="Escolher mês">
       <Link className="button ghost" href={link(mesAnterior(mes), escolhido?.employee_id)} aria-label="Mês anterior"><ChevronLeft size={18} aria-hidden />Anterior</Link>
       <strong>{nomeDoMes(mes)}</strong>
@@ -42,7 +42,7 @@ export default async function EspelhoPontoPage({ searchParams }: { searchParams:
     </nav>
     {leitura.erro && <div className="alert error" role="alert">Não foi possível ler o ponto agora. Tente de novo em instantes.</div>}
     {query.ok && <div className="alert success" role="status">{query.ok === "ocorrencia-cancelada" ? "Ocorrência cancelada (fica no histórico)." : "Ocorrência registrada."}</div>}
-    {query.erro && <div className="alert error" role="alert">Não foi possível salvar a ocorrência. Confira e tente de novo.</div>}
+    {query.erro && <div className="alert error" role="alert">{query.erro === "mes-fechado" ? "Esse mês já foi fechado. Para mudar, reabra o fechamento (tela Fechamento do mês)." : "Não foi possível salvar a ocorrência. Confira e tente de novo."}</div>}
     {feriadosLista.length > 0 && <p className="muted nao-imprimir">Feriados no mês: {feriadosLista.map(f => `${f.data.slice(8)}/${f.data.slice(5, 7)} ${f.nome}`).join(" · ")}.{" "}
       <Link href="/ponto-laboratorio/oficial#feriados">Cadastrar feriado estadual ou municipal</Link></p>}
 

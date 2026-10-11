@@ -29,6 +29,7 @@ export function crc16Kermit(texto: string) {
 export function latin1(texto: string) { return Uint8Array.from([...texto].map(c => { const code = c.codePointAt(0)!; return code < 256 ? code : 63; })); }
 
 export const MENSAGENS_4F: Record<string, string> = {
+  "mes-fechado": "Esse mês já foi fechado para algum funcionário. Para mudar feriado, reabra o fechamento (tela Fechamento do mês).",
   "cpf-invalido": "CPF inválido. Confira os 11 números.",
   "cpf-em-uso": "Este CPF já está cadastrado para outra pessoa.",
   "empresa-invalida": "Confira os dados da empresa: CNPJ (14 números) ou CPF (11), razão social, local e o CPF do responsável.",

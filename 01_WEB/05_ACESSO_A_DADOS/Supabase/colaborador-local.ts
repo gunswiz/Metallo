@@ -26,6 +26,8 @@ export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) 
     "/rest/v1/rpc/jornada_padrao_4g", "/rest/v1/rpc/feriados_4h", "/rest/v1/rpc/my_ocorrencias_4h",
     "/rest/v1/rpc/my_materiais_3t", "/rest/v1/rpc/create_pedido_material_3t", "/rest/v1/rpc/my_pedidos_material_3t", "/rest/v1/rpc/cancel_pedido_material_3t",
     "/rest/v1/rpc/my_push_3u", "/rest/v1/rpc/save_my_push_3u", "/rest/v1/rpc/delete_my_push_3u", "/rest/v1/rpc/set_my_push_prefs_3u",
+    // 4L: fechamento do mês (conferir e responder).
+    "/rest/v1/rpc/my_fechamentos_4l", "/rest/v1/rpc/responder_fechamento_4l",
     "/functions/v1/avisos-funcionario"];
   if (![LAB_URL, TESTE_ONLINE_SUPABASE_URL].includes(url.origin) || !allowed.includes(url.pathname)) throw new Error("Destino local não autorizado.");
   return fetch(input, { ...init, cache: "no-store", redirect: "error",

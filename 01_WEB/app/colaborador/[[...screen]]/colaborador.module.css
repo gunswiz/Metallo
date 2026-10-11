@@ -389,3 +389,10 @@
 .avisosOpcoes input { width: 24px; height: 24px; flex-shrink: 0; }
 .avisosMsg { margin: 0; font-weight: 700; color: var(--highlight); }
 .avisosBotoes { display: grid; gap: 10px; }
+/* Marco 4L — fechamento do mês */
+.fechamentoNumeros { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.fechamentoNumeros li { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+.fechamentoNumeros span { color: var(--soft); font-weight: 700; font-size: 15px; }
+.fechamentoNumeros strong { font-size: 1.45rem; font-variant-numeric: tabular-nums; }
+.fechamentoLabel { font-weight: 800; font-size: 17px; }
+.fechamentoTexto { width: 100%; min-height: 96px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-deep); color: inherit; font: inherit; font-size: 17px; }

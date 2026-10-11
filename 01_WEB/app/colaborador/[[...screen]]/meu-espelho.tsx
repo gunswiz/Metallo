@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { recordsRequest } from "@/05_ACESSO_A_DADOS/Ponto/registros";
 import { descreverJornada, horasMinutos, intervaloDoMes, JORNADA_PADRAO, textoDoDia, type ExtrasEspelho, mesAnterior, mesAtual, mesSeguinte, montarEspelho, nomeDoMes, respostaEspelho, saldoTexto, TEXTO_SITUACAO, type Espelho, type Jornada } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
+import type { FechamentoApp4l } from "@/03_FUNCOES_E_LOGICA/Ponto/fechamento-4l";
+import { FechamentoCard, type Fechamentos4l } from "./fechamento-mes";
 import styles from "./colaborador.module.css";
 
 // Marco 4E — "Meu espelho": as próprias marcações do mês, dia a dia, com as horas entre entrada e saída.
@@ -11,11 +13,25 @@ function mensagem(error: unknown) {
   return /SESSAO|REVOGAD|INATIVO|AUTORIZAD/.test(code) ? "Acesso encerrado. Entre novamente." : "Não foi possível abrir o espelho agora. Tente de novo quando estiver com internet.";
 }
 
-export function MeuEspelho({ getToken, readJornada, readExtras }: { getToken: () => Promise<string>; readJornada?: () => Promise<Jornada>; readExtras?: (de: string, ate: string) => Promise<ExtrasEspelho> }) {
+export function MeuEspelho({ getToken, readJornada, readExtras, fechamentos }: { getToken: () => Promise<string>; readJornada?: () => Promise<Jornada>; readExtras?: (de: string, ate: string) => Promise<ExtrasEspelho>; fechamentos?: Fechamentos4l }) {
   const atual = mesAtual();
   const [mes, setMes] = useState(atual);
   const [espelho, setEspelho] = useState<Espelho | null>(null), [jornadaAtual, setJornadaAtual] = useState<Jornada>(JORNADA_PADRAO);
   const [status, setStatus] = useState(""), [loading, setLoading] = useState(true);
+  // Marco 4L: meses fechados pelo escritório. Se tem um esperando conferência, o espelho já abre nele.
+  const [fechados, setFechados] = useState<FechamentoApp4l[]>([]), navegou = useRef(false);
+  useEffect(() => {
+    if (!fechamentos) return;
+    let vivo = true;
+    fechamentos.ler().then(lista => {
+      if (!vivo) return;
+      setFechados(lista);
+      const pendente = lista.find(f => !f.resposta);
+      if (pendente && !navegou.current) setMes(pendente.mes);
+    }, () => undefined);
+    return () => { vivo = false; };
+  }, [fechamentos]);
+  const fechamentoDoMes = fechados.find(f => f.mes === mes);
   const token = useRef(getToken), versao = useRef(0), jornadaRef = useRef(readJornada), extrasRef = useRef(readExtras);
   useEffect(() => { token.current = getToken; jornadaRef.current = readJornada; extrasRef.current = readExtras; }, [getToken, readJornada, readExtras]);
   const carregar = useCallback(async (alvo: string, signal: AbortSignal) => {
@@ -38,11 +54,13 @@ export function MeuEspelho({ getToken, readJornada, readExtras }: { getToken: ()
   return <section className={styles.records} aria-labelledby="meu-espelho-title">
     <div className={styles.recordsHeading}><CalendarDays size={25} aria-hidden/><div><h2 id="meu-espelho-title">Meu espelho de ponto</h2><p>Seus horários do mês, dia por dia.</p></div></div>
     <nav className={styles.espelhoMes} aria-label="Escolher mês">
-      <button type="button" className={styles.recordsButton} onClick={() => setMes(mesAnterior(mes))} aria-label="Mês anterior"><ChevronLeft size={22} aria-hidden/></button>
+      <button type="button" className={styles.recordsButton} onClick={() => { navegou.current = true; setMes(mesAnterior(mes)); }} aria-label="Mês anterior"><ChevronLeft size={22} aria-hidden/></button>
       <strong>{nomeDoMes(mes)}</strong>
-      <button type="button" className={styles.recordsButton} onClick={() => setMes(mesSeguinte(mes))} disabled={mes >= atual} aria-label="Próximo mês"><ChevronRight size={22} aria-hidden/></button>
+      <button type="button" className={styles.recordsButton} onClick={() => { navegou.current = true; setMes(mesSeguinte(mes)); }} disabled={mes >= atual} aria-label="Próximo mês"><ChevronRight size={22} aria-hidden/></button>
     </nav>
     <p role="status" aria-live="polite" className={styles.pointState}>{loading ? "Abrindo o espelho…" : status}</p>
+    {fechamentoDoMes && fechamentos && <FechamentoCard key={fechamentoDoMes.id} f={fechamentoDoMes} acoes={fechamentos}
+      onRespondido={novo => setFechados(lista => lista.map(f => (f.id === novo.id ? novo : f)))}/>}
     {!loading && espelho && <>
       <div className={styles.espelhoTotais}>
         <div><span>Dias trabalhados</span><strong>{espelho.totais.diasComMarcacao}</strong></div>

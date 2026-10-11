@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-11T08:26:33.287Z",
+  "scope": "Marco 4L — fechamento do mês (teste online)",
+  "checks": [
+    {
+      "name": "funcionário não fecha mês",
+      "ok": true
+    },
+    {
+      "name": "mês que não terminou não fecha",
+      "ok": true
+    },
+    {
+      "name": "tela desatualizada (número de marcações diferente) não fecha",
+      "ok": true
+    },
+    {
+      "name": "foto com dias demais é recusada",
+      "ok": true
+    },
+    {
+      "name": "Gestão fecha setembro do robô",
+      "ok": true
+    },
+    {
+      "name": "não fecha duas vezes",
+      "ok": true
+    },
+    {
+      "name": "mês fechado trava ocorrência",
+      "ok": true
+    },
+    {
+      "name": "mês fechado trava feriado novo",
+      "ok": true
+    },
+    {
+      "name": "funcionário vê o mês fechado com a foto dos dias",
+      "ok": true
+    },
+    {
+      "name": "outro funcionário não vê o fechamento do robô",
+      "ok": true
+    },
+    {
+      "name": "João não responde pelo robô",
+      "ok": true
+    },
+    {
+      "name": "“tem algo errado” sem explicar é recusado",
+      "ok": true
+    },
+    {
+      "name": "funcionário avisa que tem algo errado",
+      "ok": true
+    },
+    {
+      "name": "responde uma vez só",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê a resposta e o comentário",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lê a lista da Gestão",
+      "ok": true
+    },
+    {
+      "name": "reabrir sem motivo é recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão reabre com motivo",
+      "ok": true
+    },
+    {
+      "name": "depois de reabrir, ocorrência volta a ser aceita",
+      "ok": true
+    },
+    {
+      "name": "reaberto some do app (até fechar de novo)",
+      "ok": true
+    },
+    {
+      "name": "fecha de novo e a Gestão vê que já foi reaberto 1 vez",
+      "ok": true
+    },
+    {
+      "name": "sem login não vê nada",
+      "ok": true
+    }
+  ],
+  "result": "22/22"
+}
