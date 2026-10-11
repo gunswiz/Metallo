@@ -2,6 +2,25 @@ import type { NextRequest } from "next/server";
 import { updateSession } from "@/05_ACESSO_A_DADOS/Supabase/proxy";
 import { NextResponse } from "next/server";
 import { TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+
+// Marco 7B (Bloco 4, segurança): a Gestão não mandava nenhum cabeçalho de proteção (podia ser aberta dentro de outro site,
+// sem política de conteúdo, sem HTTPS obrigatório). Agora manda os mesmos cuidados do app do Funcionário.
+export function cabecalhosGestao(response: NextResponse, supabaseUrl: string, producao: boolean, https: boolean) {
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("Referrer-Policy", "same-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  if (https) response.headers.set("Strict-Transport-Security", "max-age=31536000");
+  if (producao) {
+    const sb = new URL(supabaseUrl);
+    const ws = `${sb.protocol === "https:" ? "wss:" : "ws:"}//${sb.host}`;
+    response.headers.set("Content-Security-Policy", `default-src 'self'; connect-src 'self' ${sb.origin} ${ws}; script-src 'self' 'unsafe-inline' 'unsafe-eval'; `
+      + "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self'; manifest-src 'self'; "
+      + "frame-ancestors 'none'; form-action 'self'; object-src 'none'; base-uri 'self'");
+  }
+  return response;
+}
 
 export async function proxy(request: NextRequest) {
   const online = process.env.METALLO_COLABORADOR_TESTE_ONLINE === "1";
@@ -16,6 +35,9 @@ export async function proxy(request: NextRequest) {
     response.headers.set("Cache-Control", "no-store");
     response.headers.set("Referrer-Policy", "no-referrer");
     response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("X-Frame-Options", "DENY");
+    // Ponto usa a localização e o atestado usa a câmera — só deste próprio site.
+    response.headers.set("Permissions-Policy", "geolocation=(self), camera=(self), microphone=(), payment=(), usb=()");
     if (online) response.headers.set("Strict-Transport-Security", "max-age=31536000");
     response.headers.set("Content-Security-Policy", "default-src 'self'; connect-src 'self' " + (online ? TESTE_ONLINE_SUPABASE_URL : "http://127.0.0.1:54321 ws://127.0.0.1:3101 ws://localhost:3101") + "; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; base-uri 'self'");
     return response;
@@ -24,9 +46,9 @@ export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/colaborador")) {
     return NextResponse.next({ request });
   }
-  return updateSession(request);
+  return cabecalhosGestao(await updateSession(request), getSupabaseEnv().url, process.env.NODE_ENV === "production", request.nextUrl.protocol === "https:");
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|sw\\.js$|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|sw\\.js$|compat-antigos\\.js$|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

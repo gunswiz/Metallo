@@ -49,7 +49,8 @@ check("período do cabeçalho", cab.slice(206, 216) === hoje && cab.slice(216, 2
 check("registros tipo 7 com 137 posições", tipo7.length >= 2 && tipo7.every(l => l.length === 137 && l[9] === "7"));
 check("DH com segundos 00 e fuso -0300", tipo7.every(l => /^\d{4}-\d\d-\d\dT\d\d:\d\d:00-0300$/.test(l.slice(10, 34)) && /:00-0300$/.test(l.slice(46, 70))));
 check("CPF do robô nas marcações dele (12 posições)", tipo7.some(l => l.slice(34, 46) === "0" + cpfRobo));
-check("coletor 02 (navegador) e on-line", tipo7.every(l => l.slice(70, 72) === "02" && l[72] === "0"));
+// Desde o 4K existem marcações feitas sem internet (posição 73 = "1"); as demais são "0".
+check("coletor 02 (navegador) e on-line/off-line válido", tipo7.every(l => l.slice(70, 72) === "02" && (l[72] === "0" || l[72] === "1")) && tipo7.some(l => l[72] === "0"));
 check("NSR em ordem crescente", tipo7.every((l, i) => i === 0 || Number(l.slice(0, 9)) > Number(tipo7[i - 1].slice(0, 9))));
 // Corrente do hash: cada linha = SHA-256(campos 1–7 + hash anterior). Dentro do arquivo, as consecutivas por NSR devem encadear.
 let encadeado = true;

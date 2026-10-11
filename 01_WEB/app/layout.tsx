@@ -20,6 +20,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
+      {/* Marco 7A: completa funções que celular antigo não tem. "defer" roda antes dos módulos do app (vêm depois na página). */}
+      <head><script src="/compat-antigos.js" defer /></head>
       <body>{children}</body>
     </html>
   );

@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-09T10:30:26.264Z",
+  "at": "2026-10-11T10:14:53.222Z",
   "scope": "Marco 4F — CPF, empresa e AFD v004 (prévia) no teste online",
   "checks": [
     {
@@ -59,7 +59,7 @@
       "ok": true
     },
     {
-      "name": "coletor 02 (navegador) e on-line",
+      "name": "coletor 02 (navegador) e on-line/off-line válido",
       "ok": true
     },
     {

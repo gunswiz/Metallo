@@ -282,6 +282,9 @@
 .appTopbar .testBadge{font-size:11px;letter-spacing:.04em;padding:6px 10px;max-width:130px;text-align:center;white-space:normal}
 .menuToggle{flex:none;display:inline-flex;align-items:center;justify-content:center;width:46px;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
 .menuToggle:hover{background:var(--panel-2)}
+/* Marco 7A: Chrome antigo não entende dvh nem color-mix: estas linhas valem nele (as de baixo valem nos novos). */
+.drawer{height:100vh;max-height:100vh}
+.drawer::backdrop{background:rgba(3,12,18,.74)}
 .drawer{position:fixed;inset:0 auto 0 0;width:min(350px,calc(100vw - 28px));height:100dvh;max-width:none;max-height:100dvh;margin:0;padding:20px 18px max(20px,env(safe-area-inset-bottom));border:0;border-right:1px solid var(--line);background:var(--panel);color:var(--ink);overflow-y:auto;overscroll-behavior:contain}
 .drawer::backdrop{background:color-mix(in srgb,var(--bg-deep) 74%,transparent)}
 .drawerHeader{display:flex;align-items:center;justify-content:space-between;gap:16px}.drawerHeader img{width:130px;height:auto}
