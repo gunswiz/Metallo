@@ -5,6 +5,7 @@ const repo = vi.hoisted(() => ({ exchangeRequests: vi.fn(), delivery3d: vi.fn() 
 const items = vi.hoisted(() => ({ read: vi.fn() }));
 vi.mock("@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository", () => ({ getEpiOperations: async () => repo }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/itens-pessoais-3g", () => ({ readAdminPersonalItems3g: items.read }));
+vi.mock("@/05_ACESSO_A_DADOS/Arquivos/arquivos-6", () => ({ lerAtestados6b: async () => [] }));
 import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos-funcionarios";
 
 const troca = (id: string, request_status: string) => ({ request_id: id, employee_name: "João", item_name: "Capacete", ca_number: null, reason: "DESGASTE",

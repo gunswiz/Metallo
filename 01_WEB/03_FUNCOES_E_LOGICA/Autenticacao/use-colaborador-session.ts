@@ -11,12 +11,13 @@ import { personalItem3g, type PersonalItem3g } from "@/03_FUNCOES_E_LOGICA/Itens
 import { communicationDetail3h, communicationSummary3h } from "@/03_FUNCOES_E_LOGICA/Comunicados/contrato-3h";
 import { z } from "zod";
 import { fechamentoApp4l } from "@/03_FUNCOES_E_LOGICA/Ponto/fechamento-4l";
+import { atestadoApp6b, contrachequeApp6a } from "@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6";
 const avisosEstado3u = z.object({ aparelhos: z.number().int().nonnegative(), lembrete_ponto: z.boolean(), outros_avisos: z.boolean() }).strict();
 export type AvisosEstado3u = z.infer<typeof avisosEstado3u>;
 import { ficha5a, type Ficha5a } from "@/03_FUNCOES_E_LOGICA/Treinamentos/contrato-5a";
 import { confirmPassword3j, PasswordConfirmError } from "@/04_SERVICOS/assinatura-browser-3f";
 
-export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade" | "material";
+export type PortalScreen = "login" | "inicio" | "perfil" | "equipe" | "obra" | "epis" | "ponto" | "registros" | "espelho" | "comprovantes" | "itens" | "comunicados" | "treinamentos" | "privacidade" | "material" | "contracheques" | "atestado";
 const visualProfile: PersonalProfile = { employee_id: "synthetic-preview", full_name: "João Sintético", profession: "Profissão de teste", team_name: null };
 const visualEpis: PersonalEpi[] = [
   { item_name: "Capacete de segurança", ca_number: "12345", quantity: 1, unit: "un", variant: "M", delivered_at: "2026-08-12T12:00:00Z", delivery_reason: "initial", current_status: "active", closed_at: null },
@@ -259,7 +260,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l" | "my_contracheques_6a" | "my_atestados_6b" | "cancelar_atestado_6b", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -316,6 +317,36 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       return em;
     },
   }), [exchangeRpc]);
+  // Marcos 6A/6B: contracheques e atestados. Arquivo só pela função `arquivos-6` (balde privado; link de 2 minutos).
+  const arquivos6 = useMemo(() => {
+    const funcao = async (body: FormData | Record<string, unknown>) => {
+      if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
+      const r = await getClient().functions.invoke("arquivos-6", { body });
+      if (r.error) {
+        let code = "falha";
+        try { const b = await (r.error as { context?: Response }).context?.json(); if (typeof b?.error === "string") code = b.error; } catch { /* sem detalhe */ }
+        throw new Error(code);
+      }
+      return r.data as { ok?: boolean; url?: string };
+    };
+    return {
+      contracheques: async () => z.array(contrachequeApp6a).parse(await exchangeRpc("my_contracheques_6a")),
+      atestados: async () => z.array(atestadoApp6b).parse(await exchangeRpc("my_atestados_6b")),
+      cancelarAtestado: async (id: number) => { await exchangeRpc("cancelar_atestado_6b", { p_id: id }); },
+      abrir: async (arquivoId: string) => {
+        const d = await funcao({ acao: "abrir", arquivo_id: arquivoId });
+        const url = z.url().parse(d.url);
+        if (!url.startsWith(`${baseUrl}/storage/v1/object/sign/documentos-6/`)) throw new Error("falha");
+        return url;
+      },
+      enviarAtestado: async (arquivo: Blob, nome: string, dataInicio: string, dias: number, observacao: string, chave: string) => {
+        const form = new FormData();
+        form.set("acao", "atestado"); form.set("data_inicio", dataInicio); form.set("dias", String(dias)); form.set("observacao", observacao); form.set("chave", chave);
+        form.set("arquivo", arquivo, nome);
+        await funcao(form);
+      },
+    };
+  }, [exchangeRpc, demo, profile, getClient, baseUrl]);
   // Marco 3U: avisos no celular do funcionário (aparelho + o que quer receber + teste).
   const avisos3u = useMemo(() => ({
     ler: async () => avisosEstado3u.parse(await exchangeRpc("my_push_3u")),
@@ -380,5 +411,5 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       headers: { apikey: anonKey, Authorization: `Bearer ${temporary.access_token}` } }).catch(() => undefined);
     await respondDelivery3d(groupId, "CONFIRMADO", null, null, null, idempotencyKey);
   }, [online, getAccessToken, getClient, baseUrl, anonKey, respondDelivery3d]);
-  return { profile, loading, busy, error, offline, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken, avisos3u, fechamentos4l };
+  return { profile, loading, busy, error, offline, login, logout, verify, readCurrentWork, readTeamSummary, readPersonalEpis, readExchangeableEpis, readExchangeRequests, createExchangeRequest, cancelExchangeRequest, readDeliveryGroups3d, respondDelivery3d, confirmDeliveryWithPassword, readPersonalReport3e, readPersonalItems3g, confirmPersonalItem3g, reportPersonalItem3g, readCommunications3h, openCommunication3h, readEpiAwareness3i, acceptEpiAwareness3i, readTrainings5a, readJornada4g, readExtrasEspelho4h, pedidoMaterial3t, getAccessToken, avisos3u, fechamentos4l, arquivos6 };
 }

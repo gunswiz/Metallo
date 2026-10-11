@@ -4,7 +4,7 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { readPointMirror } from "@/05_ACESSO_A_DADOS/Ponto/ponto-gestao";
 import { lerCpfs4f, lerFeriados4h, lerJornada4g, lerOcorrencias4h } from "@/05_ACESSO_A_DADOS/Ponto/oficial-4f";
 import { intervaloDoMes, montarEspelho, type Espelho, type Jornada, type MarcacaoEspelho, type TipoOcorrencia } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
-import { fechamentoGestao4l } from "@/03_FUNCOES_E_LOGICA/Ponto/fechamento-4l";
+import { fechamentoGestao4l, PERCENTUAIS_PADRAO_4L, percentuais4lSchema, type Percentuais4l } from "@/03_FUNCOES_E_LOGICA/Ponto/fechamento-4l";
 
 // Marco 4L: o mês de todas as pessoas (mesmas regras do espelho 4E/4G/4H). Só administrador; banco e Edge Function conferem.
 export type PessoaMes4l = { employee_id: string; nome: string; matricula: string | null; espelho: Espelho };
@@ -22,6 +22,13 @@ export async function carregarMes4l(mes: string, agora = new Date()): Promise<{ 
     espelho: montarEspelho(leitura.eventos.filter(e => e.employee_id === id), mes, agora, jornada, { feriados, ocorrencias: ocorrencias[id] ?? {} }) }))
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
   return { pessoas, jornada, erro: leitura.erro };
+}
+
+// Percentuais de hora extra da empresa (padrão 60% e 100%).
+export async function lerPercentuais4l(): Promise<Percentuais4l> {
+  const r = await (await createClient()).rpc("percentuais_dp_4l" as never);
+  const p = percentuais4lSchema.safeParse(r.data);
+  return !r.error && p.success ? p.data : PERCENTUAIS_PADRAO_4L;
 }
 
 export async function lerFechamentos4l(mes: string) {

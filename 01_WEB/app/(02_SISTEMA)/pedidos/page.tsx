@@ -11,6 +11,7 @@ import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos
 import { manageEpiFeedback3d, manageExchangeRequest } from "@/app/actions/epi-completo";
 import { decidePersonalItem3g } from "@/app/actions/itens-pessoais-3g";
 import { decidirPedidoMaterial3t } from "@/app/actions/pedido-material";
+import { decidirAtestado6b } from "@/app/actions/arquivos-6";
 
 // Marco 3J: caixa de entrada da Gestão para o app do Funcionário.
 const motivoTroca: Record<string, string> = { DESGASTE: "Desgaste", DANO: "Danificado", PERDA_EXTRAVIO: "Perda ou extravio", OUTRO: "Outro motivo" };
@@ -19,7 +20,10 @@ const problemaEntrega: Record<string, string> = { NAO_RECEBIDO: "Não recebeu", 
   QUANTIDADE: "Quantidade errada", VARIANTE: "Variante diferente", OUTRO: "Outro problema" };
 const motivoItem: Record<string, string> = { WEAR: "Desgaste", DAMAGED: "Danificado", LOST: "Perda ou extravio", OTHER: "Outro" };
 
-export default async function PedidosPage({ searchParams }: { searchParams: Promise<{ ok?: string; erro?: string }> }) {
+const dataBr = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
+const ateDia = (inicio: string, dias: number) => { const t = new Date(`${inicio}T12:00:00Z`); t.setUTCDate(t.getUTCDate() + dias - 1); return t.toISOString().slice(0, 10); };
+
+export default async function PedidosPage({ searchParams }: { searchParams: Promise<{ ok?: string; erro?: string; dias?: string }> }) {
   await requireCapability("epi:write");
   if (!recursosNovosLiberados(getSupabaseEnv().url)) notFound();
   const query = await searchParams;
@@ -27,7 +31,11 @@ export default async function PedidosPage({ searchParams }: { searchParams: Prom
   return <>
     <PageHeader eyebrow="APP DO FUNCIONÁRIO" title="Pedidos dos funcionários"
       description="Tudo o que os funcionários pediram ou avisaram pelo app, em um só lugar. O mais antigo aparece primeiro." />
-    {query.ok && <div className="alert success" role="status">{query.ok === "baixa" ? "Atendido e baixado do estoque da obra (lançado como consumo da equipe). O funcionário já vê a resposta no app." : "Registrado. O funcionário já vê a resposta no app."}</div>}
+    {query.ok?.startsWith("atestado") && <div className="alert success" role="status">{query.ok === "atestado-aceito"
+      ? `Atestado aceito. ${Number(query.dias) || 0} dia(s) de trabalho lançados como "Atestado" no ponto. O funcionário recebe aviso no app.` : "Atestado recusado. O funcionário vê o motivo no app."}</div>}
+    {query.erro?.startsWith("atestado") && <div className="alert error" role="alert">{query.erro === "atestado-motivo" ? "Para recusar, escreva o motivo (pelo menos 5 letras)."
+      : query.erro === "atestado-mes-fechado" ? "Esse atestado cai num mês já fechado. Reabra o mês em Ponto › Fechamento do mês e tente de novo." : "Não foi possível responder o atestado. Tente de novo."}</div>}
+    {query.ok && !query.ok.startsWith("atestado") && <div className="alert success" role="status">{query.ok === "baixa" ? "Atendido e baixado do estoque da obra (lançado como consumo da equipe). O funcionário já vê a resposta no app." : "Registrado. O funcionário já vê a resposta no app."}</div>}
     {data.aguardando === 0 && <div className="alert success" role="status">Nenhum pedido esperando resposta.</div>}
     {query.erro?.startsWith("material") && <div className="alert error" role="alert">{({
       "material-sem-saldo": "Não há saldo suficiente desse material no estoque da obra. O pedido continua aberto: dê entrada no material ou atenda sem dar baixa.",
@@ -35,6 +43,28 @@ export default async function PedidosPage({ searchParams }: { searchParams: Prom
       "material-sem-permissao": "Seu acesso não permite lançar consumo para a equipe desse funcionário. Atenda sem dar baixa ou peça a quem tem acesso.",
       "material-fracao": "Quantidade com vírgula não pode ser baixada do estoque (o estoque conta em unidades inteiras). Atenda sem dar baixa.",
     } as Record<string, string>)[query.erro] ?? "Não foi possível responder o pedido de material. Para recusar, escreva o motivo."}</div>}
+
+    {data.atestados && <section className="panel" id="atestados" aria-labelledby="atestados-titulo"><header className="panel-header"><div>
+      <h2 id="atestados-titulo">Atestados ({data.atestados.filter(a => a.status === "enviado").length})</h2>
+      <p>O funcionário mandou foto ou PDF pelo app. Ao aceitar, os dias de trabalho do período entram como &ldquo;Atestado&rdquo; no ponto (feriado e folga não contam).
+        Atestado é dado de saúde: abra só para conferir e não anote doença nem CID.</p></div></header>
+      {data.atestados.length === 0 ? <div className="panel-body"><p>Nenhum atestado nos últimos 60 dias.</p></div> :
+        <div className="panel-body list">{data.atestados.map(a => <article className="list-row" key={a.id}>
+          <div className="list-row-main"><strong>{a.funcionario} · {a.dias} dia(s): {dataBr(a.data_inicio)}{a.dias > 1 ? ` a ${dataBr(ateDia(a.data_inicio, a.dias))}` : ""}</strong>
+            <span>{{ enviado: "Esperando conferência", aceito: `Aceito · ${a.dias_lancados ?? 0} dia(s) lançados no ponto`, recusado: "Recusado", cancelado: "Cancelado pelo funcionário" }[a.status]} · enviado em {formatDateTime(a.enviado_em)}{a.matricula ? ` · ${a.matricula}` : ""}</span>
+            {a.observacao && <span>O funcionário escreveu: {a.observacao}</span>}
+            {a.motivo_recusa && <span>Motivo da recusa: {a.motivo_recusa}</span>}</div>
+          <div className="atestado-acoes">
+            {a.status !== "cancelado" && <a className="button ghost" href={`/arquivos/${a.arquivo_id}`} target="_blank" rel="noopener noreferrer">Ver atestado</a>}
+            {a.status === "enviado" && <form action={decidirAtestado6b} className="inline-action">
+              <input type="hidden" name="id" value={a.id} />
+              <input name="motivo" maxLength={300} placeholder="Motivo (obrigatório se recusar)" aria-label={`Motivo para recusar o atestado de ${a.funcionario}`} />
+              <button className="button primary" type="submit" name="decisao" value="aceitar">Aceitar e lançar no ponto</button>
+              <button className="button ghost" type="submit" name="decisao" value="recusar">Recusar</button>
+            </form>}
+          </div>
+        </article>)}</div>}
+    </section>}
 
     {data.materiais && <section className="panel" id="pedidos-material" aria-labelledby="pedidos-material-titulo"><header className="panel-header"><div>
       <h2 id="pedidos-material-titulo">Pedidos de material ({data.materiais.filter(p => p.status === "aberto").length})</h2>

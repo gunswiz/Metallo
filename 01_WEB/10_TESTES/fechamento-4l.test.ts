@@ -8,10 +8,10 @@ const mocks = vi.hoisted(() => ({ rpc: vi.fn(), capability: vi.fn(), redirect: v
 vi.mock("@/03_FUNCOES_E_LOGICA/Autenticacao/session", () => ({ requireCapability: mocks.capability }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/server", () => ({ createClient: async () => ({ rpc: mocks.rpc }) }));
 vi.mock("@/05_ACESSO_A_DADOS/Ponto/oficial-4f", () => ({ oficialLiberado4f: () => true }));
-vi.mock("@/05_ACESSO_A_DADOS/Ponto/mes-4l", () => ({ carregarMes4l: mocks.carregar, lerFechamentos4l: mocks.fechamentos }));
+vi.mock("@/05_ACESSO_A_DADOS/Ponto/mes-4l", () => ({ carregarMes4l: mocks.carregar, lerFechamentos4l: mocks.fechamentos, lerPercentuais4l: async () => ({ extra: 60, domingo_feriado: 100 }) }));
 vi.mock("next/navigation", () => ({ redirect: mocks.redirect }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidate }));
-import { fecharMes4l, fecharTodos4l, reabrirMes4l } from "@/app/actions/fechamento-4l";
+import { fecharMes4l, fecharTodos4l, reabrirMes4l, salvarPercentuais4l } from "@/app/actions/fechamento-4l";
 
 let nsr = 1;
 const ev = (dia: string, hora: string) => ({ marking_at: `2026-09-${dia}T${String(Number(hora.slice(0, 2)) + 3).padStart(2, "0")}:${hora.slice(3)}:00.000Z`, nsr: nsr++ });
@@ -26,7 +26,7 @@ const espelho = montarEspelho(eventos, "2026-09", new Date("2026-10-05T12:00:00Z
   { feriados: { "2026-09-07": "Independência do Brasil" }, ocorrencias: { "2026-09-03": { tipo: "falta" }, "2026-09-04": { tipo: "atestado" } } });
 
 describe("4L — relatório de horas", () => {
-  it("separa extra 50%, sábado, domingo/feriado, atrasos, faltas e abonos", () => {
+  it("separa extra, sábado, domingo/feriado, atrasos, faltas e abonos", () => {
     const r = resumoHoras4l(espelho);
     expect(r).toMatchObject({ marcacoes: 14, diasTrabalhados: 5, extra50: 150, sabado: 240, domingoFeriado: 360, atrasos: -30, faltas: 1, minutosFalta: -540, abonos: 1, diasAcima2h: 2 });
     expect(r.conferir).toBeGreaterThan(0);
@@ -44,6 +44,8 @@ describe("4L — relatório de horas", () => {
     expect(csv).toContain("\"A;1\"");
     expect(csv).toContain(";-0:30;");
     expect(csv).toContain(";2:30;4:00;6:00;");
+    expect(csv).toContain("Extra dia de trabalho (60%);Sabado fora da jornada (60%);Domingo/feriado trabalhado (100%)");
+    expect(planilha4l("2026-09", [], { extra: 75, domingo_feriado: 100 })).toContain("Extra dia de trabalho (75%)");
   });
   it("situação do fechamento", () => {
     expect(situacaoFechamento4l(undefined)).toBe("aberto");
@@ -93,6 +95,13 @@ describe("4L — fechar e reabrir", () => {
     mocks.fechamentos.mockResolvedValue([{ employee_id: maria }]);
     await expect(fecharTodos4l(form({ mes: "2026-09" }))).rejects.toThrow("feitos=0&pulados=1");
     expect(mocks.rpc).not.toHaveBeenCalled();
+  });
+  it("percentuais: abaixo do mínimo da lei é recusado; 60% salva", async () => {
+    await expect(salvarPercentuais4l(form({ mes: "2026-09", extra: "40", domingo: "100" }))).rejects.toThrow("erro=percentual");
+    expect(mocks.rpc).not.toHaveBeenCalled();
+    mocks.rpc.mockResolvedValue({ error: null });
+    await expect(salvarPercentuais4l(form({ mes: "2026-09", extra: "60", domingo: "100" }))).rejects.toThrow("ok=percentuais");
+    expect(mocks.rpc).toHaveBeenCalledWith("admin_set_percentuais_dp_4l", { p_extra: 60, p_domingo_feriado: 100 });
   });
   it("reabrir exige motivo", async () => {
     await expect(reabrirMes4l(form({ mes: "2026-09", fechamentoId: "3", motivo: "ok" }))).rejects.toThrow("erro=motivo");

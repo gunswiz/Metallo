@@ -1,0 +1,135 @@
+{
+  "at": "2026-10-11T08:58:19.291Z",
+  "scope": "Marcos 6A e 6B — contracheque e atestado pelo app (teste online)",
+  "checks": [
+    {
+      "name": "6B funcionário envia atestado em PDF pelo app",
+      "ok": true
+    },
+    {
+      "name": "6B reenviar o mesmo (internet caiu) não duplica",
+      "ok": true
+    },
+    {
+      "name": "6B arquivo que não é PDF/foto é recusado",
+      "ok": true
+    },
+    {
+      "name": "6B sem arquivo é recusado",
+      "ok": true
+    },
+    {
+      "name": "6B data muito antiga é recusada",
+      "ok": true
+    },
+    {
+      "name": "6B Gestão não envia atestado como funcionário",
+      "ok": true
+    },
+    {
+      "name": "6B sem login não envia",
+      "ok": true
+    },
+    {
+      "name": "6B site estranho é recusado",
+      "ok": true
+    },
+    {
+      "name": "6B funcionário acompanha o atestado (enviado)",
+      "ok": true
+    },
+    {
+      "name": "6B funcionário abre o próprio atestado (link de 2 min, arquivo igual)",
+      "ok": true
+    },
+    {
+      "name": "6B outro funcionário não abre o atestado do robô",
+      "ok": true
+    },
+    {
+      "name": "6B Gestão abre o atestado",
+      "ok": true
+    },
+    {
+      "name": "6B Gestão vê o atestado para conferir",
+      "ok": true
+    },
+    {
+      "name": "6B funcionário não vê a lista da Gestão",
+      "ok": true
+    },
+    {
+      "name": "6B recusar sem motivo não pode",
+      "ok": true
+    },
+    {
+      "name": "6B Gestão recusa com motivo",
+      "ok": true
+    },
+    {
+      "name": "6B funcionário vê a recusa e o motivo",
+      "ok": true
+    },
+    {
+      "name": "6B foto (JPEG) também é aceita",
+      "ok": true
+    },
+    {
+      "name": "6B funcionário cancela o atestado enviado",
+      "ok": true
+    },
+    {
+      "name": "6B não decide atestado cancelado",
+      "ok": true
+    },
+    {
+      "name": "6A Gestão publica contracheque em PDF",
+      "ok": true
+    },
+    {
+      "name": "6A contracheque só em PDF (foto recusada)",
+      "ok": true
+    },
+    {
+      "name": "6A funcionário não publica contracheque",
+      "ok": true
+    },
+    {
+      "name": "6A mês futuro é recusado",
+      "ok": true
+    },
+    {
+      "name": "6A enviar de novo substitui (fica um só no app)",
+      "ok": true
+    },
+    {
+      "name": "6A outro funcionário não abre o contracheque do robô",
+      "ok": true
+    },
+    {
+      "name": "6A funcionário abre o próprio contracheque",
+      "ok": true
+    },
+    {
+      "name": "6A Gestão vê que o funcionário abriu",
+      "ok": true
+    },
+    {
+      "name": "6A Gestão remove (fica no histórico) e some do app",
+      "ok": true
+    },
+    {
+      "name": "6A arquivo removido não abre mais",
+      "ok": true
+    },
+    {
+      "name": "arquivos não aparecem direto no Storage (só pela função)",
+      "ok": true
+    },
+    {
+      "name": "conclusão do envio não é chamável de fora",
+      "ok": true
+    }
+  ],
+  "result": "32/32"
+}

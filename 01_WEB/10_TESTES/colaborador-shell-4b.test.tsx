@@ -55,10 +55,13 @@ it("Tab e Shift+Tab permanecem no menu; botão fechar disponível", () => {
 it("menu agrupado usa rotas pessoais, solicitações 3C e segurança 3F existentes", () => {
   render(<ShellHarness/>); fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
   const nav = screen.getByRole("navigation", { name: "Navegação principal" });
-  for (const label of ["Meu Ponto", "EPI e Itens", "Trabalho", "Solicitações", "Minha Conta"]) expect(within(nav).getByRole("region", { name: label })).toBeInTheDocument();
+  for (const label of ["Meu Ponto", "EPI e Itens", "Trabalho", "Solicitações", "Documentos", "Minha Conta"]) expect(within(nav).getByRole("region", { name: label })).toBeInTheDocument();
   expect(within(nav).getByRole("link", { name: "Minhas solicitações Solicitações de EPI" })).toHaveAttribute("href", "/colaborador/epis#epi-solicitacoes");
   expect(within(nav).getByRole("link", { name: "Segurança" })).toHaveAttribute("href", "/colaborador/perfil#perfil-seguranca");
-  expect(nav.textContent).not.toMatch(/Contracheque|Meus documentos|Minha jornada|Assinar ponto|Quiosque|ASO/i);
+  // 6A/6B: contracheque e atestado agora existem de verdade (menu Documentos).
+  expect(within(nav).getByRole("link", { name: "Meus contracheques" })).toHaveAttribute("href", "/colaborador/contracheques");
+  expect(within(nav).getByRole("link", { name: "Enviar atestado" })).toHaveAttribute("href", "/colaborador/atestado");
+  expect(nav.textContent).not.toMatch(/Meus documentos|Minha jornada|Assinar ponto|Quiosque|ASO/i);
   fireEvent.click(within(nav).getByRole("link", { name: "Meus registros" })); expect(screen.queryByRole("dialog")).toBeNull();
 });
 it("Sair usa o fluxo recebido sem improvisar troca de conta", () => {

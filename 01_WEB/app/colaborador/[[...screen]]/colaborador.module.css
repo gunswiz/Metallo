@@ -396,3 +396,15 @@
 .fechamentoNumeros strong { font-size: 1.45rem; font-variant-numeric: tabular-nums; }
 .fechamentoLabel { font-weight: 800; font-size: 17px; }
 .fechamentoTexto { width: 100%; min-height: 96px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-deep); color: inherit; font: inherit; font-size: 17px; }
+/* Marcos 6A/6B — contracheques e atestados */
+.documentosLista { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.documentoBotao { display: flex; width: 100%; gap: 14px; align-items: center; min-height: 64px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.documentoBotao span { display: grid; gap: 2px; }
+.documentoBotao strong { font-size: 18px; }
+.documentoBotao small, .documentoLinha small { color: var(--soft); font-size: 15px; }
+.documentoLinha { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; }
+.documentoLinha > div:first-child { display: grid; gap: 4px; }
+.documentosSubtitulo { margin: 18px 0 8px; font-size: 19px; }
+.atestadoDias { display: grid; grid-template-columns: 64px 1fr 64px; gap: 10px; }
+.atestadoDias input { min-height: 56px; text-align: center; font-size: 22px; font-weight: 800; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-deep); color: inherit; }
+.atestadoDias button { font-size: 26px; }

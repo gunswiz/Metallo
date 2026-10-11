@@ -4,18 +4,18 @@ import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { horasMinutos, mesAnterior, mesAtual, mesSeguinte, mesValido, nomeDoMes, saldoTexto } from "@/03_FUNCOES_E_LOGICA/Ponto/espelho-4e";
 import { resumoHoras4l, situacaoFechamento4l, TEXTO_SITUACAO_4L } from "@/03_FUNCOES_E_LOGICA/Ponto/fechamento-4l";
-import { carregarMes4l, lerFechamentos4l } from "@/05_ACESSO_A_DADOS/Ponto/mes-4l";
-import { fecharMes4l, fecharTodos4l, reabrirMes4l } from "@/app/actions/fechamento-4l";
+import { carregarMes4l, lerFechamentos4l, lerPercentuais4l } from "@/05_ACESSO_A_DADOS/Ponto/mes-4l";
+import { fecharMes4l, fecharTodos4l, reabrirMes4l, salvarPercentuais4l } from "@/app/actions/fechamento-4l";
 
 // Marco 4L — Fechamento do mês + relatório de horas extras e faltas (teste online). Uma tela só, para não espalhar função.
 const OK: Record<string, string> = { fechado: "Mês fechado. O funcionário recebe aviso no celular (se ligou os avisos) para conferir no app.",
-  reaberto: "Mês reaberto. Corrija no espelho e feche de novo.", todos: "Fechamento feito." };
+  reaberto: "Mês reaberto. Corrija no espelho e feche de novo.", todos: "Fechamento feito.", percentuais: "Percentuais salvos." };
 const ERRO: Record<string, string> = {
   conferir: "Essa pessoa tem dias para conferir (sem marcação ou faltando saída). Resolva no espelho ou marque “Fechar mesmo assim”.",
   "nao-terminou": "Esse mês ainda não terminou. Dá para ver o relatório, mas fechar só a partir do dia 1º do mês seguinte.",
   "ja-fechado": "Esse mês já estava fechado para essa pessoa.", desatualizado: "Chegou marcação nova enquanto a tela estava aberta. Confira e tente de novo.",
   motivo: "Escreva o motivo da reabertura (pelo menos 5 letras).", leitura: "Não foi possível ler o ponto agora. Tente de novo em instantes.",
-  falhou: "Não foi possível salvar. Tente de novo.",
+  falhou: "Não foi possível salvar. Tente de novo.", percentual: "Percentual inválido: hora extra de 50% a 200%; domingo/feriado de 100% a 300%.",
 };
 const dataHora = (iso: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
 const h = (min: number) => (min ? horasMinutos(Math.abs(min)) : "—");
@@ -25,7 +25,7 @@ export default async function FechamentoPage({ searchParams }: { searchParams: P
   const query = await searchParams, atual = mesAtual();
   const mes = mesValido(query.mes) && query.mes! <= atual ? query.mes! : mesAnterior(atual);
   const terminou = mes < atual;
-  const [{ pessoas, erro }, fechamentos] = await Promise.all([carregarMes4l(mes), lerFechamentos4l(mes).catch(() => null)]);
+  const [{ pessoas, erro }, fechamentos, pct] = await Promise.all([carregarMes4l(mes), lerFechamentos4l(mes).catch(() => null), lerPercentuais4l()]);
   const porPessoa = new Map((fechamentos ?? []).map(f => [f.employee_id, f]));
   const linhas = pessoas.map(p => ({ ...p, resumo: resumoHoras4l(p.espelho), fechamento: porPessoa.get(p.employee_id) }));
   const abertos = linhas.filter(l => !l.fechamento), prontos = abertos.filter(l => l.resumo.conferir === 0);
@@ -55,7 +55,7 @@ export default async function FechamentoPage({ searchParams }: { searchParams: P
       </header>
       {!linhas.length ? <div className="panel-body"><p className="muted">Nenhum funcionário.</p></div> :
       <div className="data-table-wrap"><table className="data-table fechamento-tabela">
-        <thead><tr><th>Funcionário</th><th>Dias</th><th>Horas</th><th>Extra (50%)</th><th>Sábado (50%)</th><th>Domingo/feriado (100%)</th>
+        <thead><tr><th>Funcionário</th><th>Dias</th><th>Horas</th><th>Extra ({pct.extra}%)</th><th>Sábado ({pct.extra}%)</th><th>Domingo/feriado ({pct.domingo_feriado}%)</th>
           <th>Atrasos</th><th>Faltas</th><th>Abonos</th><th>Conferir</th><th>Fechamento</th></tr></thead>
         <tbody>{linhas.map(l => { const r = l.resumo, f = l.fechamento, sit = situacaoFechamento4l(f); return <tr key={l.employee_id}>
           <td><span className="primary-cell">{l.nome}</span><span className="secondary-cell">{l.matricula ? `Matrícula ${l.matricula}` : "Sem matrícula"}</span>
@@ -83,9 +83,14 @@ export default async function FechamentoPage({ searchParams }: { searchParams: P
           </td>
         </tr>; })}</tbody>
       </table></div>}
+      <div className="panel-body"><details className="espelho-acao"><summary>Percentuais da hora extra ({pct.extra}% · domingo/feriado {pct.domingo_feriado}%)</summary>
+        <form action={salvarPercentuais4l} className="inline-action"><input type="hidden" name="mes" value={mes} />
+          <label>Hora extra (%) <input name="extra" type="number" inputMode="numeric" min={50} max={200} required defaultValue={pct.extra} /></label>
+          <label>Domingo/feriado (%) <input name="domingo" type="number" inputMode="numeric" min={100} max={300} required defaultValue={pct.domingo_feriado} /></label>
+          <button className="button secondary" type="submit">Salvar</button></form></details></div>
       <div className="panel-body"><p className="muted espelho-aviso">Teste sem valor oficial. As horas vêm do espelho (horário da empresa e tolerância da CLT de 5 min por marcação, 10 no dia).
-        Percentuais são a regra geral da lei: hora extra em dia de trabalho e sábado fora da jornada, no mínimo 50%; domingo ou feriado trabalhado sem folga, em dobro.
-        A convenção coletiva pode mudar — o DP confere. Mais de 2h extras no dia passa do limite da CLT (art. 59). Banco de horas ainda não entra aqui.
+        Percentuais da empresa: hora extra em dia de trabalho e sábado fora da jornada, {pct.extra}%; domingo ou feriado trabalhado sem folga, {pct.domingo_feriado}%
+        (a lei exige no mínimo 50% e o dobro). O DP confere com a convenção coletiva. Mais de 2h extras no dia passa do limite da CLT (art. 59). Banco de horas ainda não entra aqui.
         Depois de fechado, atestado, falta e feriado daquele mês ficam travados até reabrir (fica registrado quem reabriu e o motivo).
         A confirmação do funcionário não tira o direito dele de reclamar depois.</p></div>
     </section>

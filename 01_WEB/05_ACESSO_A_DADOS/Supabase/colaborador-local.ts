@@ -28,10 +28,14 @@ export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) 
     "/rest/v1/rpc/my_push_3u", "/rest/v1/rpc/save_my_push_3u", "/rest/v1/rpc/delete_my_push_3u", "/rest/v1/rpc/set_my_push_prefs_3u",
     // 4L: fechamento do mês (conferir e responder).
     "/rest/v1/rpc/my_fechamentos_4l", "/rest/v1/rpc/responder_fechamento_4l",
+    // 6A/6B: contracheques e atestados (arquivos só pela função arquivos-6).
+    "/rest/v1/rpc/my_contracheques_6a", "/rest/v1/rpc/my_atestados_6b", "/rest/v1/rpc/cancelar_atestado_6b", "/functions/v1/arquivos-6",
     "/functions/v1/avisos-funcionario"];
   if (![LAB_URL, TESTE_ONLINE_SUPABASE_URL].includes(url.origin) || !allowed.includes(url.pathname)) throw new Error("Destino local não autorizado.");
+  // Envio de foto/PDF (6B) em internet fraca leva mais que 6 s.
+  const limite = url.pathname === "/functions/v1/arquivos-6" ? 90000 : 6000;
   return fetch(input, { ...init, cache: "no-store", redirect: "error",
-    signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(6000)]) : AbortSignal.timeout(6000) });
+    signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(limite)]) : AbortSignal.timeout(limite) });
 }
 
 export function personalProfile(data: unknown): PersonalProfile | null {

@@ -59,6 +59,19 @@ export async function fecharTodos4l(formData: FormData) {
   redirect(destino(mes, `ok=todos&feitos=${feitos}&pulados=${pulados}`));
 }
 
+// Percentuais da hora extra da empresa (lei: mínimo 50%; domingo/feriado sem folga, mínimo o dobro).
+export async function salvarPercentuais4l(formData: FormData) {
+  await requireCapability("admin:manage");
+  if (!oficialLiberado4f()) redirect("/ponto-laboratorio");
+  const mes = mesValido(texto(formData, "mes")) ? texto(formData, "mes") : mesAtual();
+  const extra = Number(texto(formData, "extra")), domingo = Number(texto(formData, "domingo"));
+  if (!Number.isInteger(extra) || extra < 50 || extra > 200 || !Number.isInteger(domingo) || domingo < 100 || domingo > 300) redirect(destino(mes, "erro=percentual"));
+  const { error } = await (await createClient()).rpc("admin_set_percentuais_dp_4l" as never, { p_extra: extra, p_domingo_feriado: domingo } as never);
+  if (error) redirect(destino(mes, "erro=percentual"));
+  revalidatePath("/ponto-laboratorio/fechamento");
+  redirect(destino(mes, "ok=percentuais"));
+}
+
 export async function reabrirMes4l(formData: FormData) {
   await requireCapability("admin:manage");
   if (!oficialLiberado4f()) redirect("/ponto-laboratorio");

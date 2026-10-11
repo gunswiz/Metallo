@@ -4,7 +4,7 @@ Ambiente: TESTE ONLINE (Supabase `cvimwiqokkujfhwynhmt`, dados fictícios). Prod
 
 ## Gestão — tela "Fechamento do mês" (`/ponto-laboratorio/fechamento`)
 Uma tela só, com o relatório e o fechamento (para não espalhar função):
-- Por pessoa: dias trabalhados, horas, **extra em dia de trabalho (50%)**, **sábado fora da jornada (50%)**, **domingo/feriado trabalhado (100%)**,
+- Por pessoa: dias trabalhados, horas, **extra em dia de trabalho (60%)**, **sábado fora da jornada (60%)**, **domingo/feriado trabalhado (100%)**,
   atrasos e saídas antes, faltas, abonos (atestado/férias/folga), **dias para conferir** e aviso de **mais de 2h extras no dia** (CLT art. 59).
 - **Baixar planilha** (CSV que abre no Excel) para o DP/contador.
 - **Fechar o mês** (só depois que o mês termina). Quem tem dia para conferir só fecha marcando "Fechar mesmo assim".
@@ -22,6 +22,10 @@ Uma tela só, com o relatório e o fechamento (para não espalhar função):
 ## Banco (`4l-fechamento-mes.sql`)
 `private.fechamento_mes_4l` (um ativo por pessoa/mês), `admin_fechar_mes_4l`, `admin_reabrir_mes_4l`, `admin_fechamentos_4l`,
 `my_fechamentos_4l`, `responder_fechamento_4l`; gatilho `trava_mes_fechado_4l` em ocorrências e feriados; novo tipo de aviso `FECHAMENTO`.
+
+## Percentuais da empresa (11/10)
+A empresa paga **60%** na hora extra (informado pelo responsável). Guardado em `private.percentuais_dp_4l` (`4l-percentuais.sql`);
+a Gestão muda na própria tela (mínimo 50% e 200% máx.; domingo/feriado 100%–300%). Domingo/feriado ficou 100% até a empresa informar outro valor.
 
 ## Lei (regra geral, não é parecer)
 Hora extra no mínimo 50% (CF art. 7º XVI); domingo/feriado trabalhado sem folga em dobro (Lei 605/49 art. 9º; TST Súmula 146);

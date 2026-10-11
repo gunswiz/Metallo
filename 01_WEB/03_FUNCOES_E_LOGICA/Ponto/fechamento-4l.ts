@@ -3,9 +3,12 @@ import { horasMinutos, saldoTexto, textoDoDia, type Espelho } from "./espelho-4e
 
 // Marco 4L — Fechamento do mês e relatório de horas extras/faltas.
 // Tudo sai do mesmo espelho (4E/4G/4H). Aqui só separamos os totais do jeito que o escritório usa.
-// Percentuais são a regra geral da lei (não é parecer): dia de trabalho e sábado fora da jornada = no mínimo 50%
-// (CF art. 7º XVI); domingo e feriado trabalhados sem folga = em dobro (Lei 605/49 art. 9º; TST Súmula 146).
-// Convenção coletiva pode mudar os percentuais — o DP confere.
+// Percentuais: a EMPRESA paga 60% na hora extra (informado pelo responsável em 11/10); a lei exige no mínimo 50%
+// (CF art. 7º XVI). Domingo e feriado trabalhados sem folga = em dobro (Lei 605/49 art. 9º; TST Súmula 146).
+// Os percentuais ficam guardados no banco (Gestão pode mudar); o DP confere com a convenção coletiva.
+export type Percentuais4l = { extra: number; domingo_feriado: number };
+export const PERCENTUAIS_PADRAO_4L: Percentuais4l = { extra: 60, domingo_feriado: 100 };
+export const percentuais4lSchema = z.object({ extra: z.number().int().min(50).max(200), domingo_feriado: z.number().int().min(100).max(300) });
 export type Resumo4l = {
   marcacoes: number; diasTrabalhados: number; minutos: number;
   extra50: number; sabado: number; domingoFeriado: number; atrasos: number;
@@ -75,9 +78,9 @@ const hm = (min: number) => `${min < 0 ? "-" : ""}${Math.floor(Math.abs(min) / 6
 const celula = (v: string) => /[;"\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 // Texto digitado (nome, matrícula): começar com = + - @ vira fórmula no Excel; um apóstrofo na frente impede.
 const texto = (v: string) => (/^[=+\-@\t]/.test(v) ? `'${v}` : v);
-export function planilha4l(mes: string, linhas: { nome: string; matricula: string | null; resumo: Resumo4l; situacao: Situacao4l }[]) {
-  const cab = ["Mes", "Funcionario", "Matricula", "Dias trabalhados", "Horas registradas", "Extra dia de trabalho (50%)", "Sabado fora da jornada (50%)",
-    "Domingo/feriado trabalhado (100%)", "Atrasos e saidas antes", "Faltas (dias)", "Horas de falta", "Abonos (dias)", "Dias para conferir",
+export function planilha4l(mes: string, linhas: { nome: string; matricula: string | null; resumo: Resumo4l; situacao: Situacao4l }[], pct: Percentuais4l = PERCENTUAIS_PADRAO_4L) {
+  const cab = ["Mes", "Funcionario", "Matricula", "Dias trabalhados", "Horas registradas", `Extra dia de trabalho (${pct.extra}%)`, `Sabado fora da jornada (${pct.extra}%)`,
+    `Domingo/feriado trabalhado (${pct.domingo_feriado}%)`, "Atrasos e saidas antes", "Faltas (dias)", "Horas de falta", "Abonos (dias)", "Dias para conferir",
     "Dias com mais de 2h extras", "Saldo do mes", "Fechamento"];
   const corpo = linhas.map(l => [mes, texto(l.nome), texto(l.matricula ?? ""), String(l.resumo.diasTrabalhados), hm(l.resumo.minutos), hm(l.resumo.extra50), hm(l.resumo.sabado),
     hm(l.resumo.domingoFeriado), hm(l.resumo.atrasos), String(l.resumo.faltas), hm(l.resumo.minutosFalta), String(l.resumo.abonos), String(l.resumo.conferir),

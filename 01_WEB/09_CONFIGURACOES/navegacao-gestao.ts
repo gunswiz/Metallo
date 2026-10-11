@@ -34,6 +34,7 @@ export const GRUPOS_MENU: GrupoMenu[] = [
     { href: "/equipes", label: "Equipes", capability: "inventory:read", icone: "equipes" },
     { href: "/comunicados", label: "Comunicados", capability: "admin:manage", icone: "comunicados", newFeature: true },
     { href: "/ponto-laboratorio", label: "Ponto (teste)", capability: "admin:manage", icone: "ponto", newFeature: true },
+    { href: "/contracheques", label: "Contracheques", capability: "admin:manage", icone: "contracheque", newFeature: true },
   ] },
   { id: "obras", label: "Obras e relatórios", icone: "obras", itens: [
     { href: "/obras", label: "Obras", capability: "inventory:read", icone: "obras" },
