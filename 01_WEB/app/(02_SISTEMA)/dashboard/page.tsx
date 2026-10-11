@@ -13,6 +13,8 @@ import { lerPedidosFuncionarios } from "@/05_ACESSO_A_DADOS/Repositorios/pedidos
 import { lerVisaoTreinamentos5a } from "@/05_ACESSO_A_DADOS/Supabase/treinamentos-5a";
 import { domingoEmFortaleza, horaFortaleza, lerEquipesSemConsumoHoje3p } from "@/05_ACESSO_A_DADOS/Supabase/avisos-3p";
 import { AvisosCelular } from "@/02_COMPONENTES_VISUAIS/avisos-celular";
+import { lerVencimentosEpi5d } from "@/05_ACESSO_A_DADOS/Supabase/alertas-5c";
+import { situacaoCa5d } from "@/03_FUNCOES_E_LOGICA/Equipamentos/validade-ca-5d";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
@@ -31,6 +33,10 @@ export default async function DashboardPage() {
   const vencidos = treinos?.filter(ficha => ficha.situacao === "VENCIDO").length ?? 0;
   const faltando = treinos?.filter(ficha => ficha.situacao === "FALTANDO").length ?? 0;
   const vencendo = treinos?.filter(ficha => ficha.situacao === "VENCE_EM_BREVE").length ?? 0;
+  // Marco 5D: CA de EPI e lote de EPI vencidos ou vencendo em 30 dias.
+  const vencEpi = can(profile, "epi:write") ? await lerVencimentosEpi5d().catch(() => null) ?? [] : [];
+  const caVencido = vencEpi.filter(v => v.grupo === "CA" && situacaoCa5d(v.vence_em) === "vencido"), caVencendo = vencEpi.filter(v => v.grupo === "CA" && situacaoCa5d(v.vence_em) !== "vencido");
+  const lotes = vencEpi.filter(v => v.grupo === "LOTE");
   const atalhos = ACOES_LANCAR.filter(acao => acao.pode(profile)).slice(0, 4);
   // Marco 3J: quantos pedidos do app do Funcionário esperam resposta (só laboratório e teste online).
   const pedidos = can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url) ?
@@ -59,10 +65,13 @@ export default async function DashboardPage() {
           {vencidos > 0 && <Link className="todo-item" href="/treinamentos?filtro=vencido"><span className="todo-count">{vencidos}</span><span className="todo-text"><strong>ASO ou treinamento vencido</strong><small>Não deve fazer a atividade até regularizar</small></span></Link>}
           {faltando > 0 && <Link className="todo-item" href="/treinamentos?filtro=faltando"><span className="todo-count">{faltando}</span><span className="todo-text"><strong>Falta ASO ou treinamento obrigatório</strong><small>Cadastre o que falta para a função</small></span></Link>}
           {vencendo > 0 && <Link className="todo-item" href="/treinamentos?filtro=breve"><span className="todo-count">{vencendo}</span><span className="todo-text"><strong>Vencem em até 30 dias</strong><small>Agende a reciclagem ou o exame</small></span></Link>}
+          {caVencido.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{caVencido.length}</span><span className="todo-text"><strong>EPI com C.A. vencido</strong><small>{caVencido.slice(0, 3).map(v => v.texto).join(", ")}{caVencido.length > 3 ? " e outros" : ""} · não comprar nem entregar até regularizar</small></span></Link>}
+          {caVencendo.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{caVencendo.length}</span><span className="todo-text"><strong>C.A. de EPI vence em até 30 dias</strong><small>{caVencendo.slice(0, 3).map(v => v.texto).join(", ")}{caVencendo.length > 3 ? " e outros" : ""}</small></span></Link>}
+          {lotes.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{lotes.length}</span><span className="todo-text"><strong>Lote de EPI vencido ou vencendo</strong><small>{lotes.slice(0, 3).map(v => v.texto).join(", ")}{lotes.length > 3 ? " e outros" : ""}</small></span></Link>}
           {aReceber > 0 && <Link className="todo-item" href="/lancar/receber"><span className="todo-count">{aReceber}</span><span className="todo-text"><strong>Pedidos para receber</strong><small>Compras providenciadas que ainda não chegaram por completo</small></span></Link>}
           {pedidosAbertos > 0 && <Link className="todo-item" href="/pedidos-adm"><span className="todo-count">{pedidosAbertos}</span><span className="todo-text"><strong>Pedidos à ADM em andamento</strong><small>Acompanhe a aprovação e a compra</small></span></Link>}
           {alertas.map(alerta => <Link className="todo-item" key={alerta.id} href={SECAO_ANTIGA[alerta.section] ?? "/obras"}><span className="todo-count">!</span><span className="todo-text"><strong>{alerta.title}</strong><small>{alerta.description}</small></span></Link>)}
-          {!semConsumo.length && !(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
+          {!semConsumo.length && !(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !vencEpi.length && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
         </div>
       </section>
       {novos && <AvisosCelular compacto />}

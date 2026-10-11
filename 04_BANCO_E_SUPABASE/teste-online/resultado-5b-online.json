@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-11T02:32:52.244Z",
+  "scope": "Marcos 5B, 5C e 5D — baixa do pedido, alertas e vencimentos (teste online)",
+  "checks": [
+    {
+      "name": "5B material de prova disponível no app",
+      "ok": true
+    },
+    {
+      "name": "5B Gestão vê equipe e saldo da obra no pedido",
+      "ok": true
+    },
+    {
+      "name": "5B funcionário não usa a resposta com baixa",
+      "ok": true
+    },
+    {
+      "name": "5B Gestão atende com baixa no estoque",
+      "ok": true
+    },
+    {
+      "name": "5B saldo da obra diminuiu exatamente a quantidade pedida",
+      "ok": true
+    },
+    {
+      "name": "5B pedido fica atendido e marcado como baixado",
+      "ok": true
+    },
+    {
+      "name": "5B consumo lançado no histórico de movimentações (uma vez só)",
+      "ok": true
+    },
+    {
+      "name": "5B pedido já respondido não é atendido de novo",
+      "ok": true
+    },
+    {
+      "name": "5B app do funcionário vê o pedido atendido",
+      "ok": true
+    },
+    {
+      "name": "5B sem saldo na obra: a baixa é recusada com aviso claro",
+      "ok": true
+    },
+    {
+      "name": "5B sem saldo: pedido continua aberto e estoque não mexe",
+      "ok": true
+    },
+    {
+      "name": "5B atender sem baixa não mexe no estoque",
+      "ok": true
+    },
+    {
+      "name": "5D funcionário não muda validade do C.A.",
+      "ok": true
+    },
+    {
+      "name": "5D Gestão salva validade do C.A.",
+      "ok": true
+    },
+    {
+      "name": "5D data absurda é recusada",
+      "ok": true
+    },
+    {
+      "name": "5D Gestão lê a validade salva",
+      "ok": true
+    },
+    {
+      "name": "5D C.A. vencendo em 10 dias aparece na lista de vencimentos",
+      "ok": true
+    },
+    {
+      "name": "5D funcionário não vê os vencimentos da Gestão",
+      "ok": true
+    },
+    {
+      "name": "5D sem login não vê os vencimentos",
+      "ok": true
+    },
+    {
+      "name": "5C disparo dos alertas sem a chave do agendador é recusado",
+      "ok": true
+    },
+    {
+      "name": "5C chave errada também é recusada",
+      "ok": true
+    },
+    {
+      "name": "5C funcionário não chama a montagem dos alertas",
+      "ok": true
+    }
+  ],
+  "result": "22/22"
+}

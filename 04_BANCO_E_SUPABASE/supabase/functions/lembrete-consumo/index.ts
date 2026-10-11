@@ -1,5 +1,7 @@
 // Marco 3P (TESTE ONLINE): aviso no celular lembrando o consumo do dia.
 // "agendado": chamado pelo pg_cron com o segredo do Vault no cabeçalho. "teste": a própria pessoa testa o aviso no aparelho.
+// Marcos 5C/5D — "alertas": de manhã (seg–sex), estoque abaixo do mínimo e vencimentos (ASO, treinamentos, CA e lote de EPI)
+// para administrador e engenheiro. Só manda o que é novo; na segunda-feira manda o resumo completo.
 // Chaves VAPID ficam no Vault; não registra endereço do aparelho, token nem dado pessoal em log.
 import postgres from "npm:postgres@3.4.5";
 import { createClient } from "npm:@supabase/supabase-js@2.115.0";
@@ -53,6 +55,16 @@ async function agendado() {
     url: "/lancar/consumo" }));
 }
 
+async function alertas() {
+  const segunda = new Intl.DateTimeFormat("en-US", { timeZone: "America/Fortaleza", weekday: "short" }).format(new Date()) === "Mon";
+  // Sem ninguém com o celular ligado, não marca nada como avisado (quem ligar depois recebe).
+  const lista = await sql.unsafe(`select id::text id, endpoint, p256dh, auth from private.destinos_alertas_5c()`) as unknown as Assinatura[];
+  if (!lista.length) return { enviados: 0, falhas: 0, sem_aparelho: true };
+  const [{ aviso }] = await sql.unsafe(`select private.aviso_alertas_5c($1::text::boolean) aviso`, [String(segunda)]) as unknown as { aviso: { title: string; body: string; url: string } | null }[];
+  if (!aviso) return { enviados: 0, falhas: 0, sem_novidade: true };
+  return enviar(lista, () => aviso);
+}
+
 async function teste(token: string) {
   const caller = createClient(url, anon, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false } });
   const { data, error } = await caller.auth.getUser();
@@ -77,6 +89,11 @@ Deno.serve(async (req) => {
       const recebido = req.headers.get("x-metallo-cron") ?? "";
       if (!s.metallo_cron_lembrete || !igual(recebido, s.metallo_cron_lembrete)) return answer({ ok: false, error: "nao_autorizado" }, 401);
       return answer({ ok: true, ...(await agendado()) });
+    }
+    if (body.acao === "alertas") {
+      const recebido = req.headers.get("x-metallo-cron") ?? "";
+      if (!s.metallo_cron_lembrete || !igual(recebido, s.metallo_cron_lembrete)) return answer({ ok: false, error: "nao_autorizado" }, 401);
+      return answer({ ok: true, ...(await alertas()) });
     }
     if (body.acao === "teste") {
       const token = req.headers.get("authorization")?.match(/^Bearer (.+)$/)?.[1] ?? "";

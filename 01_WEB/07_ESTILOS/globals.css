@@ -880,3 +880,9 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .conferir-itens { margin: 8px 0 14px; padding-left: 20px; line-height: 1.7; }
 .privacidade h2 { margin: 18px 0 8px; } .privacidade h3 { margin: 16px 0 6px; } .privacidade ul { padding-left: 22px; line-height: 1.65; }
 .pedido-material-acao input { flex: 1 1 220px; min-width: 0; }
+
+/* Marco 5B: atender pedido de material dando baixa no estoque */
+.texto-alerta { color: #ffdaa0; }
+.check-inline { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 15px; white-space: nowrap; }
+.check-inline input { width: 22px; height: 22px; }
+.pedido-material-acao .check-inline input { flex: none; min-width: 22px; }

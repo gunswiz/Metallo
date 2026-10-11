@@ -27,21 +27,30 @@ export default async function PedidosPage({ searchParams }: { searchParams: Prom
   return <>
     <PageHeader eyebrow="APP DO FUNCIONÁRIO" title="Pedidos dos funcionários"
       description="Tudo o que os funcionários pediram ou avisaram pelo app, em um só lugar. O mais antigo aparece primeiro." />
-    {query.ok && <div className="alert success" role="status">Registrado. O funcionário já vê a resposta no app.</div>}
+    {query.ok && <div className="alert success" role="status">{query.ok === "baixa" ? "Atendido e baixado do estoque da obra (lançado como consumo da equipe). O funcionário já vê a resposta no app." : "Registrado. O funcionário já vê a resposta no app."}</div>}
     {data.aguardando === 0 && <div className="alert success" role="status">Nenhum pedido esperando resposta.</div>}
-    {query.erro === "material" && <div className="alert error" role="alert">Não foi possível responder o pedido de material. Para recusar, escreva o motivo.</div>}
+    {query.erro?.startsWith("material") && <div className="alert error" role="alert">{({
+      "material-sem-saldo": "Não há saldo suficiente desse material no estoque da obra. O pedido continua aberto: dê entrada no material ou atenda sem dar baixa.",
+      "material-sem-equipe": "O funcionário não está em nenhuma equipe, então não dá para saber de qual estoque baixar. Atenda sem dar baixa ou coloque-o numa equipe.",
+      "material-sem-permissao": "Seu acesso não permite lançar consumo para a equipe desse funcionário. Atenda sem dar baixa ou peça a quem tem acesso.",
+      "material-fracao": "Quantidade com vírgula não pode ser baixada do estoque (o estoque conta em unidades inteiras). Atenda sem dar baixa.",
+    } as Record<string, string>)[query.erro] ?? "Não foi possível responder o pedido de material. Para recusar, escreva o motivo."}</div>}
 
     {data.materiais && <section className="panel" id="pedidos-material" aria-labelledby="pedidos-material-titulo"><header className="panel-header"><div>
       <h2 id="pedidos-material-titulo">Pedidos de material ({data.materiais.filter(p => p.status === "aberto").length})</h2>
-      <p>O funcionário pediu pelo app. Marcar como atendido não mexe no estoque: lance a saída ou o consumo normalmente.</p></div></header>
+      <p>O funcionário pediu pelo app. Ao marcar &ldquo;Atendido&rdquo;, o material já sai do estoque da obra como consumo da equipe dele (pode desmarcar se a saída já foi lançada).</p></div></header>
       {data.materiais.length === 0 ? <div className="panel-body"><p>Nenhum pedido de material.</p></div> :
         <div className="panel-body list">{data.materiais.map(p => <article className="list-row" key={p.id}>
           <div className="list-row-main"><strong>{p.funcionario} · {p.quantidade.toLocaleString("pt-BR")} {p.unidade} de {p.material}</strong>
             <span>{{ aberto: "Esperando resposta", atendido: "Atendido", recusado: "Recusado", cancelado: "Cancelado pelo funcionário" }[p.status]} · pedido em {formatDateTime(p.created_at)}{p.matricula ? ` · ${p.matricula}` : ""}</span>
             {p.observacao && <span>O funcionário escreveu: {p.observacao}</span>}
-            {p.resposta && <span>Resposta: {p.resposta}</span>}</div>
+            {p.resposta && <span>Resposta: {p.resposta}</span>}
+            {p.status === "aberto" && p.equipe !== undefined && <span>Equipe: {p.equipe ?? "sem equipe"} · Saldo na obra: {p.saldo_obra === null || p.saldo_obra === undefined ? "0" : p.saldo_obra.toLocaleString("pt-BR")} {p.unidade}
+              {(p.saldo_obra ?? 0) < p.quantidade && <strong className="texto-alerta"> · saldo não dá para atender tudo</strong>}</span>}
+            {p.status === "atendido" && p.baixa_feita && <span>Baixado do estoque da obra.</span>}</div>
           {p.status === "aberto" && <form action={decidirPedidoMaterial3t} className="inline-action pedido-material-acao">
             <input type="hidden" name="pedidoId" value={p.id} />
+            <label className="check-inline"><input type="checkbox" name="baixar" value="1" defaultChecked={(p.saldo_obra ?? 0) >= p.quantidade && Number.isInteger(p.quantidade) && Boolean(p.equipe)} /> Dar baixa no estoque</label>
             <input name="resposta" maxLength={200} placeholder="Resposta ao funcionário (obrigatória se recusar)" aria-label={`Resposta ao pedido de ${p.funcionario}`} />
             <button className="button primary" type="submit" name="status" value="atendido">Atendido</button>
             <button className="button ghost" type="submit" name="status" value="recusado">Recusar</button>

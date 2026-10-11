@@ -72,8 +72,8 @@ export function AvisosCelular({ compacto = false }: { compacto?: boolean }) {
     sem_suporte: "Este navegador não recebe avisos. No celular, use o Chrome (Android) ou instale o Metallo na tela de início.",
     iphone_instalar: "No iPhone: toque em Compartilhar › “Adicionar à Tela de Início”, abra o Metallo pelo ícone e volte aqui.",
     negado: "Os avisos estão bloqueados nas configurações do navegador para este site. Libere em Configurações › Notificações.",
-    desligado: "Receba no celular, no fim da tarde, o lembrete do consumo que ainda não foi lançado.",
-    ligado: "Avisos ligados neste aparelho. O lembrete chega de segunda a sábado, às 16h30, se faltar lançar o consumo.",
+    desligado: "Receba no celular o lembrete do consumo que ainda não foi lançado e, de manhã, os alertas de estoque baixo e de vencimentos (ASO, treinamentos, C.A. de EPI).",
+    ligado: "Avisos ligados neste aparelho. Consumo: de segunda a sábado, às 16h30, se faltar lançar. Alertas de estoque e vencimentos: dias úteis, às 7h05, só quando há novidade.",
   };
   // No Início (compacto) só aparece enquanto ainda dá para ligar; depois disso fica só em Minha conta.
   if (compacto && !["desligado", "iphone_instalar"].includes(estado) && !mensagem) return null;
