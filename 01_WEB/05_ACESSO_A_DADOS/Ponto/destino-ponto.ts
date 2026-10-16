@@ -3,7 +3,7 @@
 // Nenhuma outra combinação é aceita: endereços fixos no código, sem configuração externa.
 import { TESTE_ONLINE_COLABORADOR_HOST, TESTE_ONLINE_COLABORADOR_ORIGIN, TESTE_ONLINE_PONTO_4D } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
-export type DestinoPonto = { host: string; origin: string; base: (versao: "v4a" | "v4b") => string; online: boolean };
+export type DestinoPonto = { host: string; origin: string; requestOrigin?: string; base: (versao: "v4a" | "v4b") => string; online: boolean };
 
 export function destinoPonto(env: Record<string, string | undefined> = process.env): DestinoPonto | "INDISPONIVEL" | null {
   const lab = env.METALLO_LOCAL_PREVIEW === "1" && env.METALLO_COLABORADOR_PREVIEW === "1";
@@ -13,6 +13,12 @@ export function destinoPonto(env: Record<string, string | undefined> = process.e
     if (!["3106", "3107"].includes(corePort)) return "INDISPONIVEL";
     return { host: "127.0.0.1:3101", origin: "http://127.0.0.1:3101", base: versao => `http://127.0.0.1:${corePort}/lab-point/${versao}/`, online: false };
   }
-  if (online) return { host: TESTE_ONLINE_COLABORADOR_HOST, origin: TESTE_ONLINE_COLABORADOR_ORIGIN, base: versao => `${TESTE_ONLINE_PONTO_4D}/${versao}/`, online: true };
+  if (online) {
+    // Apenas o servidor de desenvolvimento no loopback recebe a prévia. O destino continua fixo em HTTPS.
+    const preview = env.NODE_ENV === "development" && env.NEXT_PUBLIC_METALLO_TESTE_PREVIEW === "1";
+    return { host: preview ? "127.0.0.1:3101" : TESTE_ONLINE_COLABORADOR_HOST,
+      ...(preview ? { requestOrigin: "http://127.0.0.1:3101" } : {}),
+      origin: TESTE_ONLINE_COLABORADOR_ORIGIN, base: versao => `${TESTE_ONLINE_PONTO_4D}/${versao}/`, online: true };
+  }
   return null;
 }

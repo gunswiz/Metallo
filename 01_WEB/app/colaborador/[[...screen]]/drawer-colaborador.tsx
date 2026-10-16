@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type RefObject } from "react";
 import Link from "next/link";
-import { Home, CalendarDays, LockKeyhole, PackagePlus, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X, ReceiptText, Stethoscope, CircleHelp } from "lucide-react";
+import { Home, CalendarDays, LockKeyhole, PackagePlus, Clock3, FileText, Download, PackageCheck, Toolbox, RotateCcw, UsersRound, HardHat, Megaphone, ClipboardList, GraduationCap, CircleUserRound, ShieldCheck, LogOut, X, ReceiptText, Stethoscope, CircleHelp, Menu } from "lucide-react";
 import { BrandLogo } from "@/02_COMPONENTES_VISUAIS/brand";
 import type { PortalScreen } from "@/03_FUNCOES_E_LOGICA/Autenticacao/use-colaborador-session";
 import type { PersonalProfile } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
@@ -43,14 +43,15 @@ const groups: { label: string; items: Item[] }[] = [
   ] },
 ];
 
-export function DrawerColaborador({ open, onClose, trigger, profile, current, busy, logout, demo, go }: {
+export function DrawerColaborador({ open, onClose, trigger, profile, current, busy, logout, demo, go, inline = false }: {
   open: boolean; onClose: () => void; trigger: RefObject<HTMLButtonElement | null>;
   profile: PersonalProfile; current: PortalScreen; busy: boolean;
-  logout: () => Promise<void>; demo: boolean; go: (screen: PortalScreen) => void;
+  logout: () => Promise<void>; demo: boolean; go: (screen: PortalScreen) => void; inline?: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   useEffect(() => {
+    if (inline) return;
     // As seções pessoais podem surgir depois do carregamento autenticado.
     // Navegação por fragmento não deve criar outra tela ou outro fluxo.
     const allowed = new Set(["meus-registros", "comprovantes", "epi-troca-heading", "epi-solicitacoes", "epi-recebimento-heading", "perfil-seguranca"]);
@@ -70,9 +71,9 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
     };
     navigateSection(); window.addEventListener("hashchange", navigateSection);
     return () => { stop(); window.removeEventListener("hashchange", navigateSection); };
-  }, [current, profile.employee_id]);
+  }, [current, profile.employee_id, inline]);
   useEffect(() => {
-    if (!open) return;
+    if (!open || inline) return;
     const element = dialog.current;
     if (!element) return;
     const originalOverflow = document.body.style.overflow;
@@ -81,14 +82,25 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
     element.showModal();
     close.current?.focus();
     return () => { element.close(); document.body.style.overflow = originalOverflow; returnTarget?.focus(); };
-  }, [open, trigger]);
-  if (!open) return null;
+  }, [open, trigger, inline]);
+  if (!open && !inline) return null;
   const itemLink = (item: Item) => <Link key={`${item.screen}-${item.hash ?? ""}`} href={`/colaborador/${item.screen}${item.hash ? `#${item.hash}` : ""}`}
     aria-current={current === item.screen && !item.hash ? "page" : undefined}
     className={current === item.screen && !item.hash ? styles.drawerActive : styles.drawerLink}
     onClick={event => { onClose(); if (demo) { event.preventDefault(); go(item.screen); } }}>
     <item.icon size={20} aria-hidden="true"/><span>{item.label}{item.note && <> <small>{item.note}</small></>}</span>
   </Link>;
+  const content = <>
+    <div className={styles.drawerHeader}><BrandLogo/>{!inline && <button ref={close} type="button" className={styles.menuToggle} aria-label="Fechar menu" onClick={onClose}><X size={24}/></button>}</div>
+    <div className={styles.drawerIdentity}><strong>{profile.full_name}</strong><span>Funcionário</span><small>{profile.team_name?.trim() || "Sem equipe atribuída"}</small></div>
+    <nav aria-label="Navegação principal">
+      {itemLink({ screen: "inicio", label: "Início", icon: Home })}
+      {groups.map(group => <section key={group.label} aria-label={group.label} className={styles.drawerGroup}><h2>{group.label}</h2>{group.items.filter(item => !demo || !["ponto", "registros", "espelho", "comprovantes", "material", "contracheques", "atestado"].includes(item.screen)).map(itemLink)}</section>)}
+    </nav>
+    <button type="button" className={styles.drawerExit} disabled={busy} onClick={() => { onClose(); void logout(); }}><LogOut size={20} aria-hidden="true"/>Sair</button>
+    <small className={styles.drawerDisclaimer}>SIMULAÇÃO SEM VALOR OFICIAL</small>
+  </>;
+  if (inline) return <aside className={styles.desktopNav} aria-label="Menu do Metallo Funcionário">{content}</aside>;
   return <dialog id="colaborador-menu" ref={dialog} className={styles.drawer} aria-label="Menu do Metallo Funcionário"
     onCancel={event => { event.preventDefault(); onClose(); }}
     onClick={event => { if (event.target !== dialog.current) return; const rect = dialog.current.getBoundingClientRect(); if (event.clientX > rect.right || event.clientX < rect.left || event.clientY < rect.top || event.clientY > rect.bottom) onClose(); }}
@@ -100,13 +112,28 @@ export function DrawerColaborador({ open, onClose, trigger, profile, current, bu
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     }}>
-    <div className={styles.drawerHeader}><BrandLogo/><button ref={close} type="button" className={styles.menuToggle} aria-label="Fechar menu" onClick={onClose}><X size={24}/></button></div>
-    <div className={styles.drawerIdentity}><strong>{profile.full_name}</strong><span>Funcionário</span><small>{profile.team_name?.trim() || "Sem equipe atribuída"}</small></div>
-    <nav aria-label="Navegação principal">
-      {itemLink({ screen: "inicio", label: "Início", icon: Home })}
-      {groups.map(group => <section key={group.label} aria-label={group.label} className={styles.drawerGroup}><h2>{group.label}</h2>{group.items.filter(item => !demo || !["ponto", "registros", "espelho", "comprovantes", "material", "contracheques", "atestado"].includes(item.screen)).map(itemLink)}</section>)}
-    </nav>
-    <button type="button" className={styles.drawerExit} disabled={busy} onClick={() => { onClose(); void logout(); }}><LogOut size={20} aria-hidden="true"/>Sair</button>
-    <small className={styles.drawerDisclaimer}>SIMULAÇÃO SEM VALOR OFICIAL</small>
+    {content}
   </dialog>;
+}
+
+/** Os atalhos apontam para as telas e fluxos existentes, sem criar operações paralelas. */
+export function AtalhosColaborador({ current, demo, go, home = false, openMenu }: {
+  current: PortalScreen; demo: boolean; go: (screen: PortalScreen) => void; home?: boolean; openMenu?: () => void;
+}) {
+  const items: Item[] = home ? [
+    { screen: "epis", label: "Meus EPIs", icon: PackageCheck },
+    { screen: "itens", label: "Meus itens", icon: Toolbox },
+    { screen: "obra", label: "Minha obra", icon: HardHat },
+    { screen: "comunicados", label: "Comunicados", icon: Megaphone },
+  ] : [
+    { screen: "inicio", label: "Início", icon: Home },
+    ...(!demo ? [{ screen: "ponto" as const, label: "Ponto", icon: Clock3 }] : []),
+    { screen: "epis", label: "EPIs", icon: PackageCheck },
+    { screen: "comunicados", label: "Avisos", icon: Megaphone },
+  ];
+  return <nav className={home ? styles.redesignShortcuts : styles.bottomNav} aria-label={home ? "Acessos rápidos" : "Atalhos do funcionário"}>
+    {items.map(item => <Link key={item.screen} href={`/colaborador/${item.screen}`} aria-current={current === item.screen ? "page" : undefined}
+      onClick={demo ? event => { event.preventDefault(); go(item.screen); } : undefined}><item.icon size={22} aria-hidden="true"/><span>{item.label}</span></Link>)}
+    {!home && <button type="button" onClick={openMenu} aria-label="Mais telas"><Menu size={22} aria-hidden="true"/><span>Mais</span></button>}
+  </nav>;
 }

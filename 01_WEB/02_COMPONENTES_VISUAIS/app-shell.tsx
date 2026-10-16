@@ -7,11 +7,13 @@ import { Brand } from "@/02_COMPONENTES_VISUAIS/brand";
 import { SidebarNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { RealtimeRefresh } from "@/02_COMPONENTES_VISUAIS/realtime-refresh";
 import { version } from "@/package.json";
-import { ModuleTheme } from "./module-theme";
+import { ModuleTheme, ModuleBreadcrumb } from "./module-theme";
+import { redesignTesteLiberado } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { NavegacaoCelular } from "./navegacao-celular";
 import { RotulosTabelas } from "./rotulos-tabelas";
 
 export function AppShell({ profile, children }: { profile: SessionProfile; children: React.ReactNode }) {
+  const redesign = redesignTesteLiberado(process.env);
   const initials = profile.fullName
     .split(/\s+/)
     .slice(0, 2)
@@ -40,10 +42,10 @@ export function AppShell({ profile, children }: { profile: SessionProfile; child
       <div className="app-main">
         <header className="topbar">
           <span className="topbar-brand"><Brand compact /></span>
-          <div className="topbar-search">
+          {redesign ? <><ModuleBreadcrumb/><span className="redesign-environment">Ambiente de teste</span></> : <div className="topbar-search">
             <Search size={17} aria-hidden />
             <span>Pesquise dentro de cada módulo</span>
-          </div>
+          </div>}
           {profile.role === 'admin' && <Link className="icon-button" href="/dashboard#pendencias" aria-label="Alertas da ADM" title="Alertas da ADM">
             <Bell size={19} />
           </Link>}

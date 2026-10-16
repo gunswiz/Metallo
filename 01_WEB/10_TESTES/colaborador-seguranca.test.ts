@@ -1,13 +1,14 @@
 // @vitest-environment-options {"url":"http://127.0.0.1:3101"}
 import { afterEach, expect, it, vi } from "vitest";
 import { colaboradorEnvironment } from "@/09_CONFIGURACOES/colaborador-laboratorio";
-import { personalProfile, portalFetch } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
+import { personalProfile, portalFetch, portalClient, disposePortalClient } from "@/05_ACESSO_A_DADOS/Supabase/colaborador-local";
+import { TESTE_ONLINE_SUPABASE_URL } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { pointRequest } from "@/05_ACESSO_A_DADOS/Ponto/ponto-lab";
 import ColaboradorPage from "@/app/colaborador/[[...screen]]/page";
 const route = vi.hoisted(() => ({ host: "127.0.0.1:3101" as string | null }));
 vi.mock("next/headers", () => ({ headers: async () => ({ get: () => route.host }) }));
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND"); }, useRouter: () => ({ replace: vi.fn() }) }));
-afterEach(() => { vi.unstubAllEnvs(); route.host = "127.0.0.1:3101"; });
+afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); route.host = "127.0.0.1:3101"; });
 
 const anon = `header.${Buffer.from(JSON.stringify({ role: "anon" })).toString("base64url")}.signature`;
 const env = { METALLO_LOCAL_PREVIEW: "1", METALLO_COLABORADOR_PREVIEW: "1", METALLO_COLABORADOR_LAB_URL: "http://127.0.0.1:54321", METALLO_COLABORADOR_LAB_ANON_KEY: anon };
@@ -19,7 +20,7 @@ it.each([null, "localhost:3102", "192.168.0.3:3101", "exemplo.invalid:3101"])("S
 it("Server Component permite localhost:3101 somente na prévia local explícita do 3F", async () => {
   pageEnvironment(); route.host = "localhost:3101";
   const element = await ColaboradorPage({ params: Promise.resolve({ screen: ["perfil"] }) });
-  expect(element.props).toEqual({ screen: "perfil", demo: false, anonKey: anon });
+  expect(element.props).toEqual({ screen: "perfil", demo: false, anonKey: anon, redesign: false, outroAcesso: "http://127.0.0.1:3102/login" });
   vi.stubEnv("METALLO_LOCAL_PREVIEW", "0");
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["perfil"] }) })).rejects.toThrow("Prévia exclusivamente local.");
 });
@@ -31,10 +32,28 @@ it("Server Component sem flags não disponibiliza o portal", async () => {
   vi.stubEnv("METALLO_COLABORADOR_PREVIEW", "0"); vi.stubEnv("METALLO_COLABORADOR_VISUAL_PREVIEW", "0");
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["perfil"] }) })).rejects.toThrow("NOT_FOUND");
 });
+it("prévia do teste aceita loopback só em desenvolvimento e por opção explícita", () => {
+  vi.stubEnv("NODE_ENV", "development"); vi.stubEnv("NEXT_PUBLIC_METALLO_TESTE_PREVIEW", "0");
+  expect(() => portalClient("sb_publishable_SINTETICA_teste_123", TESTE_ONLINE_SUPABASE_URL)).toThrow("Teste online exige HTTPS.");
+  vi.stubEnv("NEXT_PUBLIC_METALLO_TESTE_PREVIEW", "1");
+  const client = portalClient("sb_publishable_SINTETICA_teste_123", TESTE_ONLINE_SUPABASE_URL);
+  disposePortalClient(client);
+  vi.stubEnv("NODE_ENV", "production");
+  expect(() => portalClient("sb_publishable_SINTETICA_teste_123", TESTE_ONLINE_SUPABASE_URL)).toThrow("Teste online exige HTTPS.");
+});
+it.each(["http://localhost:3101", "http://127.0.0.1:3102", "http://192.168.0.3:3101", "http://exemplo.invalid:3101"])("opção da prévia não libera HTTP em %s", origin => {
+  vi.stubEnv("NODE_ENV", "development"); vi.stubEnv("NEXT_PUBLIC_METALLO_TESTE_PREVIEW", "1");
+  vi.stubGlobal("window", { location: new URL(origin) });
+  const fetcher = vi.spyOn(globalThis, "fetch");
+  try {
+    expect(() => portalClient("sb_publishable_SINTETICA_teste_123", TESTE_ONLINE_SUPABASE_URL)).toThrow("Teste online exige HTTPS.");
+    expect(fetcher).not.toHaveBeenCalled();
+  } finally { fetcher.mockRestore(); }
+});
 it("Server Component local entrega somente configuração anon e tela autorizada", async () => {
   pageEnvironment();
   const element = await ColaboradorPage({ params: Promise.resolve({ screen: ["perfil"] }) });
-  expect(element.props).toEqual({ screen: "perfil", demo: false, anonKey: anon });
+  expect(element.props).toEqual({ screen: "perfil", demo: false, anonKey: anon, redesign: false, outroAcesso: "http://127.0.0.1:3102/login" });
 });
 it("Server Component aceita Comunicados somente na prévia local", async () => {
   pageEnvironment();

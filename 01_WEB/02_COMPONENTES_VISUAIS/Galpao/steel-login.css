@@ -1,0 +1,99 @@
+.steel-login{min-height:calc(100dvh - 30px);min-height:max(760px,calc(100dvh - 30px));position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:1.15fr 1fr;background:radial-gradient(ellipse at 23% 36%,#102838 0%,#081620 43%,#050f18 77%)}.steel-login:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(110deg,transparent 50%,#02070a50 100%)}.steel-visual{position:relative;min-width:0}.steel-brand{position:absolute;left:8%;top:42px;display:flex;align-items:center;gap:25px;z-index:2}.steel-brand .logo{width:150px;margin:0;filter:drop-shadow(0 4px 15px #0006)}.steel-brand .brand-rule{width:1px;height:26px;background:#395369}.steel-brand .brand-caption{font-size:13px;line-height:1.6;letter-spacing:2px;text-transform:uppercase;color:#859eaf}.steel-stage{position:absolute;left:-4%;right:-5%;top:105px;bottom:192px;pointer-events:none;mask-image:linear-gradient(to bottom,transparent,black 8%,black 88%,transparent)}.steel-stage canvas{display:block}.steel-visual:after{content:'';position:absolute;right:0;top:18%;height:64%;width:1px;background:linear-gradient(transparent,#4d78952b,transparent)}.steel-copy{position:absolute;bottom:65px;left:8%;right:10%;z-index:2}.steel-copy .eyebrow{font-size:13px;letter-spacing:2.5px;color:#74b4e1;margin-bottom:16px}.steel-copy h2{font-size:39px;font-weight:450;line-height:1.17;letter-spacing:-1.3px;margin:0 0 16px;color:#e5edf3}.steel-copy h2 span{color:#7ca6c4}.steel-copy p{font-size:14px;line-height:1.7;color:#8fa7b9;max-width:380px;margin:0}.steel-form-section{padding:76px 60px 66px 40px;display:flex;justify-content:center;align-items:center;position:relative}.steel-loginbox{width:100%;max-width:400px;position:relative}.steel-loginbox:before{content:'';width:30px;height:3px;background:#168cff;display:block;margin-bottom:28px;border-radius:2px;box-shadow:0 0 25px #168cff45}.steel-loginbox .eyebrow{font-size:13px;font-weight:550;letter-spacing:2px;color:#82a9c5;margin-bottom:13px}.steel-loginbox h1{font-size:34px;font-weight:550;letter-spacing:-1px;line-height:1.2;margin-bottom:12px}.steel-loginbox>p{font-size:14px;color:#9fb2c1;margin-bottom:0}.steel-loginbox .loginroles{margin:28px 0;border-color:#2c4353;background:#091823;border-radius:10px;padding:4px;gap:4px}.steel-loginbox .loginroles button{min-height:40px;font-size:14px;font-weight:550;color:#91a8b9;border:1px solid transparent;border-radius:7px;padding:8px}.steel-loginbox .loginroles button.active{color:#d9edff;background:#15354d;border-color:#315b795c;box-shadow:0 2px 6px #0002}.steel-loginbox label{font-size:13px;font-weight:500;color:#c4d3df;margin-bottom:21px;gap:9px}.steel-loginbox input:not([type=checkbox]){min-height:49px;background:#09182480;border:1px solid #314b5e;color:#e6f0f7;border-radius:8px;font-size:15px;padding:12px 14px;box-shadow:0 1px 5px #0001;transition:border-color .18s,background .18s}.steel-loginbox input:not([type=checkbox]):focus{border-color:#459fe0;background:#102331;outline:2px solid #168cff40;outline-offset:2px}.steel-loginbox input::placeholder{color:#7b96a9}.steel-loginbox .password input{padding-right:80px}.steel-loginbox .password button{top:6px;right:5px;font-size:13px;color:#9fc6e3}.steel-loginbox .primary{min-height:50px;width:100%;border-radius:8px;background:linear-gradient(120deg,#2096ff,#168cff 65%,#0d82ed);color:#03111e;border-color:#2a9bff;font-size:14px;font-weight:700;box-shadow:0 5px 22px #168cff14;margin-top:5px;position:relative;overflow:hidden}.steel-loginbox .primary:hover{background:#4aa7ff;box-shadow:0 6px 28px #168cff29;transform:translateY(-1px)}.steel-loginbox .check{font-size:13px;line-height:1.6;color:#a6bbc9;display:flex;gap:10px;margin-bottom:19px}.steel-loginbox .check input{width:17px;height:17px;min-height:17px;border-radius:4px;flex-shrink:0}.steel-loginbox .loginhelp{margin-top:24px;display:flex;align-items:center;gap:10px;font-size:13px}.steel-loginbox .loginhelp span{color:#7f98aa}.steel-loginbox .loginhelp button{border:0;background:none;color:#a8cce6;font-size:13px;font-weight:450;padding:6px 0;min-height:30px}.steel-loginbox .form-lock{display:flex;gap:7px;align-items:center;border-top:1px solid #30475666;margin-top:29px;padding-top:19px;color:#7792a5;font-size:13px}.steel-loginbox .form-lock svg{width:13px;height:13px}.motion-toggle{position:absolute;z-index:4;left:calc(53.5% - 176px);top:45px;min-height:34px;border-color:#3c607440;background:#0b1b2566;color:#91b0c5;font-size:13px;padding:7px 10px;gap:7px;font-weight:400;border-radius:7px;backdrop-filter:blur(8px)}.motion-toggle:hover{background:#143149;border-color:#4b718b}.motion-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}.steel-footer{position:absolute;left:calc(53.5% + 40px);right:60px;bottom:24px;text-align:center;font-size:13px;color:#587589;letter-spacing:.8px}.steel-login .steel-form-section{animation:form-reveal .8s ease-out both}.steel-copy{animation:copy-reveal 1s .25s ease-out both}@keyframes form-reveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes copy-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media(min-width:1550px){.steel-form-section{padding-right:90px}.steel-loginbox{max-width:440px}.steel-copy h2{font-size:46px}.steel-copy{bottom:80px}.steel-stage{bottom:220px;top:130px}.steel-brand{top:52px}.steel-brand .logo{width:180px}.motion-toggle{top:56px}}@media(max-width:1100px) and (min-width:761px){.steel-form-section{padding:80px 30px 65px 28px}.steel-copy h2{font-size:32px}.steel-copy p{font-size:13px}.steel-brand{gap:14px}.steel-brand .brand-caption{display:none}.steel-brand .brand-rule{display:none}.steel-stage{left:-13%;right:-16%;bottom:220px}.motion-toggle{left:calc(53.5% - 55px);top:44px;padding:8px;width:34px}.motion-toggle span{display:none}.steel-loginbox h1{font-size:30px}.steel-footer{left:calc(53.5% + 28px);right:30px}}@media(max-width:760px){.steel-login{display:block;min-height:calc(100dvh - 28px);background:radial-gradient(ellipse at 80% 7%,#173247 0%,#081620 36%,#050f18 70%);overflow:hidden}.steel-visual{position:absolute;inset:0 0 auto;height:270px;pointer-events:none}.steel-visual:after{display:none}.steel-brand{top:28px;left:24px;gap:16px}.steel-brand .logo{width:126px}.steel-brand .brand-caption,.steel-brand .brand-rule{display:none}.steel-stage{top:35px;left:18%;right:-21%;bottom:0;height:230px;opacity:.83;mask-image:linear-gradient(transparent 0%,black 13%,black 80%,transparent 100%)}.steel-copy{display:none}.steel-form-section{display:block;padding:222px 24px 32px;min-height:calc(100dvh - 28px)}.steel-loginbox{max-width:440px;margin:auto;padding:0}.steel-loginbox:before{display:none}.steel-loginbox .eyebrow{font-size:13px;letter-spacing:2px;margin-bottom:10px}.steel-loginbox h1{font-size:29px;line-height:1.25;margin-bottom:8px}.steel-loginbox>p{font-size:13px}.steel-loginbox .loginroles{margin:22px 0}.steel-loginbox .loginroles button{font-size:13px;min-height:38px}.steel-loginbox label{font-size:13px;margin-bottom:18px;gap:8px}.steel-loginbox input:not([type=checkbox]){min-height:48px;font-size:16px}.steel-loginbox .password button{font-size:13px;top:5px}.steel-loginbox .primary{font-size:14px;margin-top:3px}.steel-loginbox .loginhelp{margin-top:17px;font-size:13px}.steel-loginbox .loginhelp button{font-size:13px}.steel-loginbox .form-lock{margin-top:20px;padding-top:16px;font-size:13px}.motion-toggle{left:auto;right:22px;top:31px;width:34px;height:34px;padding:8px;background:#0b1b2580}.motion-toggle span{display:none}.steel-footer{position:static;text-align:center;font-size:13px;padding:0 24px 24px;margin-top:-5px}.steel-loginbox .check{font-size:13px;margin-bottom:16px}}@media(max-width:360px){.steel-form-section{padding-left:20px;padding-right:20px;padding-top:203px}.steel-stage{height:205px;top:26px}.steel-loginbox h1{font-size:27px}.steel-loginbox .loginroles{margin:18px 0}.steel-loginbox label{margin-bottom:16px}}@media(prefers-reduced-motion:reduce){.steel-login .steel-form-section,.steel-copy{animation:none}.steel-loginbox .primary:hover{transform:none}.steel-login *{transition:none!important}}
+/* Plastamp assembly — the existing login palette and form stay intact. */
+.steel-stage{left:1%;right:1%;top:105px;bottom:332px;mask-image:linear-gradient(transparent,black 5%,black 94%,transparent)}
+.steel-copy{bottom:45px}.steel-copy h2{font-size:36px}.steel-copy .eyebrow{margin-bottom:12px}
+.steel-controls{position:absolute;left:8%;right:8%;bottom:242px;z-index:3;color:#a7c0d2}
+.steel-progress-title{display:flex;justify-content:space-between;gap:10px;font-size:13px;letter-spacing:1.8px;color:#7399b4;line-height:1.5}
+.steel-progress-title i{font-style:normal;padding:0 5px;color:#376381}.steel-count{font-variant-numeric:tabular-nums;white-space:nowrap}
+.steel-phase{font-size:13px;color:#d1e2ee;margin:7px 0 9px;font-weight:450;line-height:1.4}
+.steel-timeline{--progress:0%;display:block;width:100%;height:18px;min-height:0!important;padding:0!important;margin:0 0 6px;border:0!important;background:transparent!important;cursor:pointer;accent-color:#66b8f3;appearance:none}
+.steel-timeline::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,#64b6f1 var(--progress),#244256 var(--progress))}
+.steel-timeline::-webkit-slider-thumb{appearance:none;width:8px;height:8px;border-radius:50%;background:#9bd5ff;margin-top:-3px;box-shadow:0 0 12px #249bff44}
+.steel-timeline::-moz-range-track{height:2px;background:#244256}.steel-timeline::-moz-range-thumb{width:8px;height:8px;border:0;border-radius:50%;background:#9bd5ff}
+.steel-actions{display:flex;align-items:center;gap:3px;flex-wrap:wrap}.steel-actions button{font-size:13px;font-weight:400;min-height:32px;padding:5px 7px;background:transparent;color:#91b4cd;border:1px solid transparent;border-radius:5px;white-space:nowrap}
+.steel-actions button:first-child{padding-left:0}.steel-actions button:last-child{margin-left:auto;color:#c6e5fb}
+.steel-actions button:hover,.steel-actions button[aria-pressed=true]{background:#153247;border-color:#34536a;color:#d7edff}
+.steel-controls button:focus-visible,.steel-controls input:focus-visible,.steel-controls select:focus-visible,.steel-stage canvas:focus-visible{outline:2px solid #78c9ff;outline-offset:4px}
+.steel-inspect,.steel-reference{display:none}.steel-expanded{display:block;height:max(760px,calc(100dvh - 30px));min-height:760px}
+.steel-expanded .steel-visual{position:absolute;inset:0;height:auto;pointer-events:auto}.steel-expanded .steel-visual:after,.steel-expanded .steel-form-section,.steel-expanded .steel-copy,.steel-expanded .steel-footer{display:none}
+.steel-expanded .steel-brand{top:28px;left:5%}.steel-expanded .steel-brand .logo{width:145px}
+.steel-expanded .motion-toggle{left:auto;right:5%;top:31px;width:auto}.steel-expanded .motion-toggle span{display:inline}
+.steel-expanded .steel-stage{left:3%;right:3%;top:90px;bottom:250px;height:auto;opacity:1;pointer-events:auto;mask-image:none}
+.steel-expanded .steel-stage canvas{cursor:grab;touch-action:none}.steel-expanded .steel-stage canvas:active{cursor:grabbing}
+.steel-expanded .steel-controls{left:8%;right:8%;bottom:24px;max-width:1000px;margin:auto}
+.steel-expanded .steel-actions{margin-bottom:9px}.steel-expanded .steel-actions button{font-size:13px;padding:6px 12px;min-height:34px}
+.steel-expanded .steel-progress-title{font-size:13px}.steel-expanded .steel-phase{font-size:17px;margin-top:6px;margin-bottom:5px}
+.steel-expanded .steel-inspect{display:flex;align-items:flex-end;gap:12px;border-top:1px solid #29435766;padding-top:12px}
+.steel-inspect label{display:flex;flex-direction:column;gap:4px;color:#7c9cb3;font-size:13px;margin:0;font-weight:400;letter-spacing:.3px}
+.steel-inspect select{font:inherit;font-size:13px;border:1px solid #35546b;border-radius:6px;background:#102333;color:#c6dceb;padding:7px 25px 7px 8px;min-height:34px;max-width:100%}
+.steel-inspect input{width:110px;min-height:34px;margin:0;accent-color:#68b8ed;padding:0;background:none;border:0}
+.steel-inspect button{height:34px;min-width:34px;min-height:34px;padding:4px 8px;background:#102333;color:#bfdcf1;border:1px solid #35546b;border-radius:6px}
+.steel-expanded .steel-reference{display:block;font-size:13px;line-height:1.5;color:#64869e;margin:10px 0 0;letter-spacing:.1px}
+@media(min-width:1550px){.steel-stage{top:120px;bottom:362px}.steel-controls{bottom:264px}.steel-copy{bottom:47px}.steel-copy h2{font-size:43px}}
+@media(max-width:1100px) and (min-width:761px){.steel-stage{left:0;right:0;bottom:355px}.steel-controls{left:8%;right:8%;bottom:252px}.steel-copy h2{font-size:30px}.steel-copy{bottom:42px}.steel-actions{gap:1px}.steel-actions button{font-size:13px;padding:4px 5px}}
+@media(max-width:760px){.steel-visual{height:410px;pointer-events:auto}.steel-stage{left:0;right:0;top:69px;bottom:auto;height:170px;opacity:.95;mask-image:none}.steel-controls{left:24px;right:24px;top:241px;bottom:auto}.steel-progress-title{font-size:13px}.steel-phase{font-size:13px;margin:4px 0}.steel-timeline{height:16px;margin-bottom:2px}.steel-actions button{font-size:13px;min-height:30px;padding:4px 5px}.steel-form-section{padding-top:435px}.steel-expanded{height:max(820px,calc(100dvh - 30px));min-height:820px}.steel-expanded .steel-brand{left:24px;top:26px}.steel-expanded .steel-brand .logo{width:125px}.steel-expanded .motion-toggle{right:24px;top:28px}.steel-expanded .motion-toggle span{display:none}.steel-expanded .steel-stage{top:85px;bottom:308px;left:2%;right:2%;height:auto}.steel-expanded .steel-controls{top:auto;bottom:24px;left:24px;right:24px}.steel-expanded .steel-phase{font-size:14px}.steel-expanded .steel-inspect{flex-wrap:wrap;gap:9px}.steel-inspect label:first-child{width:100%}.steel-inspect label:nth-child(2){flex:1}.steel-inspect input{width:80px}.steel-inspect select{font-size:13px}.steel-expanded .steel-actions button{font-size:13px;padding:5px 6px}.steel-expanded .steel-reference{font-size:13px}.steel-reference span{display:none}}
+@media(max-width:360px){.steel-form-section{padding-top:435px}.steel-actions button{font-size:13px}.steel-expanded .steel-controls{left:16px;right:16px}}
+
+/* Interior inspection reuses the same scene and keeps the model above its controls. */
+.steel-help{display:none;color:#9ab9cc;font-size:13px;line-height:1.5;margin:9px 0 0}
+.steel-expanded .steel-help{display:block}
+.steel-inspect output{display:inline;font-variant-numeric:tabular-nums;color:#cce2ef}
+.steel-inspect label:has(.steel-zoom-value){position:relative}
+.steel-zoom-value{position:absolute;right:0;top:0}
+.steel-walk[hidden]{display:none}
+.steel-walk{display:flex;align-items:center;gap:20px;margin-top:10px}
+.steel-walk-buttons{display:flex;gap:5px}
+.steel-walk button{border:1px solid #35546b;background:#102333;border-radius:6px;color:#c6dceb;font-size:13px;min-height:34px;min-width:34px;padding:5px 10px}
+.steel-walk button:hover{background:#20435b}
+.steel-walk label{display:flex;align-items:center;gap:9px;font-size:13px;color:#7c9cb3;font-weight:400;margin:0}
+.steel-walk output{white-space:nowrap;color:#cce2ef;font-variant-numeric:tabular-nums}
+.steel-walk input{width:140px;min-height:28px;padding:0;margin:0;accent-color:#68b8ed;border:0;background:none}
+.steel-interior .steel-timeline,.steel-interior .steel-phase,.steel-interior .steel-stage-label{display:none}
+.steel-interior .steel-actions{margin-top:9px}
+.steel-interior .steel-stage{bottom:254px;border:1px solid #284352;border-radius:8px;overflow:hidden;background:#8395a1}
+.steel-interior .steel-reference{font-size:13px;margin-top:6px}
+.steel-interior .steel-inspect{padding-top:8px}
+@media(max-width:760px){
+  .steel-actions button[data-steel=inside]{color:#bce5ff}
+  .steel-expanded .steel-stage{bottom:335px}
+  .steel-interior .steel-stage{bottom:306px}
+  .steel-interior .steel-inspect .steel-view-label{width:auto;flex:1;min-width:160px}
+  .steel-interior .steel-inspect{gap:8px}
+  .steel-interior .steel-walk{flex-wrap:wrap;gap:8px}
+  .steel-walk button{min-height:36px}
+  .steel-walk label{width:100%;justify-content:space-between}
+  .steel-walk input{flex:1;max-width:170px}
+  .steel-expanded .steel-reference{font-size:13px}
+  .steel-expanded .steel-help{font-size:13px}
+  .steel-expanded .steel-actions button{min-height:32px}
+}
+
+/* Let the controls determine their own height at every viewport width. */
+.steel-expanded .steel-visual{display:grid;grid-template-rows:74px minmax(260px,1fr) auto;gap:16px;padding:0 3% 24px;box-sizing:border-box}
+.steel-expanded .steel-stage{position:relative;grid-row:2;left:auto;right:auto;top:auto;bottom:auto;height:auto;min-width:0}
+.steel-expanded .steel-controls{position:relative;grid-row:3;left:auto;right:auto;top:auto;bottom:auto;width:100%;max-width:1000px;margin:0 auto}
+@media(max-width:760px){
+  .steel-expanded .steel-visual{grid-template-rows:69px minmax(260px,1fr) auto;padding:0 16px 24px}
+  .steel-expanded .steel-stage{left:auto;right:auto;top:auto;bottom:auto}
+  .steel-expanded .steel-controls{left:auto;right:auto;top:auto;bottom:auto}
+  .steel-expanded .steel-inspect{display:grid;grid-template-columns:minmax(0,1fr) 70px 34px 34px;gap:7px}
+  .steel-expanded .steel-inspect .steel-stage-label{grid-column:1/-1}
+  .steel-expanded .steel-inspect .steel-view-label{min-width:0;width:auto}
+  .steel-expanded .steel-inspect input{width:70px}
+  .steel-expanded .steel-inspect select{width:100%;min-width:0;padding-right:16px}
+}
+/* Login simples (aparelho fraco, celular ou ainda sem decidir): desenho parado no lugar do 3D. Letras de 13 px ou mais. */
+.steel-poster{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;height:100%;pointer-events:auto;color:#7ca6c4}
+.steel-poster img{width:100%;max-width:640px;height:auto}
+.steel-opt3d{min-height:44px;padding:10px 18px;font-size:14px;font-weight:550;color:#d9edff;background:#15354d;border:1px solid #315b79;border-radius:9px;cursor:pointer}
+.steel-opt3d:hover{background:#1c4766}
+.steel-simples .motion-toggle{display:none}
+@media(max-width:760px){
+  .steel-login.steel-simples{min-height:0}
+  .steel-login.steel-simples .steel-visual{position:static;height:auto;padding:22px 24px 0;pointer-events:auto}
+  .steel-login.steel-simples .steel-brand{position:static}
+  .steel-login.steel-simples .steel-stage{position:static;height:auto;mask-image:none;opacity:1;margin:14px 0 0}
+  .steel-login.steel-simples .steel-poster{height:auto;gap:14px}
+  .steel-login.steel-simples .steel-poster img{width:100%;max-width:340px}
+  .steel-login.steel-simples .steel-form-section{padding:18px 24px 28px;min-height:0}
+}

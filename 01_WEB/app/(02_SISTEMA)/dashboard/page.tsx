@@ -93,11 +93,11 @@ export default async function DashboardPage() {
               <tbody>
                 {data.recentMovements.map((movement) => (
                   <tr key={movement.id}>
-                    <td><span className="primary-cell">{movement.items?.name ?? "Item removido"}</span><span className="secondary-cell">{movement.items?.code ?? "—"}</span></td>
-                    <td>{movementLabel(movement.movement_type)}</td>
-                    <td>{movement.origin?.name ?? "Externo"} → {movement.destination?.name ?? "Baixa"}</td>
-                    <td className="numeric">{movement.quantity} {movement.items?.unit}</td>
-                    <td>{formatDateTime(movement.created_at)}</td>
+                    <td data-label="Item"><span className="primary-cell">{movement.items?.name ?? "Item removido"}</span><span className="secondary-cell">{movement.items?.code ?? "—"}</span></td>
+                    <td data-label="Operação">{movementLabel(movement.movement_type)}</td>
+                    <td data-label="Fluxo">{movement.origin?.name ?? "Externo"} → {movement.destination?.name ?? "Baixa"}</td>
+                    <td data-label="Quantidade" className="numeric">{movement.quantity} {movement.items?.unit}</td>
+                    <td data-label="Data">{formatDateTime(movement.created_at)}</td>
                   </tr>
                 ))}
               </tbody>

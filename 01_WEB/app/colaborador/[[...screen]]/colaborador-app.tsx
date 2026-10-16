@@ -11,7 +11,8 @@ import { loginDeTeste } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { MeuPontoOnline } from "./meu-ponto-online";
 import { FechamentoPendente } from "./fechamento-mes";
 import { AvisosFuncionario, registrarAppOffline } from "./avisos-funcionario";
-import { DrawerColaborador } from "./drawer-colaborador";
+import { LoginGalpao } from "@/02_COMPONENTES_VISUAIS/Galpao/login-galpao";
+import { DrawerColaborador, AtalhosColaborador } from "./drawer-colaborador";
 import { PendenciasColaborador } from "./pendencias-colaborador";
 import styles from "./colaborador.module.css";
 import { TelaComCarga } from "./carregar-tela";
@@ -36,7 +37,7 @@ const MeusContracheques = lazy(() => import("./meus-documentos-6").then(m => ({ 
 type Screen = PortalScreen;
 function firstName(name: string) { return name.trim().split(/\s+/)[0] || "Funcionário"; }
 
-export default function ColaboradorApp({ screen, anonKey, demo = false, online = false, baseUrl }: { screen: string; anonKey: string; demo?: boolean; online?: boolean; baseUrl?: string }) {
+export default function ColaboradorApp({ screen, anonKey, demo = false, online = false, baseUrl, redesign = false, outroAcesso = "" }: { screen: string; anonKey: string; demo?: boolean; online?: boolean; baseUrl?: string; redesign?: boolean; outroAcesso?: string }) {
   const router = useRouter();
   const [visualScreen, setVisualScreen] = useState<Screen | null>(null);
   const current = (demo && visualScreen ? visualScreen : screen) as Screen;
@@ -62,28 +63,32 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
     await signIn(online ? loginDeTeste(email) : email, submitted);
   }
 
-  return <main className={styles.shell}>
+  const loginContent = demo ? <div className={styles.loginCard}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Prévia visual</h2><p>Explore as telas com dados sintéticos. A autenticação real não está habilitada nesta prévia.</p><button className={styles.primary} onClick={() => { window.sessionStorage.removeItem("metallo-visual-ended"); go("inicio"); }}>Abrir prévia<ArrowRight size={20}/></button><small>Sem login, ponto ou dados reais nesta prévia.</small></div> : <form className={styles.loginCard} onSubmit={login}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Entrar no app do Funcionário</h2><p>Use sua conta de teste para acessar.</p><label htmlFor="email">{online ? "Usuário" : "E-mail"}</label><input id="email" type={online ? "text" : "email"} inputMode="email" autoCapitalize="none" autoCorrect="off" autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} required placeholder={online ? "joao" : "seu.email@exemplo.com"}/><label htmlFor="password">Senha</label><input id="password" type="password" autoComplete={online && !sharedChoice ? "current-password" : "off"} value={password} onChange={event => setPassword(event.target.value)} required placeholder="Sua senha"/>{error && <div className={styles.error} role="alert">{error}</div>}<label className={styles.sharedChoice}><input type="checkbox" checked={sharedChoice} onChange={event => setSharedChoice(event.target.checked)}/> Aparelho do almoxarifado (sair automaticamente)</label><button className={styles.primary} type="submit" disabled={busy} aria-busy={busy}>{busy ? "Entrando…" : "Entrar"}<ArrowRight size={20}/></button><small className={styles.loginHelp}>Esqueceu a senha? Peça ao escritório: eles criam uma senha nova para você na hora.</small><small>{online ? "Teste online com dados fictícios. O ponto aqui não tem valor oficial." : "Somente testes locais com dados fictícios. Meu Ponto não tem valor oficial."}</small></form>;
+
+  return <main className={`${styles.shell} ${redesign ? styles.redesign : ""} ${redesign && profile ? styles.redesignApp : ""}`}>
     <div className={styles.ambient} aria-hidden="true" />
-    <header className={`${styles.topbar} ${profile ? styles.appTopbar : ""}`}>
+    {(profile || !redesign) && <header className={`${styles.topbar} ${profile ? styles.appTopbar : ""}`}>
       {profile && <button ref={menuTrigger} type="button" className={styles.menuToggle} aria-label="Abrir menu" aria-controls="colaborador-menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={25}/></button>}
       <div className={styles.brand}><BrandLogo /><span className={styles.brandText}>FUNCIONÁRIO</span></div>
       <span className={styles.testBadge}>AMBIENTE DE TESTE{demo ? " · PRÉVIA VISUAL" : online ? " · ONLINE" : ""}</span>
 
-    </header>
+    </header>}
     {!demo && <p className={styles.modeLabel}>SIMULAÇÃO SEM VALOR OFICIAL</p>}
     {sharedDevice.shared && <p className={styles.sharedBanner} role="status">Aparelho do almoxarifado: {sharedDevice.leaving ? "registro concluído. Saindo da sua conta em instantes…" : "o portal sai sozinho depois que você confirmar ou após 2 minutos sem uso."} <button type="button" onClick={sharedDevice.leaveNow}>Sair agora</button></p>}
     {loading ? <div className={styles.loading} role="status">Verificando seu acesso…</div> : !profile ?
-      <section className={styles.loginLayout}>
+      (redesign ? <LoginGalpao area="colaborador" outroAcesso={outroAcesso}>{loginContent}</LoginGalpao> : <section className={styles.loginLayout}>
         <div className={styles.loginIntro}><p className={styles.eyebrow}>ACESSO PESSOAL</p><h1>Acesse suas<br/><em>informações.</em></h1><p>Consulte seu perfil, equipe e obra atual em um só lugar.</p><div className={styles.introLine}><ShieldCheck size={21}/> Acesso individual protegido</div></div>
-        {demo ? <div className={styles.loginCard}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Prévia visual</h2><p>Explore as telas com dados sintéticos. A autenticação real não está habilitada nesta prévia.</p><button className={styles.primary} onClick={() => { window.sessionStorage.removeItem("metallo-visual-ended"); go("inicio"); }}>Abrir prévia<ArrowRight size={20}/></button><small>Sem login, ponto ou dados reais nesta prévia.</small></div> : <form className={styles.loginCard} onSubmit={login}><div className={styles.formIcon}><CircleUserRound size={30}/></div><h2>Entrar no app do Funcionário</h2><p>Use sua conta de teste para acessar.</p><label htmlFor="email">{online ? "Usuário" : "E-mail"}</label><input id="email" type={online ? "text" : "email"} inputMode="email" autoCapitalize="none" autoCorrect="off" autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} required placeholder={online ? "joao" : "seu.email@exemplo.com"}/><label htmlFor="password">Senha</label><input id="password" type="password" autoComplete={online && !sharedChoice ? "current-password" : "off"} value={password} onChange={event => setPassword(event.target.value)} required placeholder="Sua senha"/>{error && <div className={styles.error} role="alert">{error}</div>}<label className={styles.sharedChoice}><input type="checkbox" checked={sharedChoice} onChange={event => setSharedChoice(event.target.checked)}/> Aparelho do almoxarifado (sair automaticamente)</label><button className={styles.primary} type="submit" disabled={busy} aria-busy={busy}>{busy ? "Entrando…" : "Entrar"}<ArrowRight size={20}/></button><small className={styles.loginHelp}>Esqueceu a senha? Peça ao escritório: eles criam uma senha nova para você na hora.</small><small>{online ? "Teste online com dados fictícios. O ponto aqui não tem valor oficial." : "Somente testes locais com dados fictícios. Meu Ponto não tem valor oficial."}</small></form>}
-      </section> : <div className={styles.appLayout}>
+        {loginContent}
+      </section>) : <div className={styles.appLayout}>
         <DrawerColaborador key={profile.employee_id} open={menuOpen} onClose={() => setMenuOpen(false)} trigger={menuTrigger} profile={profile} current={current} busy={busy} logout={logout} demo={demo} go={go}/>
+        {redesign && <DrawerColaborador inline open={false} onClose={() => setMenuOpen(false)} trigger={menuTrigger} profile={profile} current={current} busy={busy} logout={logout} demo={demo} go={go}/>}
         <div className={styles.content}>
           {error && <div className={styles.error} role="alert">{error} <button onClick={() => void verify(current)}>Tentar novamente</button></div>}
           {offline && <p className={styles.offlineBanner} role="status">Sem internet agora. O ponto continua funcionando e fica guardado no celular. O resto do app volta quando a internet voltar.</p>}
           {current === "inicio" && <div className={styles.homeLayout}>
             <div className={styles.homeGreeting}><p className={styles.eyebrow}>METALLO FUNCIONÁRIO</p><h1>Olá, {firstName(profile.full_name)}</h1></div>
             {demo ? <p className={styles.pointWarning}>Registro de ponto indisponível nesta prévia visual.</p> : <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name} presentation="home"/>}
+            {redesign && <AtalhosColaborador current={current} demo={demo} go={go} home/>}
             {!offline && <GuiaInicio abrir={() => go("ajuda")}/>}
             {online && !demo && !offline && <AvisosFuncionario key={`avisos-${profile.employee_id}`} acoes={avisos3u} compacto/>}
             {online && !demo && !offline && <FechamentoPendente key={`fech-${profile.employee_id}`} acoes={fechamentos4l} abrir={() => go("espelho")}/>}
@@ -106,6 +111,7 @@ export default function ColaboradorApp({ screen, anonKey, demo = false, online =
               <div className={styles.detailCard}>{current === "ponto" ? <MeuPontoOnline key={profile.employee_id} getToken={getAccessToken} employeeId={profile.employee_id} name={profile.full_name}/> : <MinhaObra key={profile.employee_id} demo={demo} readWork={readCurrentWork}/>}</div>}</TelaComCarga>
           </>}
         </div>
+        {redesign && <AtalhosColaborador current={current} demo={demo} go={go} openMenu={() => setMenuOpen(true)}/>}
         <footer className={styles.shellFootnote}>{online ? "SIMULAÇÃO SEM VALOR OFICIAL. Ambiente de teste online com dados fictícios, separado da produção. Não liberado para funcionários reais. Não é ponto oficial." : <>SIMULAÇÃO SEM VALOR OFICIAL. Não implantado no Supabase remoto. Não liberado para funcionários reais. Não é produção, conformidade REP-P ou autorização de ponto oficial. Não autoriza publicação.</>}</footer>
       </div>}
   </main>;

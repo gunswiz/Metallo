@@ -20,6 +20,21 @@ export function ehTesteOnline(supabaseUrl: string | undefined) {
   return supabaseUrl === TESTE_ONLINE_SUPABASE_URL;
 }
 
+/** Redesign da proposta: apresentação somente no teste e nas prévias locais explícitas. */
+export function redesignTesteLiberado(env: Record<string, string | undefined>) {
+  return ehTesteOnline(env.NEXT_PUBLIC_SUPABASE_URL)
+    || env.METALLO_COLABORADOR_TESTE_ONLINE === "1"
+    || (env.METALLO_LOCAL_PREVIEW === "1" && (
+      env.NEXT_PUBLIC_SUPABASE_URL === LAB_SUPABASE_URL
+      || env.METALLO_COLABORADOR_VISUAL_PREVIEW === "1"
+    ));
+}
+
+export function destinoLoginTeste(area: "gestao" | "colaborador", local: boolean) {
+  if (local) return area === "gestao" ? "http://127.0.0.1:3102/login" : "http://127.0.0.1:3101/colaborador/login";
+  return area === "gestao" ? `${TESTE_ONLINE_GESTAO_ORIGIN}/login` : `${TESTE_ONLINE_COLABORADOR_ORIGIN}/colaborador/login`;
+}
+
 /** Teste online: login rápido digitando só o usuário (ex.: "joao" vira joao@teste.metallo). */
 export const TESTE_ONLINE_DOMINIO_LOGIN = "teste.metallo";
 export function loginDeTeste(valor: string) {

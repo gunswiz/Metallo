@@ -58,3 +58,16 @@
 .tagBad{background:rgba(210,65,65,.2)!important;color:#ffcece!important}
 .rowChip.tagOk{background:rgba(51,160,90,.18);color:#b2e8c4}
 .rowChip:not(.tagOk):not(.tagBad){background:rgba(247,184,75,.18);color:#ffd18a}
+
+/* Mesma identidade da proposta; os botões de ação continuam grandes no celular. */
+:global([data-metallo-redesign="teste"]) .page{max-width:960px;gap:20px}
+:global([data-metallo-redesign="teste"]) .block{padding:24px;border-radius:14px}
+:global([data-metallo-redesign="teste"]) .block h2{font-size:20px;font-weight:650}
+:global([data-metallo-redesign="teste"]) .block p{font-size:16px;line-height:1.6}
+:global([data-metallo-redesign="teste"]) .row{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:16px}
+:global([data-metallo-redesign="teste"]) .rowText strong{font-size:17px;font-weight:600}
+:global([data-metallo-redesign="teste"]) .rowText small{font-size:14px;line-height:1.5;font-weight:400}
+:global([data-metallo-redesign="teste"]) .rowIcon{background:#168cff18;color:#80c2ff;border-radius:10px}
+:global([data-metallo-redesign="teste"]) .moreToggle{font-size:16px;font-weight:600;min-height:52px}
+:global([data-metallo-redesign="teste"]) .bigSoft{font-size:16px;font-weight:600}
+@media(max-width:600px){:global([data-metallo-redesign="teste"]) .block{padding:18px}}

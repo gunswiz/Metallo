@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { colaboradorEnvironment } from "@/09_CONFIGURACOES/colaborador-laboratorio";
 import ColaboradorApp from "./colaborador-app";
+import { destinoLoginTeste, redesignTesteLiberado } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 const screens = new Set(["login", "inicio", "perfil", "equipe", "obra", "epis", "ponto", "registros", "espelho", "comprovantes", "itens", "comunicados", "treinamentos", "privacidade", "material", "contracheques", "atestado", "ajuda"]);
 
@@ -20,5 +21,6 @@ export default async function ColaboradorPage({
   const path = (await params).screen ?? [];
   if (path.length > 1 || (path[0] && !screens.has(path[0]))) notFound();
   if (environment.demo && ["ponto", "registros", "espelho", "comprovantes", "material", "contracheques", "atestado"].includes(path[0])) notFound();
-  return <ColaboradorApp screen={path[0] ?? "inicio"} {...environment} />;
+  const local = /^(127\.0\.0\.1|localhost):3101$/.test(host ?? "");
+  return <ColaboradorApp screen={path[0] ?? "inicio"} {...environment} redesign={redesignTesteLiberado(process.env)} outroAcesso={destinoLoginTeste("gestao", local)} />;
 }

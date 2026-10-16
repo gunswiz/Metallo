@@ -184,8 +184,14 @@ export function portalClient(anonKey: string, baseUrl: string = LAB_URL) {
       (window.location.hostname === "localhost" && window.location.port === "3101")))
       throw new Error("Prévia disponível apenas no próprio computador.");
   } else if (baseUrl === TESTE_ONLINE_SUPABASE_URL) {
-    // Teste online: somente em página HTTPS (Worker de teste).
-    if (typeof window !== "undefined" && window.location.protocol !== "https:") throw new Error("Teste online exige HTTPS.");
+    // Publicação continua exigindo HTTPS. A prévia de desenvolvimento é opt-in,
+    // só no loopback e porta do portal; todas as chamadas ao Supabase usam HTTPS.
+    if (typeof window !== "undefined" && window.location.protocol !== "https:") {
+      const preview = process.env.NODE_ENV === "development"
+        && process.env.NEXT_PUBLIC_METALLO_TESTE_PREVIEW === "1"
+        && window.location.origin === "http://127.0.0.1:3101";
+      if (!preview) throw new Error("Teste online exige HTTPS.");
+    }
   } else throw new Error("Destino não autorizado.");
   let active = true;
   const client = createClient(baseUrl, anonKey, {

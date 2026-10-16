@@ -45,3 +45,26 @@ Senhas das contas fictícias: `backups/credenciais-teste-online.json` (fora do G
 
 A função `migrador-temporario` (Edge Function protegida por JWT + token local + prazo até 06/10/2026) foi usada para aplicar o esquema e semear.
 Deve ser desativada (substituída por um stub que só responde 410) quando o teste online estiver aprovado.
+
+## Redesign integrado — prévia de 15/10/2026
+
+**Situação:** integrado ao código funcional, disponível localmente para avaliação. Esta alteração ainda não foi publicada. A aprovação manual da prévia, a auditoria independente prevista no `AGENTS.md` e a autorização desta publicação continuam pendentes.
+
+- Gestão: `http://127.0.0.1:3102/login`; após entrar, `/dashboard`, `/materiais` e os demais módulos existentes.
+- Funcionário: `http://127.0.0.1:3101/colaborador/login`; após entrar, `/colaborador/inicio` e as vinte entradas do menu pessoal.
+- Utiliza as contas e os dados fictícios do **metallo-teste**. Os formulários continuam funcionais; operações enviadas pela prévia alteram o teste online. A inspeção desta entrega usou login e consultas, sem enviar pedidos, marcar ponto ou modificar cadastros.
+
+Para reiniciar, executar na raiz do projeto, em dois terminais:
+
+```powershell
+powershell -NoProfile -File .\07_CONFIGURACOES_DO_PROJETO\iniciar-previa-redesign.ps1 -Area gestao
+powershell -NoProfile -File .\07_CONFIGURACOES_DO_PROJETO\iniciar-previa-redesign.ps1 -Area colaborador
+```
+
+O componente compartilhado `01_WEB/02_COMPONENTES_VISUAIS/Galpao/login-galpao.tsx` incorpora o galpão aprovado da proposta: 12 módulos, travamentos, escada amarela na frente, descida pela platibanda e linhas de vida. A cena mantém montagem, giro, aproximação e navegação interna. Ela só carrega no login e é desmontada ao sair. Uma falha da cena não bloqueia o formulário.
+
+A apresentação reutiliza as telas, permissões, formulários, sessões e serviços existentes. A Gestão recebe o tema da proposta, menus e tabelas; o Funcionário recebe navegação lateral no computador e atalhos inferiores no celular. Funcionário sem equipe continua com a apresentação **Sem equipe atribuída**, sem ampliar permissões da Gestão.
+
+O acesso local ao backend do teste exige `NODE_ENV=development`, a opção explícita `NEXT_PUBLIC_METALLO_TESTE_PREVIEW=1` e a origem fixa `http://127.0.0.1:3101`. O servidor de prévia escuta apenas em `127.0.0.1`. As consultas de ponto validam Host/Origin locais, sessão e caminhos permitidos antes de encaminhar para o endereço HTTPS fixo do teste. Em produção, a opção não libera HTTP local. Nenhuma migration, mudança de Auth ou alteração de configuração remota faz parte desta entrega.
+
+Validação: 507 testes em 66 arquivos; TypeScript e ESLint sem erros; compilação Vinext concluída. Conferência no navegador com as contas fictícias de gestor e João, catálogo de materiais, EPIs, relógio e consulta das marcações, menu móvel e formulário de pedido em largura de 320 px. Rótulos responsivos de Início e Materiais são renderizados pelo servidor para evitar divergência na hidratação. Capturas de avaliação em `outputs/Metallo-Teste-Login.jpg`, `outputs/Metallo-Teste-Gestao.jpg` e `outputs/Metallo-Teste-Funcionario.jpg`.

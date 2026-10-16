@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "../07_ESTILOS/globals.css";
+import "../07_ESTILOS/redesign-teste.css";
+import { redesignTesteLiberado } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 export const metadata: Metadata = {
   title: { default: "Metallo", template: "%s | Metallo" },
@@ -19,7 +21,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" data-metallo-redesign={redesignTesteLiberado(process.env) ? "teste" : undefined}>
       {/* Marco 7A: completa funções que celular antigo não tem. Sem "defer" de propósito: precisa rodar antes dos módulos do app,
           que o servidor coloca antes deste ponto na página (arquivo pequeno, 3 kB, guardado no celular). */}
       {/* eslint-disable-next-line @next/next/no-sync-scripts */}

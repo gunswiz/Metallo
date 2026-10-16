@@ -47,7 +47,7 @@ it("página online entrega modo online e recusa caminhos fora da lista", async (
   for (const [k, v] of Object.entries(online)) vi.stubEnv(k, v);
   vi.stubEnv("METALLO_COLABORADOR_PREVIEW", "0"); vi.stubEnv("METALLO_COLABORADOR_VISUAL_PREVIEW", "0"); vi.stubEnv("METALLO_LOCAL_PREVIEW", "0");
   const element = await ColaboradorPage({ params: Promise.resolve({ screen: ["epis"] }) });
-  expect(element.props).toEqual({ screen: "epis", demo: false, anonKey: key, online: true, baseUrl: TESTE_ONLINE_SUPABASE_URL });
+  expect(element.props).toEqual({ screen: "epis", demo: false, anonKey: key, online: true, baseUrl: TESTE_ONLINE_SUPABASE_URL, redesign: true, outroAcesso: "https://metallo-teste-gestao.metallo-gunswiz.workers.dev/login" });
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["admin"] }) })).rejects.toThrow("NOT_FOUND");
   route.host = null;
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["epis"] }) })).rejects.toThrow("NOT_FOUND");

@@ -1,10 +1,35 @@
-import { expect, it } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
+import { NextRequest } from "next/server";
+import { GET as pointGet, POST as pointPost } from "@/app/api/ponto-online/[...path]/route";
+import * as transport from "@/05_ACESSO_A_DADOS/Ponto/transporte-laboratorio";
 import { destinoPonto } from "@/05_ACESSO_A_DADOS/Ponto/destino-ponto";
 import { pointReceipt } from "@/05_ACESSO_A_DADOS/Ponto/ponto-online";
 import { PDFDocument } from "pdf-lib";
 import { onlineRecord4d, personalRecord } from "@/05_ACESSO_A_DADOS/Ponto/registros";
 import { anyReceiptFilename, buildAnyReceipt } from "@/03_FUNCOES_E_LOGICA/Relatorios/ponto-comprovante-4d";
 import { TESTE_ONLINE_PONTO_4D } from "@/09_CONFIGURACOES/ambiente-teste-online";
+afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
+
+it("prévia local do ponto exige desenvolvimento explícito e mantém o destino de teste", async () => {
+  const config = { NODE_ENV: "development", NEXT_PUBLIC_METALLO_TESTE_PREVIEW: "1", METALLO_COLABORADOR_TESTE_ONLINE: "1", METALLO_LOCAL_PREVIEW: "0", METALLO_COLABORADOR_PREVIEW: "0" };
+  for (const [key, value] of Object.entries(config)) vi.stubEnv(key, value);
+  expect(destinoPonto()).toMatchObject({ host: "127.0.0.1:3101", requestOrigin: "http://127.0.0.1:3101", online: true });
+  const fetcher = vi.spyOn(transport, "pointLaboratoryFetch").mockResolvedValue(Response.json({ server_at: "2026-10-15T12:00:00Z" }));
+  const request = new NextRequest("http://127.0.0.1:3101/api/ponto-online/clock", { headers: { host: "127.0.0.1:3101", authorization: "Bearer synthetic.test.token-value" } });
+  expect((await pointGet(request, { params: Promise.resolve({ path: ["clock"] }) })).status).toBe(200);
+  expect(fetcher).toHaveBeenCalledWith(`${TESTE_ONLINE_PONTO_4D}/v4a/clock`, expect.objectContaining({ headers: expect.objectContaining({ Origin: "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev" }) }));
+  fetcher.mockClear();
+  const post = new NextRequest("http://127.0.0.1:3101/api/ponto-online/begin", { method: "POST", headers: { host: "127.0.0.1:3101", origin: "http://exemplo.invalid", authorization: "Bearer synthetic.test.token-value", "content-type": "application/json" }, body: "{}" });
+  expect((await pointPost(post, { params: Promise.resolve({ path: ["begin"] }) })).status).toBe(400);
+  for (const host of ["localhost:3101", "127.0.0.1:3102", "192.168.0.3:3101"]) {
+    request.headers.set("host", host);
+    expect((await pointGet(request, { params: Promise.resolve({ path: ["clock"] }) })).status).toBe(400);
+  }
+  request.headers.set("host", "127.0.0.1:3101");
+  vi.stubEnv("NODE_ENV", "production");
+  expect((await pointGet(request, { params: Promise.resolve({ path: ["clock"] }) })).status).toBe(400);
+  expect(fetcher).not.toHaveBeenCalled();
+});
 
 it("rotas do ponto: laboratório só no PC, teste online só na Edge Function do projeto de teste", () => {
   expect(destinoPonto({})).toBeNull();

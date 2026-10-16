@@ -5,7 +5,7 @@ colaboradorEnvironment(process.env); // Falhar no início, sem fallback visual/r
 
 const nextConfig: NextConfig = {
   distDir: process.env.METALLO_4C_TELEMETRY === "1" && process.env.METALLO_LOCAL_PREVIEW === "1" ? ".next-4c-preview" : process.env.METALLO_GESTAO_VISUAL_PREVIEW === "1" ? ".next-gestao-preview" : process.env.METALLO_LOCAL_PREVIEW === "1" ? ".next-local-preview" : ".next",
-  devIndicators: process.env.METALLO_LOCAL_PREVIEW === "1" ? false : undefined,
+  devIndicators: process.env.METALLO_LOCAL_PREVIEW === "1" || process.env.NEXT_PUBLIC_METALLO_TESTE_PREVIEW === "1" ? false : undefined,
   reactStrictMode: true,
   transpilePackages: ["@metallo/core", "@metallo/types", "@metallo/validation"],
   poweredByHeader: false,

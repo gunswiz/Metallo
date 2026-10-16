@@ -22,7 +22,7 @@ async function forward(request: NextRequest, path: string[], timing: ReturnType<
   if (destino === "INDISPONIVEL") return fail("SERVIDOR_INDISPONIVEL", 503);
   const endpoint = path.join("/");
   if (request.headers.get("host") !== destino.host || new URL(request.url).search || !/^(list|espelho|last48|receipt\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i.test(endpoint) ||
-      request.method !== (endpoint === "list" || endpoint === "espelho" ? "POST" : "GET") || request.method === "POST" && request.headers.get("origin") !== destino.origin) return fail("PEDIDO_INVALIDO", 400);
+      request.method !== (endpoint === "list" || endpoint === "espelho" ? "POST" : "GET") || request.method === "POST" && request.headers.get("origin") !== (destino.requestOrigin ?? destino.origin)) return fail("PEDIDO_INVALIDO", 400);
   const authorization = request.headers.get("authorization") ?? "";
   if (!/^Bearer [A-Za-z0-9_.-]{20,8192}$/.test(authorization)) return fail("SESSAO_INVALIDA", 401);
   let body: string | undefined;

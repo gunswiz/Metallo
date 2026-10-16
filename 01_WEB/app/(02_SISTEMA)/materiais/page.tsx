@@ -29,10 +29,10 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Se
             const total = item.inventory.reduce((sum, row) => sum + row.quantity, 0);
             const low = total <= item.minimum_stock;
             return <tr key={item.id}>
-              <td><Link className="primary-cell" href={`/materiais/${item.id}`}>{item.name}</Link><span className="secondary-cell">{item.code}</span></td>
-              <td>{item.category ?? "Sem categoria"}</td><td className="numeric">{total} {item.unit}</td>
-              <td>{item.inventory.filter((row) => row.quantity > 0).map((row) => row.teams?.name).filter(Boolean).join(", ") || "Sem estoque"}</td>
-              <td className="numeric">{item.minimum_stock} {item.unit}</td>{profile.role === "admin" && <td><StatusBadge value={low ? "maintenance" : "available"} label={low ? "Estoque baixo" : "Regular"} /></td>}
+              <td data-label="Material"><Link className="primary-cell" href={`/materiais/${item.id}`}>{item.name}</Link><span className="secondary-cell">{item.code}</span></td>
+              <td data-label="Categoria">{item.category ?? "Sem categoria"}</td><td data-label="Estoque total" className="numeric">{total} {item.unit}</td>
+              <td data-label="Locais">{item.inventory.filter((row) => row.quantity > 0).map((row) => row.teams?.name).filter(Boolean).join(", ") || "Sem estoque"}</td>
+              <td data-label="Mínimo" className="numeric">{item.minimum_stock} {item.unit}</td>{profile.role === "admin" && <td data-label="Situação"><StatusBadge value={low ? "maintenance" : "available"} label={low ? "Estoque baixo" : "Regular"} /></td>}
             </tr>;
           })}</tbody>
         </table></div>}

@@ -12,6 +12,19 @@ const context = (path: string) => ({ params: Promise.resolve({ path: path.split(
 const request = (path: string, method = "GET", body?: object, host = "127.0.0.1:3101") => new NextRequest(`http://${host}/api/ponto-registros/${path}`, { method, headers: { Host: host, Authorization: `Bearer ${token}`, Origin: `http://${host}`, "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}) });
 beforeEach(() => { vi.spyOn(laboratoryTransport, "pointLaboratoryFetch").mockImplementation((url, options) => fetch(url, options)); vi.stubEnv("METALLO_LOCAL_PREVIEW", "1"); vi.stubEnv("METALLO_COLABORADOR_PREVIEW", "1"); fetcher.mockReset(); fetcher.mockImplementation(async url => Response.json(String(url).endsWith("authorize") ? { authorized: true } : event)); vi.stubGlobal("fetch", fetcher); vi.mocked(buildPointReceipt).mockResolvedValue(new Uint8Array([37,80,68,70])); });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+it("prévia do teste valida a origem local antes de consultar registros em HTTPS", async () => {
+  vi.stubEnv("METALLO_LOCAL_PREVIEW", "0"); vi.stubEnv("METALLO_COLABORADOR_PREVIEW", "0");
+  vi.stubEnv("METALLO_COLABORADOR_TESTE_ONLINE", "1"); vi.stubEnv("NODE_ENV", "development"); vi.stubEnv("NEXT_PUBLIC_METALLO_TESTE_PREVIEW", "1");
+  fetcher.mockResolvedValue(Response.json({ error: "SESSAO_INVALIDA" }, { status: 401 }));
+  expect((await POST(request("list", "POST", { period: "today" }), context("list"))).status).toBe(401);
+  expect(fetcher).toHaveBeenCalledWith("https://cvimwiqokkujfhwynhmt.supabase.co/functions/v1/ponto-4d/v4b/list", expect.objectContaining({ headers: expect.objectContaining({ Origin: "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev" }) }));
+  fetcher.mockClear();
+  const invalidOrigin = request("list", "POST", { period: "today" }); invalidOrigin.headers.set("origin", "http://exemplo.invalid");
+  expect((await POST(invalidOrigin, context("list"))).status).toBe(400);
+  vi.stubEnv("NODE_ENV", "production");
+  expect((await POST(request("list", "POST", { period: "today" }), context("list"))).status).toBe(400);
+  expect(fetcher).not.toHaveBeenCalled();
+});
 it("carga isolada aceita somente a segunda porta loopback prevista", async () => { vi.stubEnv("METALLO_LOAD_TEST_CORE_PORT", "3107"); const path = `receipt/${event.event_id}`; expect((await GET(request(path), context(path))).status).toBe(200); expect(fetcher.mock.calls.every(([url]) => String(url).startsWith("http://127.0.0.1:3107/"))).toBe(true); });
 it("configuração de carga não permite host remoto ou porta arbitrária", async () => { for (const value of ["443", "https://remote.invalid", "3106/../../"]) { vi.stubEnv("METALLO_LOAD_TEST_CORE_PORT", value); expect((await GET(request("last48"), context("last48"))).status).toBe(503); } expect(fetcher).not.toHaveBeenCalled(); });
 it("PDF revalida autorização depois de gerar e não cria evento", async () => { const path = `receipt/${event.event_id}`; const response = await GET(request(path), context(path)); expect(response.status).toBe(200); expect(fetcher.mock.calls.map(([url]) => String(url))).toEqual([`http://127.0.0.1:3106/lab-point/v4b/${path}`, "http://127.0.0.1:3106/lab-point/v4b/authorize"]); expect(fetcher.mock.calls.every(([, init]) => init?.method === "GET")).toBe(true); expect(response.headers.get("cache-control")).toContain("no-store"); });
