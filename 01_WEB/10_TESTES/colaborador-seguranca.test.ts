@@ -12,7 +12,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); route.host = "127.0
 
 const anon = `header.${Buffer.from(JSON.stringify({ role: "anon" })).toString("base64url")}.signature`;
 const env = { METALLO_LOCAL_PREVIEW: "1", METALLO_COLABORADOR_PREVIEW: "1", METALLO_COLABORADOR_LAB_URL: "http://127.0.0.1:54321", METALLO_COLABORADOR_LAB_ANON_KEY: anon };
-function pageEnvironment() { for (const [key, value] of Object.entries(env)) vi.stubEnv(key, value); vi.stubEnv("METALLO_COLABORADOR_VISUAL_PREVIEW", "0"); }
+function pageEnvironment() { for (const [key, value] of Object.entries(env)) vi.stubEnv(key, value); vi.stubEnv("METALLO_COLABORADOR_VISUAL_PREVIEW", "0"); vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", ""); vi.stubEnv("METALLO_COLABORADOR_TESTE_ONLINE", "0"); }
 it.each([null, "localhost:3102", "192.168.0.3:3101", "exemplo.invalid:3101"])("Server Component recusa Host %s", async host => {
   pageEnvironment(); route.host = host;
   await expect(ColaboradorPage({ params: Promise.resolve({ screen: ["perfil"] }) })).rejects.toThrow("NOT_FOUND");
