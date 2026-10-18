@@ -20,23 +20,26 @@
     const parts=[],steel=[204,216,222],edge=[123,151,174],metal=[176,198,215],concrete=[93,110,119],glass=[49,101,127];
     const X=6,Z=12,top=3.36,eave=2.96,ridge=3.18,wall=.77;
     const roof=x=>ridge-Math.abs(x)/X*(ridge-eave);
+    // Shared section: roof drains into the open trough; the liner laps its outer upstand.
+    const gutter={inner:5.69,outer:5.93,bottom:3.045,inlet:3.081,upstand:3.14,linerBottom:3.11,roofEdge:5.75};
     const bayCount=12,bays=Array.from({length:bayCount+1},(_,i)=>-Z+i*2*Z/bayCount);
     const bayCenter=i=>(bays[i]+bays[i+1])/2;
-    const roofPurlins=Array.from({length:24},(_,i)=>-5.75+i*.5);
+    const roofPurlins=Array.from({length:24},(_,i)=>Math.max(-5.65,Math.min(5.65,-5.75+i*.5)));
     const insetEnd=z=>Math.abs(z)>Z-.001?z-Math.sign(z)*.025:z;
-    // Back/west follow the first marked photo; east follows the later purple/yellow lateral photo.
+    // Front/west follow the first marked photo; east follows the later purple/yellow lateral photo.
+    // Owner correction, 17 Oct: the ladder at z=-Z is on the BACK, with no windows.
     // Only the three large-access heights are given by the audio/owner.
     const accesses=[
       {id:'p1',wall:'east',center:bayCenter(6),width:.96,height:.96,metres:4,label:'Porta 1 · 4 m',type:'portao',yaw:Math.PI/2},
-      {id:'p2',wall:'back',center:-5.2,width:1.2,height:.84,metres:3.5,label:'Porta 2 · 3,5 m',type:'portao',yaw:Math.PI},
+      {id:'p2',wall:'front',center:-5.2,width:1.2,height:.84,metres:3.5,label:'Porta 2 · 3,5 m',type:'portao',yaw:Math.PI},
       {id:'p3',wall:'west',center:bayCenter(0),width:.96,height:.72,metres:3,label:'Porta 3 · 3 m',type:'portao',yaw:-Math.PI/2},
       {id:'e1',wall:'east',center:bayCenter(5),width:.48,height:.528,type:'emergencia',leaves:2},
       {id:'e2',wall:'west',center:bayCenter(5),width:.48,height:.528,type:'emergencia',leaves:2},
-      {id:'e3',wall:'back',center:-.7,width:.48,height:.528,type:'emergencia',leaves:2},
-      {id:'e4',wall:'back',center:5.62,width:.288,height:.528,type:'emergencia',leaves:1}
+      {id:'e3',wall:'front',center:-.7,width:.48,height:.528,type:'emergencia',leaves:2},
+      {id:'e4',wall:'front',center:5.62,width:.288,height:.528,type:'emergencia',leaves:1}
     ].map(o=>({...o,a:o.center-o.width/2,b:o.center+o.width/2,low:0,high:o.height}));
     const onWall=id=>accesses.filter(o=>o.wall===id);
-    const wallPoint=(id,u,y,offset=0)=>id==='east'?[X+offset,y,u]:id==='west'?[-X-offset,y,u]:[u,y,(id==='back'?1:-1)*(Z+offset)];
+    const wallPoint=(id,u,y,offset=0)=>id==='east'?[X+offset,y,u]:id==='west'?[-X-offset,y,u]:[u,y,(id==='front'?1:-1)*(Z+offset)];
     function intervals(a,b,holes){
       let spans=[[a,b]];
       for(const o of holes)spans=spans.flatMap(([l,r])=>o.b<=l||o.a>=r?[[l,r]]:[[l,Math.max(l,o.a)],[Math.min(r,o.b),r]].filter(([s,t])=>t-s>.0001));
@@ -50,35 +53,64 @@
       active.faces.push({pts,normal:n,color,style});
     }
     function line(a,b,color=edge){face([a,b],color,'line')}
-    function extrusion(a,b,profile,color=steel){
+    function extrusion(a,b,profile,color=steel,caps=[profile]){
       const axis=norm(sub(b,a)),ref=Math.abs(axis[1])>.95?[0,0,1]:[0,1,0];
       const u=norm(cross(axis,ref)),v=cross(axis,u);
-      const section=o=>profile.map(([x,y])=>add(o,add(mul(u,x),mul(v,y))));
+      const section=(o,outline=profile)=>outline.map(([x,y])=>add(o,add(mul(u,x),mul(v,y))));
       const q=section(a),r=section(b);
       for(let i=0;i<q.length;i++){const j=(i+1)%q.length;face([q[i],q[j],r[j],r[i]],color)}
-      face([...q].reverse(),color);face(r,color);
+      for(const cap of caps){face(section(a,cap).reverse(),color);face(section(b,cap),color)}
+    }
+    function iProfile(s=1){
+      const w=.035*s,d=.057*s,f=.012*s,t=.006*s;
+      return [[-w,-d],[w,-d],[w,-d+f],[t,-d+f],[t,d-f],[w,d-f],[w,d],[-w,d],[-w,d-f],[-t,d-f],[-t,-d+f],[-w,-d+f]];
     }
     function beam(a,b,s=1,color=steel){
-      const w=.035*s,d=.057*s,f=.012*s,t=.006*s;
-      extrusion(a,b,[[-w,-d],[w,-d],[w,-d+f],[t,-d+f],[t,d-f],[w,d-f],[w,d],[-w,d],[-w,d-f],[-t,d-f],[-t,-d+f],[-w,-d+f]],color);
+      const profile=iProfile(s);
+      // Convex flange/web caps prevent triangle fans spilling outside a concave I section.
+      const caps=[[0,1,2,11],[10,3,4,9],[8,5,6,7]].map(indices=>indices.map(i=>profile[i]));
+      extrusion(a,b,profile,color,caps);
     }
     function bar(a,b,r=.016,color=steel){extrusion(a,b,[[-r,-r],[r,-r],[r,r],[-r,r]],color)}
     function box(c,s,color=steel){const [x,y,z]=c;extrusion([x,y-s[1]/2,z],[x,y+s[1]/2,z],[[-s[0]/2,-s[2]/2],[s[0]/2,-s[2]/2],[s[0]/2,s[2]/2],[-s[0]/2,s[2]/2]],color)}
-    // Individual plates and four anchors stay visible in the structural view.
+    // Owner correction: plate fixed to the footing reinforcement, column welded directly
+    // to it in three passes. No exposed anchor bolts or nuts. Dimensions remain illustrative.
     bays.forEach((z,i)=>[-X,0,X].forEach((x,j)=>{
+      const columnZ=insetEnd(z),plateTop=.02;
+      part('armadura-base',.05+i*.12+j*.09,.6,[0,.45,0]);active.columnIndex=i;active.columnX=x;
+      for(const dx of [-.072,.072])for(const dz of [-.078,.078])bar([x+dx,-.29,columnZ+dz],[x+dx,-.02,columnZ+dz],.006,[112,119,116]);
+      for(const y of [-.08,-.17,-.26]){
+        for(const dx of [-.072,.072])bar([x+dx,y,columnZ-.078],[x+dx,y,columnZ+.078],.004,[112,119,116]);
+        for(const dz of [-.078,.078])bar([x-.072,y,columnZ+dz],[x+.072,y,columnZ+dz],.004,[112,119,116]);
+      }
       part('bases',.12+i*.12+j*.09,.6,[0,.45,0]);
-      box([x,0,z],[.22,.04,.23],edge);
-      for(const dx of [-.076,.076])for(const dz of [-.08,.08])box([x+dx,.031,z+dz],[.025,.045,.025],[207,218,228]);
+      active.columnIndex=i;active.columnX=x;active.connection='soldada';
+      box([x,0,columnZ],[.22,.04,.23],edge);
       part('pilares',2.5+i*.15+j*.09,.9,[0,1.1,0]);
+      active.columnIndex=i;active.columnX=x;
       // The full I flange stays behind the end sheet, rather than piercing it.
-      beam([x,.05,insetEnd(z)],[x,x===0?ridge:top,insetEnd(z)],1.12);
+      beam([x,plateTop,columnZ],[x,x===0?ridge:top,columnZ],1.12);
       // Cap/connection plates at the roof level.
       // Keep the connection plate inside the sheet plane, including at grazing angles.
       box([x-Math.sign(x)*.025,roof(x)-.08,insetEnd(z)],[.12,.17,.10],edge);
+      // Three overlapping rounded beads follow both flanges and the web at the plate.
+      const profile=iProfile(1.12),passes=[[.0025,.0025,.0032],[.007,.0025,.0034],[.0033,.007,.0035]];
+      passes.forEach(([offset,lift,radius],pass)=>{
+        part('solda-base',3.4+i*.15+j*.09+pass*.08,.18,[0,0,0]);
+        active.columnIndex=i;active.columnX=x;active.weldPass=pass+1;
+        const path=profile.map((p,k)=>{
+          const prev=profile[(k+profile.length-1)%profile.length],next=profile[(k+1)%profile.length];
+          const outward=(a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],n=Math.hypot(dx,dy);return [dy/n,-dx/n]};
+          const a=outward(prev,p),b=outward(p,next),den=1+a[0]*b[0]+a[1]*b[1];
+          return [x+p[0]+offset*(a[0]+b[0])/den,plateTop+lift,columnZ-p[1]-offset*(a[1]+b[1])/den];
+        });
+        const bead=Array.from({length:6},(_,k)=>[Math.cos(k*Math.PI/3)*radius,Math.sin(k*Math.PI/3)*radius]);
+        for(let k=0;k<path.length;k++)extrusion(path[k],path[(k+1)%path.length],bead,[[102,117,125],[129,144,151],[154,169,174]][pass]);
+      });
     }));
     // Solid-web portal rafters and the characteristic central double knee braces.
     bays.forEach((z,i)=>{
-      part('vigas',5.5+i*.18,.9,[0,1.35,0]);
+      part('vigas',6+i*.16,.9,[0,1.35,0]);
       beam([-X,eave,z],[0,ridge,z],1.1);beam([0,ridge,z],[X,eave,z],1.1);
       for(const x of [-X,0,X])for(const dir of (x===0?[-1,1]:[x<0?1:-1])){
         beam([x,roof(x)-.64,z],[x+dir*.8,roof(x+dir*.8)-.06,z],.82);
@@ -126,7 +158,7 @@
     }
     // End-wall framing extends above the shallow roof into a straight parapet.
     for(const z of [-Z,Z]){
-      const id=z>0?'back':'front';
+      const id=z>0?'front':'back';
       part('tercas',10.8,.9,[0,.8,0]);
       for(let x=-4.5;x<6;x+=1.5)if(x!==0)beam([x,.05,z],[x,top,z],.7);
       for(const y of [.78,1.28,1.78,2.28,2.78,3.33])girt(id,-X,X,y);
@@ -148,14 +180,18 @@
     }
     // Open U-shaped eaves gutters: inserted before roof/wall cladding.
     for(const s of [-1,1])for(let i=0;i<bays.length-1;i++){
-      const a=bays[i],b=bays[i+1],x=s*5.85;
+      const a=bays[i],b=bays[i+1],inner=s*gutter.inner,outer=s*gutter.outer;
       part('calhas',14+i*.12,.6,[s*.8,.5,0]);
-      face([[x-s*.16,2.97,a],[x-s*.16,2.81,a],[x+s*.12,2.81,a],[x+s*.12,2.97,a]],metal);
-      face([[x-s*.16,2.81,a],[x+s*.12,2.81,a],[x+s*.12,2.81,b],[x-s*.16,2.81,b]],edge);
-      for(const dx of [-.16,.12])face([[x+s*dx,2.81,a],[x+s*dx,2.99,a],[x+s*dx,2.99,b],[x+s*dx,2.81,b]],metal);
+      active.gutterSide=s;active.bayIndex=i;
+      face([[inner,gutter.bottom,a],[outer,gutter.bottom,a],[outer,gutter.bottom,b],[inner,gutter.bottom,b]],[92,118,137],'gutter-floor');
+      face([[inner,gutter.bottom,a],[inner,gutter.inlet,a],[inner,gutter.inlet,b],[inner,gutter.bottom,b]],metal);
+      face([[outer,gutter.bottom,a],[outer,gutter.upstand,a],[outer,gutter.upstand,b],[outer,gutter.bottom,b]],metal);
+      // Only the terminal ends are capped; adjacent bays share an unobstructed channel.
+      for(const z of [i===0?a:null,i===bays.length-2?b:null].filter(v=>v!==null))
+        face([[inner,gutter.bottom,z],[outer,gutter.bottom,z],[outer,gutter.upstand,z],[inner,gutter.inlet,z]],metal);
     }
     for(const x of [-5.82,5.82])for(const z of [bays[1],bays[6],10.8]){
-      part('calhas',15.2,.7,[0,.45,0]);bar([x,2.83,z],[x,.15,z],.028,metal);
+      part('calhas',15.2,.7,[0,.45,0]);bar([x,gutter.bottom,z],[x,.15,z],.028,metal);
       bar([x,.15,z],[x+Math.sign(x)*.12,.09,z],.028,metal);
     }
     // Roof sheets: real shallow double slope, ribs running from ridge to gutter.
@@ -164,14 +200,14 @@
       part('cobertura',17+i*.027,.72,[0,.9,0]);
       for(let j=0;j<4;j++){
         const za=z+(nz-z)*j/4,zb=z+(nz-z)*(j+1)/4,ha=(j===1?.018:0),hb=(j===0?.018:0);
-        face([[0,ridge+.12+ha,za],[s*5.75,roof(5.75)+.12+ha,za],[s*5.75,roof(5.75)+.12+hb,zb],[0,ridge+.12+hb,zb]],j===1?[201,216,227]:metal,'panel');
+        face([[0,ridge+.12+ha,za],[s*gutter.roofEdge,roof(gutter.roofEdge)+.12+ha,za],[s*gutter.roofEdge,roof(gutter.roofEdge)+.12+hb,zb],[0,ridge+.12+hb,zb]],j===1?[201,216,227]:metal,'panel');
       }
     }
     // The civil work rises course by course around actual voids for each access.
     const windows=bays.slice(0,-1).flatMap((z,i)=>[z+(bays[i+1]-z)*.3,z+(bays[i+1]-z)*.7]);
     const elevations=[{id:'west',length:24,windows,delay:20.5},{id:'east',length:24,windows,delay:20.65},
-      {id:'back',length:12,windows:[-4.7,-3.4,-2.1,2.1,3.4,4.7],delay:20.8},
-      {id:'front',length:12,windows:[-4.7,-3.4,-2.1,2.1,3.4,4.7],delay:20.9}];
+      {id:'front',length:12,windows:[-4.7,-3.4,-2.1,2.1,3.4,4.7],delay:20.8},
+      {id:'back',length:12,windows:[],delay:20.9}];
     for(const e of elevations){
       const point=(u,y)=>wallPoint(e.id,u,y,.035),doors=onWall(e.id);
       const openings=[...doors,...e.windows.filter(u=>!doors.some(o=>u+.25>o.a&&u-.25<o.b)).map(u=>({a:u-.21,b:u+.21,low:.48,high:.71,type:'janela'}))];
@@ -193,6 +229,7 @@
       }
       for(const o of openings.filter(o=>o.type==='janela')){
         part('janelas',e.delay+1.9,.6,[0,0,0]);
+        active.wallId=e.id;
         face([point(o.a+.012,o.low+.008),point(o.b-.012,o.low+.008),point(o.b-.012,o.high-.008),point(o.a+.012,o.high-.008)],glass,'glass');
         for(const u of [o.a,(o.a+o.b)/2,o.b])bar(point(u,o.low),point(u,o.high),.008,metal);
         for(const y of [o.low,o.high])bar(point(o.a,y),point(o.b,y),.009,metal);
@@ -224,7 +261,7 @@
         const point=(u,y,rib)=>wallPoint(e.id,u,y,-.095-rib);
         for(let j=0;j<4;j++){
           const u=a+step*j/4,v=a+step*(j+1)/4,ra=j===1?.013:0,rb=j===0?.013:0;
-          const low=t=>(e.id==='west'||e.id==='east')?2.80:roof(t)+.068;
+          const low=t=>(e.id==='west'||e.id==='east')?gutter.linerBottom:roof(t)+.068;
           face([point(u,low(u),ra),point(v,low(v),rb),point(v,top,rb),point(u,top,ra)],j===1?[198,215,227]:metal,'panel');
         }
       }
@@ -268,11 +305,14 @@
       }
     }
     const roofAccess=window.appendMetalloRoofAccess({part,box,bar,extrusion,line,bays,insetEnd,X,Z,top,ridge});
-    return {parts,accesses,bays,sideRoofBracing,roofAccess,details:roofAccess.details,bounds:{x:X,z:Z,height:top},duration:31,
+    const details={...roofAccess.details,'gutter':{label:'Calha e fechamento interno',yaw:-1.25,pitch:.65,bounds:{x:[5.35,6.1],y:[2.92,3.43],z:[-3.5,-.5]}}};
+    // Shared by the initial camera, view selector and lightweight login poster.
+    const views={perspective:[Math.PI+.58,.34],side:[Math.PI/2,.12],end:[Math.PI,.16],back:[0,.16],roof:[.05,1.35],marked:[-2.70,.085]};
+    return {parts,accesses,bays,sideRoofBracing,roofAccess,gutter,views,details,bounds:{x:X,z:Z,height:top},duration:31,
       phases:[
-        {time:0,end:2.4,label:'Chapas de base e chumbadores'},
-        {time:2.5,end:5.4,label:'Pilares laterais e centrais'},
-        {time:5.5,end:8.9,label:'Vigas e mãos francesas'},
+        {time:0,end:2.4,label:'Armaduras e chapas de base'},
+        {time:2.5,end:5.9,label:'Pilares e soldas das bases · 3 passes'},
+        {time:6,end:8.9,label:'Vigas e mãos francesas'},
         {time:9,end:13.9,label:'Terças, travamentos e X'},
         {time:14,end:16.9,label:'Calhas e condutores'},
         {time:17,end:20.4,label:'Cobertura metálica'},

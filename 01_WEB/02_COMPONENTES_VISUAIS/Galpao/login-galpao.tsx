@@ -49,7 +49,7 @@ export function LoginGalpao({ children, area, outroAcesso }: {
       <div className="steel-brand"><BrandLogo/><span className="brand-rule" aria-hidden="true"/><span className="brand-caption">Montagens<br/>industriais</span></div>
       <div className="steel-stage">
         {ativo ? <canvas aria-label="Montagem do galpão Plastamp"/> : <div className="steel-poster">
-          {/* Imagem gerada do mesmo modelo 3D da animação (estrutura montada): leve e fiel. */}
+          {/* Imagem gerada do mesmo modelo 3D: obra completa vista pela frente. */}
           <Image src="/galpao-poster.webp" alt="Estrutura metálica do galpão da obra Plastamp" width={1000} height={467} unoptimized priority/>
           {modo === "opcional" && <button type="button" className="steel-opt3d" onClick={() => setPediu3d(true)}>Ver animação do galpão</button>}
         </div>}

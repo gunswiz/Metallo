@@ -48,6 +48,15 @@
 .steel-walk label{display:flex;align-items:center;gap:9px;font-size:13px;color:#7c9cb3;font-weight:400;margin:0}
 .steel-walk output{white-space:nowrap;color:#cce2ef;font-variant-numeric:tabular-nums}
 .steel-walk input{width:140px;min-height:28px;padding:0;margin:0;accent-color:#68b8ed;border:0;background:none}
+.steel-walk label[hidden],.steel-free-tools[hidden]{display:none}
+.steel-free-tools{display:flex;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-top:10px}
+.steel-free-tools label{display:flex;align-items:center;gap:8px;margin:0;color:#9ab9cc;font-size:13px;font-weight:400}
+.steel-free-tools select,.steel-free-tools button{font:inherit;font-size:13px;min-height:36px;padding:6px 10px;border:1px solid #35546b;border-radius:6px;background:#102333;color:#c6dceb}
+.steel-free-tools button:hover{background:#20435b}
+.steel-actions button[data-steel=free]{color:#bce5ff}
+.steel-free .steel-stage{border:1px solid #284352;border-radius:8px;overflow:hidden}
+.steel-free .steel-walk{flex-wrap:wrap;gap:8px}
+.steel-free .steel-help{max-width:900px}
 .steel-interior .steel-timeline,.steel-interior .steel-phase,.steel-interior .steel-stage-label{display:none}
 .steel-interior .steel-actions{margin-top:9px}
 .steel-interior .steel-stage{bottom:254px;border:1px solid #284352;border-radius:8px;overflow:hidden;background:#8395a1}
@@ -69,10 +78,13 @@
 }
 
 /* Let the controls determine their own height at every viewport width. */
-.steel-expanded .steel-visual{display:grid;grid-template-rows:74px minmax(260px,1fr) auto;gap:16px;padding:0 3% 24px;box-sizing:border-box}
+.steel-expanded{height:auto;min-height:max(760px,calc(100dvh - 30px))}
+.steel-expanded .steel-visual{position:relative;inset:auto;min-height:inherit;display:grid;grid-template-rows:74px minmax(260px,1fr) auto;gap:16px;padding:0 3% 24px;box-sizing:border-box}
 .steel-expanded .steel-stage{position:relative;grid-row:2;left:auto;right:auto;top:auto;bottom:auto;height:auto;min-width:0}
+.steel-expanded .steel-stage canvas{position:absolute;inset:0}
 .steel-expanded .steel-controls{position:relative;grid-row:3;left:auto;right:auto;top:auto;bottom:auto;width:100%;max-width:1000px;margin:0 auto}
 @media(max-width:760px){
+  .steel-expanded{min-height:max(820px,calc(100dvh - 30px))}
   .steel-expanded .steel-visual{grid-template-rows:69px minmax(260px,1fr) auto;padding:0 16px 24px}
   .steel-expanded .steel-stage{left:auto;right:auto;top:auto;bottom:auto}
   .steel-expanded .steel-controls{left:auto;right:auto;top:auto;bottom:auto}
@@ -81,6 +93,9 @@
   .steel-expanded .steel-inspect .steel-view-label{min-width:0;width:auto}
   .steel-expanded .steel-inspect input{width:70px}
   .steel-expanded .steel-inspect select{width:100%;min-width:0;padding-right:16px}
+  .steel-free-tools label{width:100%}
+  .steel-free-tools select{flex:1}
+  .steel-free .steel-reference{display:none}
 }
 /* Login simples (aparelho fraco, celular ou ainda sem decidir): desenho parado no lugar do 3D. Letras de 13 px ou mais. */
 .steel-poster{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;height:100%;pointer-events:auto;color:#7ca6c4}

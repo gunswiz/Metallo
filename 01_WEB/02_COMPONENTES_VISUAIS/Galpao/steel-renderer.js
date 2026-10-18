@@ -11,13 +11,13 @@
     if(!gl)return null;
     const vertex=`precision highp float;
       attribute vec3 a_position,a_color,a_insideColor,a_offset; attribute vec2 a_timing;
-      uniform vec4 u_rotation,u_view; uniform vec2 u_size; uniform float u_time,u_inside;
+      uniform vec4 u_rotation,u_view; uniform vec2 u_size; uniform float u_time,u_inside,u_navigation;
       uniform mat4 u_interiorMatrix;
       varying vec3 v_color; varying float v_visible;
       void main(){
         float t=clamp((u_time-a_timing.x)/a_timing.y,0.0,1.0);
         vec3 p=a_position+a_offset*pow(1.0-t,3.0);
-        if(u_inside>0.5){
+        if(u_navigation>0.5){
           gl_Position=u_interiorMatrix*vec4(p,1.0);
         }else{
           float x=p.x*u_rotation.x+p.z*u_rotation.y;
@@ -54,7 +54,7 @@
     function buffer(data){const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return {buffer:b,count:data.length/14}}
     const triangleBuffer=buffer(triangles),lineBuffer=buffer(lines);
     const attrs=[['a_position',3,0],['a_color',3,3],['a_insideColor',3,6],['a_offset',3,9],['a_timing',2,12]].map(([name,n,o])=>[gl.getAttribLocation(program,name),n,o]);
-    const uniforms=Object.fromEntries(['u_rotation','u_view','u_size','u_time','u_inside','u_interiorMatrix'].map(k=>[k,gl.getUniformLocation(program,k)]));
+    const uniforms=Object.fromEntries(['u_rotation','u_view','u_size','u_time','u_inside','u_navigation','u_interiorMatrix'].map(k=>[k,gl.getUniformLocation(program,k)]));
     function bind(b){gl.bindBuffer(gl.ARRAY_BUFFER,b.buffer);for(const [loc,size,offset] of attrs){gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,56,offset*4)}}
     let width=1,height=1;
     gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.clearColor(0,0,0,0);
@@ -63,7 +63,8 @@
       draw(camera,time){
         gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);
         gl.uniform4f(uniforms.u_rotation,camera.cy,camera.sy,camera.cp,camera.sp);gl.uniform4f(uniforms.u_view,camera.ox,camera.oy,camera.scale,0);gl.uniform2f(uniforms.u_size,width,height);gl.uniform1f(uniforms.u_time,time);
-        gl.uniform1f(uniforms.u_inside,camera.interiorMatrix?1:0);
+        gl.uniform1f(uniforms.u_navigation,camera.interiorMatrix?1:0);
+        gl.uniform1f(uniforms.u_inside,camera.interiorLighting?1:0);
         if(camera.interiorMatrix)gl.uniformMatrix4fv(uniforms.u_interiorMatrix,false,camera.interiorMatrix);
         gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(0,1);bind(triangleBuffer);gl.drawArrays(gl.TRIANGLES,0,triangleBuffer.count);gl.disable(gl.POLYGON_OFFSET_FILL);
         bind(lineBuffer);gl.drawArrays(gl.LINES,0,lineBuffer.count);

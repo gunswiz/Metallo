@@ -9,9 +9,9 @@
     const polyline=(points,r,color)=>{for(let i=1;i<points.length;i++)round(points[i-1],points[i],r,color)};
     const addPart=(kind,extra={},delay=29.4)=>Object.assign(part(kind,delay,.55,[0,.08,0]),{roofAccess:true,...extra});
     // Facade-local coordinates: outward distance, height, distance from the corner.
-    // The marked empty destination is on the FRONT face, immediately beside the east corner.
+    // The marked empty destination is on the BACK face, immediately beside the east corner.
     const layout={lower:.90,upper:.40,plane:.16,landing:1.72,top:top+.27,return:-.44};
-    const ladder={wall:'front',lowerX:X-layout.lower,upperX:X-layout.upper,planeZ:-Z-layout.plane,
+    const ladder={wall:'back',lowerX:X-layout.lower,upperX:X-layout.upper,planeZ:-Z-layout.plane,
       landing:layout.landing,top:layout.top,returnZ:-Z-layout.return};
     ladder.roofLanding=ridge-ladder.upperX/X*.22+.138;
     const place=([out,y,along])=>[X-along,y,-Z-out];
