@@ -1,0 +1,147 @@
+{
+  "at": "2026-10-23T14:42:51.212Z",
+  "scope": "Marco 10A — frota (teste online)",
+  "checks": [
+    {
+      "name": "Gestão cadastra caminhão de prova",
+      "ok": true
+    },
+    {
+      "name": "placa inválida recusada",
+      "ok": true
+    },
+    {
+      "name": "funcionário não cadastra caminhão",
+      "ok": true
+    },
+    {
+      "name": "app lista os 26 itens do checklist",
+      "ok": true
+    },
+    {
+      "name": "app lista os caminhões com a situação",
+      "ok": true
+    },
+    {
+      "name": "saída sem checklist do dia é recusada",
+      "ok": true
+    },
+    {
+      "name": "checklist incompleto é recusado",
+      "ok": true
+    },
+    {
+      "name": "sem ciência é recusado",
+      "ok": true
+    },
+    {
+      "name": "'N' sem descrição é recusado",
+      "ok": true
+    },
+    {
+      "name": "item crítico 'N' => não liberado; reenvio não duplica",
+      "ok": true
+    },
+    {
+      "name": "saída de caminhão não liberado é recusada",
+      "ok": true
+    },
+    {
+      "name": "manutenção corretiva abriu sozinha e bloqueia",
+      "ok": true
+    },
+    {
+      "name": "funcionário não libera caminhão",
+      "ok": true
+    },
+    {
+      "name": "liberar sem motivo é recusado",
+      "ok": true
+    },
+    {
+      "name": "engenheiro libera com motivo",
+      "ok": true
+    },
+    {
+      "name": "km menor que o atual é recusado",
+      "ok": true
+    },
+    {
+      "name": "saída liberada",
+      "ok": true
+    },
+    {
+      "name": "mesma pessoa não pega 2 caminhões / caminhão em uso não sai de novo",
+      "ok": true
+    },
+    {
+      "name": "Maria não registra chegada do robô",
+      "ok": true
+    },
+    {
+      "name": "km de chegada menor que a saída é recusado",
+      "ok": true
+    },
+    {
+      "name": "chegada com problema; reenvio não duplica",
+      "ok": true
+    },
+    {
+      "name": "caminhão voltou como não liberado e km atualizado",
+      "ok": true
+    },
+    {
+      "name": "enviar à oficina",
+      "ok": true
+    },
+    {
+      "name": "situação virou 'manutencao'",
+      "ok": true
+    },
+    {
+      "name": "concluir manutenção com custo",
+      "ok": true
+    },
+    {
+      "name": "caminhão voltou a disponível com custo registrado",
+      "ok": true
+    },
+    {
+      "name": "checklist sem problemas => liberado",
+      "ok": true
+    },
+    {
+      "name": "histórico do funcionário mostra a viagem",
+      "ok": true
+    },
+    {
+      "name": "grade do mês traz as respostas",
+      "ok": true
+    },
+    {
+      "name": "detalhe do checklist com 26 itens",
+      "ok": true
+    },
+    {
+      "name": "plano por km nasce vencido",
+      "ok": true
+    },
+    {
+      "name": "concluir plano zera o contador",
+      "ok": true
+    },
+    {
+      "name": "documento vencido aparece em atenção",
+      "ok": true
+    },
+    {
+      "name": "funcionário não vê painel da Gestão",
+      "ok": true
+    },
+    {
+      "name": "Gestão não registra saída como funcionário",
+      "ok": true
+    }
+  ],
+  "result": "35/35"
+}

@@ -24,14 +24,14 @@ it("ativa a apresentação apenas no teste e nas prévias locais explícitas", (
   expect(destinoLoginTeste("colaborador", true)).toBe("http://127.0.0.1:3101/colaborador/login");
 });
 
-it("reutiliza as vinte entradas pessoais no desktop e preserva funcionário sem equipe", () => {
+it("reutiliza as vinte e uma entradas pessoais no desktop e preserva funcionário sem equipe", () => {
   const logout = vi.fn(async () => {});
   render(<DrawerColaborador inline open={false} onClose={vi.fn()} trigger={createRef<HTMLButtonElement>()}
     profile={{ employee_id: "sintetico", full_name: "Funcionário de teste", profession: null, team_name: null }} current="privacidade" busy={false} logout={logout} demo={false} go={vi.fn()}/>);
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(screen.getByText("Sem equipe atribuída")).toBeInTheDocument();
   const nav = within(screen.getByRole("navigation", { name: "Navegação principal" }));
-  expect(nav.getAllByRole("link")).toHaveLength(20);
+  expect(nav.getAllByRole("link")).toHaveLength(21);
   expect(nav.getByRole("link", { name: "Privacidade (seus dados)" })).toHaveAttribute("aria-current", "page");
   expect(nav.getByRole("link", { name: "Solicitar troca de EPI" })).toHaveAttribute("href", "/colaborador/epis#epi-troca-heading");
   fireEvent.click(screen.getByRole("button", { name: "Sair" }));

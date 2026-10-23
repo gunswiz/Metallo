@@ -909,3 +909,16 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   .guia-folha ol { font-size: 13pt; }
   body:has(.guia-folha) .page-header { display: none !important; }
 }
+
+/* Marco 10A: frota */
+.frota-atencao { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.frota-atencao li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; align-items: center; padding: 10px 12px; border: 1px solid var(--line-soft); border-left-width: 4px; border-radius: 10px; background: var(--panel-2); min-width: 0; }
+.frota-atencao li.good { border-left-color: var(--green); }
+.frota-atencao li.warn { border-left-color: var(--amber); }
+.frota-atencao li.bad { border-left-color: var(--red, #e5484d); }
+.frota-atencao li > * { min-width: 0; overflow-wrap: anywhere; }
+.frota-grade th, .frota-grade td { text-align: center; padding: 6px 4px; font-size: var(--font-caption); }
+.frota-grade th[scope="row"] { text-align: left; white-space: nowrap; position: sticky; left: 0; background: var(--panel); }
+.frota-grade td.bad { background: rgba(229, 72, 77, .28); font-weight: 800; }
+.frota-grade td.good { color: var(--green); }
+.frota-mes { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }

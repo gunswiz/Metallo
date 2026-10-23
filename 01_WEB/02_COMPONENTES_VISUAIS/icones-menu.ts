@@ -8,5 +8,5 @@ export const ICONES: Record<string, LucideIcon> = {
   inicio: Gauge, lancar: CirclePlus, estoque: Warehouse, materiais: PackageOpen, epis: HardHat, ferramentas: Toolbox,
   equipamentos: Wrench, historico: History, compras: ShoppingCart, caixa: Inbox, locacoes: Truck, funcionarios: UserRound,
   apoio: Handshake, equipes: Users, comunicados: Megaphone, ponto: Clock3, obras: Building2, consumo: ChartNoAxesCombined,
-  relatorios: FileText, usuarios: UserRoundCog, configuracoes: Settings, conta: UserRoundCog, ajuda: BookOpen, treinamentos: GraduationCap, celular: Smartphone, outros: Boxes, lista: ClipboardList, conferir: ShieldCheck, privacidade: LockKeyhole, contracheque: ReceiptText,
+  relatorios: FileText, usuarios: UserRoundCog, configuracoes: Settings, conta: UserRoundCog, ajuda: BookOpen, treinamentos: GraduationCap, celular: Smartphone, outros: Boxes, lista: ClipboardList, conferir: ShieldCheck, privacidade: LockKeyhole, contracheque: ReceiptText, frota: Truck,
 };

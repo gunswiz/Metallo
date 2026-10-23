@@ -51,7 +51,7 @@ it("agrupa a navegação no drawer sem duplicar barra inferior", async () => {
   expect(within(navigation).getAllByRole("link").map(link => link.getAttribute("href"))).toEqual([
     "/colaborador/inicio", "/colaborador/ajuda", "/colaborador/ponto", "/colaborador/registros", "/colaborador/espelho", "/colaborador/comprovantes",
     "/colaborador/epis", "/colaborador/itens", "/colaborador/epis#epi-troca-heading", "/colaborador/treinamentos",
-    "/colaborador/equipe", "/colaborador/obra", "/colaborador/comunicados",
+    "/colaborador/equipe", "/colaborador/obra", "/colaborador/comunicados", "/colaborador/frota",
     "/colaborador/epis#epi-solicitacoes", "/colaborador/material", "/colaborador/contracheques", "/colaborador/atestado", "/colaborador/perfil", "/colaborador/perfil#perfil-seguranca", "/colaborador/privacidade",
   ]);
   expect(screen.getAllByRole("navigation", { name: "Navegação principal" })).toHaveLength(1);

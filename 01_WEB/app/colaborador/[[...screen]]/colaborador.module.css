@@ -505,3 +505,23 @@
 }
 @media(max-width:360px){.redesign .topbar{flex-wrap:wrap}.redesign .testBadge{flex-basis:100%;margin:0;text-align:center}.redesignShortcuts a{flex-direction:column;align-items:flex-start}.bottomNav a,.bottomNav button{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.redesignShortcuts a{transition:none}}
+
+/* Marco 10A: caminhões */
+.frotaLista, .frotaItens { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.frotaLista > li { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--line, #2a3c4a); border-left-width: 5px; border-radius: 12px; min-width: 0; }
+.frotaLista > li > div { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.frotaRuim { border-color: #ff6b72 !important; }
+.frotaAtencao { border-color: #f0b44c !important; }
+.frotaSituacao { font-weight: 800; font-size: 1.1rem; }
+.frotaBotoes { display: grid; gap: 8px; }
+.frotaForm { display: grid; gap: 12px; }
+.frotaForm label { display: grid; gap: 6px; font-weight: 700; font-size: 1.05rem; }
+.frotaForm input:not([type="checkbox"]) { min-height: 52px; font-size: 1.1rem; padding: 0 12px; border-radius: 12px; }
+.frotaItens > li { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line, #2a3c4a); border-radius: 12px; min-width: 0; }
+.frotaItens > li > span { font-weight: 700; font-size: 1.05rem; overflow-wrap: anywhere; }
+.frotaItens input { min-height: 48px; font-size: 1.05rem; padding: 0 12px; border-radius: 10px; }
+.frotaCNA { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.frotaCNA button { min-height: 52px; border-radius: 12px; border: 2px solid var(--line, #2a3c4a); background: transparent; color: inherit; font: inherit; font-weight: 800; font-size: 1.15rem; cursor: pointer; }
+.frotaCNAativo { background: var(--accent-soft, #1d4a3a) !important; border-color: var(--accent, #3ed598) !important; }
+.frotaCNAruim { background: rgba(255, 107, 114, .28) !important; border-color: #ff6b72 !important; }
+.frotaForm .frotaCiente { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; }
