@@ -310,6 +310,10 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     cancelar: async (id: number) => { await exchangeRpc("cancel_pedido_material_3t", { p_id: id }); },
   }), [exchangeRpc]);
   // Marco 10A: caminhões (checklist do dia, saída e chegada). 10B: foto do defeito (arquivo só pela função `fotos-frota-10b`).
+  const frota10aAvisar = useCallback(async (veiculo: number) => {
+    if (demo || endingClient.current || !profile) return;
+    try { await getClient().functions.invoke("fotos-frota-10b", { body: { acao: "avisar", veiculo_id: veiculo } }); } catch { /* o painel da Gestão já mostra o defeito */ }
+  }, [demo, profile, getClient]);
   const frota10a = useMemo(() => ({
     caminhoes: async () => caminhoesApp10a.parse(await exchangeRpc("my_frota_10a")),
     itens: async () => itensApp10a.parse(await exchangeRpc("my_frota_itens_10a")),
@@ -330,15 +334,18 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     },
     checklist: async (veiculo: number, local: string, obs: string, respostas: RespostaChecklist10a[], chave: string) => {
       const r = resultadoChecklistApp10a.parse(await exchangeRpc("create_checklist_10a", { p_veiculo: veiculo, p_local: local, p_obs: obs, p_respostas: respostas, p_ciente: true, p_key: chave }));
+      if (respostas.some(x => x.situacao === "N")) void frota10aAvisar(veiculo);
       return r[0]?.resultado ?? "liberado";
     },
     saida: async (veiculo: number, destino: string, acompanhantes: string, km: number, obs: string, chave: string) => { await exchangeRpc("create_saida_10a", { p_veiculo: veiculo, p_destino: destino, p_acompanhantes: acompanhantes, p_km: km, p_obs: obs, p_key: chave }); },
-    chegada: async (viagem: number, km: number, problema: string, obs: string, chave: string, foto?: string) => {
+    chegada: async (viagem: number, km: number, problema: string, obs: string, chave: string, foto?: string, veiculo?: number) => {
       await exchangeRpc("create_chegada_10a", { p_viagem: viagem, p_km: km, p_problema: problema, p_obs: obs, p_key: chave });
-      if (foto) { try { await exchangeRpc("anexar_foto_chegada_10b", { p_viagem: viagem, p_foto: foto }); } catch { return false; } }
-      return true;
+      let ok = true;
+      if (foto) { try { await exchangeRpc("anexar_foto_chegada_10b", { p_viagem: viagem, p_foto: foto }); } catch { ok = false; } }
+      if (problema.trim() && veiculo) void frota10aAvisar(veiculo);
+      return ok;
     },
-  }), [exchangeRpc, demo, profile, getClient]);
+  }), [exchangeRpc, demo, profile, getClient, frota10aAvisar]);
   // Marco 4L: meses fechados pelo escritório e a resposta do funcionário (uma vez por fechamento).
   const fechamentos4l = useMemo(() => ({
     ler: async () => z.array(fechamentoApp4l).parse(await exchangeRpc("my_fechamentos_4l")),

@@ -41,3 +41,10 @@ A inspeção visual automatizada no navegador foi bloqueada pela política da fe
 - Na Gestão: a ficha do caminhão mostra "Ver foto" no detalhe do checklist (item certo) e na tabela de saídas/chegadas. O link abre a foto por 2 minutos.
 - Segurança: balde privado `frota-10b`; arquivo só pela função `fotos-frota-10b` (tipo real JPEG/PNG pelos primeiros bytes, máx. 6 MB, 30 fotos por dia por pessoa); o banco confere quem pode enviar e quem pode abrir (Gestão ou a própria pessoa). Foto só vale para o caminhão, a pessoa e um único uso. Banco: `10b-frota-fotos.sql`. Prova online: `provas-10b-online.mjs` (18 verificações).
 - Limites: foto da chegada só até 30 minutos depois de registrar a chegada; se o envio da foto falhar na chegada, a chegada fica registrada e o app avisa para falar com o engenheiro; fotos soltas (enviadas e não usadas) ficam guardadas.
+
+## Marco 10C — defeito vira relato, alerta e aviso (23/10)
+
+- O que o funcionário informa (item "N" com observação e foto no checklist, ou problema e foto na chegada) agora aparece **dentro do cartão da manutenção aberta**: quem, quando, o que foi e "Ver foto". Fica registrado no sistema mesmo sem enviar à oficina.
+- A Gestão vê o alerta "Defeito em caminhão" no início (Precisa de você), no painel da Frota e na aba Manutenção do caminhão.
+- O celular da Gestão recebe aviso (mesma inscrição dos outros avisos) pela função `fotos-frota-10b`, ação `avisar`: só dispara se a própria pessoa acabou de informar defeito (até 15 min) e sem repetir. Se o aviso falhar, o defeito continua salvo e aparece no painel.
+- Banco: `10c-frota-defeitos.sql`. Provas online: `provas-10c-online.mjs` (13/13).

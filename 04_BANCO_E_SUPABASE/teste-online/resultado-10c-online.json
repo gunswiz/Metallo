@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-23T19:59:52.279Z",
+  "scope": "Marco 10C — defeito da frota vira relato e alerta (teste online)",
+  "checks": [
+    {
+      "name": "checklist com defeito registrado",
+      "ok": true
+    },
+    {
+      "name": "alerta de defeito aparece para a Gestão",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lê os alertas da Gestão",
+      "ok": true
+    },
+    {
+      "name": "manutenção aberta traz o relato com item, observação e foto",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lê os relatos",
+      "ok": true
+    },
+    {
+      "name": "aviso do defeito é aceito pela função",
+      "ok": true
+    },
+    {
+      "name": "segundo aviso seguido não repete",
+      "ok": true
+    },
+    {
+      "name": "outro funcionário não dispara aviso do defeito do robô",
+      "ok": true
+    },
+    {
+      "name": "Gestão não dispara aviso como funcionário",
+      "ok": true
+    },
+    {
+      "name": "origem da Gestão não pode avisar",
+      "ok": true
+    },
+    {
+      "name": "aviso sem veículo é recusado",
+      "ok": true
+    },
+    {
+      "name": "chegada com problema registrada",
+      "ok": true
+    },
+    {
+      "name": "relato da chegada traz o problema escrito",
+      "ok": true
+    }
+  ],
+  "result": "13/13"
+}

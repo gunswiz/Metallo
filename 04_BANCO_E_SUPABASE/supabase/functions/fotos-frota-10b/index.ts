@@ -4,6 +4,7 @@
 // Abrir: o banco confere (Gestão ou quem enviou) e a resposta é um link que vale 2 minutos. Nada de nome, token ou dado pessoal em log.
 import postgres from "npm:postgres@3.4.5";
 import { createClient } from "npm:@supabase/supabase-js@2.115.0";
+import webpush from "npm:web-push@3.6.7";
 
 const URL_SB = Deno.env.get("SUPABASE_URL")!, ANON = Deno.env.get("SUPABASE_ANON_KEY")!, SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const COLABORADOR = "https://metallo-teste-colaborador.metallo-gunswiz.workers.dev";
@@ -67,6 +68,33 @@ async function abrir(token: string, fotoId: string) {
   return { ok: true, url: link.data.signedUrl, mime: a.mime, expira_em_s: 120 };
 }
 
+// Marco 10C: aviso no celular da Gestão quando um funcionário informa defeito (mesma inscrição do 3P/5C).
+// O banco só devolve algo se a PRÓPRIA pessoa informou o defeito agora há pouco e ainda não houve aviso.
+async function avisar(token: string, veiculoId: unknown) {
+  const n = Number(veiculoId);
+  if (!Number.isInteger(n) || n <= 0) throw new Falha(400, "pedido_invalido");
+  const r = await comoPessoa(token).rpc("avisar_defeito_frota_10c", { p_veiculo: n });
+  if (r.error) throw erroBanco(r.error.message);
+  const a = (r.data as { veiculo: string; quem: string; resumo: string; bloqueado: boolean }[])[0];
+  if (!a) return { ok: true, enviado: false };
+  try {
+    const rows = await sql.unsafe(`select name, decrypted_secret from vault.decrypted_secrets where name in ('metallo_vapid_privada','metallo_vapid_publica')`) as unknown as { name: string; decrypted_secret: string }[];
+    const s = Object.fromEntries(rows.map(x => [x.name, x.decrypted_secret]));
+    if (!s.metallo_vapid_publica || !s.metallo_vapid_privada) return { ok: true, enviado: false };
+    webpush.setVapidDetails(GESTAO, s.metallo_vapid_publica, s.metallo_vapid_privada);
+    const lista = await sql.unsafe(`select id::text id, endpoint, p256dh, auth from private.destinos_alertas_5c()`) as unknown as { id: string; endpoint: string; p256dh: string; auth: string }[];
+    const msg = JSON.stringify({ title: `Defeito no ${a.veiculo}`, body: `${a.quem.split(" ")[0]} informou: ${a.resumo}${a.bloqueado ? ". Caminhão não liberado." : "."}`, url: `/frota/${n}?aba=manutencao` });
+    for (const d of lista) {
+      try { await webpush.sendNotification({ endpoint: d.endpoint, keys: { p256dh: d.p256dh, auth: d.auth } }, msg, { TTL: 6 * 3600, urgency: "high" }); }
+      catch (e) {
+        const st = (e as { statusCode?: number }).statusCode;
+        if (st === 404 || st === 410) await sql.unsafe(`delete from private.push_subscriptions_3p where id = $1::text::bigint`, [d.id]);
+      }
+    }
+    return { ok: true, enviado: true };
+  } catch { console.error("fotos-frota-10b: aviso para a Gestão falhou"); return { ok: true, enviado: false }; }
+}
+
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin") ?? "";
   const cors: Record<string, string> = origin === COLABORADOR ? { "Access-Control-Allow-Origin": origin, "Vary": "Origin" } : {};
@@ -84,7 +112,8 @@ Deno.serve(async (req) => {
       if (String(form.get("acao") ?? "") === "enviar" && origin === COLABORADOR) return answer(await enviar(token, form), 201);
       throw new Falha(400, "pedido_invalido");
     }
-    const body = await req.json().catch(() => ({})) as { acao?: string; foto_id?: string };
+    const body = await req.json().catch(() => ({})) as { acao?: string; foto_id?: string; veiculo_id?: number };
+    if (body.acao === "avisar" && origin === COLABORADOR) return answer(await avisar(token, body.veiculo_id));
     if (body.acao === "abrir") return answer(await abrir(token, String(body.foto_id ?? "")));
     throw new Falha(400, "pedido_invalido");
   } catch (e) {

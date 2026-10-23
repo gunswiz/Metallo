@@ -15,6 +15,7 @@ import { lerVisaoTreinamentos5a } from "@/05_ACESSO_A_DADOS/Supabase/treinamento
 import { domingoEmFortaleza, horaFortaleza, lerEquipesSemConsumoHoje3p } from "@/05_ACESSO_A_DADOS/Supabase/avisos-3p";
 import { AvisosCelular } from "@/02_COMPONENTES_VISUAIS/avisos-celular";
 import { lerVencimentosEpi5d } from "@/05_ACESSO_A_DADOS/Supabase/alertas-5c";
+import { lerAtencaoFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { situacaoCa5d } from "@/03_FUNCOES_E_LOGICA/Equipamentos/validade-ca-5d";
 
 export default async function DashboardPage() {
@@ -47,6 +48,9 @@ export default async function DashboardPage() {
   const semConsumo = novos && horaFortaleza() >= 14 && !domingoEmFortaleza() ?
     (await lerEquipesSemConsumoHoje3p().catch(() => null)) ?? [] : [];
 
+  // Marco 10C: defeito de caminhão informado pelo funcionário e ainda sem conserto.
+  const defeitosFrota = can(profile, "equipment:write") && novos ? (await lerAtencaoFrota10a().catch(() => [])).filter(a => a.tipo === "defeito") : [];
+
   const prioridades: Prioridade[] = [];
   const adicionar = (id: string, quantidade: number, titulo: string, descricao: string, href: string, urgente = false) => {
     if (quantidade > 0) prioridades.push({ id, quantidade, titulo, descricao, href, urgente });
@@ -55,6 +59,7 @@ export default async function DashboardPage() {
   adicionar("treinos-faltando", faltando, "Falta ASO ou treinamento obrigatório", "Confira os requisitos de cada função.", "/treinamentos?filtro=faltando", true);
   adicionar("ca-vencido", caVencido.length, "EPI com C.A. vencido", "Confira a validade antes de comprar ou entregar.", "/epis", true);
   adicionar("lotes", lotes.length, "Lotes de EPI para conferir", "Há lotes vencidos ou próximos do vencimento.", "/epis", true);
+  adicionar("frota-defeito", defeitosFrota.length, "Defeito em caminhão", defeitosFrota.slice(0, 2).map(d => d.nome).join(", ") + (defeitosFrota.length > 2 ? " e outros" : ""), defeitosFrota.length === 1 ? `/frota/${defeitosFrota[0].veiculo_id}?aba=manutencao` : "/frota", true);
   adicionar("pedidos", pedidos ?? 0, "Pedidos dos funcionários", "Solicitações aguardando sua resposta.", "/pedidos");
   adicionar("consumo", semConsumo.length, "Consumo de hoje não lançado", semConsumo.slice(0, 2).map(e => e.team_name).join(", ") + (semConsumo.length > 2 ? " e outras equipes" : ""), "/lancar/consumo");
   adicionar("receber", aReceber, "Pedidos para receber", "Compras que ainda não chegaram por completo.", "/lancar/receber");

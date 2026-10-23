@@ -10,7 +10,7 @@ type Acoes = {
   checklist: (veiculo: number, local: string, obs: string, respostas: RespostaChecklist10a[], chave: string) => Promise<"liberado" | "ressalvas" | "nao_liberado">;
   saida: (veiculo: number, destino: string, acompanhantes: string, km: number, obs: string, chave: string) => Promise<void>;
   foto: (veiculo: number, arquivo: Blob) => Promise<string>;
-  chegada: (viagem: number, km: number, problema: string, obs: string, chave: string, foto?: string) => Promise<boolean>;
+  chegada: (viagem: number, km: number, problema: string, obs: string, chave: string, foto?: string, veiculo?: number) => Promise<boolean>;
 };
 type Modo = { tipo: "lista" } | { tipo: "checklist" | "saida" | "chegada"; v: CaminhaoApp10a };
 
@@ -85,7 +85,7 @@ export function Frota({ acoes }: { acoes: Acoes }) {
     if (problema.trim() && problema.trim().length < 3) { setStatus("Descreva o problema com pelo menos 3 letras."); return; }
     if (v.minha_viagem === null) return;
     const viagem = v.minha_viagem;
-    void rodar(async () => { const fotoOk = await ref.current.chegada(viagem, k, problema.trim(), obs.trim(), chave.current!, problema.trim() && fotoChegada ? fotoChegada : undefined);
+    void rodar(async () => { const fotoOk = await ref.current.chegada(viagem, k, problema.trim(), obs.trim(), chave.current!, problema.trim() && fotoChegada ? fotoChegada : undefined, v.id);
       return problema.trim() ? `Chegada registrada. O problema foi avisado e o caminhão ficou não liberado.${fotoOk ? "" : " A foto não foi anexada: avise o engenheiro."}` : "Chegada registrada."; });
   }
 

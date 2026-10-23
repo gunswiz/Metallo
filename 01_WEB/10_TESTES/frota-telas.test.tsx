@@ -13,7 +13,7 @@ vi.mock("@/03_FUNCOES_E_LOGICA/executarOperacaoValidada", () => ({ executeValida
 vi.mock("@/02_COMPONENTES_VISUAIS/formulario-operacao", () => ({ OperationForm: ({ children, label }: { children: ReactNode; label: string }) => <form>{children}<button>{label}</button></form> }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
   lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
-  lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
+  lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
   lerPainelFrota10a: vi.fn(async () => []),
   lerAtencaoFrota10a: vi.fn(async () => [
     { veiculo_id: 1, nome: "Munck 01", texto: "Seguro vencido", tipo: "documento", gravidade: "vencido" },

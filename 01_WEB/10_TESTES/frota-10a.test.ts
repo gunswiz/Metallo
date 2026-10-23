@@ -74,3 +74,14 @@ it("foto do defeito: balde privado, só JPEG/PNG, ligada a quem enviou e ao cami
   expect(funcao).toContain("createSignedUrl(a.caminho, 120)");
   expect(funcao).not.toMatch(/console\.(log|error)\([^)]*token/i);
 });
+
+// Marco 10C: defeito vira relato na manutenção + alerta + aviso no celular da Gestão.
+it("defeito informado: relato na manutenção, só a própria pessoa dispara o aviso", () => {
+  const sql = readFileSync("../04_BANCO_E_SUPABASE/teste-online/10c-frota-defeitos.sql", "utf8");
+  expect(sql).toContain("admin_frota_relatos_10c");
+  expect(sql).toContain("avisar_defeito_frota_10c");
+  expect(sql).not.toMatch(/^\s*(drop|delete)\b/im);
+  const funcao = readFileSync("../04_BANCO_E_SUPABASE/supabase/functions/fotos-frota-10b/index.ts", "utf8");
+  expect(funcao).toContain('body.acao === "avisar" && origin === COLABORADOR');
+  expect(funcao).not.toMatch(/console\.(log|error)\([^)]*(token|endpoint)/i);
+});

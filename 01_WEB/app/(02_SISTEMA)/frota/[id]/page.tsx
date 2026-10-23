@@ -6,7 +6,7 @@ import { SubNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { ROTULO_DOCUMENTO_10A, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, ROTULO_STATUS_MANUTENCAO_10A } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
-import { lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a, lerRelatosFrota10c } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
@@ -30,7 +30,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const mesIni = iso(new Date(mesBase.getFullYear(), mesBase.getMonth(), 1)), diasNoMes = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 0).getDate();
   const anterior = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() - 1, 15)).slice(0, 7), proximo = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 15)).slice(0, 7);
   const checklistId = Number(query.checklist);
-  const [grade, itens, fotosChegada, detalhe] = await Promise.all([lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id),
+  const [grade, itens, fotosChegada, relatosLista, detalhe] = await Promise.all([lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id), lerRelatosFrota10c(id).catch(() => []),
     Number.isInteger(checklistId) && checklistId > 0 ? lerChecklistFrota10a(checklistId).catch(() => null) : Promise.resolve(null)]);
   const fotoViagem = new Map(fotosChegada.map(f => [f.viagem_id, f.foto_id]));
   const celula = new Map(grade.map(g => [`${g.dia}|${g.codigo}`, g.situacao]));
@@ -38,6 +38,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const abertas = ficha.manutencoes.filter(m => m.status === "aberta" || m.status === "na_oficina");
   const tom = v.situacao === "disponivel" ? "good" : v.situacao === "em_uso" ? "warn" : "bad";
   const hoje = iso(agora);
+  const relatosDe = (id: number) => relatosLista.find(r => r.manutencao_id === id)?.relatos ?? [];
   const abas = [{ id: "manutencao", nome: "Manutenção" }, { id: "documentos", nome: "Documentos" }, { id: "planos", nome: "Preventivas" }, { id: "viagens", nome: "Viagens" }, { id: "checklists", nome: "Checklists" }, { id: "historico", nome: "Histórico" }, ...(podeCadastrar ? [{ id: "dados", nome: "Cadastro" }] : [])];
   const aba = query.checklist || query.mes ? "checklists" : abas.some(a => a.id === query.aba) ? query.aba : "manutencao";
 
@@ -59,6 +60,11 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}
       {abertas.map(m => <article className="stock-card" key={m.id}>
         <div className="training-head"><div><h3>{m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o caminhão" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
+        {relatosDe(m.id).map((r, i) => <div className="muted" key={i} style={{ marginTop: 8 }}>
+          <strong>{r.tipo === "chegada" ? "Relato na chegada" : "Relato no checklist"}</strong> · {fmt(r.quando)}{r.por ? ` · ${r.por}` : ""}
+          {r.problema && <p>{r.problema}{r.foto && <> · <a href={`/frota/foto/${r.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>}
+          {r.itens?.map((it, j) => <p key={j}>{it.item}{it.critico ? " (crítico)" : ""}{it.obs ? `: ${it.obs}` : ""}{it.foto && <> · <a href={`/frota/foto/${it.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>)}
+        </div>)}
         {m.status === "aberta" && <details className="mais-filtros"><summary>Enviar à oficina</summary><OperationForm action={enviarOficina10a} label="Enviar à oficina" pendingLabel="Salvando…">
           <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="manutencaoId" value={m.id}/>
           <label>Oficina<input name="oficina" required minLength={2} maxLength={80}/></label><label>Previsão de volta (opcional)<input name="previsao" type="date" lang="pt-BR"/></label>
