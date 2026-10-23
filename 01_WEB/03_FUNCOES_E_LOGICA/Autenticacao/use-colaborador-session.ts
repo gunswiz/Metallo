@@ -261,7 +261,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l" | "my_contracheques_6a" | "my_atestados_6b" | "cancelar_atestado_6b" | "my_frota_10a" | "my_frota_itens_10a" | "my_frota_viagens_10a" | "create_checklist_10a" | "create_saida_10a" | "create_chegada_10a", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l" | "my_contracheques_6a" | "my_atestados_6b" | "cancelar_atestado_6b" | "my_frota_10a" | "my_frota_itens_10a" | "my_frota_viagens_10a" | "create_checklist_10a" | "create_saida_10a" | "create_chegada_10a" | "anexar_foto_chegada_10b", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -309,18 +309,36 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     pedir: async (itemId: string, quantidade: number, observacao: string, chave: string) => { await exchangeRpc("create_pedido_material_3t", { p_item_id: itemId, p_quantidade: quantidade, p_observacao: observacao, p_idempotency_key: chave }); },
     cancelar: async (id: number) => { await exchangeRpc("cancel_pedido_material_3t", { p_id: id }); },
   }), [exchangeRpc]);
-  // Marco 10A: caminhões (checklist do dia, saída e chegada).
+  // Marco 10A: caminhões (checklist do dia, saída e chegada). 10B: foto do defeito (arquivo só pela função `fotos-frota-10b`).
   const frota10a = useMemo(() => ({
     caminhoes: async () => caminhoesApp10a.parse(await exchangeRpc("my_frota_10a")),
     itens: async () => itensApp10a.parse(await exchangeRpc("my_frota_itens_10a")),
     viagens: async () => viagensApp10a.parse(await exchangeRpc("my_frota_viagens_10a")),
+    foto: async (veiculo: number, arquivo: Blob) => {
+      if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
+      const form = new FormData();
+      form.set("acao", "enviar"); form.set("veiculo_id", String(veiculo)); form.set("arquivo", arquivo, "defeito.jpg");
+      const r = await getClient().functions.invoke("fotos-frota-10b", { body: form });
+      if (r.error) {
+        let code = "falha";
+        try { const b = await (r.error as { context?: Response }).context?.json(); if (typeof b?.error === "string") code = b.error; } catch { /* sem detalhe */ }
+        throw new Error(code);
+      }
+      const id = (r.data as { id?: string } | null)?.id;
+      if (typeof id !== "string") throw new Error("falha");
+      return id;
+    },
     checklist: async (veiculo: number, local: string, obs: string, respostas: RespostaChecklist10a[], chave: string) => {
       const r = resultadoChecklistApp10a.parse(await exchangeRpc("create_checklist_10a", { p_veiculo: veiculo, p_local: local, p_obs: obs, p_respostas: respostas, p_ciente: true, p_key: chave }));
       return r[0]?.resultado ?? "liberado";
     },
     saida: async (veiculo: number, destino: string, acompanhantes: string, km: number, obs: string, chave: string) => { await exchangeRpc("create_saida_10a", { p_veiculo: veiculo, p_destino: destino, p_acompanhantes: acompanhantes, p_km: km, p_obs: obs, p_key: chave }); },
-    chegada: async (viagem: number, km: number, problema: string, obs: string, chave: string) => { await exchangeRpc("create_chegada_10a", { p_viagem: viagem, p_km: km, p_problema: problema, p_obs: obs, p_key: chave }); },
-  }), [exchangeRpc]);
+    chegada: async (viagem: number, km: number, problema: string, obs: string, chave: string, foto?: string) => {
+      await exchangeRpc("create_chegada_10a", { p_viagem: viagem, p_km: km, p_problema: problema, p_obs: obs, p_key: chave });
+      if (foto) { try { await exchangeRpc("anexar_foto_chegada_10b", { p_viagem: viagem, p_foto: foto }); } catch { return false; } }
+      return true;
+    },
+  }), [exchangeRpc, demo, profile, getClient]);
   // Marco 4L: meses fechados pelo escritório e a resposta do funcionário (uma vez por fechamento).
   const fechamentos4l = useMemo(() => ({
     ler: async () => z.array(fechamentoApp4l).parse(await exchangeRpc("my_fechamentos_4l")),

@@ -20,7 +20,7 @@ export const resultadoChecklistApp10a = z.array(z.object({ id: z.coerce.number()
 export type CaminhaoApp10a = z.infer<typeof caminhoesApp10a>[number];
 export type ItemChecklist10a = z.infer<typeof itensApp10a>[number];
 export type ViagemApp10a = z.infer<typeof viagensApp10a>[number];
-export type RespostaChecklist10a = { codigo: number; situacao: "C" | "N" | "NA"; obs: string };
+export type RespostaChecklist10a = { codigo: number; situacao: "C" | "N" | "NA"; obs: string; foto?: string };
 
 export const painelGestao10a = z.array(z.object({ id: z.coerce.number(), nome: z.string(), placa: z.string(), modelo: z.string().nullable(), ano: z.coerce.number().nullable(), situacao,
   km_atual: z.coerce.number(), ativo: z.boolean(), motorista: z.string().nullable(), destino: z.string().nullable(), acompanhantes: z.string().nullable(), saida_em: z.string().nullable(),
@@ -43,9 +43,10 @@ export const fichaGestao10a = z.object({
 });
 export const checklistDetalhe10a = z.object({
   checklist: z.object({ id: z.coerce.number(), veiculo: z.string(), placa: z.string(), dia: z.string(), resultado, por: z.string(), local: z.string().nullable(), observacoes: z.string().nullable(), created_at: z.string() }),
-  itens: z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), situacao: z.enum(["C", "N", "NA"]), obs: z.string().nullable(), critico: z.boolean() })),
+  itens: z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), situacao: z.enum(["C", "N", "NA"]), obs: z.string().nullable(), critico: z.boolean(), foto: z.uuid().nullable().optional() })),
 });
 export const mesGestao10a = z.array(z.object({ dia: z.string(), codigo: z.coerce.number(), situacao: z.enum(["C", "N", "NA"]), por: z.string().nullable() }));
+export const fotosChegadaGestao10b = z.array(z.object({ viagem_id: z.coerce.number(), foto_id: z.uuid() }));
 export type PainelGestao10a = z.infer<typeof painelGestao10a>[number];
 export type FichaGestao10a = z.infer<typeof fichaGestao10a>;
 
@@ -72,6 +73,8 @@ export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
   veiculo_em_uso: "Este caminhão já está na rua.", veiculo_em_manutencao: "Este caminhão está na oficina.", voce_ja_esta_com_um_caminhao: "Você já está com um caminhão. Registre a chegada primeiro.",
   km_menor_que_atual: "O km não pode ser menor que o do caminhão.", km_menor_que_saida: "O km de chegada não pode ser menor que o da saída.",
   descreva_o_problema: "Descreva o problema com pelo menos 3 letras.", itens_incompletos: "Responda todos os itens do checklist.", ciencia_obrigatoria: "Marque que você está ciente.",
+  foto_invalida: "A foto não pôde ser usada. Tire de novo.", tipo_arquivo: "Esse arquivo não é uma foto. Tire a foto de novo.", arquivo_grande: "Foto grande demais. Tire de novo.",
+  muitos_envios: "Muitas fotos hoje. Fale com o engenheiro.", sem_arquivo: "Tire a foto antes de enviar.",
   destino_invalido: "Informe o destino.", veiculo_indisponivel: "Este caminhão não pode receber checklist agora.",
 };
 export function mensagemErroFrota10a(erro: unknown) {

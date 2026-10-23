@@ -59,7 +59,7 @@ describe("6A/6B — contrato do app e segurança", () => {
     const local = readFileSync("05_ACESSO_A_DADOS/Supabase/colaborador-local.ts", "utf8");
     for (const p of ["my_contracheques_6a", "my_atestados_6b", "cancelar_atestado_6b"]) expect(local).toContain(`"/rest/v1/rpc/${p}"`);
     expect(local).toContain("\"/functions/v1/arquivos-6\"");
-    expect(local).toMatch(/arquivos-6" \? 90000 : 6000/);
+    expect(local).toMatch(/arquivos-6" \|\| url\.pathname === "\/functions\/v1\/fotos-frota-10b" \? 90000 : 6000/);
   });
   it("app: a foto pode ser reduzida no celular (imagem blob: liberada só para imagem)", () => {
     expect(readFileSync("proxy.ts", "utf8")).toContain("img-src 'self' data: blob:;");

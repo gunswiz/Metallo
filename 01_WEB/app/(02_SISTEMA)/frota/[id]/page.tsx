@@ -6,7 +6,7 @@ import { SubNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { ROTULO_DOCUMENTO_10A, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, ROTULO_STATUS_MANUTENCAO_10A } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
-import { lerChecklistFrota10a, lerFichaFrota10a, lerItensFrota10a, lerMesFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
@@ -30,8 +30,9 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const mesIni = iso(new Date(mesBase.getFullYear(), mesBase.getMonth(), 1)), diasNoMes = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 0).getDate();
   const anterior = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() - 1, 15)).slice(0, 7), proximo = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 15)).slice(0, 7);
   const checklistId = Number(query.checklist);
-  const [grade, itens, detalhe] = await Promise.all([lerMesFrota10a(id, mesIni), lerItensFrota10a(),
+  const [grade, itens, fotosChegada, detalhe] = await Promise.all([lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id),
     Number.isInteger(checklistId) && checklistId > 0 ? lerChecklistFrota10a(checklistId).catch(() => null) : Promise.resolve(null)]);
+  const fotoViagem = new Map(fotosChegada.map(f => [f.viagem_id, f.foto_id]));
   const celula = new Map(grade.map(g => [`${g.dia}|${g.codigo}`, g.situacao]));
   const diasComChecklist = new Set(grade.map(g => g.dia));
   const abertas = ficha.manutencoes.filter(m => m.status === "aberta" || m.status === "na_oficina");
@@ -113,9 +114,10 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
     </div></section>
 
     <section className="panel" id="viagens"><header className="panel-header"><div><h2>Saídas e chegadas</h2><p>Quem levou, para onde, com quem e o km. Sem localização por GPS.</p></div></header><div className="panel-body">
-      {ficha.viagens.length === 0 ? <p className="muted">Nenhuma saída registrada.</p> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Motorista</th><th>Destino</th><th>Com quem</th><th>Saída</th><th>Chegada</th><th>Km rodados</th></tr></thead>
+      {ficha.viagens.length === 0 ? <p className="muted">Nenhuma saída registrada.</p> : <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Motorista</th><th>Destino</th><th>Com quem</th><th>Saída</th><th>Chegada</th><th>Km rodados</th><th>Foto do problema</th></tr></thead>
         <tbody>{ficha.viagens.map(t => <tr key={t.id}><td>{t.motorista}</td><td>{t.destino}</td><td>{t.acompanhantes ?? "—"}</td><td>{fmt(t.saida_em)}<small> · {t.km_saida.toLocaleString("pt-BR")} km</small></td>
-          <td>{t.chegada_em ? fmt(t.chegada_em) : <strong>na rua</strong>}{t.km_chegada !== null ? <small> · {t.km_chegada.toLocaleString("pt-BR")} km</small> : null}</td><td>{t.km_chegada !== null ? (t.km_chegada - t.km_saida).toLocaleString("pt-BR") : "—"}</td></tr>)}</tbody></table></div>}
+          <td>{t.chegada_em ? fmt(t.chegada_em) : <strong>na rua</strong>}{t.km_chegada !== null ? <small> · {t.km_chegada.toLocaleString("pt-BR")} km</small> : null}</td><td>{t.km_chegada !== null ? (t.km_chegada - t.km_saida).toLocaleString("pt-BR") : "—"}</td>
+          <td>{fotoViagem.get(t.id) ? <a href={`/frota/foto/${fotoViagem.get(t.id)}`} target="_blank" rel="noreferrer">Ver foto</a> : "—"}</td></tr>)}</tbody></table></div>}
     </div></section>
 
     <section className="panel" id="checklists"><header className="panel-header"><div><h2>Checklists</h2><p>Clique em um para ver os 26 itens.</p></div></header><div className="panel-body">
@@ -123,7 +125,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
         <Link href={`/frota/${v.id}?checklist=${c.id}#detalhe-checklist`}><strong>{dia(c.dia)} · {ROTULO_RESULTADO_10A[c.resultado]}</strong></Link><span>{c.por}{c.local ? ` · ${c.local}` : ""}{c.itens_nao_conformes ? ` · ${c.itens_nao_conformes} item(ns) com problema` : ""}</span></li>)}</ul>}
       {detalhe && <div id="detalhe-checklist"><h3>Checklist de {dia(detalhe.checklist.dia)} · {detalhe.checklist.por}</h3>
         <p>{ROTULO_RESULTADO_10A[detalhe.checklist.resultado]}{detalhe.checklist.local ? ` · ${detalhe.checklist.local}` : ""}{detalhe.checklist.observacoes ? ` · ${detalhe.checklist.observacoes}` : ""}</p>
-        <ul className="frota-atencao">{detalhe.itens.map(i => <li key={i.codigo} className={i.situacao === "N" ? "bad" : ""}><strong>{i.codigo}. {i.nome}{i.critico ? " (crítico)" : ""}</strong><span>{i.situacao === "C" ? "Conforme" : i.situacao === "N" ? `Não conforme${i.obs ? ` — ${i.obs}` : ""}` : "Não se aplica"}</span></li>)}</ul></div>}
+        <ul className="frota-atencao">{detalhe.itens.map(i => <li key={i.codigo} className={i.situacao === "N" ? "bad" : ""}><strong>{i.codigo}. {i.nome}{i.critico ? " (crítico)" : ""}</strong><span>{i.situacao === "C" ? "Conforme" : i.situacao === "N" ? `Não conforme${i.obs ? ` — ${i.obs}` : ""}` : "Não se aplica"}{i.foto ? <> · <a href={`/frota/foto/${i.foto}`} target="_blank" rel="noreferrer">Ver foto</a></> : null}</span></li>)}</ul></div>}
     </div></section>
 
     <section className="panel" id="grade"><header className="panel-header"><div><h2>Grade do mês (como a planilha em papel)</h2><p>C = conforme · N = não conforme · NA = não se aplica. Dia sem checklist fica em branco.</p></div></header><div className="panel-body">

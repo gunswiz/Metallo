@@ -1,6 +1,6 @@
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
-import { atencaoGestao10a, checklistDetalhe10a, fichaGestao10a, itensGestao10a, mesGestao10a, painelGestao10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
+import { atencaoGestao10a, checklistDetalhe10a, fichaGestao10a, fotosChegadaGestao10b, itensGestao10a, mesGestao10a, painelGestao10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import { createClient } from "./server";
 
 // Marco 10A: frota. Somente laboratório e teste online (produção ainda não tem estas funções).
@@ -19,3 +19,4 @@ export const lerItensFrota10a = async () => itensGestao10a.parse(await chamar("a
 export const lerFichaFrota10a = async (id: number) => fichaGestao10a.parse(await chamar("admin_frota_ficha_10a", { p_veiculo: id }));
 export const lerChecklistFrota10a = async (id: number) => checklistDetalhe10a.parse(await chamar("admin_frota_checklist_10a", { p_id: id }));
 export const lerMesFrota10a = async (id: number, mes: string) => mesGestao10a.parse(await chamar("admin_frota_mes_10a", { p_veiculo: id, p_mes: mes }));
+export const lerFotosChegadaFrota10b = async (id: number) => fotosChegadaGestao10b.parse(await chamar("admin_frota_fotos_chegada_10b", { p_veiculo: id }));

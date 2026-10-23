@@ -59,3 +59,18 @@ it("não existe localização por GPS na frota", () => {
   expect(sql).not.toMatch(/latitude|longitude|geolocation/i);
   expect(readFileSync("app/colaborador/[[...screen]]/frota.tsx", "utf8")).not.toMatch(/geolocation/i);
 });
+
+// Marco 10B: foto do defeito.
+it("foto do defeito: balde privado, só JPEG/PNG, ligada a quem enviou e ao caminhão", () => {
+  const fotos = readFileSync("../04_BANCO_E_SUPABASE/teste-online/10b-frota-fotos.sql", "utf8");
+  expect(fotos).toContain("public = false");
+  expect(fotos).toContain("array['image/jpeg', 'image/png']");
+  expect(fotos).toMatch(/f\.employee_id = v_emp and f\.veiculo_id = p_veiculo/);
+  expect(fotos).toContain("raise exception 'foto_invalida'");
+  expect(fotos).toMatch(/revoke all on private\.frota_fotos_10b/);
+  expect(fotos).not.toMatch(/^\s*(drop|delete)\b/im);
+  const funcao = readFileSync("../04_BANCO_E_SUPABASE/supabase/functions/fotos-frota-10b/index.ts", "utf8");
+  expect(funcao).toContain("tipoReal");
+  expect(funcao).toContain("createSignedUrl(a.caminho, 120)");
+  expect(funcao).not.toMatch(/console\.(log|error)\([^)]*token/i);
+});

@@ -19,7 +19,13 @@ Pedido do engenheiro: controlar os 5 caminhões munck. Só ambiente de teste (Su
 `04_BANCO_E_SUPABASE/teste-online/10a-frota.sql` (tabelas no schema `private`, fechadas; funções `*_10a`). Prova online: `provas-10a-online.mjs` (35 verificações).
 
 ## Limites conhecidos
-- Sem foto do defeito (só texto).
+- Foto do defeito: ver Marco 10B abaixo.
 - Checklist e saída não funcionam sem internet (sem fila offline).
 - Itens críticos são sugestão a confirmar com o engenheiro.
 - Não testado em celular real; visual simples para ajuste depois.
+
+## Marco 10B — foto do defeito (23/10)
+- No app: em cada item do checklist com **N** e na **chegada com problema** aparece "Tirar foto do defeito". A foto é reduzida no celular (1600 px, JPEG) e enviada na hora; uma foto por item e uma por chegada.
+- Na Gestão: a ficha do caminhão mostra "Ver foto" no detalhe do checklist (item certo) e na tabela de saídas/chegadas. O link abre a foto por 2 minutos.
+- Segurança: balde privado `frota-10b`; arquivo só pela função `fotos-frota-10b` (tipo real JPEG/PNG pelos primeiros bytes, máx. 6 MB, 30 fotos por dia por pessoa); o banco confere quem pode enviar e quem pode abrir (Gestão ou a própria pessoa). Foto só vale para o caminhão, a pessoa e um único uso. Banco: `10b-frota-fotos.sql`. Prova online: `provas-10b-online.mjs` (18 verificações).
+- Limites: foto da chegada só até 30 minutos depois de registrar a chegada; se o envio da foto falhar na chegada, a chegada fica registrada e o app avisa para falar com o engenheiro; fotos soltas (enviadas e não usadas) ficam guardadas.

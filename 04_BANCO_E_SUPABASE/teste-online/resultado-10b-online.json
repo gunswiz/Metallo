@@ -1,0 +1,79 @@
+{
+  "at": "2026-10-23T15:20:33.269Z",
+  "scope": "Marco 10B — foto do defeito da frota (teste online)",
+  "checks": [
+    {
+      "name": "foto PNG enviada pelo funcionário",
+      "ok": true
+    },
+    {
+      "name": "arquivo que não é foto é recusado",
+      "ok": true
+    },
+    {
+      "name": "sem login a função recusa",
+      "ok": true
+    },
+    {
+      "name": "conta da Gestão não envia foto como funcionário",
+      "ok": true
+    },
+    {
+      "name": "Gestão abre a foto (link de 2 minutos no balde privado)",
+      "ok": true
+    },
+    {
+      "name": "o link entrega a imagem enviada",
+      "ok": true
+    },
+    {
+      "name": "outro funcionário não abre a foto",
+      "ok": true
+    },
+    {
+      "name": "endereço público do balde não funciona",
+      "ok": true
+    },
+    {
+      "name": "outro funcionário não usa a foto do robô no checklist",
+      "ok": true
+    },
+    {
+      "name": "foto inexistente no checklist é recusada",
+      "ok": true
+    },
+    {
+      "name": "checklist com foto no item N",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê a foto no item certo",
+      "ok": true
+    },
+    {
+      "name": "a mesma foto não vale para dois itens/checklists",
+      "ok": true
+    },
+    {
+      "name": "chegada registrada",
+      "ok": true
+    },
+    {
+      "name": "outro funcionário não anexa foto na chegada do robô",
+      "ok": true
+    },
+    {
+      "name": "robô anexa foto na chegada",
+      "ok": true
+    },
+    {
+      "name": "Gestão vê a foto da chegada",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lista fotos da Gestão",
+      "ok": true
+    }
+  ],
+  "result": "18/18"
+}
