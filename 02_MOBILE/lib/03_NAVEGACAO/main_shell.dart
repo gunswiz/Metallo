@@ -194,45 +194,53 @@ class _MainShellState extends State<MainShell> {
         ),
         actions: [
           IconButton(
-              tooltip: 'Obras e pedidos',
-              icon: const Icon(Icons.construction_outlined),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => SiteOperationsPage(
-                          repo: SiteOperationsRepository(
-                              adminRepository.client))))),
-          if (isAdmin)
-            IconButton(
-              tooltip: 'Administração',
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AdministrationPage(repo: adminRepository),
-                ),
-              ),
-              icon: const Icon(Icons.admin_panel_settings_outlined),
-            ),
-          IconButton(
-            tooltip: 'Minha conta',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (_) => AccountSettingsPage(
-                      authRepository: authRepository,
-                      role: role,
-                      onReplayTutorial: _replayTutorial,
-                      onStartGuidedPractice: _startGuidedPractice)),
-            ),
-            icon: const Icon(Icons.account_circle_outlined),
-          ),
-          IconButton(
             tooltip: 'Atualizar',
             onPressed: dashboardRepository.refreshDashboard,
             icon: const Icon(Icons.refresh),
           ),
-          IconButton(
-            tooltip: 'Sair',
-            onPressed: authRepository.signOut,
-            icon: const Icon(Icons.logout),
+          PopupMenuButton<String>(
+            tooltip: 'Mais opções',
+            onSelected: (value) {
+              switch (value) {
+                case 'obras':
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => SiteOperationsPage(
+                              repo: SiteOperationsRepository(
+                                  adminRepository.client))));
+                  break;
+                case 'admin':
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              AdministrationPage(repo: adminRepository)));
+                  break;
+                case 'conta':
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => AccountSettingsPage(
+                              authRepository: authRepository,
+                              role: role,
+                              onReplayTutorial: _replayTutorial,
+                              onStartGuidedPractice: _startGuidedPractice)));
+                  break;
+                case 'sair':
+                  authRepository.signOut();
+                  break;
+              }
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                  value: 'obras', child: Text('Obras e pedidos')),
+              if (isAdmin)
+                const PopupMenuItem(
+                    value: 'admin', child: Text('Administração')),
+              const PopupMenuItem(value: 'conta', child: Text('Minha conta')),
+              const PopupMenuItem(value: 'sair', child: Text('Sair')),
+            ],
           ),
         ],
       ),

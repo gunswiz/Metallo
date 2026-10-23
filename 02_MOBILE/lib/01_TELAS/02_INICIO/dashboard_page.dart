@@ -11,7 +11,6 @@ import 'package:metallo/06_ACESSO_A_DADOS/admin_repository.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/dashboard_repository.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/epi_repository.dart';
 import 'package:metallo/06_ACESSO_A_DADOS/movement_repository.dart';
-import 'package:metallo/02_COMPONENTES/brand_logo.dart';
 import 'package:metallo/02_COMPONENTES/empty_state.dart';
 import 'package:metallo/02_COMPONENTES/error_state.dart';
 import 'package:metallo/02_COMPONENTES/status_badge.dart';
@@ -19,6 +18,7 @@ import 'package:metallo/02_COMPONENTES/summary_tile.dart';
 import 'package:metallo/01_TELAS/03_ALMOXARIFADO/Materiais/dialogos_materiais.dart';
 import 'package:metallo/01_TELAS/04_EPIS_E_FUNCIONARIOS/epi_shell.dart';
 import 'package:metallo/01_TELAS/02_INICIO/dashboard_view_data.dart';
+import 'package:metallo/01_TELAS/02_INICIO/team_overview_section.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
@@ -56,48 +56,46 @@ class DashboardPage extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 30),
             children: [
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF111A25), Color(0xFF07101B)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  border: Border.all(color: const Color(0xFF164C80)),
-                ),
-                child: Column(
+              Card(
+                margin: EdgeInsets.zero,
+                child: ExpansionTile(
+                  key: const PageStorageKey('inicio-resumo'),
+                  title: const Text('Resumo da operação'),
+                  subtitle: const Text('Equipes, materiais e equipamentos'),
+                  leading: const Icon(Icons.space_dashboard_outlined),
+                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   children: [
-                    const BrandLogo(height: 68),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
+                    LayoutBuilder(builder: (context, constraints) {
+                      final width = constraints.maxWidth > 480
+                          ? (constraints.maxWidth - 20) / 3
+                          : (constraints.maxWidth - 10) / 2;
+                      return Wrap(spacing: 10, runSpacing: 10, children: [
+                        SizedBox(
+                          width: width,
                           child: SummaryTile(
                             icon: Icons.groups_2_outlined,
                             value: '${dashboardTeamCount(data.teams)}',
                             label: 'Equipes',
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
+                        SizedBox(
+                          width: width,
                           child: SummaryTile(
                             icon: Icons.inventory_2_outlined,
                             value: '${dashboardMaterialCount(data.materials)}',
                             label: 'Materiais',
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
+                        SizedBox(
+                          width: width,
                           child: SummaryTile(
                             icon: Icons.handyman_outlined,
                             value: '${data.equipment.length}',
                             label: 'Equipamentos',
                           ),
                         ),
-                      ],
-                    ),
+                      ]);
+                    })
                   ],
                 ),
               ),
@@ -156,18 +154,10 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
               ],
-              const Text(
-                'Equipes e inventário',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'Cada item aparece na equipe onde está fisicamente.',
-                style: TextStyle(color: Colors.white60),
-              ),
-              const SizedBox(height: 14),
-              for (final team in data.teams)
-                TeamOverviewCard(
+              TeamOverviewSection(
+                teams: data.teams,
+                userTeamId: userTeamId,
+                itemBuilder: (team) => TeamOverviewCard(
                   dashboardRepository: dashboardRepository,
                   adminRepository: adminRepository,
                   movementRepository: movementRepository,
@@ -177,6 +167,7 @@ class DashboardPage extends StatelessWidget {
                   role: role,
                   userTeamId: userTeamId,
                 ),
+              ),
             ],
           ),
         );

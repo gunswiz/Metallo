@@ -525,3 +525,60 @@
 .frotaCNAativo { background: var(--accent-soft, #1d4a3a) !important; border-color: var(--accent, #3ed598) !important; }
 .frotaCNAruim { background: rgba(255, 107, 114, .28) !important; border-color: #ff6b72 !important; }
 .frotaForm .frotaCiente { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; }
+
+/* Frota: uma ação principal por veículo e checklist em etapas curtas. */
+.frotaPainel { max-width: 100%; }
+.frotaPainel .pointState { margin: 0 0 16px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); }
+.frotaFiltros { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.frotaFiltros button { padding: 10px 15px; min-height: 44px; color: var(--soft); font-size: 14px; border: 1px solid var(--line); border-radius: 9px; background: transparent; }
+.frotaFiltros button[aria-pressed=true] { color: #b7dfff; border-color: #39779e; background: #168cff1c; }
+.frotaBusca { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--panel-2); padding: 0 14px; border-radius: 10px; margin-bottom: 20px; color: var(--soft); }
+.frotaBusca input { width: 100%; min-width: 0; min-height: 48px; border: 0; background: transparent; padding: 0; color: var(--ink); font-size: 16px; }
+.frotaPainel .frotaLista { grid-template-columns: repeat(auto-fit,minmax(min(280px,100%),1fr)); gap: 16px; }
+.frotaPainel .frotaLista > li { display: flex; flex-direction: column; gap: 18px; padding: 20px; border: 1px solid var(--line); border-top-width: 3px; background: var(--panel); }
+.frotaPainel .frotaLista > li > div { gap: 7px; }
+.frotaPainel .frotaLista > li > div > strong { font-size: 21px; font-weight: 650; }
+.frotaPainel .frotaLista small { font-size: 14px; line-height: 1.5; color: var(--soft); }
+.frotaPainel .frotaLista > li.frotaRuim { border-color: var(--line) !important; border-top-color: #d76b72 !important; }
+.frotaPainel .frotaLista > li.frotaAtencao { border-color: var(--line) !important; border-top-color: #d4a454 !important; }
+.frotaCabecalho { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.frotaIcone { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; color: var(--highlight); background: #168cff15; }
+.frotaPlaca { padding: 4px 8px; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); font-size: 14px; letter-spacing: .06em; }
+.frotaPainel .frotaSituacao { font-size: 14px; font-weight: 650; color: var(--ink); padding-top: 8px; }
+.frotaPainel .frotaBotoes { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); }
+.frotaPainel .recordsDownload,.frotaPainel .recordsButton { min-height: 48px; font-size: 15px; border-radius: 10px; gap: 8px; }
+.frotaPainel .recordsDownload { background: #168cff; border-color: #168cff; color: #04121e; font-weight: 750; }
+.frotaPainel .recordsButton { background: transparent; border-color: var(--line); color: var(--ink); font-weight: 600; }
+.frotaPainel .recordsDownload:hover:not(:disabled) { background: #62b4ff; }
+.frotaPainel .recordsButton:hover:not(:disabled) { background: var(--panel-2); }
+.frotaHistorico { margin-top: 26px; border: 1px solid var(--line); border-radius: 12px; padding: 0 18px; }
+.frotaHistorico summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 64px; font-size: 16px; font-weight: 600; cursor: pointer; }
+.frotaHistorico summary span { color: var(--soft); font-size: 13px; font-weight: 400; }
+.frotaHistorico[open] { padding-bottom: 16px; }
+.frotaVazio { display: grid; justify-items: center; gap: 12px; text-align: center; color: var(--soft); padding: 30px 16px; border: 1px dashed var(--line); border-radius: 12px; }
+.frotaVazio h3,.frotaVazio p { margin: 0; }
+.frotaForm { max-width: 700px; margin: 0 auto; gap: 18px; }
+.frotaForm h3 { font-size: 22px; margin: 4px 0 0; }
+.frotaForm > p { color: var(--soft); font-size: 15px; line-height: 1.5; margin: 0; }
+.frotaProgresso { display: grid; gap: 9px; color: var(--soft); font-size: 14px; }
+.frotaProgresso progress { display: block; width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; accent-color: var(--highlight); }
+.frotaProgresso progress::-webkit-progress-bar { background: var(--panel-2); }
+.frotaProgresso progress::-webkit-progress-value { background: var(--highlight); }
+.frotaItens { gap: 14px; }
+.frotaItens > li { padding: 18px; gap: 13px; background: var(--panel); }
+.frotaItens > li > span { font-size: 16px; font-weight: 600; line-height: 1.5; }
+.frotaCritico { display: block; margin-top: 4px; font-size: 13px; font-weight: 500; color: #e6bd7a; }
+.frotaPainel .frotaCNA { gap: 7px; }
+.frotaPainel .frotaCNA button { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; min-height: 50px; padding: 7px 5px; font-size: 14px; font-weight: 600; border-width: 1px; border-radius: 9px; }
+.frotaPainel .frotaCNAativo { color: #c6e8ff; background: #168cff25 !important; border-color: #6ab8ed !important; }
+.frotaPainel .frotaCNAruim { color: #ffdadc; background: #a6343a38 !important; border-color: #ef9ba0 !important; }
+.frotaPassos { display: flex; gap: 10px; }
+.frotaPassos > button { flex: 1; }
+.frotaContexto { padding: 14px; border-radius: 10px; background: var(--panel-2); color: var(--soft); line-height: 1.6; font-size: 14px; }
+.frotaPainel button:disabled { cursor: wait; opacity: .55; }
+.frotaPainel button:focus-visible,.frotaPainel summary:focus-visible { outline: 2px solid var(--highlight); outline-offset: 3px; }
+@media(max-width:480px) {
+  .frotaPainel .frotaLista > li { padding: 16px; }
+  .frotaItens > li { padding: 14px; }
+  .frotaHistorico summary { flex-wrap: wrap; gap: 4px; padding: 12px 0; }
+}

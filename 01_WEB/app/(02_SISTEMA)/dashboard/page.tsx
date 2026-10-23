@@ -1,6 +1,7 @@
-import { Boxes, HardHat, Inbox, PackageOpen, Users, UserRound, Wrench } from "lucide-react";
+import { HardHat, PackageOpen, Users, UserRound, Wrench } from "lucide-react";
 import { can, formatDateTime, movementLabel } from "@metallo/core";
 import Link from "next/link";
+import { ListaPrioridades, type Prioridade } from "@/02_COMPONENTES_VISUAIS/lista-prioridades";
 import { MetricCard } from "@/02_COMPONENTES_VISUAIS/metric-card";
 import { ICONES } from "@/02_COMPONENTES_VISUAIS/icones-menu";
 import { ACOES_LANCAR, SECAO_ANTIGA } from "@/09_CONFIGURACOES/navegacao-gestao";
@@ -46,6 +47,22 @@ export default async function DashboardPage() {
   const semConsumo = novos && horaFortaleza() >= 14 && !domingoEmFortaleza() ?
     (await lerEquipesSemConsumoHoje3p().catch(() => null)) ?? [] : [];
 
+  const prioridades: Prioridade[] = [];
+  const adicionar = (id: string, quantidade: number, titulo: string, descricao: string, href: string, urgente = false) => {
+    if (quantidade > 0) prioridades.push({ id, quantidade, titulo, descricao, href, urgente });
+  };
+  adicionar("treinos-vencidos", vencidos, "ASO ou treinamento vencido", "Regularize antes de realizar a atividade.", "/treinamentos?filtro=vencido", true);
+  adicionar("treinos-faltando", faltando, "Falta ASO ou treinamento obrigatório", "Confira os requisitos de cada função.", "/treinamentos?filtro=faltando", true);
+  adicionar("ca-vencido", caVencido.length, "EPI com C.A. vencido", "Confira a validade antes de comprar ou entregar.", "/epis", true);
+  adicionar("lotes", lotes.length, "Lotes de EPI para conferir", "Há lotes vencidos ou próximos do vencimento.", "/epis", true);
+  adicionar("pedidos", pedidos ?? 0, "Pedidos dos funcionários", "Solicitações aguardando sua resposta.", "/pedidos");
+  adicionar("consumo", semConsumo.length, "Consumo de hoje não lançado", semConsumo.slice(0, 2).map(e => e.team_name).join(", ") + (semConsumo.length > 2 ? " e outras equipes" : ""), "/lancar/consumo");
+  adicionar("receber", aReceber, "Pedidos para receber", "Compras que ainda não chegaram por completo.", "/lancar/receber");
+  adicionar("pedidos-adm", pedidosAbertos, "Pedidos à ADM em andamento", "Acompanhe a aprovação e a compra.", "/pedidos-adm");
+  adicionar("treinos-breve", vencendo, "Exames e treinamentos a vencer", "Agende a renovação nos próximos 30 dias.", "/treinamentos?filtro=breve");
+  adicionar("ca-breve", caVencendo.length, "C.A. de EPI a vencer", "Validade termina nos próximos 30 dias.", "/epis");
+  for (const a of alertas) prioridades.push({ id: "obra-" + a.id, titulo: a.title, descricao: a.description, href: SECAO_ANTIGA[a.section] ?? "/obras" });
+
   return (
     <>
       <PageHeader
@@ -57,41 +74,24 @@ export default async function DashboardPage() {
         const Icon = ICONES[acao.icone] ?? ICONES.outros;
         return <Link key={acao.slug} className="quick-card" href={`/lancar/${acao.slug}`}><Icon size={30} aria-hidden/><span><strong>{acao.label}</strong><small>{acao.dica}</small></span></Link>;
       })}</nav>}
-      <section className="panel" id="pendencias" aria-labelledby="pendencias-titulo">
-        <header className="panel-header"><div><h2 id="pendencias-titulo">Precisa de você</h2><p>Toque para resolver.</p></div></header>
-        <div className="panel-body todo-list">
-          {semConsumo.length > 0 && <Link className="todo-item" href="/lancar/consumo"><span className="todo-count">{semConsumo.length}</span><span className="todo-text"><strong>Consumo de hoje ainda não lançado</strong><small>{semConsumo.map(equipe => equipe.team_name).join(", ")}</small></span></Link>}
-          {pedidos !== null && pedidos > 0 && <Link className="todo-item" href="/pedidos"><span className="todo-count">{pedidos}</span><span className="todo-text"><strong>Pedidos dos funcionários</strong><small>Trocas, material, atestados e avisos feitos pelo app esperando resposta</small></span></Link>}
-          {vencidos > 0 && <Link className="todo-item" href="/treinamentos?filtro=vencido"><span className="todo-count">{vencidos}</span><span className="todo-text"><strong>ASO ou treinamento vencido</strong><small>Não deve fazer a atividade até regularizar</small></span></Link>}
-          {faltando > 0 && <Link className="todo-item" href="/treinamentos?filtro=faltando"><span className="todo-count">{faltando}</span><span className="todo-text"><strong>Falta ASO ou treinamento obrigatório</strong><small>Cadastre o que falta para a função</small></span></Link>}
-          {vencendo > 0 && <Link className="todo-item" href="/treinamentos?filtro=breve"><span className="todo-count">{vencendo}</span><span className="todo-text"><strong>Vencem em até 30 dias</strong><small>Agende a reciclagem ou o exame</small></span></Link>}
-          {caVencido.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{caVencido.length}</span><span className="todo-text"><strong>EPI com C.A. vencido</strong><small>{caVencido.slice(0, 3).map(v => v.texto).join(", ")}{caVencido.length > 3 ? " e outros" : ""} · não comprar nem entregar até regularizar</small></span></Link>}
-          {caVencendo.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{caVencendo.length}</span><span className="todo-text"><strong>C.A. de EPI vence em até 30 dias</strong><small>{caVencendo.slice(0, 3).map(v => v.texto).join(", ")}{caVencendo.length > 3 ? " e outros" : ""}</small></span></Link>}
-          {lotes.length > 0 && <Link className="todo-item" href="/epis"><span className="todo-count">{lotes.length}</span><span className="todo-text"><strong>Lote de EPI vencido ou vencendo</strong><small>{lotes.slice(0, 3).map(v => v.texto).join(", ")}{lotes.length > 3 ? " e outros" : ""}</small></span></Link>}
-          {aReceber > 0 && <Link className="todo-item" href="/lancar/receber"><span className="todo-count">{aReceber}</span><span className="todo-text"><strong>Pedidos para receber</strong><small>Compras providenciadas que ainda não chegaram por completo</small></span></Link>}
-          {pedidosAbertos > 0 && <Link className="todo-item" href="/pedidos-adm"><span className="todo-count">{pedidosAbertos}</span><span className="todo-text"><strong>Pedidos à ADM em andamento</strong><small>Acompanhe a aprovação e a compra</small></span></Link>}
-          {alertas.map(alerta => <Link className="todo-item" key={alerta.id} href={SECAO_ANTIGA[alerta.section] ?? "/obras"}><span className="todo-count">!</span><span className="todo-text"><strong>{alerta.title}</strong><small>{alerta.description}</small></span></Link>)}
-          {!semConsumo.length && !(pedidos ?? 0) && !vencidos && !faltando && !vencendo && !vencEpi.length && !aReceber && !pedidosAbertos && alertas.length === 0 && <div className="todo-item ok"><span className="todo-text"><strong>Tudo em dia</strong><small>Nenhuma pendência no momento.</small></span></div>}
-        </div>
-      </section>
-      {novos && <AvisosCelular compacto />}
-      <section className="metric-grid">
-        {pedidos !== null && <MetricCard label="pedidos dos funcionários esperando resposta" value={pedidos} href="/pedidos" icon={Inbox} />}
+      <ListaPrioridades itens={prioridades}/>
+
+      <section className="metric-grid dashboard-metrics" aria-label="Resumo da operação">
         <MetricCard label="unidades de materiais" value={data.materialUnits} href="/materiais" icon={PackageOpen} />
         <MetricCard label="equipamentos ativos" value={data.assets} href="/equipamentos" icon={Wrench} />
-        <MetricCard label="equipamentos em uso" value={data.assetsInUse} href="/equipamentos" icon={Boxes} />
         <MetricCard label="equipes ativas" value={data.teams} href="/equipes" icon={Users} />
         {includeEpi && <MetricCard label="funcionários ativos" value={data.employees} href="/funcionarios" icon={UserRound} />}
-        {includeEpi && <MetricCard label="EPIs e itens em uso" value={data.epiDeliveries} href="/epis" icon={HardHat} />}
+
       </section>
+      <details className="panel dashboard-details" id="atividade"><summary>Atividade recente e outros indicadores<span>Consultar</span></summary>
       <section className="content-grid">
-        <div className="panel" id="atividade">
+        <div className="panel">
           <header className="panel-header"><div><h2>Movimentações recentes</h2><p>Últimas alterações registradas no estoque</p></div></header>
           <div className="data-table-wrap">
             <table className="data-table">
               <thead><tr><th>Item</th><th>Operação</th><th>Fluxo</th><th>Quantidade</th><th>Data</th></tr></thead>
               <tbody>
-                {data.recentMovements.map((movement) => (
+                {data.recentMovements.slice(0, 5).map((movement) => (
                   <tr key={movement.id}>
                     <td data-label="Item"><span className="primary-cell">{movement.items?.name ?? "Item removido"}</span><span className="secondary-cell">{movement.items?.code ?? "—"}</span></td>
                     <td data-label="Operação">{movementLabel(movement.movement_type)}</td>
@@ -103,15 +103,17 @@ export default async function DashboardPage() {
               </tbody>
             </table>
           </div>
+          <div className="panel-body"><Link className="button ghost" href="/movimentacoes">Ver todas as movimentações</Link></div>
         </div>
         <div className="panel">
-          <header className="panel-header"><div><h2>Leitura operacional</h2><p>Indicadores sem dados simulados</p></div></header>
+          <header className="panel-header"><div><h2>Outros indicadores</h2><p>Mais informações da operação</p></div></header>
           <div className="panel-body list">
-            <div className="list-row"><span className="list-row-icon"><Wrench size={16} /></span><span className="list-row-main"><strong>Disponibilidade de equipamentos</strong><span>Patrimônios fora de manutenção</span></span><span className="list-row-value">{data.assets - data.assetsInUse}</span></div>
-            <div className="list-row"><span className="list-row-icon"><Users size={16} /></span><span className="list-row-main"><strong>Estrutura ativa</strong><span>Equipes conectadas ao mesmo banco</span></span><span className="list-row-value">{data.teams}</span></div>
+            <div className="list-row"><span className="list-row-icon"><Wrench size={16} /></span><span className="list-row-main"><strong>Equipamentos em uso</strong></span><span className="list-row-value">{data.assetsInUse}</span></div>
+            {includeEpi && <div className="list-row"><span className="list-row-icon"><HardHat size={16}/></span><span className="list-row-main"><strong>EPIs e itens em uso</strong></span><span className="list-row-value">{data.epiDeliveries}</span></div>}
           </div>
         </div>
-      </section>
+      </section></details>
+      {novos && <AvisosCelular compacto />}
     </>
   );
 }

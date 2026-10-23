@@ -22,7 +22,19 @@ Pedido do engenheiro: controlar os 5 caminhões munck. Só ambiente de teste (Su
 - Foto do defeito: ver Marco 10B abaixo.
 - Checklist e saída não funcionam sem internet (sem fila offline).
 - Itens críticos são sugestão a confirmar com o engenheiro.
-- Não testado em celular real; visual simples para ajuste depois.
+- Não testado em celular real; revisão de interface descrita abaixo.
+
+## Interface simplificada — 23/10/2026
+
+- Gestão web: o início mostra até três assuntos prioritários, com urgentes primeiro e botão para consultar todos. Histórico e indicadores secundários ficam recolhidos.
+- Frota da Gestão: busca por nome, placa e motorista; filtros com contagem; situação e ação principal por caminhão. Cadastro recolhido. Alertas levam diretamente ao assunto da ficha.
+- Ficha: Manutenção, Documentos, Preventivas, Viagens, Checklists, Histórico e Cadastro (conforme permissão). Salvar mantém a aba correspondente. Grade mensal recolhida, com rolagem horizontal no celular e coluna de itens fixa.
+- Funcionário web: caminhão com a pessoa aparece primeiro; filtros Todos, Disponíveis e Com você. Checklist em etapas de até cinco itens, progresso, respostas por extenso, preservação de respostas/fotos ao voltar e validação antes de avançar. Saída, chegada e fotos mantêm as regras existentes. Histórico recolhido.
+- Android nativo: início com três equipes, priorizando a própria e o almoxarifado; busca por equipe/obra, expansão de seis em seis e resumo recolhido. Cabeçalho reúne as opções secundárias em “Mais opções”. O módulo novo de frota permanece no portal web; não foi criado um segundo módulo nativo.
+
+Validação local: suíte web completa com 549 testes passando em 71 arquivos (incluindo 17 testes novos das telas), TypeScript e ESLint dos arquivos alterados sem erros; sete testes Android passaram, incluindo busca, expansão e largura de 320 px com texto ampliado. Análise estática dos quatro arquivos Android alterados sem problemas. A suíte adicional `functional_regressions_test.dart` revelou uma expectativa antiga de consumo (`caixa/un` versus `caixas · unidades`) em arquivos não alterados nesta revisão.
+
+A inspeção visual automatizada no navegador foi bloqueada pela política da ferramenta; não foi contornada. Não houve validação em aparelho físico nem nova distribuição do APK nesta etapa. Prévias locais: Gestão em `http://127.0.0.1:3102/frota` e Funcionário em `http://127.0.0.1:3101/colaborador/frota`.
 
 ## Marco 10B — foto do defeito (23/10)
 - No app: em cada item do checklist com **N** e na **chegada com problema** aparece "Tirar foto do defeito". A foto é reduzida no celular (1600 px, JPEG) e enviada na hora; uma foto por item e uma por chegada.
