@@ -14,6 +14,8 @@ type Acoes = {
 };
 type Modo = { tipo: "lista" } | { tipo: "checklist" | "saida" | "chegada"; v: CaminhaoApp10a };
 
+const RASCUNHO = "metallo-frota-rascunho";
+type Rascunho = { em: number; tipo: "checklist" | "saida" | "chegada"; veiculo: number; etapa: number; respostas: Record<number, { s: "C" | "N" | "NA" | ""; obs: string; foto?: string }>; local: string; obs: string; ciente: boolean; destino: string; acomp: string; km: string; problema: string; fotoChegada: string | null; chave: string | null; fotoPendente: boolean };
 const quando = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 const lerKm = (t: string) => { const l = t.trim().replace(/\./g, ""); return /^\d{1,7}$/.test(l) ? Number(l) : null; };
 
@@ -28,29 +30,50 @@ export function Frota({ acoes }: { acoes: Acoes }) {
   const [destino, setDestino] = useState(""), [acomp, setAcomp] = useState(""), [km, setKm] = useState(""), [problema, setProblema] = useState("");
   const ref = useRef(acoes), chave = useRef<string | null>(null);
   useEffect(() => { ref.current = acoes; }, [acoes]);
+  const restaurado = useRef(false);
+  function restaurar(lista: CaminhaoApp10a[], itensCarregados: ItemChecklist10a[]) {
+    if (restaurado.current || !lista.length || !itensCarregados.length) return;
+    restaurado.current = true;
+    try {
+      const bruto = sessionStorage.getItem(RASCUNHO); if (!bruto) return;
+      const d = JSON.parse(bruto) as Rascunho;
+      const v = lista.find(c => c.id === d.veiculo);
+      if (!v || Date.now() - d.em > 2 * 3600 * 1000 || !["checklist", "saida", "chegada"].includes(d.tipo)) { sessionStorage.removeItem(RASCUNHO); return; }
+      chave.current = d.chave; setEtapa(d.etapa); setRespostas(d.respostas); setLocal(d.local); setObs(d.obs); setCiente(d.ciente); setDestino(d.destino); setAcomp(d.acomp); setKm(d.km); setProblema(d.problema); setFotoChegada(d.fotoChegada);
+      setModo({ tipo: d.tipo, v });
+      return d.fotoPendente ? "A foto não chegou. Toque em Tirar foto de novo; o resto do checklist foi mantido." : "Continue de onde parou.";
+    } catch { /* sem rascunho */ }
+  }
   const carregar = useCallback(async () => {
     setCarregando(true); setErroCarga(false);
-    try { const [c, i, t] = await Promise.all([ref.current.caminhoes(), ref.current.itens(), ref.current.viagens()]); setCaminhoes(c); setItens(i); setViagens(t); setStatus(""); }
+    try { const [c, i, t] = await Promise.all([ref.current.caminhoes(), ref.current.itens(), ref.current.viagens()]); setCaminhoes(c); setItens(i); setViagens(t); setStatus(restaurar(c, i) ?? ""); }
     catch { setErroCarga(true); setStatus("Não foi possível atualizar os caminhões. Tente de novo."); }
     finally { setCarregando(false); }
   }, []);
   useEffect(() => { const t = setTimeout(() => void carregar(), 0); return () => clearTimeout(t); }, [carregar]);
   useEffect(() => { if (modo.tipo !== "lista") tituloForm.current?.focus(); }, [modo.tipo, etapa]);
 
+  // Ao abrir a câmera, o celular pode recarregar a página e apagar o que já foi marcado. O rascunho fica só nesta aba, sem dados pessoais, e é apagado ao enviar ou voltar.
+  useEffect(() => {
+    if (modo.tipo === "lista") return;
+    try { sessionStorage.setItem(RASCUNHO, JSON.stringify({ em: Date.now(), tipo: modo.tipo, veiculo: modo.v.id, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, chave: chave.current, fotoPendente: alvoFoto.current !== null && subindo } satisfies Rascunho)); } catch { /* sem armazenamento */ }
+  }, [modo, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, subindo]);
+  const limparRascunho = () => { try { sessionStorage.removeItem(RASCUNHO); } catch { /* ok */ } };
+
   function abrir(tipo: "checklist" | "saida" | "chegada", v: CaminhaoApp10a) {
     chave.current = null; setEtapa(0); setStatus(""); setKm(String(v.km_atual)); setDestino(""); setAcomp(""); setProblema(""); setObs(""); setLocal(""); setCiente(false); setFotoChegada(null);
     setRespostas(Object.fromEntries(itens.map(i => [i.codigo, { s: "" as const, obs: "", foto: undefined as string | undefined }]))); setModo({ tipo, v });
   }
-  const voltar = () => { if (enviando || subindo) return; chave.current = null; setStatus(""); setModo({ tipo: "lista" }); };
+  const voltar = () => { if (enviando || subindo) return; limparRascunho(); chave.current = null; setStatus(""); setModo({ tipo: "lista" }); };
   async function rodar(fn: () => Promise<string>) {
     if (envioAtivo.current || subindo) return;
     envioAtivo.current = true;
     setEnviando(true); setStatus(""); chave.current ??= crypto.randomUUID();
-    try { const msg = await fn(); chave.current = null; setModo({ tipo: "lista" }); await carregar(); setStatus(msg); }
+    try { const msg = await fn(); limparRascunho(); chave.current = null; setModo({ tipo: "lista" }); await carregar(); setStatus(msg); }
     catch (e) { setStatus(mensagemErroFrota10a(e)); }
     finally { setEnviando(false); envioAtivo.current = false; }
   }
-  function pedirFoto(alvo: number | "chegada") { alvoFoto.current = alvo; cameraFoto.current?.click(); }
+  function pedirFoto(alvo: number | "chegada") { alvoFoto.current = alvo; try { const b = sessionStorage.getItem(RASCUNHO); if (b) sessionStorage.setItem(RASCUNHO, JSON.stringify({ ...JSON.parse(b), fotoPendente: true })); } catch { /* ok */ } cameraFoto.current?.click(); }
   async function fotoEscolhida(arquivo: File | undefined, v: CaminhaoApp10a) {
     const alvo = alvoFoto.current;
     if (!arquivo || alvo === null) return;

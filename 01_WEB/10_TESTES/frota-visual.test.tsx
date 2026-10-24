@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ListaPrioridades, type Prioridade } from "@/02_COMPONENTES_VISUAIS/lista-prioridades";
 import { PainelFrota } from "@/02_COMPONENTES_VISUAIS/Frota/painel-frota";
 import { Frota } from "@/app/colaborador/[[...screen]]/frota";
@@ -7,6 +7,7 @@ import type { CaminhaoApp10a, ItemChecklist10a, PainelGestao10a, ViagemApp10a } 
 
 vi.mock("@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6", () => ({ prepararFoto: async (file: File) => file }));
 afterEach(cleanup);
+beforeEach(() => sessionStorage.clear());
 
 const caminhao = (patch: Partial<CaminhaoApp10a> = {}): CaminhaoApp10a => ({
   id: 1, nome: "Munck São José", placa: "ABC1D23", modelo: "Volvo", situacao: "disponivel", km_atual: 10000,
@@ -86,6 +87,19 @@ describe("Caminhões do funcionário", () => {
     fireEvent.click(screen.getByRole("button", { name: "Com você" }));
     expect(screen.getByText("Meu caminhão")).toBeInTheDocument();
     expect(screen.queryByText("Munck São José")).not.toBeInTheDocument();
+  });
+  it("retoma o checklist de onde parou se a página recarregar ao abrir a câmera", async () => {
+    const api = acoes();
+    const primeira = render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    const primeiro = screen.getByRole("group", { name: "Conferência 1" });
+    fireEvent.click(within(primeiro).getByRole("button", { name: "Problema" }));
+    fireEvent.change(screen.getByLabelText("O que está errado: Conferência 1"), { target: { value: "Freio com ruído" } });
+    primeira.unmount(); // como se a página tivesse recarregado
+    render(<Frota acoes={api}/>);
+    expect(await screen.findByRole("heading", { name: /Checklist/ })).toBeInTheDocument();
+    expect(screen.getByLabelText("O que está errado: Conferência 1")).toHaveValue("Freio com ruído");
+    expect(screen.getByRole("status")).toHaveTextContent("Continue de onde parou");
   });
   it("exige respostas em cada etapa, preserva escolhas/foto ao voltar e envia os 26 itens uma única vez", async () => {
     const api = acoes();
