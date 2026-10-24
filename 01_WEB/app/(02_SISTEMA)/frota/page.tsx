@@ -26,6 +26,11 @@ export default async function FrotaPage({ searchParams }: { searchParams: Promis
     {query.ok && <div className="alert success" role="status">Salvo.</div>}
     {atencao.length > 0 && <ListaPrioridades titulo="Atenção na frota" limite={2} itens={atencao.map((a, i) => ({ id: String(i), titulo: a.nome, descricao: a.texto, href: `/frota/${a.veiculo_id}?aba=${a.tipo === "documento" ? "documentos" : a.tipo === "plano" ? "planos" : "manutencao"}`, urgente: a.gravidade === "vencido" }))}/>}
     <PainelFrota frota={frota}/>
+    <details className="panel fleet-disclosure" id="relatorio-mes"><summary>Relatório do mês<span>Planilha para Excel</span></summary>
+      <div className="panel-body"><form method="get" action="/frota/relatorio" className="filter-row">
+        <label>Mês<input name="mes" type="month" lang="pt-BR" required defaultValue={new Date().toLocaleDateString("sv-SE", { timeZone: "America/Fortaleza" }).slice(0, 7)}/></label>
+        <button className="button primary" type="submit">Baixar planilha</button></form>
+        <p className="muted">Saídas, km rodados, checklists, defeitos, dias parado e custo de manutenção de cada caminhão.</p></div></details>
     {podeCadastrar && <details className="panel fleet-disclosure" id="novo-caminhao" open={query.novo === "1"}><summary>Cadastrar caminhão<span>Novo veículo</span></summary>
       <div className="panel-body"><OperationForm action={salvarCaminhao10a} label="Cadastrar" pendingLabel="Salvando…">
         <label>Nome (ex.: Munck 06)<input name="nome" required minLength={2} maxLength={60}/></label>

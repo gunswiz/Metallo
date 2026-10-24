@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-24T23:25:12.254Z",
+  "scope": "Marco 10D — frota mais fluida (teste online)",
+  "checks": [
+    {
+      "name": "checklist com defeito registrado",
+      "ok": true
+    },
+    {
+      "name": "relatório do mês traz o caminhão com checklist, defeito e dia parado",
+      "ok": true
+    },
+    {
+      "name": "relatório soma os totais como números",
+      "ok": true
+    },
+    {
+      "name": "funcionário não lê o relatório",
+      "ok": true
+    },
+    {
+      "name": "sem login o relatório é recusado",
+      "ok": true
+    },
+    {
+      "name": "Gestão conclui o conserto",
+      "ok": true
+    },
+    {
+      "name": "relatório mostra manutenção concluída e o custo",
+      "ok": true
+    },
+    {
+      "name": "rotina sem segredo é recusada",
+      "ok": true
+    },
+    {
+      "name": "rotina com segredo errado é recusada",
+      "ok": true
+    },
+    {
+      "name": "limpeza sem segredo é recusada",
+      "ok": true
+    },
+    {
+      "name": "rotina não aceita GET",
+      "ok": true
+    },
+    {
+      "name": "funcionário com o próprio login não roda a rotina",
+      "ok": true
+    }
+  ],
+  "result": "12/12"
+}

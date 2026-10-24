@@ -85,3 +85,17 @@ it("defeito informado: relato na manutenção, só a própria pessoa dispara o a
   expect(funcao).toContain('body.acao === "avisar" && origin === COLABORADOR');
   expect(funcao).not.toMatch(/console\.(log|error)\([^)]*(token|endpoint)/i);
 });
+
+// Marco 10D: avisos, relatório e limpeza de fotos (desligada).
+it("frota 10D: limpeza de fotos nasce desligada e a rotina só aceita o segredo do agendador", () => {
+  const sql = readFileSync("../04_BANCO_E_SUPABASE/teste-online/10d-frota-fluidez.sql", "utf8");
+  expect(sql).toContain("ativo boolean not null default false");
+  expect(sql).toMatch(/with cfg as \(select \* from private\.frota_retencao_10d where singleton and ativo\)/);
+  expect(sql).toContain("m.status in ('aberta', 'na_oficina')");
+  expect(sql).not.toMatch(/^\s*(drop|delete)\b/im);
+  expect(sql).not.toContain("metallo-frota-limpeza");
+  const rotina = readFileSync("../04_BANCO_E_SUPABASE/supabase/functions/rotinas-frota-10d/index.ts", "utf8");
+  expect(rotina).toContain("if (!cfg?.ativo) return { ativo: false, apagadas: 0 }");
+  expect(rotina).toContain('x-metallo-cron');
+  expect(rotina).not.toMatch(/console\.(log|error)\([^)]*(token|endpoint)/i);
+});

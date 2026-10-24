@@ -7,7 +7,7 @@ import type { CaminhaoApp10a, ItemChecklist10a, PainelGestao10a, ViagemApp10a } 
 
 vi.mock("@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6", () => ({ prepararFoto: async (file: File) => file }));
 afterEach(cleanup);
-beforeEach(() => sessionStorage.clear());
+beforeEach(() => { sessionStorage.clear(); localStorage.clear(); });
 
 const caminhao = (patch: Partial<CaminhaoApp10a> = {}): CaminhaoApp10a => ({
   id: 1, nome: "Munck São José", placa: "ABC1D23", modelo: "Volvo", situacao: "disponivel", km_atual: 10000,
@@ -184,5 +184,51 @@ describe("Caminhões do funcionário", () => {
     expect(api.checklist).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Voltar aos caminhões" }));
     expect(screen.getByRole("button", { name: "Fazer checklist" })).toBeInTheDocument();
+  });
+});
+
+describe("Marco 10D: fluidez no app", () => {
+  it("'Tudo conforme' marca só o que ainda não foi respondido na etapa", async () => {
+    render(<Frota acoes={acoes()}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    fireEvent.click(within(screen.getByRole("group", { name: "Conferência 2" })).getByRole("button", { name: "Problema" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tudo conforme nesta etapa" }));
+    expect(within(screen.getByRole("group", { name: "Conferência 1" })).getByRole("button", { name: "Conforme" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(screen.getByRole("group", { name: "Conferência 2" })).getByRole("button", { name: "Problema" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(screen.getByRole("group", { name: "Conferência 5" })).getByRole("button", { name: "Conforme" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("button", { name: "Tudo conforme nesta etapa" })).not.toBeInTheDocument();
+  });
+  it("pede confirmação quando o km pula demais e mostra quanto rodou", async () => {
+    const api = acoes([caminhao({ checklist_hoje: "liberado" })]);
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Registrar saída" }));
+    fireEvent.change(screen.getByLabelText("Para onde vai?"), { target: { value: "Obra Norte" } });
+    fireEvent.change(screen.getByLabelText("Km do painel agora"), { target: { value: "10600" } });
+    expect(screen.getByText("600 km desde a última leitura.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
+    expect(api.saida).not.toHaveBeenCalled();
+    expect(screen.getByRole("status")).toHaveTextContent("toque de novo para confirmar");
+    fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
+    await screen.findByText("Saída registrada. Boa viagem!");
+    expect(api.saida).toHaveBeenCalledTimes(1);
+  });
+  it("sem internet guarda a saída no celular e envia sozinho quando o sinal volta", async () => {
+    const api = { ...acoes([caminhao({ checklist_hoje: "liberado" })]), quem: "emp-1" };
+    const online = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Registrar saída" }));
+    fireEvent.change(screen.getByLabelText("Para onde vai?"), { target: { value: "Obra Norte" } });
+    fireEvent.change(screen.getByLabelText("Km do painel agora"), { target: { value: "10005" } });
+    fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
+    await screen.findByText(/Sem internet: guardei no celular/);
+    expect(api.saida).not.toHaveBeenCalled();
+    expect(await screen.findByText("1 registro guardado no celular")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
+    online.mockReturnValue(true);
+    window.dispatchEvent(new Event("online"));
+    await waitFor(() => expect(api.saida).toHaveBeenCalledTimes(1));
+    await screen.findByText(/Saída registrada\. Boa viagem!/);
+    expect(screen.queryByText("1 registro guardado no celular")).not.toBeInTheDocument();
+    online.mockRestore();
   });
 });

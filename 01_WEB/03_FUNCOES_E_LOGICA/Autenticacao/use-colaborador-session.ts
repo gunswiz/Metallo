@@ -315,6 +315,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     try { await getClient().functions.invoke("fotos-frota-10b", { body: { acao: "avisar", veiculo_id: veiculo } }); } catch { /* o painel da Gestão já mostra o defeito */ }
   }, [demo, profile, getClient]);
   const frota10a = useMemo(() => ({
+    quem: profile?.employee_id ?? "",
     caminhoes: async () => caminhoesApp10a.parse(await exchangeRpc("my_frota_10a")),
     itens: async () => itensApp10a.parse(await exchangeRpc("my_frota_itens_10a")),
     viagens: async () => viagensApp10a.parse(await exchangeRpc("my_frota_viagens_10a")),
@@ -324,6 +325,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
       form.set("acao", "enviar"); form.set("veiculo_id", String(veiculo)); form.set("arquivo", arquivo, "defeito.jpg");
       const r = await getClient().functions.invoke("fotos-frota-10b", { body: form });
       if (r.error) {
+        if ((r.error as { name?: string }).name === "FunctionsFetchError") throw new Error("SEM_CONEXAO");
         let code = "falha";
         try { const b = await (r.error as { context?: Response }).context?.json(); if (typeof b?.error === "string") code = b.error; } catch { /* sem detalhe */ }
         throw new Error(code);

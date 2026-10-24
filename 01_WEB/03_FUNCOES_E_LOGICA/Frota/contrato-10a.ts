@@ -50,6 +50,9 @@ export const fotosChegadaGestao10b = z.array(z.object({ viagem_id: z.coerce.numb
 export const relatosGestao10c = z.array(z.object({ manutencao_id: z.coerce.number(), relatos: z.array(z.object({ quando: z.string(), tipo: z.enum(["checklist", "chegada"]), por: z.string().nullable(),
   itens: z.array(z.object({ item: z.string(), obs: z.string().nullable().optional(), critico: z.boolean().optional(), foto: z.uuid().nullable().optional() })).optional(),
   problema: z.string().nullable().optional(), foto: z.uuid().nullable().optional() })).nullable() }));
+export const relatorioGestao10d = z.array(z.object({ veiculo_id: z.coerce.number(), nome: z.string(), placa: z.string(), saidas: z.coerce.number(), km_rodados: z.coerce.number(), checklists: z.coerce.number(),
+  itens_com_problema: z.coerce.number(), defeitos_abertos: z.coerce.number(), manutencoes_concluidas: z.coerce.number(), dias_parado: z.coerce.number(), custo: z.coerce.number() }));
+export type LinhaRelatorio10d = z.infer<typeof relatorioGestao10d>[number];
 export type RelatosGestao10c = z.infer<typeof relatosGestao10c>;
 export type PainelGestao10a = z.infer<typeof painelGestao10a>[number];
 export type FichaGestao10a = z.infer<typeof fichaGestao10a>;
@@ -73,6 +76,8 @@ export const planoForm10a = z.object({ veiculoId: idNum, id: z.union([z.literal(
 export const concluirPlanoForm10a = z.object({ veiculoId: idNum, planoId: idNum, km: numOpc, data: dataOpc, custo: z.union([z.literal(""), z.string().regex(/^\d{1,8}([.,]\d{1,2})?$/)]), obs: texto(300) });
 
 export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
+  fila_cheia: "Há registros demais guardados no celular. Conecte-se à internet para enviá-los.",
+  foto_sem_sinal: "Sem internet e não deu para guardar a foto no celular. Continue sem a foto ou conecte-se.",
   checklist_do_dia_necessario: "Faça o checklist de hoje antes de sair.", veiculo_nao_liberado: "Este caminhão não está liberado. Fale com o engenheiro.",
   veiculo_em_uso: "Este caminhão já está na rua.", veiculo_em_manutencao: "Este caminhão está na oficina.", voce_ja_esta_com_um_caminhao: "Você já está com um caminhão. Registre a chegada primeiro.",
   km_menor_que_atual: "O km não pode ser menor que o do caminhão.", km_menor_que_saida: "O km de chegada não pode ser menor que o da saída.",
