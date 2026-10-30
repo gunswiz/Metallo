@@ -4,7 +4,8 @@ vi.mock("@/03_FUNCOES_E_LOGICA/Autenticacao/session", () => ({ requireCapability
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/server", () => ({ createClient: mocks.client }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidate }));
 vi.mock("next/navigation", () => ({ redirect: mocks.redirect }));
-import { deliverEpiBatch, fulfillEpi, requestEpi, saveEmployeeKit } from "@/app/actions/epi-completo";
+vi.mock("@/09_CONFIGURACOES/ambienteSupabase", () => ({ getSupabaseEnv: () => ({ url: "http://127.0.0.1:54321" }) }));
+import { deliverEpiBatch, fulfillEpi, requestEpi, saveEmployeeKit, prepareEpiKit3d, manageEpiFeedback3d, manageExchangeRequest } from "@/app/actions/epi-completo";
 import { createUserAccount, deactivateMaterial, editHistory } from "@/app/actions/administracao-completa";
 import { replaceRentedEquipment } from "@/app/actions/substituir-locado";
 const id = "731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
@@ -19,6 +20,27 @@ beforeEach(() => {
   mocks.redirect.mockImplementation(() => { throw new Error("REDIRECT"); });
 });
 describe("ações com serviços simulados, sem escrita remota", () => {
+  const etapasEpi = [
+    { nome: "preparação", action: prepareEpiKit3d, rpc: "prepare_epi_kit_3d", values: () => ({ employeeId: id, lines: JSON.stringify([line]), idempotencyKey: id, exchangeRequestId: id }) },
+    { nome: "tratamento", action: manageEpiFeedback3d, rpc: "manage_epi_delivery_feedback_3d", values: () => ({ groupId: id, action: "EM_ANALISE", idempotencyKey: id }) },
+    { nome: "aprovação", action: manageExchangeRequest, rpc: "manage_epi_exchange_request", values: () => ({ requestId: id, action: "APROVADA" }) },
+  ];
+  it.each(etapasEpi)("$nome reutiliza RPC existente e atualiza o painel somente após sucesso", async ({ action, rpc, values }) => {
+    await expect(action({}, form(values()))).rejects.toThrow("REDIRECT");
+    expect(mocks.rpc).toHaveBeenCalledWith(rpc, expect.any(Object));
+    expect(mocks.authorize).toHaveBeenCalledWith("epi:write");
+    expect(mocks.revalidate).toHaveBeenCalledWith("/epis", "layout");
+    mocks.revalidate.mockClear(); mocks.redirect.mockClear();
+    mocks.rpc.mockResolvedValue({ error: { message: "management_access_denied" } });
+    expect(await action({}, form(values()))).toHaveProperty("error");
+    expect(mocks.revalidate).not.toHaveBeenCalled();
+    expect(mocks.redirect).not.toHaveBeenCalled();
+  });
+  it.each(etapasEpi)("$nome não abre cliente para usuário sem permissão", async ({ action, values }) => {
+    mocks.authorize.mockRejectedValue(new Error("DENIED"));
+    await expect(action({}, form(values()))).rejects.toThrow("DENIED");
+    expect(mocks.client).not.toHaveBeenCalled();
+  });
   it("bloqueia acesso antes de abrir cliente ou executar operação", async () => {
     mocks.authorize.mockRejectedValue(new Error("DENIED"));
     await expect(deliverEpiBatch({}, batch())).rejects.toThrow("DENIED");
