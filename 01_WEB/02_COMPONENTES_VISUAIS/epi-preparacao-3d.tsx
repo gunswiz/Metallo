@@ -9,12 +9,12 @@ type Suggestion = { item_id: string; item_name: string; unit: string; recommende
 type Exchange = { request_id: string; item_id: string; item_name: string; delivery_group_id: string | null };
 type Line = { item_id: string; stock_batch_id: string; quantity: number };
 
-export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion, approved, keyId }:
-  { employeeId: string; employeeName: string; batches: Batch[]; suggestion: Suggestion[]; approved: Exchange[]; keyId: string }) {
+export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion, approved, keyId, initialExchangeId = "" }:
+  { employeeId: string; employeeName: string; batches: Batch[]; suggestion: Suggestion[]; approved: Exchange[]; keyId: string; initialExchangeId?: string }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [chosen, setChosen] = useState("");
   const [amount, setAmount] = useState(1);
-  const [exchangeId, setExchangeId] = useState("");
+  const [exchangeId, setExchangeId] = useState(() => approved.some(r => r.request_id === initialExchangeId && !r.delivery_group_id) ? initialExchangeId : "");
   const [notice, setNotice] = useState("");
   const batch = batches.find(entry => entry.id === chosen);
   const exchangeItemId = approved.find(request => request.request_id === exchangeId)?.item_id;
@@ -30,7 +30,7 @@ export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion,
       "Sugestão parcial: alguns itens não possuem lote com saldo suficiente. Revise e complete manualmente.");
   }
   function add() {
-    if (!batch || !Number.isInteger(amount) || amount < 1 || amount > Math.min(batch.quantity, 100) || lines.some(line => line.stock_batch_id === batch.id) || lines.length >= 30) {
+    if (!batch || (exchangeId && batch.item_id !== exchangeItemId) || !Number.isInteger(amount) || amount < 1 || amount > Math.min(batch.quantity, 100) || lines.some(line => line.stock_batch_id === batch.id) || lines.length >= 30) {
       setNotice("Confira o lote, a quantidade e se o item já foi adicionado."); return;
     }
     setLines([...lines, { item_id: batch.item_id, stock_batch_id: batch.id, quantity: amount }]);
@@ -46,7 +46,7 @@ export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion,
       <input type="hidden" name="idempotencyKey" value={keyId}/>
       <input type="hidden" name="lines" value={JSON.stringify(lines)}/>
       <label className="full">Solicitação de troca aprovada (opcional)
-        <select name="exchangeRequestId" value={exchangeId} onChange={event => { setExchangeId(event.target.value); setLines([]); }}>
+        <select name="exchangeRequestId" value={exchangeId} onChange={event => { setExchangeId(event.target.value); setLines([]); setChosen(""); setAmount(1); }}>
           <option value="">Nova entrega sem troca 3C</option>
           {approved.filter(entry => !entry.delivery_group_id).map(entry => <option key={entry.request_id} value={entry.request_id}>{entry.item_name} · pedido {entry.request_id.slice(0,8)}</option>)}
         </select>

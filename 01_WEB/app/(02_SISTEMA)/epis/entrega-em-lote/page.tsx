@@ -5,13 +5,13 @@ import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { getMetalloService } from "@/04_SERVICOS/metallo-service";
 import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
-import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { manageEpiFeedback3d, registerEpiDelivery3d } from "@/app/actions/epi-completo";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
-export default async function Page({searchParams}:{searchParams:Promise<{employee?:string;prepared?:string;delivered?:string;feedback?:string}>}){
+export default async function Page({searchParams}:{searchParams:Promise<{employee?:string;exchange?:string;prepared?:string;delivered?:string;feedback?:string}>}){
  const profile=await requireCapability("epi:write"); const query=await searchParams;
  const local=recursosNovosLiberados(getSupabaseEnv().url);
  const data=local?null:await (await getMetalloService()).siteSnapshot();
@@ -28,8 +28,8 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
     {(query.prepared||query.delivered||query.feedback)&&<div className="alert success" role="status">Operação local registrada. Confira o estado atualizado abaixo.</div>}
     <div className="panel-body"><form method="get" className="form-grid"><label className="full">Funcionário para preparar kit<select name="employee" defaultValue={employeeId}><option value="">Selecione</option>{choices.employees.map(entry=><option key={entry.id} value={entry.id}>{entry.full_name}</option>)}</select></label><div className="form-actions"><button className="button secondary" type="submit">Consultar kit sugerido</button></div></form></div>
     {employee&&<EpiPreparacao3d employeeId={employee.id} employeeName={employee.full_name} batches={batches} suggestion={suggestion}
-      approved={flow.approved.filter(request=>request.employee_id===employee.id)} keyId={randomUUID()}/>}
-    <div className="panel-body"><h3>Kits preparados</h3><p>O kit abaixo está separado. Ele ainda não comprova entrega física nem aparece como entrega ao funcionário.</p>
+      approved={flow.approved.filter(request=>request.employee_id===employee.id)} key={`${employee.id}:${query.exchange ?? ""}`} initialExchangeId={query.exchange} keyId={randomUUID()}/>}
+    <div className="panel-body" id="kits-preparados"><h3>Kits preparados</h3><p>O kit abaixo está separado. Ele ainda não comprova entrega física nem aparece como entrega ao funcionário.</p>
       {flow.prepared.length===0?<p>Nenhum kit preparado no laboratório.</p>:<div className="list">{flow.prepared.map(prep=><article className="list-row" key={prep.preparation_id}>
         <div className="list-row-main"><strong>{prep.employee_name}</strong><span>Preparado em {new Date(prep.prepared_at).toLocaleString("pt-BR",{timeZone:"America/Fortaleza"})}</span>
           <span>{prep.lines.map(line=>`${line.item_name} · ${line.quantity} ${line.unit}${line.variant?` · ${line.variant}`:""}`).join("; ")}</span>
@@ -41,7 +41,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
           <label className="full"><input type="checkbox" name="confirmation" value="on" required/> Confirmo que estes itens foram entregues fisicamente.</label>
         </OperationForm>}</article>)}</div>}
     </div>
-    <div className="panel-body"><h3>Divergências e confirmações</h3>{flow.feedback.length===0?<p>Nenhuma entrega 3D registrada.</p>:<div className="list">{flow.feedback.map(entry=><article className="list-row" key={entry.group_id}>
+    <div className="panel-body" id="confirmacoes"><h3>Divergências e confirmações</h3>{flow.feedback.length===0?<p>Nenhuma entrega 3D registrada.</p>:<div className="list">{flow.feedback.map(entry=><article className="list-row" key={entry.group_id}>
       <div className="list-row-main"><strong>{entry.employee_name}</strong><span>Entregue em {new Date(entry.delivered_at).toLocaleString("pt-BR",{timeZone:"America/Fortaleza"})}</span>
         <span>Manifestação: {entry.feedback_status?statusLabel[entry.feedback_status]??entry.feedback_status:"Confirmação pendente"}</span>
         {entry.item_name&&<span>Item: {entry.item_name}</span>}{entry.category&&<span>Categoria: {entry.category}</span>}{entry.details&&<span>Relato: {entry.details}</span>}

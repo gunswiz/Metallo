@@ -5,6 +5,7 @@ import { prepararFoto } from "@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6";
 import { ehFalhaDeConexao10d, executarPendente, gravarCache, guardarFotoLocal, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, type Pendente, type Recusada } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 import { mensagemErroFrota10a, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, type CaminhaoApp10a, type ItemChecklist10a, type RespostaChecklist10a, type ViagemApp10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import styles from "./colaborador.module.css";
+import fleet from "@/02_COMPONENTES_VISUAIS/Frota/painel-frota.module.css";
 
 type Acoes = {
   quem?: string;
@@ -25,6 +26,11 @@ const lerKm = (t: string) => { const l = t.trim().replace(/\./g, ""); return /^\
 
 // Marco 10A — "Caminhões": checklist do dia, saída e chegada do munck. Sem localização.
 export function Frota({ acoes }: { acoes: Acoes }) {
+  return <FrotaDaConta key={acoes.quem ?? "sem-identidade"} acoes={acoes}/>;
+}
+
+function FrotaDaConta({ acoes }: { acoes: Acoes }) {
+  const chaveRascunho = acoes.quem ? `${RASCUNHO}:${acoes.quem}` : null;
   const [caminhoes, setCaminhoes] = useState<CaminhaoApp10a[]>([]), [itens, setItens] = useState<ItemChecklist10a[]>([]), [viagens, setViagens] = useState<ViagemApp10a[]>([]);
   const [modo, setModo] = useState<Modo>({ tipo: "lista" }), [status, setStatus] = useState("Carregando…"), [enviando, setEnviando] = useState(false);
   const [busca, setBusca] = useState(""), [filtro, setFiltro] = useState("todos"), [etapa, setEtapa] = useState(0), [historicoCompleto, setHistoricoCompleto] = useState(false);
@@ -37,19 +43,20 @@ export function Frota({ acoes }: { acoes: Acoes }) {
   const ref = useRef(acoes), chave = useRef<string | null>(null);
   useEffect(() => { ref.current = acoes; }, [acoes]);
   const restaurado = useRef(false);
-  function restaurar(lista: CaminhaoApp10a[], itensCarregados: ItemChecklist10a[]) {
+  const restaurar = useCallback((lista: CaminhaoApp10a[], itensCarregados: ItemChecklist10a[]) => {
     if (restaurado.current || !lista.length || !itensCarregados.length) return;
     restaurado.current = true;
     try {
-      const bruto = sessionStorage.getItem(RASCUNHO); if (!bruto) return;
+      if (!chaveRascunho) return;
+      const bruto = sessionStorage.getItem(chaveRascunho); if (!bruto) return;
       const d = JSON.parse(bruto) as Rascunho;
       const v = lista.find(c => c.id === d.veiculo);
-      if (!v || Date.now() - d.em > 2 * 3600 * 1000 || !["checklist", "saida", "chegada"].includes(d.tipo)) { sessionStorage.removeItem(RASCUNHO); return; }
+      if (!v || Date.now() - d.em > 2 * 3600 * 1000 || !["checklist", "saida", "chegada"].includes(d.tipo)) { sessionStorage.removeItem(chaveRascunho); return; }
       chave.current = d.chave; setEtapa(d.etapa); setRespostas(d.respostas); setLocal(d.local); setObs(d.obs); setCiente(d.ciente); setDestino(d.destino); setAcomp(d.acomp); setKm(d.km); setProblema(d.problema); setFotoChegada(d.fotoChegada);
       setModo({ tipo: d.tipo, v });
       return d.fotoPendente ? "A foto não chegou. Toque em Tirar foto de novo; o resto do checklist foi mantido." : "Continue de onde parou.";
     } catch { /* sem rascunho */ }
-  }
+  }, [chaveRascunho]);
   const carregar = useCallback(async () => {
     setCarregando(true); setErroCarga(false);
     const quem = ref.current.quem ?? "";
@@ -61,10 +68,10 @@ export function Frota({ acoes }: { acoes: Acoes }) {
       const guardado = quem && ehFalhaDeConexao10d(e) ? lerCache(quem) : null;
       if (guardado) {
         setCaminhoes(guardado.caminhoes); setItens(guardado.itens); setViagens(guardado.viagens); setSemSinal(true);
-        setStatus(restaurar(guardado.caminhoes, guardado.itens) ?? "Sem internet: mostrando o que está guardado no celular. Você pode seguir normalmente.");
+        setStatus(restaurar(guardado.caminhoes, guardado.itens) ?? "Sem internet: consulta guardada no celular. A situação pode ter mudado. Aguarde a confirmação do servidor antes de sair.");
       } else { setErroCarga(true); setStatus("Não foi possível atualizar os caminhões. Tente de novo."); }
     } finally { setCarregando(false); }
-  }, []);
+  }, [restaurar]);
   const atualizarFila = useCallback(() => { const q = ref.current.quem ?? ""; if (!q) return; setFila(lerFila(q)); setRecusadas(lerRecusadas(q)); }, []);
   const sincronizar = useCallback(async (manual = false) => {
     const q = ref.current.quem ?? "";
@@ -88,12 +95,12 @@ export function Frota({ acoes }: { acoes: Acoes }) {
   useEffect(() => { const t = setTimeout(() => void carregar(), 0); return () => clearTimeout(t); }, [carregar]);
   useEffect(() => { if (modo.tipo !== "lista") tituloForm.current?.focus(); }, [modo.tipo, etapa]);
 
-  // Ao abrir a câmera, o celular pode recarregar a página e apagar o que já foi marcado. O rascunho fica só nesta aba, sem dados pessoais, e é apagado ao enviar ou voltar.
+  // Rascunhos podem conter relatos e acompanhantes: ficam separados por identidade nesta aba.
   useEffect(() => {
-    if (modo.tipo === "lista") return;
-    try { sessionStorage.setItem(RASCUNHO, JSON.stringify({ em: Date.now(), tipo: modo.tipo, veiculo: modo.v.id, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, chave: chave.current, fotoPendente: alvoFoto.current !== null && subindo } satisfies Rascunho)); } catch { /* sem armazenamento */ }
-  }, [modo, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, subindo]);
-  const limparRascunho = () => { try { sessionStorage.removeItem(RASCUNHO); } catch { /* ok */ } };
+    if (modo.tipo === "lista" || !chaveRascunho) return;
+    try { sessionStorage.setItem(chaveRascunho, JSON.stringify({ em: Date.now(), tipo: modo.tipo, veiculo: modo.v.id, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, chave: chave.current, fotoPendente: alvoFoto.current !== null && subindo } satisfies Rascunho)); } catch { /* sem armazenamento */ }
+  }, [chaveRascunho, modo, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, subindo]);
+  const limparRascunho = () => { try { if (chaveRascunho) sessionStorage.removeItem(chaveRascunho); } catch { /* ok */ } };
 
   function abrir(tipo: "checklist" | "saida" | "chegada", v: CaminhaoApp10a) {
     chave.current = null; kmConfirmado.current = null; setEtapa(0); setStatus(""); setKm(String(v.km_atual)); setDestino(""); setAcomp(""); setProblema(""); setObs(""); setLocal(""); setCiente(false); setFotoChegada(null);
@@ -108,7 +115,7 @@ export function Frota({ acoes }: { acoes: Acoes }) {
     catch (e) { setStatus(mensagemErroFrota10a(e)); }
     finally { setEnviando(false); envioAtivo.current = false; }
   }
-  function pedirFoto(alvo: number | "chegada") { alvoFoto.current = alvo; try { const b = sessionStorage.getItem(RASCUNHO); if (b) sessionStorage.setItem(RASCUNHO, JSON.stringify({ ...JSON.parse(b), fotoPendente: true })); } catch { /* ok */ } cameraFoto.current?.click(); }
+  function pedirFoto(alvo: number | "chegada") { alvoFoto.current = alvo; try { const b = chaveRascunho && sessionStorage.getItem(chaveRascunho); if (b && chaveRascunho) sessionStorage.setItem(chaveRascunho, JSON.stringify({ ...JSON.parse(b), fotoPendente: true })); } catch { /* ok */ } cameraFoto.current?.click(); }
   async function fotoEscolhida(arquivo: File | undefined, v: CaminhaoApp10a) {
     const alvo = alvoFoto.current;
     if (!arquivo || alvo === null) return;
@@ -130,7 +137,7 @@ export function Frota({ acoes }: { acoes: Acoes }) {
     const guardar = () => {
       if (!q || !guardarNaFila(q, p)) throw new Error(q ? "fila_cheia" : "SEM_CONEXAO");
       atualizarFila();
-      return "Sem internet: guardei no celular. Vai ser enviado sozinho quando o sinal voltar.";
+      return "Sem internet: guardei no celular. Pendente de confirmação do servidor. Este registro não autoriza a saída. Será enviado quando o sinal voltar.";
     };
     if (typeof navigator !== "undefined" && !navigator.onLine) return guardar();
     try { return await executarPendente(ref.current, q, p); }
@@ -189,10 +196,12 @@ export function Frota({ acoes }: { acoes: Acoes }) {
   const filtrados = caminhoes.filter(v => normalizar(`${v.nome} ${v.placa}`).includes(normalizar(busca)) && (filtro === "todos" || (filtro === "comigo" ? v.minha_viagem !== null : v.situacao === "disponivel"))).sort((a, b) => Number(b.minha_viagem !== null) - Number(a.minha_viagem !== null));
   return <section className={`${styles.records} ${styles.frotaPainel}`} aria-labelledby="frota-title" aria-busy={carregando || enviando}>
     <input ref={cameraFoto} type="file" accept="image/*" capture="environment" hidden onChange={e => { if (veiculoAtual) void fotoEscolhida(e.target.files?.[0], veiculoAtual); }}/>
-    <div className={styles.recordsHeading}><Truck size={25} aria-hidden/><div><h2 id="frota-title">Caminhões</h2><p>{veiculoAtual ? `${veiculoAtual.nome} · ${veiculoAtual.placa}` : "Confira, registre a saída e boa viagem."}</p></div></div>
+    <div className={fleet.driverHeader}><Truck size={30} aria-hidden/><div><span className={fleet.eyebrow}>SUA JORNADA COM SEGURANÇA</span><h2 id="frota-title">Caminhões</h2><p>{veiculoAtual ? `${veiculoAtual.nome} · ${veiculoAtual.placa}` : "Escolha o veículo. Confira os itens. Aguarde a confirmação para sair."}</p></div></div>
+    {modo.tipo === "lista" && <ol className={fleet.driverSteps} aria-label="Etapas de uso do veículo"><li><span>01</span>Escolher veículo</li><li><span>02</span>Fazer inspeção</li><li><span>03</span>Registrar viagem</li></ol>}
     {status && <p role="status" aria-live="polite" className={styles.pointState}>{status}</p>}
-    {semSinal && <p className={styles.pointState} role="status">Sem internet. Estou usando o que está guardado no celular.</p>}
+    {semSinal && <p className={styles.frotaAtencao} role="status">Consulta offline · a disponibilidade não está confirmada. Não saia sem confirmação do servidor.</p>}
     {modo.tipo === "lista" && fila.length > 0 && <div className={styles.frotaContexto} role="status"><strong>{fila.length === 1 ? "1 registro guardado" : `${fila.length} registros guardados`} no celular</strong>
+      <p>Pendente de confirmação. Guardar no celular não libera o veículo nem confirma a saída.</p>
       <ul>{fila.map(p => <li key={p.id}>{ROTULO_FILA[p.payload.tipo]} · {p.nome} · aguardando sinal</li>)}</ul>
       <button type="button" className={styles.recordsButton} disabled={sincronizando} onClick={() => void sincronizar(true)}>{sincronizando ? "Enviando…" : "Enviar agora"}</button></div>}
     {modo.tipo === "lista" && recusadas.length > 0 && <div className={styles.frotaRuim} role="alert"><strong>Não foi aceito pelo sistema</strong>
@@ -205,7 +214,7 @@ export function Frota({ acoes }: { acoes: Acoes }) {
       {caminhoes.length > 0 && <><div className={styles.frotaFiltros} role="group" aria-label="Filtrar caminhões">{[{ id: "todos", nome: "Todos" }, { id: "disponivel", nome: "Disponíveis" }, { id: "comigo", nome: "Com você" }].map(f => <button type="button" key={f.id} aria-pressed={filtro === f.id} onClick={() => setFiltro(f.id)}>{f.nome}</button>)}</div>
       <label className={styles.frotaBusca}><Search size={18} aria-hidden/><input type="search" aria-label="Buscar caminhão ou placa" placeholder="Buscar nome ou placa" value={busca} onChange={e => setBusca(e.target.value)}/></label></>}
       {caminhoes.length > 0 && filtrados.length === 0 && <p className={styles.frotaVazio}>Nenhum caminhão neste filtro. <button type="button" className={styles.recordsButton} onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button></p>}
-      <ul className={styles.frotaLista}>{filtrados.map(v => {
+      <ul className={`${styles.frotaLista} ${fleet.driverVehicles}`}>{filtrados.map(v => {
         const minha = v.minha_viagem !== null, pode = v.situacao === "disponivel";
         const guardados = fila.filter(p => p.veiculo === v.id), temChecklistGuardado = guardados.some(p => p.payload.tipo === "checklist"), temSaidaGuardada = guardados.some(p => p.payload.tipo === "saida"), temChegadaGuardada = guardados.some(p => p.payload.tipo === "chegada");
         return <li key={v.id} className={v.situacao === "nao_liberado" || v.situacao === "manutencao" ? styles.frotaRuim : v.situacao === "em_uso" ? styles.frotaAtencao : undefined}>
@@ -215,12 +224,12 @@ export function Frota({ acoes }: { acoes: Acoes }) {
             {v.situacao === "nao_liberado" && <small>Não liberado. Fale com o engenheiro.</small>}
             {v.situacao === "manutencao" && <small>Está na oficina.</small>}
             {pode && <small>Checklist de hoje: {v.checklist_hoje ? ROTULO_RESULTADO_10A[v.checklist_hoje] : temChecklistGuardado ? "guardado no celular, será enviado" : "ainda não feito"}</small>}
-            {temSaidaGuardada && <small>Saída guardada no celular. Depois que ela for enviada, registre a chegada aqui.</small>}
+            {temSaidaGuardada && <small>Saída pendente de confirmação. Não inicie a viagem até o servidor confirmar.</small>}
             {temChegadaGuardada && <small>Chegada guardada no celular, será enviada.</small>}</div>
           <div className={styles.frotaBotoes}>
             {minha && !temChegadaGuardada && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("chegada", v)}>Registrar chegada</button>}
             {(pode || v.situacao === "nao_liberado") && <button type="button" disabled={enviando || carregando} className={v.checklist_hoje ? styles.recordsButton : styles.recordsDownload} onClick={() => abrir("checklist", v)}><ClipboardCheck size={18} aria-hidden/>{v.checklist_hoje ? "Refazer checklist" : "Fazer checklist"}</button>}
-            {pode && !temSaidaGuardada && ((v.checklist_hoje && v.checklist_hoje !== "nao_liberado") || temChecklistGuardado) && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("saida", v)}>Registrar saída</button>}
+            {pode && !temSaidaGuardada && v.checklist_hoje && v.checklist_hoje !== "nao_liberado" && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("saida", v)}>Registrar saída</button>}
           </div></li>; })}</ul>
       <details className={styles.frotaHistorico}><summary>Minhas últimas saídas <span>{viagens.length} registros</span></summary>
       {viagens.length === 0 ? <p>Nenhuma saída ainda.</p> : <ul className={styles.pedidosLista}>{(historicoCompleto ? viagens : viagens.slice(0, 5)).map(t => <li key={t.id}><div><strong>{t.veiculo} · {t.destino}</strong>

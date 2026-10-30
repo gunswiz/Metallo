@@ -10,6 +10,10 @@ import { can } from "@metallo/core";
 import { requireProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import Link from "next/link";
 import { PackageCheck, Plus } from "lucide-react";
+import { EpiPainelOperacional } from "@/02_COMPONENTES_VISUAIS/epi-painel-operacional";
+import { getEpiOperations } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
+import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
+import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 
 export default async function EpisPage({ searchParams }: { searchParams: SearchParams }) {
   await requireCapability("epi:read");
@@ -20,6 +24,8 @@ export default async function EpisPage({ searchParams }: { searchParams: SearchP
   const requestedKind = Array.isArray(raw.kind) ? raw.kind[0] : raw.kind;
   const kind = requestedKind === "uniform" ? "uniform" : "epi";
   const result = await service.listEpiItems(input, kind);
+  const operacaoLiberada = kind === "epi" && can(profile, "epi:write") && recursosNovosLiberados(getSupabaseEnv().url);
+  const fluxo = operacaoLiberada ? await getEpiOperations().then(repo => repo.delivery3d()).catch(() => null) : null;
   return (
     <>
       <PageHeader eyebrow={kind === "uniform" ? "FARDAMENTO" : "PROTEÇÃO INDIVIDUAL"} title={kind === "uniform" ? "Fardamento" : "EPIs"} description={kind === "uniform" ? "Camisas e calças por cor e tamanho disponíveis na COSEM." : "Catálogo, C.A., variantes e estoque disponível na COSEM."} actions={<>
@@ -28,6 +34,8 @@ export default async function EpisPage({ searchParams }: { searchParams: SearchP
         {can(profile, "admin:manage") && <Link className="button secondary" href={`/epis/novo?kind=${kind}`}><Plus size={16} />{kind === "uniform" ? "Novo fardamento" : "Novo EPI"}</Link>}
         {can(profile, "epi:write") && <Link className="button primary" href={`/epis/entrega?kind=${kind}`}><PackageCheck size={16} />Registrar entrega</Link>}
       </>} />
+      {fluxo && <EpiPainelOperacional fluxo={fluxo}/>}
+      {operacaoLiberada && !fluxo && <p role="status" className="alert">Não foi possível atualizar as pendências de entrega. O catálogo continua disponível. <Link href="/epis/entrega-em-lote">Consultar entregas</Link></p>}
       <div className="operation-guide"><strong>Fluxo correto:</strong><span>Cadastro cria o tipo</span><span>Entrada soma unidades à COSEM</span><span>Entrega baixa o lote e vincula ao funcionário</span></div>
       <section className="panel">
         <div className="panel-body"><div className="module-tabs"><Link className={kind === "epi" ? "active" : undefined} href="/epis">EPIs</Link><Link className={kind === "uniform" ? "active" : undefined} href="/epis?kind=uniform">Fardamento</Link></div><SearchToolbar placeholder="Nome, código ou C.A." q={input.q}>{kind === "uniform" && <input type="hidden" name="kind" value="uniform" />}</SearchToolbar></div>

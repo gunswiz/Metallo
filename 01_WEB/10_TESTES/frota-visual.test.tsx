@@ -20,6 +20,7 @@ const painel = (patch: Partial<PainelGestao10a> = {}): PainelGestao10a => ({
 const itens: ItemChecklist10a[] = Array.from({ length: 26 }, (_, i) => ({ codigo: i + 1, nome: `Conferência ${i + 1}`, critico: i === 0 }));
 function acoes(veiculos: CaminhaoApp10a[] = [caminhao()], checklistItens = itens) {
   return {
+    quem: "conta-teste",
     caminhoes: vi.fn(async () => veiculos), itens: vi.fn(async () => checklistItens), viagens: vi.fn(async (): Promise<ViagemApp10a[]> => []),
     checklist: vi.fn(async () => "liberado" as const), saida: vi.fn(async () => {}), chegada: vi.fn(async () => true),
     foto: vi.fn(async () => "foto-do-defeito"),
@@ -47,6 +48,21 @@ describe("Início com prioridades", () => {
 });
 
 describe("Frota da Gestão", () => {
+  it("seleciona o resumo e leva ao assunto pendente sem sair da lista", () => {
+    render(<PainelFrota frota={[painel(), painel({ id: 2, nome: "Veículo com documento", docs_vencidos: 2 })]}/>);
+    const resumo = screen.getByRole("complementary", { name: "Resumo do veículo selecionado" });
+    expect(within(resumo).getByRole("link", { name: "Regularizar documentos" })).toHaveAttribute("href", "/frota/2?aba=documentos");
+    fireEvent.click(screen.getByRole("button", { name: "Ver resumo de Munck São José" }));
+    expect(within(resumo).getByRole("link", { name: "Conferir inspeções" })).toHaveAttribute("href", "/frota/1?aba=checklists");
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "documento" } });
+    expect(within(resumo).getByRole("link", { name: "Regularizar documentos" })).toHaveAttribute("href", "/frota/2?aba=documentos");
+  });
+  it("prioriza bloqueios e vencimentos sem alterar a ordem dos dados de origem", () => {
+    const frota = [painel(), painel({ id: 2, nome: "Vencido", docs_vencidos: 1 }), painel({ id: 3, nome: "Bloqueado", situacao: "nao_liberado" })];
+    render(<PainelFrota frota={frota}/>);
+    expect(screen.getAllByRole("article").map(a => within(a).getByRole("heading").textContent)).toEqual(["Bloqueado", "Vencido", "Munck São José"]);
+    expect(frota.map(v => v.id)).toEqual([1, 2, 3]);
+  });
   it("busca por placa, nome sem acento e motorista; limpa uma busca vazia", () => {
     render(<PainelFrota frota={[painel(), painel({ id: 2, nome: "Munck 02", placa: "DEF4G56", motorista: "João Silva", situacao: "em_uso", destino: "Obra Norte" })]}/>);
     const busca = screen.getByRole("searchbox");
@@ -78,6 +94,49 @@ describe("Frota da Gestão", () => {
 });
 
 describe("Caminhões do funcionário", () => {
+  it("ignora rascunho legado sem proprietário e não persiste sem identidade", async () => {
+    const legado = JSON.stringify({ em: Date.now(), tipo: "checklist", veiculo: 1, etapa: 0, respostas: {}, obs: "Legado sem dono" });
+    sessionStorage.setItem("metallo-frota-rascunho", legado);
+    render(<Frota acoes={{ ...acoes(), quem: undefined }}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    expect(screen.queryByDisplayValue("Legado sem dono")).not.toBeInTheDocument();
+    expect(sessionStorage.getItem("metallo-frota-rascunho")).toBe(legado);
+    expect(sessionStorage.length).toBe(1);
+  });
+  it("um checklist conforme não anuncia liberação de um veículo que continua bloqueado", async () => {
+    const api = acoes([caminhao({ situacao: "nao_liberado" })], [itens[0]]);
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    fireEvent.click(screen.getByRole("button", { name: "Conforme" }));
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Enviar checklist" }));
+    await screen.findByText(/bloqueios anteriores continuam válidos/);
+    expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Checklist feito. Caminhão liberado.")).not.toBeInTheDocument();
+  });
+  it("não restaura o rascunho de outra conta ao trocar de identidade na mesma tela", async () => {
+    const api = acoes();
+    const view = render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    fireEvent.click(within(screen.getByRole("group", { name: "Conferência 1" })).getByRole("button", { name: "Problema" }));
+    fireEvent.change(screen.getByLabelText("O que está errado: Conferência 1"), { target: { value: "Relato da primeira conta" } });
+    view.rerender(<Frota acoes={{ ...acoes(), quem: "outra-conta" }}/>);
+    await screen.findByRole("button", { name: "Fazer checklist" });
+    expect(screen.queryByDisplayValue("Relato da primeira conta")).not.toBeInTheDocument();
+    expect(sessionStorage.getItem("metallo-frota-rascunho:outra-conta")).toBeNull();
+    view.rerender(<Frota acoes={api}/>);
+    expect(await screen.findByDisplayValue("Relato da primeira conta")).toBeInTheDocument();
+  });
+  it("checklist pendente não oferece saída nem confirmação de liberação", async () => {
+    localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "pendente", veiculo: 1, nome: "Munck São José", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "", obs: "", respostas: [] } }]));
+    const online = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+    try {
+      render(<Frota acoes={acoes()}/>);
+      await screen.findByText("1 registro guardado no celular");
+      expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
+      expect(screen.getByText(/Guardar no celular não libera/)).toBeInTheDocument();
+    } finally { online.mockRestore(); }
+  });
   it("prioriza a chegada do caminhão com a pessoa e oferece saída só com checklist liberado", async () => {
     const api = acoes([caminhao(), caminhao({ id: 2, nome: "Meu caminhão", situacao: "em_uso", minha_viagem: 55 }), caminhao({ id: 3, nome: "Liberado", checklist_hoje: "ressalvas" }), caminhao({ id: 4, nome: "Bloqueado", situacao: "nao_liberado", checklist_hoje: "nao_liberado" })]);
     const { container } = render(<Frota acoes={api}/>);
@@ -142,7 +201,7 @@ describe("Caminhões do funcionário", () => {
     expect(respostas[0]).toEqual({ codigo: 1, situacao: "N", obs: "Freio com ruído", foto: "foto-do-defeito" });
     expect(respostas[25]).toEqual({ codigo: 26, situacao: "NA", obs: "" });
     expect(chave).toMatch(/^[a-f0-9-]{36}$/);
-    await screen.findByText("Checklist feito. Caminhão liberado.");
+    await screen.findByText(/Checklist registrado sem não conformidades/);
   });
   it("mantém a etapa quando um problema não tem descrição", async () => {
     render(<Frota acoes={acoes()}/>);

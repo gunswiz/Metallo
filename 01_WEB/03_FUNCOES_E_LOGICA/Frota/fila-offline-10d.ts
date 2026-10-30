@@ -107,7 +107,7 @@ export async function apagarFotoLocal(id: string) { if (FOTO_LOCAL.test(id)) awa
 
 // ---- Envio
 export const textoChecklist10d = (r: "liberado" | "ressalvas" | "nao_liberado") =>
-  r === "liberado" ? "Checklist feito. Caminhão liberado." : r === "ressalvas" ? "Checklist feito com ressalvas. O engenheiro foi avisado." : "ATENÇÃO: caminhão NÃO liberado. Avise o engenheiro.";
+  r === "liberado" ? "Checklist registrado sem não conformidades. Confira a situação do veículo antes de sair; bloqueios anteriores continuam válidos." : r === "ressalvas" ? "Checklist feito com ressalvas. O engenheiro foi avisado. Bloqueios anteriores continuam válidos." : "ATENÇÃO: caminhão NÃO liberado. Avise o engenheiro.";
 
 const fotosDo = (p: Pendente): string[] => p.payload.tipo === "checklist" ? p.payload.respostas.flatMap(r => r.foto ? [r.foto] : []) : p.payload.tipo === "chegada" && p.payload.foto ? [p.payload.foto] : [];
 
