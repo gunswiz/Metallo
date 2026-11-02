@@ -20,7 +20,7 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
   newOperationLabel?: string | null;
   refreshOnComplete?: boolean; completionHref?: string;
 }) {
-  const [state, submit, pending] = useActionState(async (previous: OperationState, data: FormData) => {
+  const execute = async (previous: OperationState, data: FormData): Promise<OperationState> => {
     let result: OperationState;
     try { result = await action(previous, data); }
     catch (error) {
@@ -34,7 +34,13 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
       } catch { return { ...result, error: "Operação confirmada, mas não foi possível encerrar a tentativa neste navegador. Confira os registros antes de iniciar outra." }; }
     }
     return result;
-  }, {});
+  };
+  const [actionState, submit, actionPending] = useActionState(execute, {});
+  const [confirmedState, setConfirmedState] = useState<OperationState>({});
+  const [confirmedPending, setConfirmedPending] = useState(false);
+  const confirmedRunning = useRef(false);
+  const state = operationKeyScope ? confirmedState : actionState;
+  const pending = operationKeyScope ? confirmedPending : actionPending;
   const operationKeyInput = useRef<HTMLInputElement>(null);
   const [storageError, setStorageError] = useState(false);
   const [changedElsewhere, setChangedElsewhere] = useState(false);
@@ -70,7 +76,7 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
   // The action still supplies the POST fallback before hydration.
   return <form action={submit} onSubmit={(event) => {
     event.preventDefault();
-    if (pending || (operationKeyScope && !hydrated)) return;
+    if (pending || confirmedRunning.current || (operationKeyScope && !hydrated)) return;
     const data = new FormData(event.currentTarget);
     if (operationKeyScope) {
       try {
@@ -83,7 +89,14 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
         setChangedElsewhere(false);
       } catch { setStorageError(true); return; }
     }
-    startTransition(() => submit(data));
+    if (operationKeyScope) {
+      // A confirmação explícita não participa da transição da atualização RSC.
+      // O runtime pode atualizar a página antes de entregar o retorno da ação.
+      confirmedRunning.current = true; setConfirmedPending(true);
+      void execute(confirmedState, data).then(setConfirmedState).finally(() => {
+        confirmedRunning.current = false; setConfirmedPending(false);
+      });
+    } else startTransition(() => submit(data));
   }}>
     {state.error && <div className="alert error" role="alert">{state.error}</div>}
     {storageError && <div className="alert error" role="alert">Não foi possível guardar esta tentativa no navegador. Confira o armazenamento local antes de enviar novamente.</div>}

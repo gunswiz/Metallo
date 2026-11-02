@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToString } from "react-dom/server";
+import { useEffect, useState } from "react";
 const navigation = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", async importOriginal => ({ ...await importOriginal<typeof import("next/navigation")>(), useRouter: () => navigation }));
 vi.mock("@/app/actions/epi-completo", () => ({ deliverEpiBatch: vi.fn(), requestEpi: vi.fn(), saveEmployeeKit: vi.fn(), prepareEpiKit3d: vi.fn(async () => ({ error: "Resposta não confirmada" })) }));
@@ -15,6 +16,21 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 const firstKey = "11111111-1111-4111-8111-111111111111";
 const secondKey = "22222222-2222-4222-8222-222222222222";
 describe("formulários de operação", () => {
+  it("recebe confirmação mesmo quando a ação aguarda a tela atualizada ser montada", async () => {
+    function Commit({ finish }: { finish: () => void }) { useEffect(finish, [finish]); return <p>Registro atualizado</p>; }
+    function Runtime() {
+      const [finish, setFinish] = useState<(() => void) | null>(null);
+      const action = async () => {
+        await new Promise<void>(resolve => setFinish(() => resolve));
+        return { completedKey: firstKey, destination: "/epis" };
+      };
+      return <><OperationForm action={action} label="Confirmar" operationKeyScope="runtime" initialOperationKey={firstKey}><span/></OperationForm>{finish && <Commit finish={finish}/>}</>;
+    }
+    const view = render(<Runtime/>);
+    fireEvent.submit(view.container.querySelector("form")!);
+    await screen.findByText("Operação confirmada pelo sistema. Esta tentativa foi concluída.");
+    expect(localStorage.getItem("runtime")).toBeNull();
+  });
   it("tratamento confirmado atualiza a lista preservando o funcionário", async () => {
     const destination = "/epis/entrega-em-lote?feedback=1&employee=funcionario#confirmacoes";
     const action = vi.fn().mockResolvedValueOnce({ error: "Sem confirmação" }).mockResolvedValue({ completedKey: firstKey });
