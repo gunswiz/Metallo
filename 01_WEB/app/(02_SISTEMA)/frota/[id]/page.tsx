@@ -61,7 +61,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
         <h3>{r.por} · {r.relato.tipo === "checklist" ? "Checklist" : "Chegada"}</h3><p>Recebido em {fmt(r.recebido_em)}</p>
         {r.relato.obs && <p>{r.relato.obs}</p>}{r.relato.problema && <p>{r.relato.problema}</p>}
         {r.relato.respostas?.filter(i => i.situacao === "N").map(i => <p key={i.codigo}>Item {i.codigo} do relato original: {i.obs}</p>)}
-        {r.conferido_em ? <p>Conferido em {fmt(r.conferido_em)}: {r.motivo}</p> : podeCadastrar && v.situacao === "disponivel" ? <OperationForm action={conferirRecusaFrota10e} label="Confirmar conferência deste relato">
+        {r.conferido_em ? <p>Conferido em {fmt(r.conferido_em)}: {r.motivo}</p> : podeCadastrar && v.ativo && v.situacao === "disponivel" ? <OperationForm action={conferirRecusaFrota10e} label="Confirmar conferência deste relato">
           <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="employeeId" value={r.employee_id}/><input type="hidden" name="chave" value={r.chave}/>
           <label className="full">O que foi verificado e por que a pendência pode ser encerrada<input name="motivo" minLength={5} maxLength={300} required/></label>
           <p className="muted">Confirme somente após verificar este defeito. O motorista poderá consultar a conferência no celular; as regras de saída continuam valendo.</p>

@@ -81,6 +81,11 @@ it("conferência mostra o relato original e só oferece confirmação ao respons
   operador.unmount(); estado.role = "admin";
   vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, veiculo: { ...ficha.veiculo, situacao: "nao_liberado" } });
   vi.mocked(lerRecusasFrota10e).mockResolvedValueOnce([relato]);
+  const bloqueado = render(await pagina());
+  expect(screen.queryByRole("button", { name: "Confirmar conferência deste relato" })).not.toBeInTheDocument();
+  bloqueado.unmount();
+  vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, veiculo: { ...ficha.veiculo, ativo: false } });
+  vi.mocked(lerRecusasFrota10e).mockResolvedValueOnce([relato]);
   render(await pagina());
   expect(screen.queryByRole("button", { name: "Confirmar conferência deste relato" })).not.toBeInTheDocument();
 });
