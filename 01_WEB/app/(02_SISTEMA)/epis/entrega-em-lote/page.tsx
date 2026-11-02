@@ -27,7 +27,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
   {local&&choices&&flow&&<section className="panel" aria-labelledby="epi-3d-heading"><header className="panel-header"><div><h2 id="epi-3d-heading">Preparação e entrega de EPI · laboratório</h2><p>Kit sugerido, preparação e entrega são etapas separadas. SIMULAÇÃO SEM VALOR OFICIAL.</p></div></header>
     {(query.prepared||query.delivered||query.feedback)&&<div className="alert success" role="status">Operação local registrada. Confira o estado atualizado abaixo.</div>}
     <div className="panel-body"><form method="get" className="form-grid"><label className="full">Funcionário para preparar kit<select name="employee" defaultValue={employeeId}><option value="">Selecione</option>{choices.employees.map(entry=><option key={entry.id} value={entry.id}>{entry.full_name}</option>)}</select></label><div className="form-actions"><button className="button secondary" type="submit">Consultar kit sugerido</button></div></form></div>
-    {employee&&<EpiPreparacao3d employeeId={employee.id} employeeName={employee.full_name} batches={batches} suggestion={suggestion}
+    {employee&&<EpiPreparacao3d actorId={profile.id} employeeId={employee.id} employeeName={employee.full_name} batches={batches} suggestion={suggestion}
       approved={flow.approved.filter(request=>request.employee_id===employee.id)} key={`${employee.id}:${query.exchange ?? ""}`} initialExchangeId={query.exchange} keyId={randomUUID()}/>}
     <div className="panel-body" id="kits-preparados"><h3>Kits preparados</h3><p>O kit abaixo está separado. Ele ainda não comprova entrega física nem aparece como entrega ao funcionário.</p>
       {flow.prepared.length===0?<p>Nenhum kit preparado no laboratório.</p>:<div className="list">{flow.prepared.map(prep=><article className="list-row" key={prep.preparation_id}>
@@ -35,8 +35,9 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
           <span>{prep.lines.map(line=>`${line.item_name} · ${line.quantity} ${line.unit}${line.variant?` · ${line.variant}`:""}`).join("; ")}</span>
           {prep.exchange_request_id&&<span>Vinculado à solicitação de troca {prep.exchange_request_id.slice(0,8)}</span>}
           <span>{prep.delivery_group_id?"Entrega registrada — confirmação do funcionário separada":"Kit preparado — entrega não registrada"}</span></div>
-        {!prep.delivery_group_id&&<OperationForm action={registerEpiDelivery3d} label="Registrar entrega" pendingLabel="Registrando…">
-          <input type="hidden" name="preparationId" value={prep.preparation_id}/><input type="hidden" name="idempotencyKey" value={randomUUID()}/>
+        {!prep.delivery_group_id&&<OperationForm action={registerEpiDelivery3d} label="Registrar entrega" pendingLabel="Registrando…"
+          operationKeyScope={`metallo:3d:delivery:${profile.id}:${prep.preparation_id}`} initialOperationKey={randomUUID()} newOperationLabel={null}>
+          <input type="hidden" name="preparationId" value={prep.preparation_id}/>
           <p className="full">Confira todos os itens do kit. Registre somente após a entrega física.</p>
           <label className="full"><input type="checkbox" name="confirmation" value="on" required/> Confirmo que estes itens foram entregues fisicamente.</label>
         </OperationForm>}</article>)}</div>}
@@ -46,13 +47,15 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
         <span>Manifestação: {entry.feedback_status?statusLabel[entry.feedback_status]??entry.feedback_status:"Confirmação pendente"}</span>
         {entry.item_name&&<span>Item: {entry.item_name}</span>}{entry.category&&<span>Categoria: {entry.category}</span>}{entry.details&&<span>Relato: {entry.details}</span>}
         {entry.public_message&&<span>Mensagem ao funcionário: {entry.public_message}</span>}{entry.internal_note&&<span>Nota interna: {entry.internal_note}</span>}</div>
-      {(entry.feedback_status==="DIVERGENCIA"||entry.feedback_status==="EM_ANALISE")&&<OperationForm action={manageEpiFeedback3d} label="Registrar tratamento">
-        <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="idempotencyKey" value={randomUUID()}/>
+      {(entry.feedback_status==="DIVERGENCIA"||entry.feedback_status==="EM_ANALISE")&&<OperationForm key={`${entry.group_id}:${entry.feedback_status}`} action={manageEpiFeedback3d} label="Registrar tratamento" refreshOnComplete completionHref={`/epis/entrega-em-lote?feedback=1${employeeId ? `&employee=${employeeId}` : ""}#confirmacoes`}
+        operationKeyScope={`metallo:3d:feedback:${profile.id}:${entry.group_id}:${entry.feedback_status}`} initialOperationKey={randomUUID()} newOperationLabel="Iniciar outro tratamento">
+        <input type="hidden" name="groupId" value={entry.group_id}/>
         <label>Ação<select name="action" defaultValue={entry.feedback_status==="DIVERGENCIA"?"EM_ANALISE":"RESOLVIDA"}><option value="EM_ANALISE">Colocar em análise</option><option value="RESOLVIDA">Registrar resolução</option></select></label>
         <label>Mensagem ao funcionário<textarea name="publicMessage" maxLength={240} rows={2}/></label><label>Nota interna da Gestão<textarea name="internalNote" maxLength={240} rows={2}/></label>
       </OperationForm>}
-      {(entry.feedback_status===null||entry.feedback_status==="RESOLVIDA")&&<OperationForm action={manageEpiFeedback3d} label="Registrar recusa">
-        <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="idempotencyKey" value={randomUUID()}/><input type="hidden" name="action" value="RECUSA"/>
+      {(entry.feedback_status===null||entry.feedback_status==="RESOLVIDA")&&<OperationForm action={manageEpiFeedback3d} label="Registrar recusa"
+        operationKeyScope={`metallo:3d:refusal:${profile.id}:${entry.group_id}:${entry.feedback_status ?? "pendente"}`} initialOperationKey={randomUUID()} newOperationLabel={null}>
+        <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="action" value="RECUSA"/>
         <p className="full">Use só se o funcionário recusou receber ou confirmar este EPI. O registro não pode ser apagado; o funcionário verá a mensagem e ainda poderá confirmar depois.</p>
         <label className="full">O que foi recusado (o funcionário verá)<textarea name="publicMessage" maxLength={240} rows={2} required/></label>
         <label className="full">Testemunha / observação interna<textarea name="internalNote" maxLength={240} rows={2}/></label>

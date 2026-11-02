@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { z } from "zod";
 import type { Database, Tables } from "@metallo/types";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
@@ -10,6 +11,16 @@ export type ExchangeManagementRow = { request_id: string; employee_name: string;
 export type PreparedKit3d = { preparation_id: string; employee_id: string; employee_name: string; prepared_at: string; lines: { item_id: string; stock_batch_id: string; quantity: number; item_name: string; unit: string; variant: string | null; ca: string | null }[]; exchange_request_id: string | null; delivery_group_id: string | null };
 export type ApprovedExchange3d = { request_id: string; employee_id: string; employee_name: string; item_id: string; item_name: string; source_delivery_id: string; delivery_group_id: string | null };
 export type DeliveryFeedback3d = { group_id: string; employee_name: string; delivered_at: string; feedback_status: string | null; item_name: string | null; category: string | null; details: string | null; public_message: string | null; internal_note: string | null };
+
+const nullableText = z.string().nullable();
+const preparedSchema: z.ZodType<PreparedKit3d[]> = z.array(z.object({
+  preparation_id: z.string(), employee_id: z.string(), employee_name: z.string(), prepared_at: z.string(),
+  lines: z.array(z.object({ item_id: z.string(), stock_batch_id: z.string(), quantity: z.number().positive(), item_name: z.string(), unit: z.string(), variant: nullableText, ca: nullableText })),
+  exchange_request_id: nullableText, delivery_group_id: nullableText,
+}));
+const approvedSchema: z.ZodType<ApprovedExchange3d[]> = z.array(z.object({ request_id: z.string(), employee_id: z.string(), employee_name: z.string(), item_id: z.string(), item_name: z.string(), source_delivery_id: z.string(), delivery_group_id: nullableText }));
+const feedbackSchema: z.ZodType<DeliveryFeedback3d[]> = z.array(z.object({ group_id: z.string(), employee_name: z.string(), delivered_at: z.string(), feedback_status: nullableText, item_name: nullableText, category: nullableText, details: nullableText, public_message: nullableText, internal_note: nullableText }));
+const suggestionSchema = z.array(z.object({ item_id: z.string(), item_name: z.string(), unit: z.string(), recommended_quantity: z.number().int().positive().max(100) }));
 
 export type EpiChoice = Tables<"epi_items"> & { epi_item_variants: Array<{ value: string; label: string; sort_order: number }> };
 export type EmployeeChoice = Tables<"epi_employees"> & { teams: { name: string } | null };
@@ -51,13 +62,13 @@ export class EpiOperationsRepository {
     const [prepared, approved, feedback] = await Promise.all(names.map(name => this.client.rpc(name as never)));
     if (prepared.error || approved.error || feedback.error || !Array.isArray(prepared.data) || !Array.isArray(approved.data) || !Array.isArray(feedback.data))
       throw new Error("Não foi possível consultar o fluxo local de entrega.");
-    return { prepared: prepared.data as PreparedKit3d[], approved: approved.data as ApprovedExchange3d[], feedback: feedback.data as DeliveryFeedback3d[] };
+    return { prepared: preparedSchema.parse(prepared.data), approved: approvedSchema.parse(approved.data), feedback: feedbackSchema.parse(feedback.data) };
   }
   async kitSuggestion3d(employeeId: string) {
     if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Sugestão disponível somente no laboratório local.");
     const result = await this.client.rpc("admin_epi_kit_suggestion_3d" as never, { p_employee_id: employeeId } as never);
     if (result.error || !Array.isArray(result.data)) throw new Error("Não foi possível consultar a sugestão do kit.");
-    return result.data as { item_id: string; item_name: string; unit: string; recommended_quantity: number }[];
+    return suggestionSchema.parse(result.data);
   }
   async exchangeRequests(): Promise<ExchangeManagementRow[]> {
     if (!recursosNovosLiberados(getSupabaseEnv().url)) throw new Error("Trocas de EPI disponíveis somente no laboratório local.");

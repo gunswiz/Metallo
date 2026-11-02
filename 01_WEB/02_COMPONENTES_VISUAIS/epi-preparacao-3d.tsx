@@ -9,8 +9,8 @@ type Suggestion = { item_id: string; item_name: string; unit: string; recommende
 type Exchange = { request_id: string; item_id: string; item_name: string; delivery_group_id: string | null };
 type Line = { item_id: string; stock_batch_id: string; quantity: number };
 
-export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion, approved, keyId, initialExchangeId = "" }:
-  { employeeId: string; employeeName: string; batches: Batch[]; suggestion: Suggestion[]; approved: Exchange[]; keyId: string; initialExchangeId?: string }) {
+export function EpiPreparacao3d({ actorId, employeeId, employeeName, batches, suggestion, approved, keyId, initialExchangeId = "" }:
+  { actorId: string; employeeId: string; employeeName: string; batches: Batch[]; suggestion: Suggestion[]; approved: Exchange[]; keyId: string; initialExchangeId?: string }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [chosen, setChosen] = useState("");
   const [amount, setAmount] = useState(1);
@@ -21,13 +21,14 @@ export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion,
   function suggest() {
     const next: Line[] = [];
     for (const entry of suggestion.filter(item => !exchangeId || item.item_id === exchangeItemId)) {
-      const available = batches.find(candidate => candidate.item_id === entry.item_id && candidate.quantity >= entry.recommended_quantity);
+      // O contrato da sugestão não informa tamanho: variantes exigem escolha manual.
+      const available = batches.find(candidate => candidate.item_id === entry.item_id && !candidate.variant && candidate.quantity >= entry.recommended_quantity);
       if (available && !next.some(line => line.stock_batch_id === available.id))
         next.push({ item_id: entry.item_id, stock_batch_id: available.id, quantity: entry.recommended_quantity });
     }
     setLines(next);
-    setNotice(next.length === suggestion.filter(item => !exchangeId || item.item_id === exchangeItemId).length ? "Sugestão carregada. Revise cada item, tamanho e quantidade antes de preparar." :
-      "Sugestão parcial: alguns itens não possuem lote com saldo suficiente. Revise e complete manualmente.");
+    setNotice(next.length === 0 ? "Nenhum lote selecionado pela sugestão. Escolha manualmente o item, o tamanho e um lote com saldo." : next.length === suggestion.filter(item => !exchangeId || item.item_id === exchangeItemId).length ? "Sugestão carregada. Revise cada item, tamanho e quantidade antes de preparar." :
+      "Sugestão parcial: escolha manualmente os tamanhos e os itens sem lote selecionado. Confira o saldo.");
   }
   function add() {
     if (!batch || (exchangeId && batch.item_id !== exchangeItemId) || !Number.isInteger(amount) || amount < 1 || amount > Math.min(batch.quantity, 100) || lines.some(line => line.stock_batch_id === batch.id) || lines.length >= 30) {
@@ -41,9 +42,9 @@ export function EpiPreparacao3d({ employeeId, employeeName, batches, suggestion,
     <p>O kit é uma sugestão configurada pela empresa. A Gestão revisa os itens. Preparar não registra entrega nem baixa estoque.</p>
     {suggestion.length > 0 ? <button type="button" className="button secondary" onClick={suggest}>Carregar sugestão da função</button> : <p className="muted">Sem sugestão de EPI configurada para esta função. Adicione itens manualmente.</p>}
     {notice && <p role="status" className="alert">{notice}</p>}
-    <OperationForm action={prepareEpiKit3d} label="Preparar kit" pendingLabel="Preparando…">
+    <OperationForm action={prepareEpiKit3d} label="Preparar kit" pendingLabel="Preparando…"
+      operationKeyScope={`metallo:3d:prepare:${actorId}:${employeeId}`} initialOperationKey={keyId} newOperationLabel="Iniciar outro kit">
       <input type="hidden" name="employeeId" value={employeeId}/>
-      <input type="hidden" name="idempotencyKey" value={keyId}/>
       <input type="hidden" name="lines" value={JSON.stringify(lines)}/>
       <label className="full">Solicitação de troca aprovada (opcional)
         <select name="exchangeRequestId" value={exchangeId} onChange={event => { setExchangeId(event.target.value); setLines([]); setChosen(""); setAmount(1); }}>

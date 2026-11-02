@@ -1,0 +1,108 @@
+{
+  "at": "2026-11-02T06:43:15.845Z",
+  "target": "metallo-teste",
+  "checks": [
+    {
+      "name": "veículo fictício exclusivo criado",
+      "ok": true
+    },
+    {
+      "name": "checklist simultâneo igual tem um único resultado",
+      "ok": true
+    },
+    {
+      "name": "mesma chave rejeita checklist alterado: p_obs",
+      "ok": true
+    },
+    {
+      "name": "mesma chave rejeita checklist alterado: p_ciente",
+      "ok": true
+    },
+    {
+      "name": "mesma chave rejeita checklist alterado: p_veiculo",
+      "ok": true
+    },
+    {
+      "name": "saída registrada",
+      "ok": true
+    },
+    {
+      "name": "saída repetida mantém viagem",
+      "ok": true
+    },
+    {
+      "name": "saída alterada rejeitada",
+      "ok": true
+    },
+    {
+      "name": "chegada registrada",
+      "ok": true
+    },
+    {
+      "name": "chegada repetida aceita",
+      "ok": true
+    },
+    {
+      "name": "chegada alterada rejeitada",
+      "ok": true
+    },
+    {
+      "name": "relato original recebido sem autorizar saída",
+      "ok": true
+    },
+    {
+      "name": "recibo repetido preserva recebimento",
+      "ok": true
+    },
+    {
+      "name": "recibo rejeita conteúdo trocado",
+      "ok": true
+    },
+    {
+      "name": "funcionário não consulta relatos de Gestão",
+      "ok": true
+    },
+    {
+      "name": "Gestão lê o relato preservado",
+      "ok": true
+    },
+    {
+      "name": "funcionário não confirma conferência",
+      "ok": true
+    },
+    {
+      "name": "Gestão confirma relato específico",
+      "ok": true
+    },
+    {
+      "name": "reenvio da confirmação é seguro",
+      "ok": true
+    },
+    {
+      "name": "motivo da confirmação é imutável",
+      "ok": true
+    },
+    {
+      "name": "motorista recebe prova vinculada ao conteúdo",
+      "ok": true
+    },
+    {
+      "name": "outra conta não herda conferência da chave",
+      "ok": true
+    },
+    {
+      "name": "conferência não duplica manutenção nem checklist",
+      "ok": true
+    },
+    {
+      "name": "relato de chegada encerrada também pode ser conferido",
+      "ok": true
+    },
+    {
+      "name": "outra conta não vincula viagem alheia",
+      "ok": true
+    }
+  ],
+  "fixtureDeactivated": true,
+  "result": "25/25"
+}

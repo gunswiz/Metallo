@@ -1,59 +1,100 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { unstable_rethrow, useRouter } from "next/navigation";
 import type { OperationState } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
 export type OperationAction = (previous: OperationState, formData: FormData) => Promise<OperationState>;
+const subscribeHydration = () => () => {};
+const validKey = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+
+function AtualizarAposConfirmacao({ destination }: { destination: string }) {
+  const router = useRouter();
+  useEffect(() => { router.replace(destination); router.refresh(); }, [router, destination]);
+  return <p>Atualizando os registros…</p>;
+}
 
 export function OperationForm({ action, children, label, pendingLabel = "Salvando…", operationKeyScope,
-  initialOperationKey }: {
+  initialOperationKey, newOperationLabel = "Iniciar outra entrega", refreshOnComplete = false, completionHref }: {
   action: OperationAction; children: React.ReactNode; label: string; pendingLabel?: string;
   operationKeyScope?: string; initialOperationKey?: string;
+  newOperationLabel?: string | null;
+  refreshOnComplete?: boolean; completionHref?: string;
 }) {
-  const [state, submit, pending] = useActionState(action, {});
+  const [state, submit, pending] = useActionState(async (previous: OperationState, data: FormData) => {
+    let result: OperationState;
+    try { result = await action(previous, data); }
+    catch (error) {
+      unstable_rethrow(error);
+      return { error: "Não foi possível receber a confirmação. A tentativa foi preservada. Confira os registros antes de reenviar." };
+    }
+    if (operationKeyScope && result.completedKey && result.completedKey === data.get("idempotencyKey")) {
+      try {
+        // Não apaga uma tentativa nova iniciada em outra aba durante o envio.
+        if (localStorage.getItem(operationKeyScope) === result.completedKey) localStorage.removeItem(operationKeyScope);
+      } catch { return { ...result, error: "Operação confirmada, mas não foi possível encerrar a tentativa neste navegador. Confira os registros antes de iniciar outra." }; }
+    }
+    return result;
+  }, {});
   const operationKeyInput = useRef<HTMLInputElement>(null);
   const [storageError, setStorageError] = useState(false);
+  const [changedElsewhere, setChangedElsewhere] = useState(false);
+  const hydrated = useSyncExternalStore(subscribeHydration, () => true, () => false);
   useEffect(() => {
-    if (!operationKeyScope || !initialOperationKey) return;
+    if (!operationKeyScope || !initialOperationKey || state.completedKey) return;
     try {
       const existing = localStorage.getItem(operationKeyScope);
-      if (existing && operationKeyInput.current) operationKeyInput.current.value = existing;
-      else localStorage.setItem(operationKeyScope, initialOperationKey);
+      const current = existing || initialOperationKey;
+      if (!existing) localStorage.setItem(operationKeyScope, current);
+      if (operationKeyInput.current) {
+        operationKeyInput.current.defaultValue = current;
+        operationKeyInput.current.value = current;
+      }
     } catch { /* The server still enforces one key per submitted request. */ }
-  }, [operationKeyScope, initialOperationKey]);
+  }, [operationKeyScope, initialOperationKey, state.completedKey]);
   const startNewOperation = () => {
     if (!operationKeyScope) return;
-    const next = crypto.randomUUID();
-    try { localStorage.setItem(operationKeyScope, next); }
+    let next: string;
+    try { next = crypto.randomUUID(); localStorage.setItem(operationKeyScope, next); }
     catch { setStorageError(true); return; }
-    if (operationKeyInput.current) operationKeyInput.current.value = next;
+    if (operationKeyInput.current) { operationKeyInput.current.defaultValue = next; operationKeyInput.current.value = next; }
     setStorageError(false);
+    setChangedElsewhere(false);
   };
+  if (state.completedKey) return <div className="alert success" role="status">
+    <p>Operação confirmada pelo sistema. Esta tentativa foi concluída.</p>
+    {refreshOnComplete && (completionHref || state.destination) && <AtualizarAposConfirmacao destination={completionHref || state.destination!}/>}
+    {state.error && <p role="alert">{state.error}</p>}
+    {state.destination && <a className="button secondary" href={state.destination}>Ver registros atualizados</a>}
+  </div>;
   // Dispatch explicitly so validation failures do not reset the entered fields.
   // The action still supplies the POST fallback before hydration.
   return <form action={submit} onSubmit={(event) => {
     event.preventDefault();
-    if (pending) return;
+    if (pending || (operationKeyScope && !hydrated)) return;
     const data = new FormData(event.currentTarget);
     if (operationKeyScope) {
       try {
         const current = String(data.get("idempotencyKey") ?? "");
-        if (!current) { setStorageError(true); return; }
-        if (!localStorage.getItem(operationKeyScope)) localStorage.setItem(operationKeyScope, current);
+        if (!validKey(current)) { setStorageError(true); return; }
+        const stored = localStorage.getItem(operationKeyScope);
+        if (stored && stored !== current) { setChangedElsewhere(true); return; }
+        if (!stored) localStorage.setItem(operationKeyScope, current);
         setStorageError(false);
+        setChangedElsewhere(false);
       } catch { setStorageError(true); return; }
     }
     startTransition(() => submit(data));
   }}>
     {state.error && <div className="alert error" role="alert">{state.error}</div>}
-    {storageError && <div className="alert error" role="alert">Não foi possível guardar esta tentativa no navegador. Ative o armazenamento local para registrar a entrega sem risco de duplicação.</div>}
-    <fieldset disabled={pending} className="operation-fields form-grid">
-      {operationKeyScope && <input ref={operationKeyInput} type="hidden" name="idempotencyKey"
-        defaultValue={initialOperationKey}/>}
+    {storageError && <div className="alert error" role="alert">Não foi possível guardar esta tentativa no navegador. Confira o armazenamento local antes de enviar novamente.</div>}
+    {changedElsewhere && <div className="alert error" role="alert">Outra aba iniciou uma nova tentativa. Atualize esta página e confira os registros antes de reenviar.</div>}
+    <fieldset disabled={pending || Boolean(operationKeyScope && !hydrated)} className="operation-fields form-grid">
+      {operationKeyScope && <input ref={operationKeyInput} type="hidden" name="idempotencyKey"/>}
       {children}
       <div className="form-actions"><button className="button primary" type="submit" disabled={pending}>{pending ? pendingLabel : label}</button></div>
-      {operationKeyScope && <div className="full"><button type="button" className="button secondary" onClick={startNewOperation} disabled={pending}>
-        Iniciar outra entrega
-      </button><p className="muted">Reenvie a mesma entrega sem iniciar outra operação. Para uma entrega nova, escolha “Iniciar outra entrega”.</p></div>}
+      {operationKeyScope && <div className="full">{newOperationLabel && <button type="button" className="button secondary" onClick={startNewOperation} disabled={pending}>
+        {newOperationLabel}
+      </button>}<p className="muted">Atualizar a página mantém a mesma tentativa. Confira os registros antes de repetir.{newOperationLabel ? ` Use “${newOperationLabel}” somente para uma operação diferente.` : ""}</p></div>}
     </fieldset>
   </form>;
 }

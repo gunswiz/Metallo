@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ authorize: vi.fn(), client: vi.fn(), rpc: vi.fn(), invoke: vi.fn(), from: vi.fn(), revalidate: vi.fn(), redirect: vi.fn() }));
+const mocks = vi.hoisted(() => ({ url: "http://127.0.0.1:54321", authorize: vi.fn(), client: vi.fn(), rpc: vi.fn(), invoke: vi.fn(), from: vi.fn(), revalidate: vi.fn(), redirect: vi.fn() }));
 vi.mock("@/03_FUNCOES_E_LOGICA/Autenticacao/session", () => ({ requireCapability: mocks.authorize }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/server", () => ({ createClient: mocks.client }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidate }));
 vi.mock("next/navigation", () => ({ redirect: mocks.redirect }));
-vi.mock("@/09_CONFIGURACOES/ambienteSupabase", () => ({ getSupabaseEnv: () => ({ url: "http://127.0.0.1:54321" }) }));
-import { deliverEpiBatch, fulfillEpi, requestEpi, saveEmployeeKit, prepareEpiKit3d, manageEpiFeedback3d, manageExchangeRequest } from "@/app/actions/epi-completo";
+vi.mock("@/09_CONFIGURACOES/ambienteSupabase", () => ({ getSupabaseEnv: () => ({ url: mocks.url }) }));
+import { deliverEpiBatch, fulfillEpi, requestEpi, saveEmployeeKit, prepareEpiKit3d, registerEpiDelivery3d, manageEpiFeedback3d, manageExchangeRequest } from "@/app/actions/epi-completo";
 import { createUserAccount, deactivateMaterial, editHistory } from "@/app/actions/administracao-completa";
 import { replaceRentedEquipment } from "@/app/actions/substituir-locado";
 const id = "731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
@@ -14,19 +14,43 @@ function form(values: Record<string, string>) { const data = new FormData(); for
 const batch = () => form({ employeeId: id, lines: JSON.stringify([line]), reason: "initial" });
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.url = "http://127.0.0.1:54321";
   mocks.authorize.mockResolvedValue({ role: "admin" });
   mocks.client.mockResolvedValue({ rpc: mocks.rpc, functions: { invoke: mocks.invoke }, from: mocks.from });
   mocks.rpc.mockResolvedValue({ error: null });
   mocks.redirect.mockImplementation(() => { throw new Error("REDIRECT"); });
 });
 describe("ações com serviços simulados, sem escrita remota", () => {
+  it("preparação confirmada conserva funcionário e troca no retorno", async () => {
+    const result = await prepareEpiKit3d({}, form({ employeeId: id, lines: JSON.stringify([line]), idempotencyKey: id, exchangeRequestId: id }));
+    expect(result.destination).toBe(`/epis/entrega-em-lote?prepared=1&employee=${id}&exchange=${id}`);
+  });
   const etapasEpi = [
+    { nome: "entrega física", action: registerEpiDelivery3d, rpc: "register_epi_delivery_3d", values: () => ({ preparationId: id, idempotencyKey: id, confirmation: "on" }) },
     { nome: "preparação", action: prepareEpiKit3d, rpc: "prepare_epi_kit_3d", values: () => ({ employeeId: id, lines: JSON.stringify([line]), idempotencyKey: id, exchangeRequestId: id }) },
     { nome: "tratamento", action: manageEpiFeedback3d, rpc: "manage_epi_delivery_feedback_3d", values: () => ({ groupId: id, action: "EM_ANALISE", idempotencyKey: id }) },
     { nome: "aprovação", action: manageExchangeRequest, rpc: "manage_epi_exchange_request", values: () => ({ requestId: id, action: "APROVADA" }) },
   ];
+  it.each(etapasEpi)("$nome bloqueia ambientes externos e endereços parecidos sem executar RPC", async ({ action, values }) => {
+    for (const url of ["https://producao.supabase.co", "https://externo.example", "http://127.0.0.1:54321.evil.example", "https://cvimwiqokkujfhwynhmt.supabase.co.evil.example"]) {
+      mocks.url = url;
+      expect((await action({}, form(values()))).error).toContain("somente no ambiente de teste autorizado");
+    }
+    expect(mocks.rpc).not.toHaveBeenCalled();
+    expect(mocks.revalidate).not.toHaveBeenCalled();
+  });
+  it("entrega física exige confirmação e mantém a mesma chave no reenvio", async () => {
+    expect(await registerEpiDelivery3d({}, form({ preparationId: id, idempotencyKey: id }))).toHaveProperty("error");
+    expect(mocks.rpc).not.toHaveBeenCalled();
+    mocks.rpc.mockRejectedValueOnce(new Error("network"));
+    const data = form({ preparationId: id, idempotencyKey: id, confirmation: "on" });
+    expect(await registerEpiDelivery3d({}, data)).toHaveProperty("error");
+    expect(await registerEpiDelivery3d({}, data)).toMatchObject({ completedKey: id, destination: "/epis/entrega-em-lote?delivered=1" });
+    expect(mocks.rpc.mock.calls[0]).toEqual(mocks.rpc.mock.calls[1]);
+  });
   it.each(etapasEpi)("$nome reutiliza RPC existente e atualiza o painel somente após sucesso", async ({ action, rpc, values }) => {
-    await expect(action({}, form(values()))).rejects.toThrow("REDIRECT");
+    if (action === manageExchangeRequest) await expect(action({}, form(values()))).rejects.toThrow("REDIRECT");
+    else expect(await action({}, form(values()))).toMatchObject({ completedKey: id, destination: expect.stringContaining("/epis/entrega-em-lote") });
     expect(mocks.rpc).toHaveBeenCalledWith(rpc, expect.any(Object));
     expect(mocks.authorize).toHaveBeenCalledWith("epi:write");
     expect(mocks.revalidate).toHaveBeenCalledWith("/epis", "layout");

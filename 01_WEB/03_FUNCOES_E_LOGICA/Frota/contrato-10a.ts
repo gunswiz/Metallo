@@ -22,6 +22,11 @@ export type ItemChecklist10a = z.infer<typeof itensApp10a>[number];
 export type ViagemApp10a = z.infer<typeof viagensApp10a>[number];
 export type RespostaChecklist10a = { codigo: number; situacao: "C" | "N" | "NA"; obs: string; foto?: string };
 
+export const conferenciaRecusa10e = z.object({ chave: z.uuid(), veiculo: z.number(), relato: z.unknown(), recebido_em: z.string(), conferido_em: z.string().nullable(), motivo: z.string().nullable() });
+export type ConferenciaRecusa10e = z.infer<typeof conferenciaRecusa10e>;
+export const recusasGestao10e = z.array(z.object({ chave: z.uuid(), employee_id: z.uuid(), por: z.string(), recebido_em: z.string(), conferido_em: z.string().nullable(), motivo: z.string().nullable(),
+  relato: z.object({ tipo: z.enum(["checklist", "chegada"]), obs: z.string().optional(), problema: z.string().optional(), respostas: z.array(z.object({ codigo: z.number(), situacao: z.string(), obs: z.string() })).optional() }) }));
+
 export const painelGestao10a = z.array(z.object({ id: z.coerce.number(), nome: z.string(), placa: z.string(), modelo: z.string().nullable(), ano: z.coerce.number().nullable(), situacao,
   km_atual: z.coerce.number(), ativo: z.boolean(), motorista: z.string().nullable(), destino: z.string().nullable(), acompanhantes: z.string().nullable(), saida_em: z.string().nullable(),
   checklist_hoje: resultado.nullable(), checklist_hoje_em: z.string().nullable(), checklist_hoje_por: z.string().nullable(),
@@ -67,6 +72,7 @@ export const caminhaoForm10a = z.object({ id: z.union([z.literal(""), idNum]).op
 export const documentoForm10a = z.object({ veiculoId: idNum, tipo: z.enum(["crlv", "seguro", "inspecao_guindaste", "outro"]), descricao: texto(60), numero: texto(60), vencimento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) });
 export const itemForm10a = z.object({ codigo: z.union([z.literal(""), z.coerce.number().int().min(1).max(99)]), nome: texto(80).pipe(z.string().min(2)), critico: z.string().optional(), ativo: z.string().optional() });
 export const liberarForm10a = z.object({ veiculoId: idNum, motivo: texto(300).pipe(z.string().min(5)) });
+export const conferirRecusaForm10e = liberarForm10a.extend({ employeeId: z.uuid(), chave: z.uuid() });
 export const abrirManutencaoForm10a = z.object({ veiculoId: idNum, tipo: z.enum(["corretiva", "preventiva"]), descricao: texto(300).pipe(z.string().min(3)), bloquear: z.string().optional() });
 export const oficinaForm10a = z.object({ veiculoId: idNum, manutencaoId: idNum, oficina: texto(80).pipe(z.string().min(2)), previsao: dataOpc });
 export const concluirManutencaoForm10a = z.object({ veiculoId: idNum, manutencaoId: idNum, custo: z.union([z.literal(""), z.string().regex(/^\d{1,8}([.,]\d{1,2})?$/)]), km: numOpc, obs: texto(300) });
@@ -76,7 +82,10 @@ export const planoForm10a = z.object({ veiculoId: idNum, id: z.union([z.literal(
 export const concluirPlanoForm10a = z.object({ veiculoId: idNum, planoId: idNum, km: numOpc, data: dataOpc, custo: z.union([z.literal(""), z.string().regex(/^\d{1,8}([.,]\d{1,2})?$/)]), obs: texto(300) });
 
 export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
+  idempotency_conflict: "Esta tentativa já foi registrada com outro conteúdo ou é anterior à conferência de conteúdo. Confira os registros antes de iniciar uma nova tentativa. Os dados guardados foram preservados.",
   fila_cheia: "Há registros demais guardados no celular. Conecte-se à internet para enviá-los.",
+  foto_pendente: "O registro não foi enviado porque uma foto está indisponível ou não foi aceita. Os dados continuam guardados. Na lista de caminhões, você pode enviar o relato sem as fotos pendentes. Avise o responsável.",
+  registro_pendente: "Há registros pendentes ou a disponibilidade não foi confirmada. Aguarde a confirmação do servidor antes de registrar a saída.",
   foto_sem_sinal: "Sem internet e não deu para guardar a foto no celular. Continue sem a foto ou conecte-se.",
   checklist_do_dia_necessario: "Faça o checklist de hoje antes de sair.", veiculo_nao_liberado: "Este caminhão não está liberado. Fale com o engenheiro.",
   veiculo_em_uso: "Este caminhão já está na rua.", veiculo_em_manutencao: "Este caminhão está na oficina.", voce_ja_esta_com_um_caminhao: "Você já está com um caminhão. Registre a chegada primeiro.",
@@ -86,8 +95,12 @@ export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
   muitos_envios: "Muitas fotos hoje. Fale com o engenheiro.", sem_arquivo: "Tire a foto antes de enviar.",
   destino_invalido: "Informe o destino.", veiculo_indisponivel: "Este caminhão não pode receber checklist agora.",
 };
+export function textoErroFrota10a(erro: unknown): string {
+  if (erro && typeof erro === "object" && "message" in erro && typeof erro.message === "string") return erro.message;
+  return typeof erro === "string" ? erro : "";
+}
 export function mensagemErroFrota10a(erro: unknown) {
-  const m = String(erro instanceof Error ? erro.message : erro);
+  const m = textoErroFrota10a(erro);
   for (const [chave, texto] of Object.entries(MENSAGEM_ERRO_FROTA_10A)) if (m.includes(chave)) return texto;
   return "Não foi possível concluir. Tente de novo.";
 }

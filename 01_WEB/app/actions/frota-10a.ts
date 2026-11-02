@@ -4,11 +4,18 @@ import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada
 import { abrirManutencaoForm10a, cancelarManutencaoForm10a, caminhaoForm10a, concluirManutencaoForm10a, concluirPlanoForm10a, documentoForm10a, itemForm10a,
   lerCusto10a, liberarForm10a, oficinaForm10a, planoForm10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import { requireFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { conferirRecusaForm10e } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 
 // Marco 10A — Gestão da frota. Cadastro e liberação: administrador e engenheiro (a função do banco confere de novo). Manutenção e planos: quem opera equipamentos.
 const paths = ["/frota", "/dashboard"];
 const ficha = (id: number | string, extra = "") => `/frota/${id}?ok=1${extra}`;
 const num = (v: number | "") => (v === "" ? null : v);
+
+export async function conferirRecusaFrota10e(_p: unknown, formData: FormData) {
+  return executeValidated({ schema: conferirRecusaForm10e, capability: "epi:write", formData, paths, destination: d => ficha(d.veiculoId),
+    operation: (client, d) => { requireFrota10a();
+      return client.rpc("admin_conferir_recusa_10e" as never, { p_veiculo: d.veiculoId, p_employee: d.employeeId, p_key: d.chave, p_motivo: d.motivo } as never); } });
+}
 
 export async function salvarCaminhao10a(_p: unknown, formData: FormData) {
   return executeValidated({ schema: caminhaoForm10a, capability: "epi:write", formData, paths, destination: d => d.id ? ficha(d.id, "&aba=dados") : "/frota?ok=1",

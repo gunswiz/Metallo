@@ -6,10 +6,10 @@ import { SubNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { ROTULO_DOCUMENTO_10A, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, ROTULO_STATUS_MANUTENCAO_10A } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
-import { lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a, lerRelatosFrota10c } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { lerRecusasFrota10e, lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a, lerRelatosFrota10c } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
-import { abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
+import { conferirRecusaFrota10e, abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
 
 // Marco 10A — ficha do caminhão: tudo de um caminhão em uma tela.
 const fmt = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" });
@@ -30,7 +30,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const mesIni = iso(new Date(mesBase.getFullYear(), mesBase.getMonth(), 1)), diasNoMes = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 0).getDate();
   const anterior = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() - 1, 15)).slice(0, 7), proximo = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 15)).slice(0, 7);
   const checklistId = Number(query.checklist);
-  const [grade, itens, fotosChegada, relatosLista, detalhe] = await Promise.all([lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id), lerRelatosFrota10c(id).catch(() => []),
+  const [recusas, grade, itens, fotosChegada, relatosLista, detalhe] = await Promise.all([lerRecusasFrota10e(id), lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id), lerRelatosFrota10c(id).catch(() => []),
     Number.isInteger(checklistId) && checklistId > 0 ? lerChecklistFrota10a(checklistId).catch(() => null) : Promise.resolve(null)]);
   const fotoViagem = new Map(fotosChegada.map(f => [f.viagem_id, f.foto_id]));
   const celula = new Map(grade.map(g => [`${g.dia}|${g.codigo}`, g.situacao]));
@@ -55,6 +55,19 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       {podeCadastrar && <div className="panel-body"><OperationForm action={liberarCaminhao10a} label="Liberar para hoje" pendingLabel="Liberando…">
         <input type="hidden" name="veiculoId" value={v.id}/><label className="full">Motivo da liberação<input name="motivo" required minLength={5} maxLength={300} placeholder="Ex.: pneu conferido pelo engenheiro, está bom"/></label>
       </OperationForm></div>}</section>}
+
+    {aba === "manutencao" && recusas.length > 0 && <section className="panel"><header className="panel-header"><div><h2>Relatos recusados no celular</h2><p>Confira o relato original e o serviço já realizado. Esta conferência não cria outra manutenção nem registra um novo checklist.</p></div></header><div className="panel-body">
+      {recusas.map(r => <article className="stock-card" key={`${r.employee_id}:${r.chave}`}>
+        <h3>{r.por} · {r.relato.tipo === "checklist" ? "Checklist" : "Chegada"}</h3><p>Recebido em {fmt(r.recebido_em)}</p>
+        {r.relato.obs && <p>{r.relato.obs}</p>}{r.relato.problema && <p>{r.relato.problema}</p>}
+        {r.relato.respostas?.filter(i => i.situacao === "N").map(i => <p key={i.codigo}>Item {i.codigo} do relato original: {i.obs}</p>)}
+        {r.conferido_em ? <p>Conferido em {fmt(r.conferido_em)}: {r.motivo}</p> : podeCadastrar && v.situacao === "disponivel" ? <OperationForm action={conferirRecusaFrota10e} label="Confirmar conferência deste relato">
+          <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="employeeId" value={r.employee_id}/><input type="hidden" name="chave" value={r.chave}/>
+          <label className="full">O que foi verificado e por que a pendência pode ser encerrada<input name="motivo" minLength={5} maxLength={300} required/></label>
+          <p className="muted">Confirme somente após verificar este defeito. O motorista poderá consultar a conferência no celular; as regras de saída continuam valendo.</p>
+        </OperationForm> : <p>Aguardando conferência do engenheiro ou administrador, após a liberação do veículo.</p>}
+      </article>)}
+    </div></section>}
 
     {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Defeito → oficina → concluído, com o custo.</p></div></header><div className="panel-body">
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}

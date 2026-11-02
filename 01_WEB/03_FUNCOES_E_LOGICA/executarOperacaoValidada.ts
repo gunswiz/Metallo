@@ -5,13 +5,15 @@ import type { Capability } from "@metallo/core";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 
-export type OperationState = { error?: string };
+export type OperationState = { error?: string; completedKey?: string; destination?: string };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["environment_not_enabled", "Este recurso está disponível somente no ambiente de teste autorizado."],
+  ["management_access_denied", "Seu perfil não tem permissão para esta operação."],
   ["forbidden_stock_location", "Este lote não corresponde à obra do funcionário ou ao seu escopo de acesso."],
   ["stock_return_requires_original_batch", "A entrega não possui lote de origem para receber uma devolução reutilizável."],
   ["damaged_or_lost_item_cannot_restock", "Item danificado ou extraviado não pode voltar ao saldo disponível."],
-  ["idempotency_conflict", "Esta tentativa já foi usada com dados diferentes. Atualize a página e confira a entrega."],
+  ["idempotency_conflict", "Esta tentativa já foi usada com dados diferentes. Confira os registros. Para uma operação diferente, use a opção de iniciar outro kit ou tratamento, quando disponível."],
   ["invalid_replacement", "Informe um patrimônio diferente e confira se a locação continua ativa."],
   ["shoe_size", "Selecione o tamanho da bota entre 38 e 46."],
   ["insufficient", "O estoque disponível não é suficiente. Atualize a página e confira o lote."],
@@ -33,6 +35,7 @@ export async function executeValidated<S extends z.ZodType>(options: {
   schema: S; capability: Capability; formData: FormData;
   operation: (client: Client, data: z.output<S>) => PromiseLike<{ error: { message: string } | null }>;
   paths: string[]; destination: string | ((data: z.output<S>) => string);
+  completionKey?: (data: z.output<S>) => string;
 }): Promise<OperationState> {
   await requireCapability(options.capability);
   const parsed = options.schema.safeParse(Object.fromEntries(options.formData));
@@ -44,5 +47,7 @@ export async function executeValidated<S extends z.ZodType>(options: {
     return { error: "Não foi possível confirmar a operação. Atualize a página antes de tentar novamente." };
   }
   for (const path of options.paths) revalidatePath(path, "layout");
-  redirect(typeof options.destination === "function" ? options.destination(parsed.data) : options.destination);
+  const destination = typeof options.destination === "function" ? options.destination(parsed.data) : options.destination;
+  if (options.completionKey) return { completedKey: options.completionKey(parsed.data), destination };
+  redirect(destination);
 }

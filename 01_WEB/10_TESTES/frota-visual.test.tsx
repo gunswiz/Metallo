@@ -94,6 +94,90 @@ describe("Frota da Gestão", () => {
 });
 
 describe("Caminhões do funcionário", () => {
+  it("consulta conferência da Gestão sem recriar checklist do defeito resolvido", async () => {
+    const payload = { tipo: "checklist", local: "Pátio", obs: "Original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio antigo" }] };
+    localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "antigo", nome: "Munck", tipo: "checklist", motivo: "Itens mudaram", registro: { id: "antigo", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload } }]));
+    const prova = { chave: "antigo", veiculo: 1, relato: payload, recebido_em: "2026-11-02T10:00:00Z", conferido_em: null, motivo: null };
+    const conferirRecusa = vi.fn().mockResolvedValueOnce(prova).mockResolvedValue({ ...prova, conferido_em: "2026-11-02T11:00:00Z", motivo: "Conserto verificado" });
+    const api = { ...acoes([caminhao({ checklist_hoje: "liberado" })]), conferirRecusa };
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Enviar relato guardado para conferência" }));
+    const consultar = await screen.findByRole("button", { name: "Consultar conferência da Gestão" });
+    await waitFor(() => expect(consultar).toBeEnabled());
+    fireEvent.click(consultar);
+    await screen.findByText(/Relato conferido pela Gestão: Conserto verificado/);
+    expect(api.checklist).not.toHaveBeenCalled();
+    expect(api.chegada).not.toHaveBeenCalled();
+    expect(JSON.parse(localStorage.getItem("metallo-frota-recusadas-10d:conta-teste")!)[0].registro.payload).toEqual(payload);
+  });
+  it("recupera os problemas recusados para o checklist atual sem apagar o histórico", async () => {
+    localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "antigo", nome: "Munck", tipo: "checklist", motivo: "Itens mudaram", registro: { id: "antigo", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "Pátio", obs: "Observação original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio vazando" }] } } }]));
+    const api = { ...acoes([caminhao()], [itens[0], itens[1]]), checklist: vi.fn(async () => "nao_liberado" as const) };
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Refazer checklist com este relato" }));
+    expect(screen.getByLabelText("O que está errado: Conferência 1")).toHaveValue("Freio vazando");
+    expect(screen.getByLabelText("Local (opcional)")).toHaveValue("Pátio");
+    fireEvent.click(within(screen.getByRole("group", { name: "Conferência 2" })).getByRole("button", { name: "Conforme" }));
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Enviar checklist" }));
+    await screen.findByText(/O mesmo relato foi aceito/);
+    const history = JSON.parse(localStorage.getItem("metallo-frota-recusadas-10d:conta-teste")!);
+    expect(history[0].recebidoEmRegistro).toBeTruthy();
+    expect(history[0].registro.payload.respostas[0].obs).toBe("Freio vazando");
+  });
+  it("falha de conexão em checkpoint sob revisão orienta reenvio manual", async () => {
+    const api = acoes([caminhao({ situacao: "em_uso", minha_viagem: 4 })]);
+    api.chegada.mockRejectedValue(new Error("Failed to fetch"));
+    const uuid = vi.spyOn(crypto, "randomUUID").mockReturnValue("11111111-1111-4111-8111-111111111111");
+    try {
+      render(<Frota acoes={api}/>);
+      fireEvent.click(await screen.findByRole("button", { name: "Registrar chegada" }));
+      localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "11111111-1111-4111-8111-111111111111", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), revisar: true, payload: { tipo: "chegada", viagem: 4, km: 10000, problema: "Freio", obs: "" } }]));
+      fireEvent.change(screen.getByLabelText("O caminhão teve algum problema? (deixe vazio se não)"), { target: { value: "Freio" } });
+      fireEvent.click(screen.getByRole("button", { name: "Registrar chegada" }));
+      await screen.findByText(/Quando o sinal voltar, confira o registro e toque em Enviar agora/);
+      expect(screen.queryByText(/Será enviado quando o sinal voltar/)).not.toBeInTheDocument();
+    } finally { uuid.mockRestore(); }
+  });
+  it("mostra defeito recusado, não oferece descarte nem saída", async () => {
+    localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "critico", nome: "Munck", tipo: "checklist", motivo: "Responda todos os itens", registro: { id: "critico", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "Obra", obs: "Relato retido", respostas: [{ codigo: 1, situacao: "N", obs: "Freio com vazamento" }] } } }]));
+    render(<Frota acoes={acoes([caminhao({ checklist_hoje: "liberado" })])}/>);
+    await screen.findByText("Ver relato guardado de Munck");
+    fireEvent.click(screen.getByText("Ver relato guardado de Munck"));
+    expect(screen.getByText("Item 1: Freio com vazamento")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Entendi/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
+  });
+  it("permite enviar relato crítico sem foto por decisão explícita na tela", async () => {
+    const api = acoes();
+    localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "pendente", veiculo: 1, nome: "Munck São José", criado: new Date().toISOString(), fotoPendente: true, revisar: true, payload: { tipo: "checklist", local: "", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Falha no freio", foto: "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4" }] } }]));
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Enviar relato sem fotos pendentes de Munck São José" }));
+    await waitFor(() => expect(api.checklist).toHaveBeenCalledWith(1, "", expect.stringContaining("por decisão do funcionário"), [{ codigo: 1, situacao: "N", obs: "Falha no freio" }], "pendente"));
+  });
+  it("verifica pendências novamente antes de enviar uma saída já aberta", async () => {
+    const api = acoes([caminhao({ checklist_hoje: "liberado" })]);
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Registrar saída" }));
+    fireEvent.change(screen.getByLabelText("Para onde vai?"), { target: { value: "Obra" } });
+    localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "pendente", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), revisar: true, payload: { tipo: "checklist", local: "", obs: "", respostas: [] } }]));
+    fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
+    await screen.findByText(/Há registros pendentes/);
+    expect(api.saida).not.toHaveBeenCalled();
+  });
+  it("falha ao criar chave não deixa formulário travado", async () => {
+    const api = acoes([caminhao()], [itens[0]]);
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    fireEvent.click(screen.getByRole("button", { name: "Conforme" }));
+    fireEvent.click(screen.getByRole("checkbox"));
+    const uuid = vi.spyOn(crypto, "randomUUID").mockImplementation(() => { throw new Error("indisponível"); });
+    try {
+      fireEvent.click(screen.getByRole("button", { name: "Enviar checklist" }));
+      await waitFor(() => expect(screen.getByRole("button", { name: "Enviar checklist" })).toBeEnabled());
+      expect(api.checklist).not.toHaveBeenCalled();
+    } finally { uuid.mockRestore(); }
+  });
   it("ignora rascunho legado sem proprietário e não persiste sem identidade", async () => {
     const legado = JSON.stringify({ em: Date.now(), tipo: "checklist", veiculo: 1, etapa: 0, respostas: {}, obs: "Legado sem dono" });
     sessionStorage.setItem("metallo-frota-rascunho", legado);
@@ -127,11 +211,11 @@ describe("Caminhões do funcionário", () => {
     view.rerender(<Frota acoes={api}/>);
     expect(await screen.findByDisplayValue("Relato da primeira conta")).toBeInTheDocument();
   });
-  it("checklist pendente não oferece saída nem confirmação de liberação", async () => {
+  it.each([null, "liberado"] as const)("checklist pendente não oferece saída mesmo com resultado anterior %s", async checklist_hoje => {
     localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "pendente", veiculo: 1, nome: "Munck São José", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "", obs: "", respostas: [] } }]));
     const online = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
     try {
-      render(<Frota acoes={acoes()}/>);
+      render(<Frota acoes={acoes([caminhao({ checklist_hoje })])}/>);
       await screen.findByText("1 registro guardado no celular");
       expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
       expect(screen.getByText(/Guardar no celular não libera/)).toBeInTheDocument();

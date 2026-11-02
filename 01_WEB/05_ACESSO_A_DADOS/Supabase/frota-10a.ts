@@ -2,6 +2,7 @@ import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { atencaoGestao10a, checklistDetalhe10a, fichaGestao10a, fotosChegadaGestao10b, itensGestao10a, mesGestao10a, painelGestao10a, relatorioGestao10d, relatosGestao10c } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import { createClient } from "./server";
+import { recusasGestao10e } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 
 // Marco 10A: frota. Somente laboratório e teste online (produção ainda não tem estas funções).
 export function requireFrota10a() {
@@ -21,4 +22,5 @@ export const lerChecklistFrota10a = async (id: number) => checklistDetalhe10a.pa
 export const lerMesFrota10a = async (id: number, mes: string) => mesGestao10a.parse(await chamar("admin_frota_mes_10a", { p_veiculo: id, p_mes: mes }));
 export const lerFotosChegadaFrota10b = async (id: number) => fotosChegadaGestao10b.parse(await chamar("admin_frota_fotos_chegada_10b", { p_veiculo: id }));
 export const lerRelatosFrota10c = async (id: number) => relatosGestao10c.parse(await chamar("admin_frota_relatos_10c", { p_veiculo: id }));
+export const lerRecusasFrota10e = async (id: number) => recusasGestao10e.parse(await chamar("admin_relatos_recusados_10e", { p_veiculo: id }));
 export const lerRelatorioFrota10d = async (mes: string) => relatorioGestao10d.parse(await chamar("admin_frota_relatorio_10d", { p_mes: `${mes}-01` }));

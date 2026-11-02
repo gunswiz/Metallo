@@ -3,8 +3,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@metallo/types";
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/server", () => ({ createClient: vi.fn() }));
 vi.mock("@/03_FUNCOES_E_LOGICA/Autenticacao/session", () => ({ requireCapability: vi.fn() }));
+vi.mock("@/09_CONFIGURACOES/ambienteSupabase", () => ({ getSupabaseEnv: () => ({ url: "http://127.0.0.1:54321" }) }));
 import { EpiOperationsRepository } from "@/05_ACESSO_A_DADOS/Repositorios/epi-operacoes-repository";
 describe("consultas completas para seleção e kit", () => {
+  it("rejeita kit sem linhas válidas antes de chegar à tela", async () => {
+    const rpc = vi.fn(async (name: string) => ({ data: name === "admin_epi_prepared_kits_3d" ? [{ preparation_id: "kit", lines: null }] : [], error: null }));
+    const repo = new EpiOperationsRepository({ rpc } as unknown as SupabaseClient<Database>);
+    await expect(repo.delivery3d()).rejects.toThrow();
+    rpc.mockResolvedValue({ data: [], error: null });
+    await expect(repo.delivery3d()).resolves.toEqual({ prepared: [], approved: [], feedback: [] });
+  });
   it("busca todas as páginas sem truncar escolhas em 100 ou 200 registros", async () => {
     const rows = Array.from({ length: 401 }, (_, id) => ({ id: String(id) }));
     const ranges: number[][] = [];

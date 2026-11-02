@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { csvRelatorio10d, MES_RELATORIO_10D } from "@/03_FUNCOES_E_LOGICA/Frota/relatorio-10d";
-import { ehFalhaDeConexao10d, guardarNaFila, lerFila, lerRecusadas, sincronizarFila, LIMITE_FILA_10D, type AcoesFila, type Pendente } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { anotarRecusa, guardarConferenciaRecusa, recusaBloqueiaSaida } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, LIMITE_FILA_10D, type AcoesFila, type Pendente } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 
 const quem = "emp-1";
 const pend = (id: string, payload: Pendente["payload"], criado: string): Pendente => ({ id, veiculo: 1, nome: "Munck 01", criado, payload });
@@ -14,8 +15,151 @@ const acoes = (): AcoesFila & { ordem: string[] } => {
 };
 
 beforeEach(() => localStorage.clear());
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers(); });
 
 describe("fila da frota sem internet (10D)", () => {
+  it("conferência específica do servidor encerra a pendência sem reenviar defeito", () => {
+    const registro = pend("original", { tipo: "checklist", local: "Obra", obs: "Antigo", respostas: [{ codigo: 1, situacao: "N", obs: "Freio" }] }, "2026-11-01T10:00:00Z");
+    anotarRecusa(quem, { id: registro.id, nome: registro.nome, tipo: "checklist", motivo: "Itens mudaram", registro });
+    const prova = { chave: registro.id, veiculo: 1, relato: registro.payload, recebido_em: "2026-11-02T10:00:00Z", conferido_em: null, motivo: null };
+    expect(guardarConferenciaRecusa(quem, prova)).toBe(true);
+    expect(recusaBloqueiaSaida(lerRecusadas(quem)[0])).toBe(true);
+    const confirmada = { ...prova, conferido_em: "2026-11-02T11:00:00Z", motivo: "Conserto conferido" };
+    expect(guardarConferenciaRecusa("outra-conta", confirmada)).toBe(false);
+    expect(guardarConferenciaRecusa(quem, { ...confirmada, veiculo: 2 })).toBe(false);
+    expect(guardarConferenciaRecusa(quem, { ...confirmada, relato: { ...registro.payload, obs: "Outro relato" } })).toBe(false);
+    expect(recusaBloqueiaSaida(lerRecusadas(quem)[0])).toBe(true);
+    expect(guardarConferenciaRecusa(quem, confirmada)).toBe(true);
+    expect(recusaBloqueiaSaida(lerRecusadas(quem)[0])).toBe(false);
+    expect(lerRecusadas(quem)[0].registro).toEqual(registro);
+  });
+  it("falha ao guardar a conferência mantém o bloqueio", () => {
+    const registro = pend("original", { tipo: "chegada", viagem: 1, km: 100, obs: "", problema: "Freio" }, "2026-11-01T10:00:00Z");
+    anotarRecusa(quem, { id: registro.id, nome: registro.nome, tipo: "chegada", motivo: "Recusado", registro });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("Quota"); });
+    expect(guardarConferenciaRecusa(quem, { chave: registro.id, veiculo: 1, relato: registro.payload, recebido_em: "2026-11-02T10:00:00Z", conferido_em: "2026-11-02T11:00:00Z", motivo: "Resolvido" })).toBe(false);
+    expect(recusaBloqueiaSaida(lerRecusadas(quem)[0])).toBe(true);
+  });
+  it("novo checklist aceito com o mesmo defeito supera a recusa sem apagar o relato", async () => {
+    const api = acoes();
+    const payload: Pendente["payload"] = { tipo: "checklist", local: "Obra", obs: "Original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio com vazamento" }] };
+    guardarNaFila(quem, pend("recusado", payload, "2026-11-01T10:00:00Z"));
+    api.checklist = vi.fn().mockRejectedValueOnce({ message: "itens_incompletos" }).mockResolvedValue("nao_liberado");
+    await sincronizarFila(api, quem);
+    // Um novo relato diferente não comprova recebimento do defeito antigo.
+    await executarPendente(api, quem, pend("outro", { ...payload, respostas: [{ codigo: 2, situacao: "N", obs: "Lâmpada" }] }, "2026-11-01T10:01:00Z"), true);
+    expect(lerRecusadas(quem)[0].recebidoEmRegistro).toBeUndefined();
+    await executarPendente(api, quem, pend("aceito", payload, "2026-11-01T10:02:00Z"), true);
+    expect(lerRecusadas(quem)[0]).toMatchObject({ recebidoEmRegistro: "aceito", registro: { payload } });
+    // Só a trava local é retirada; o servidor continua decidindo a disponibilidade.
+    api.saida = vi.fn().mockRejectedValue(new Error("veiculo_nao_liberado"));
+    await expect(executarPendente(api, quem, saida("s1", "2026-11-01T10:03:00Z"))).rejects.toThrow("veiculo_nao_liberado");
+    expect(api.saida).toHaveBeenCalledTimes(1);
+  });
+  it("informa sincronização em andamento sem executar duas vezes", async () => {
+    const api = acoes();
+    let concluir!: () => void;
+    api.saida = vi.fn(() => new Promise<void>(resolve => { concluir = resolve; }));
+    guardarNaFila(quem, saida("unica", "2026-11-01T10:00:00Z"));
+    const primeira = sincronizarFila(api, quem);
+    await Promise.resolve(); await Promise.resolve();
+    expect((await sincronizarFila(api, quem, true)).emAndamento).toBe(true);
+    concluir(); await primeira;
+    expect(api.saida).toHaveBeenCalledTimes(1);
+  });
+  it("objeto de erro RPC preserva relato recusado e impede saída após ciência", async () => {
+    const api = acoes();
+    api.checklist = vi.fn().mockRejectedValue({ code: "P0001", message: "itens_incompletos", details: null, hint: null });
+    const registro = pend("critico", { tipo: "checklist", local: "Obra", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Freio com defeito" }] }, "2026-11-01T10:00:00Z");
+    guardarNaFila(quem, registro);
+    await sincronizarFila(api, quem);
+    expect(lerRecusadas(quem)[0].registro).toEqual(registro);
+    expect(limparRecusadas(quem)).toBe(true);
+    expect(lerRecusadas(quem)[0].registro).toEqual(registro);
+    await expect(executarPendente(api, quem, saida("s1", "2026-11-01T10:02:00Z"))).rejects.toThrow("registro_pendente");
+    expect(api.saida).not.toHaveBeenCalled();
+    expect(ehFalhaDeConexao10d({ message: "TypeError: Failed to fetch", code: "", details: "", hint: "" })).toBe(true);
+    expect(ehFalhaDeConexao10d({ message: "transaction aborted" })).toBe(false);
+  });
+  it("formulário corrigido substitui payload e reutiliza foto já enviada", async () => {
+    const api = acoes();
+    const foto = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
+    const registro = pend("corrigido", { tipo: "chegada", viagem: 1, km: 90, problema: "Freio", obs: "", foto }, "2026-11-01T10:00:00Z");
+    guardarNaFila(quem, { ...registro, payload: { ...registro.payload, foto: "remota" } as Pendente["payload"], fotosEnviadas: { [foto]: "remota" }, fotosLocais: [foto], revisar: true });
+    const corrigido = { ...registro, payload: { ...registro.payload, km: 120 } as Pendente["payload"] };
+    await executarPendente(api, quem, corrigido, true);
+    expect(api.chegada).toHaveBeenCalledWith(1, 120, "Freio", "", "corrigido", "remota", 1);
+    expect(api.foto).not.toHaveBeenCalled();
+    expect(lerFila(quem)).toEqual([]);
+  });
+  it("foto ausente no formulário marca revisão imediatamente e não envia depois sozinho", async () => {
+    const api = acoes();
+    const registro = pend("direto", { tipo: "chegada", viagem: 1, km: 100, problema: "Vazamento", obs: "", foto: "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4" }, "2026-11-01T10:00:00Z");
+    await expect(executarPendente(api, quem, registro, true)).rejects.toThrow("foto_pendente");
+    expect(lerFila(quem)[0]).toMatchObject({ revisar: true, fotoPendente: true });
+    await sincronizarFila(api, quem);
+    expect(api.chegada).not.toHaveBeenCalled();
+  });
+  it("persiste cada foto enviada e limpa os originais somente após confirmar o relato", async () => {
+    const a = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4", b = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e5";
+    const request = (result: unknown) => {
+      const pending: { result: unknown; onsuccess?: () => void } = { result };
+      queueMicrotask(() => pending.onsuccess?.()); return pending;
+    };
+    const apagar = vi.fn(() => request(undefined));
+    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: (id: string) => request(id === a ? { id, blob: new Blob(["sintética"]) } : undefined), delete: apagar }) }) }) });
+    const api = acoes();
+    guardarNaFila(quem, pend("duas-fotos", { tipo: "checklist", local: "", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Defeito A", foto: a }, { codigo: 2, situacao: "N", obs: "Defeito B", foto: b }] }, "2026-11-01T10:00:00Z"));
+    await sincronizarFila(api, quem);
+    await sincronizarFila(api, quem, true);
+    expect(api.foto).toHaveBeenCalledTimes(1);
+    expect(apagar).not.toHaveBeenCalled();
+    expect(lerFila(quem)[0].fotosLocais).toContain(a);
+    expect(enviarSemFotosPendentes(quem, "duas-fotos")).toBe(true);
+    await sincronizarFila(api, quem, true);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    expect(api.checklist).toHaveBeenCalledWith(1, "", expect.any(String), [{ codigo: 1, situacao: "N", obs: "Defeito A", foto: "foto-real" }, { codigo: 2, situacao: "N", obs: "Defeito B" }], "duas-fotos");
+    expect(apagar).toHaveBeenCalledWith(a);
+    expect(apagar).toHaveBeenCalledWith(b);
+  });
+  it("foto recusada não é descartada nem permite confirmar a operação", async () => {
+    const foto = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
+    const request = (result: unknown) => {
+      const pending: { result: unknown; onsuccess?: () => void } = { result };
+      queueMicrotask(() => pending.onsuccess?.());
+      return pending;
+    };
+    const arquivo = new Blob(["imagem sintética"], { type: "image/jpeg" });
+    const apagar = vi.fn();
+    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: () => request({ id: foto, blob: arquivo }), delete: apagar }) }) }) });
+    const api = acoes();
+    api.foto = vi.fn(async () => { throw new Error("file_not_allowed"); });
+    const registro = pend("rejeitada", { tipo: "chegada", viagem: 1, km: 101, problema: "Vazamento", obs: "", foto }, "2026-11-01T10:00:00Z");
+    guardarNaFila(quem, registro);
+    const result = await sincronizarFila(api, quem);
+    expect(api.foto).toHaveBeenCalledWith(1, arquivo);
+    expect(api.chegada).not.toHaveBeenCalled();
+    expect(apagar).not.toHaveBeenCalled();
+    expect(result.impedimento).toContain("não foi aceita");
+    expect(lerFila(quem)).toEqual([{ ...registro, fotoPendente: true, revisar: true }]);
+  });
+  it.each(["checklist", "chegada"] as const)("preserva %s e interrompe a fila quando a foto local não está disponível", async tipo => {
+    const api = acoes();
+    const foto = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
+    const payload: Pendente["payload"] = tipo === "checklist"
+      ? { tipo, local: "Obra", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Vazamento", foto }] }
+      : { tipo, viagem: 1, km: 101, problema: "Vazamento", obs: "", foto };
+    guardarNaFila(quem, pend("foto-pendente", payload, "2026-11-01T10:00:00Z"));
+    guardarNaFila(quem, saida("posterior", "2026-11-01T10:01:00Z"));
+    const result = await sincronizarFila(api, quem);
+    expect(result.impedimento).toContain("foto está indisponível");
+    expect(result.restam).toBe(2);
+    expect(lerFila(quem)[0].payload).toEqual(payload);
+    expect(lerRecusadas(quem)).toHaveLength(0);
+    expect(api.checklist).not.toHaveBeenCalled();
+    expect(api.chegada).not.toHaveBeenCalled();
+    expect(api.saida).not.toHaveBeenCalled();
+  });
   it("guarda por funcionário, sem duplicar a mesma chave, e respeita o limite", () => {
     expect(guardarNaFila(quem, saida("a", "2026-10-24T10:00:00Z"))).toBe(true);
     expect(guardarNaFila(quem, saida("a", "2026-10-24T10:00:00Z"))).toBe(true);
@@ -43,14 +187,15 @@ describe("fila da frota sem internet (10D)", () => {
     expect(r.restam).toBe(2);
     expect(lerRecusadas(quem)).toHaveLength(0);
   });
-  it("erro de regra sai da fila e vira aviso para a pessoa, sem travar os próximos", async () => {
+  it("erro de regra guarda conteúdo recusado sem travar outro veículo", async () => {
     const api = acoes();
     api.saida = vi.fn(async () => { throw new Error("veiculo_em_uso"); });
     guardarNaFila(quem, saida("s1", "2026-10-24T10:00:00Z"));
-    guardarNaFila(quem, pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-10-24T10:02:00Z"));
+    guardarNaFila(quem, { ...pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-10-24T10:02:00Z"), veiculo: 2 });
     const r = await sincronizarFila(api, quem);
     expect(r.recusados).toHaveLength(1);
     expect(lerRecusadas(quem)[0].motivo).toBe("Este caminhão já está na rua.");
+    expect(lerRecusadas(quem)[0].registro?.payload.tipo).toBe("saida");
     expect(r.enviados).toHaveLength(1);
     expect(lerFila(quem)).toHaveLength(0);
   });
@@ -58,6 +203,54 @@ describe("fila da frota sem internet (10D)", () => {
     expect(ehFalhaDeConexao10d(new Error("SEM_CONEXAO"))).toBe(true);
     expect(ehFalhaDeConexao10d(new Error("Load failed"))).toBe(true);
     expect(ehFalhaDeConexao10d(new Error("veiculo_em_uso"))).toBe(false);
+    expect(ehFalhaDeConexao10d(new TypeError("Cannot read properties of undefined"))).toBe(false);
+    expect(ehFalhaDeConexao10d(new TypeError("Failed to fetch"))).toBe(true);
+    expect(ehFalhaDeConexao10d(new Error("statement timeout"))).toBe(false);
+    expect(ehFalhaDeConexao10d(new Error("transaction aborted"))).toBe(false);
+  });
+  it.each(["401", "429", "500", "JWT expired", "statement timeout"])("preserva erro desconhecido %s e só repete por decisão manual", async erro => {
+    const api = acoes();
+    api.saida = vi.fn().mockRejectedValue(new Error(erro));
+    const registro = saida("retido", "2026-11-01T10:00:00Z");
+    guardarNaFila(quem, registro);
+    await sincronizarFila(api, quem);
+    await sincronizarFila(api, quem);
+    expect(api.saida).toHaveBeenCalledTimes(1);
+    expect(lerFila(quem)[0].payload).toEqual(registro.payload);
+    expect(lerRecusadas(quem)).toEqual([]);
+    await sincronizarFila(api, quem, true);
+    expect(api.saida).toHaveBeenCalledTimes(2);
+  });
+  it("foto ausente não bloqueia outro veículo e decisão explícita mantém o defeito", async () => {
+    const api = acoes();
+    const registro = pend("critico", { tipo: "checklist", local: "Obra", obs: "Inspeção", respostas: [{ codigo: 1, situacao: "N", obs: "Freio quebrado", foto: "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4" }] }, "2026-11-01T10:00:00Z");
+    guardarNaFila(quem, registro);
+    guardarNaFila(quem, { ...saida("outro", "2026-11-01T10:01:00Z"), veiculo: 2 });
+    await sincronizarFila(api, quem);
+    expect(api.saida).toHaveBeenCalledTimes(1);
+    expect(enviarSemFotosPendentes(quem, "critico")).toBe(true);
+    await sincronizarFila(api, quem, true);
+    expect(api.checklist).toHaveBeenCalledWith(1, "Obra", expect.stringContaining("por decisão do funcionário"), [{ codigo: 1, situacao: "N", obs: "Freio quebrado" }], "critico");
+    expect(lerFila(quem)).toEqual([]);
+  });
+  it("não perde o registro se o armazenamento da recusa falha", async () => {
+    const api = acoes();
+    api.saida = vi.fn().mockRejectedValue(new Error("veiculo_em_uso"));
+    guardarNaFila(quem, saida("retido", "2026-11-01T10:00:00Z"));
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("quota"); });
+    await sincronizarFila(api, quem);
+    expect(lerFila(quem)).toHaveLength(1);
+  });
+  it("retira liberação de ontem e rejeita cache antigo ou inválido", () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date("2026-11-01T11:00:00Z"));
+    const chave = `metallo-frota-cache-10d:${quem}`;
+    const cache = { em: "2026-10-31T22:00:00Z", caminhoes: [{ id: 1, checklist_hoje: "liberado" }], itens: [], viagens: [] };
+    localStorage.setItem(chave, JSON.stringify(cache));
+    expect(lerCache(quem)?.caminhoes[0].checklist_hoje).toBeNull();
+    for (const em of ["2026-10-30T10:00:00Z", "inválido", "2026-11-02T10:00:00Z"]) {
+      localStorage.setItem(chave, JSON.stringify({ ...cache, em }));
+      expect(lerCache(quem)).toBeNull();
+    }
   });
 });
 

@@ -15,6 +15,7 @@ vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
   lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
   lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
   lerPainelFrota10a: vi.fn(async () => []),
+  lerRecusasFrota10e: vi.fn(async () => []),
   lerAtencaoFrota10a: vi.fn(async () => [
     { veiculo_id: 1, nome: "Munck 01", texto: "Seguro vencido", tipo: "documento", gravidade: "vencido" },
     { veiculo_id: 2, nome: "Munck 02", texto: "Troca de óleo", tipo: "plano", gravidade: "breve" },
@@ -23,7 +24,7 @@ vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
 import FichaFrotaPage from "@/app/(02_SISTEMA)/frota/[id]/page";
 import FrotaPage from "@/app/(02_SISTEMA)/frota/page";
 import ItensFrotaPage from "@/app/(02_SISTEMA)/frota/itens/page";
-import { lerFichaFrota10a, lerChecklistFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { lerFichaFrota10a, lerChecklistFrota10a, lerRecusasFrota10e } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
 import { concluirPlano10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
 
@@ -65,6 +66,23 @@ it("um operador não recebe o cadastro ao forçar a aba na URL", async () => {
   expect(screen.getByRole("heading", { name: "Manutenção" })).toBeInTheDocument();
   expect(screen.queryByRole("link", { name: "Cadastro" })).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Salvar dados" })).not.toBeInTheDocument();
+});
+
+it("conferência mostra o relato original e só oferece confirmação ao responsável com veículo disponível", async () => {
+  const relato = { chave: "11111111-1111-4111-8111-111111111111", employee_id: "22222222-2222-4222-8222-222222222222", por: "Motorista fictício", recebido_em: "2026-11-02T10:00:00Z", conferido_em: null, motivo: null, relato: { tipo: "checklist" as const, respostas: [{ codigo: 1, situacao: "N", obs: "Freio antigo" }] } };
+  vi.mocked(lerRecusasFrota10e).mockResolvedValueOnce([relato]);
+  const view = render(await pagina());
+  expect(screen.getByText("Item 1 do relato original: Freio antigo")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Confirmar conferência deste relato" })).toBeInTheDocument();
+  view.unmount(); estado.role = "collaborator";
+  vi.mocked(lerRecusasFrota10e).mockResolvedValueOnce([relato]);
+  const operador = render(await pagina());
+  expect(screen.queryByRole("button", { name: "Confirmar conferência deste relato" })).not.toBeInTheDocument();
+  operador.unmount(); estado.role = "admin";
+  vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, veiculo: { ...ficha.veiculo, situacao: "nao_liberado" } });
+  vi.mocked(lerRecusasFrota10e).mockResolvedValueOnce([relato]);
+  render(await pagina());
+  expect(screen.queryByRole("button", { name: "Confirmar conferência deste relato" })).not.toBeInTheDocument();
 });
 
 it("os alertas levam ao assunto correspondente e o cadastro só abre quando solicitado", async () => {

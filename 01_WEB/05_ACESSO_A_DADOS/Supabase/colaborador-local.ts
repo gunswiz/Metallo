@@ -30,6 +30,7 @@ export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) 
     "/rest/v1/rpc/my_frota_10a", "/rest/v1/rpc/my_frota_itens_10a", "/rest/v1/rpc/my_frota_viagens_10a", "/rest/v1/rpc/create_checklist_10a", "/rest/v1/rpc/create_saida_10a", "/rest/v1/rpc/create_chegada_10a",
     // 10B: foto do defeito (arquivo só pela função fotos-frota-10b).
     "/rest/v1/rpc/anexar_foto_chegada_10b", "/functions/v1/fotos-frota-10b",
+    "/rest/v1/rpc/my_relato_recusado_10e",
     // 4L: fechamento do mês (conferir e responder).
     "/rest/v1/rpc/my_fechamentos_4l", "/rest/v1/rpc/responder_fechamento_4l",
     // 6A/6B: contracheques e atestados (arquivos só pela função arquivos-6).

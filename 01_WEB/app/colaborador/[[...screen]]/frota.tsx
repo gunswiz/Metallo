@@ -2,13 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Check, ClipboardCheck, Search, Truck } from "lucide-react";
 import { prepararFoto } from "@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6";
-import { ehFalhaDeConexao10d, executarPendente, gravarCache, guardarFotoLocal, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, type Pendente, type Recusada } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
-import { mensagemErroFrota10a, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, type CaminhaoApp10a, type ItemChecklist10a, type RespostaChecklist10a, type ViagemApp10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
+import { guardarConferenciaRecusa, ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, gravarCache, guardarFotoLocal, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, temRelatoDeDefeito, recusaBloqueiaSaida, type Pendente, type Recusada } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { mensagemErroFrota10a, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, type ConferenciaRecusa10e, type CaminhaoApp10a, type ItemChecklist10a, type RespostaChecklist10a, type ViagemApp10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import styles from "./colaborador.module.css";
 import fleet from "@/02_COMPONENTES_VISUAIS/Frota/painel-frota.module.css";
 
 type Acoes = {
   quem?: string;
+  conferirRecusa?: (p: Pendente) => Promise<ConferenciaRecusa10e>;
   caminhoes: () => Promise<CaminhaoApp10a[]>; itens: () => Promise<ItemChecklist10a[]>; viagens: () => Promise<ViagemApp10a[]>;
   checklist: (veiculo: number, local: string, obs: string, respostas: RespostaChecklist10a[], chave: string) => Promise<"liberado" | "ressalvas" | "nao_liberado">;
   saida: (veiculo: number, destino: string, acompanhantes: string, km: number, obs: string, chave: string) => Promise<void>;
@@ -76,14 +77,15 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   const sincronizar = useCallback(async (manual = false) => {
     const q = ref.current.quem ?? "";
     if (!q || lerFila(q).length === 0) return;
-    if (typeof navigator !== "undefined" && !navigator.onLine) { if (manual) setStatus("Ainda sem internet. Assim que o sinal voltar, envio sozinho."); return; }
+    if (typeof navigator !== "undefined" && !navigator.onLine) { if (manual) setStatus("Ainda sem internet. Os registros continuam guardados. Os que precisam de conferência exigem tocar em Enviar agora quando o sinal voltar."); return; }
     setSincronizando(true);
     try {
-      const r = await sincronizarFila(ref.current, q);
+      const r = await sincronizarFila(ref.current, q, manual);
+      if (r.emAndamento) { if (manual) setStatus("O envio já está em andamento. Aguarde a confirmação."); return; }
       atualizarFila();
-      if (r.enviados.length || r.recusados.length) {
+      if (r.enviados.length || r.recusados.length || r.impedimento) {
         await carregar();
-        setStatus([...r.enviados.map(e => `${e.nome}: ${e.texto}`), ...r.recusados.map(x => `${x.nome}: ${ROTULO_FILA[x.tipo]} não foi aceito. ${x.motivo}`)].join(" "));
+        setStatus([...r.enviados.map(e => `${e.nome}: ${e.texto}`), ...r.recusados.map(x => `${x.nome}: ${ROTULO_FILA[x.tipo]} não foi aceito. ${x.motivo}`), r.impedimento].filter(Boolean).join(" "));
       } else if (manual) setStatus("Ainda não deu para enviar. Tento de novo sozinho.");
     } finally { setSincronizando(false); }
   }, [carregar, atualizarFila]);
@@ -106,12 +108,40 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     chave.current = null; kmConfirmado.current = null; setEtapa(0); setStatus(""); setKm(String(v.km_atual)); setDestino(""); setAcomp(""); setProblema(""); setObs(""); setLocal(""); setCiente(false); setFotoChegada(null);
     setRespostas(Object.fromEntries(itens.map(i => [i.codigo, { s: "" as const, obs: "", foto: undefined as string | undefined }]))); setModo({ tipo, v });
   }
+  function refazerRelato(r: Recusada) {
+    const v = caminhoes.find(x => x.id === r.registro?.veiculo), payload = r.registro?.payload;
+    if (!v || !payload) return;
+    if (payload.tipo === "chegada") {
+      if (v.minha_viagem !== payload.viagem) { setStatus("A viagem já foi encerrada ou mudou. Envie o relato guardado para conferência da Gestão."); return; }
+      abrir("chegada", v); setKm(String(payload.km)); setObs(payload.obs); setProblema(payload.problema); setFotoChegada(payload.foto ?? null);
+      setStatus("Confira a chegada. Se o defeito já foi resolvido, volte e envie o relato guardado para conferência da Gestão."); return;
+    }
+    if (payload.tipo !== "checklist") return;
+    abrir("checklist", v);
+    setLocal(payload.local); setObs(payload.obs);
+    setRespostas(Object.fromEntries(itens.map(i => {
+      const anterior = payload.respostas.find(x => x.codigo === i.codigo);
+      return [i.codigo, anterior ? { s: anterior.situacao, obs: anterior.obs, foto: anterior.foto } : { s: "" as const, obs: "" }];
+    })));
+    setStatus("Confira todos os itens atuais. Se o defeito já foi resolvido, volte e envie o relato guardado para conferência da Gestão, sem relatar o defeito outra vez.");
+  }
+  async function conferirRecusa(r: Recusada) {
+    if (!r.registro || !ref.current.conferirRecusa || !ref.current.quem || envioAtivo.current) return;
+    envioAtivo.current = true; setEnviando(true);
+    try {
+      const prova = await ref.current.conferirRecusa(r.registro);
+      if (!guardarConferenciaRecusa(ref.current.quem, prova)) throw new Error("fila_cheia");
+      atualizarFila(); await carregar();
+      setStatus(prova.conferido_em ? "A Gestão conferiu este relato. O histórico foi mantido. Confira a disponibilidade atual antes de sair." : "Relato recebido para conferência na ficha do caminhão. Aguarde o engenheiro ou administrador; não inicie a viagem.");
+    } catch (e) { setStatus(mensagemErroFrota10a(e)); }
+    finally { envioAtivo.current = false; setEnviando(false); }
+  }
   const voltar = () => { if (enviando || subindo) return; limparRascunho(); chave.current = null; setStatus(""); setModo({ tipo: "lista" }); };
   async function rodar(fn: () => Promise<string>) {
     if (envioAtivo.current || subindo) return;
     envioAtivo.current = true;
-    setEnviando(true); setStatus(""); chave.current ??= crypto.randomUUID();
-    try { const msg = await fn(); limparRascunho(); chave.current = null; setModo({ tipo: "lista" }); await carregar(); setStatus(msg); }
+    setEnviando(true); setStatus("");
+    try { chave.current ??= crypto.randomUUID(); const msg = await fn(); limparRascunho(); chave.current = null; setModo({ tipo: "lista" }); await carregar(); setStatus(msg); }
     catch (e) { setStatus(mensagemErroFrota10a(e)); }
     finally { setEnviando(false); envioAtivo.current = false; }
   }
@@ -134,14 +164,16 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   /** Envia na hora; sem internet (ou se a rede cair no meio), guarda no celular e a fila manda depois. */
   async function enviarOuGuardar(p: Pendente): Promise<string> {
     const q = ref.current.quem ?? "";
+    if (p.payload.tipo === "saida" && (semSinal || lerFila(q).some(x => x.veiculo === p.veiculo) || lerRecusadas(q).some(r => r.registro?.veiculo === p.veiculo && recusaBloqueiaSaida(r)))) throw new Error("registro_pendente");
     const guardar = () => {
       if (!q || !guardarNaFila(q, p)) throw new Error(q ? "fila_cheia" : "SEM_CONEXAO");
       atualizarFila();
-      return "Sem internet: guardei no celular. Pendente de confirmação do servidor. Este registro não autoriza a saída. Será enviado quando o sinal voltar.";
+      const manual = lerFila(q).find(x => x.id === p.id)?.revisar;
+      return `Sem internet: guardei no celular. Pendente de confirmação do servidor. Este registro não autoriza a saída. ${manual ? "Quando o sinal voltar, confira o registro e toque em Enviar agora." : "Será enviado quando o sinal voltar."}`;
     };
     if (typeof navigator !== "undefined" && !navigator.onLine) return guardar();
-    try { return await executarPendente(ref.current, q, p); }
-    catch (e) { if (ehFalhaDeConexao10d(e)) return guardar(); throw e; }
+    try { const texto = await executarPendente(ref.current, q, p, true); atualizarFila(); return texto; }
+    catch (e) { atualizarFila(); if (ehFalhaDeConexao10d(e)) return guardar(); throw e; }
   }
   const novoPendente = (v: CaminhaoApp10a, payload: Pendente["payload"]): Pendente => ({ id: chave.current!, veiculo: v.id, nome: v.nome, criado: new Date().toISOString(), payload });
   /** Pede confirmação quando o km pula demais (erro de digitação). Devolve true se pode seguir. */
@@ -202,11 +234,25 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     {semSinal && <p className={styles.frotaAtencao} role="status">Consulta offline · a disponibilidade não está confirmada. Não saia sem confirmação do servidor.</p>}
     {modo.tipo === "lista" && fila.length > 0 && <div className={styles.frotaContexto} role="status"><strong>{fila.length === 1 ? "1 registro guardado" : `${fila.length} registros guardados`} no celular</strong>
       <p>Pendente de confirmação. Guardar no celular não libera o veículo nem confirma a saída.</p>
-      <ul>{fila.map(p => <li key={p.id}>{ROTULO_FILA[p.payload.tipo]} · {p.nome} · aguardando sinal</li>)}</ul>
+      <ul>{fila.map(p => <li key={p.id}>{ROTULO_FILA[p.payload.tipo]} · {p.nome} · {p.revisar ? "precisa de conferência" : "aguardando envio"}
+        {p.fotoPendente && <><p>A foto não chegou. O relato do defeito será mantido. Avise o responsável; isso não libera o veículo.</p><button type="button" disabled={sincronizando || enviando} className={styles.recordsButton} onClick={() => {
+          if (!enviarSemFotosPendentes(ref.current.quem ?? "", p.id)) { setStatus("Não foi possível registrar a decisão sem alterar suas observações. Avise o responsável e mantenha o registro guardado."); return; }
+          atualizarFila(); void sincronizar(true);
+        }}>Enviar relato sem fotos pendentes de {p.nome}</button></>}
+      </li>)}</ul>
       <button type="button" className={styles.recordsButton} disabled={sincronizando} onClick={() => void sincronizar(true)}>{sincronizando ? "Enviando…" : "Enviar agora"}</button></div>}
     {modo.tipo === "lista" && recusadas.length > 0 && <div className={styles.frotaRuim} role="alert"><strong>Não foi aceito pelo sistema</strong>
-      <ul>{recusadas.map(r => <li key={r.id}>{ROTULO_FILA[r.tipo]} · {r.nome}: {r.motivo}</li>)}</ul>
-      <button type="button" className={styles.recordsButton} onClick={() => { limparRecusadas(ref.current.quem ?? ""); atualizarFila(); }}>Entendi</button></div>}
+      <ul>{recusadas.map(r => <li key={r.id}>{ROTULO_FILA[r.tipo]} · {r.nome}: {r.motivo}
+        {temRelatoDeDefeito(r.registro) && <><p>{r.conferencia?.conferido_em ? `Relato conferido pela Gestão: ${r.conferencia.motivo}. O histórico foi preservado.` : r.recebidoEmRegistro ? "O mesmo relato foi aceito em um registro posterior. O histórico foi preservado. A liberação do veículo continua dependendo do sistema." : "Este relato precisa de conferência. Envie o relato guardado para a Gestão, inclusive se o defeito já foi consertado. Não inicie a viagem enquanto houver pendência."}</p>
+          {recusaBloqueiaSaida(r) && r.registro?.payload.tipo === "checklist" && <button type="button" className={styles.recordsButton} disabled={enviando || carregando} onClick={() => refazerRelato(r)}>Refazer checklist com este relato</button>}
+          {recusaBloqueiaSaida(r) && r.registro?.payload.tipo === "chegada" && <button type="button" className={styles.recordsButton} disabled={enviando || carregando} onClick={() => refazerRelato(r)}>Refazer chegada com este relato</button>}
+          {recusaBloqueiaSaida(r) && acoes.conferirRecusa && <button type="button" className={styles.recordsButton} disabled={enviando || carregando || semSinal} onClick={() => void conferirRecusa(r)}>{r.conferencia ? "Consultar conferência da Gestão" : "Enviar relato guardado para conferência"}</button>}
+          <details><summary>Ver relato guardado de {r.nome}</summary><p>{r.registro?.payload.obs}</p>
+            {r.registro?.payload.tipo === "checklist" ? <ul>{r.registro.payload.respostas.filter(x => x.situacao === "N").map(x => <li key={x.codigo}>Item {x.codigo}: {x.obs}{x.foto ? " · foto vinculada ao relato" : ""}</li>)}</ul>
+              : r.registro?.payload.tipo === "chegada" ? <p>{r.registro.payload.problema}</p> : null}
+          </details></>}
+      </li>)}</ul>
+      {recusadas.some(r => !temRelatoDeDefeito(r.registro)) && <button type="button" className={styles.recordsButton} onClick={() => { if (!limparRecusadas(ref.current.quem ?? "")) setStatus("Não foi possível atualizar os avisos. Os registros continuam guardados."); atualizarFila(); }}>Entendi os avisos sem defeito</button>}</div>}
     {erroCarga && <button type="button" className={styles.recordsButton} disabled={carregando} onClick={() => void carregar()}>Tentar novamente</button>}
 
     {modo.tipo === "lista" && <>
@@ -216,6 +262,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       {caminhoes.length > 0 && filtrados.length === 0 && <p className={styles.frotaVazio}>Nenhum caminhão neste filtro. <button type="button" className={styles.recordsButton} onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button></p>}
       <ul className={`${styles.frotaLista} ${fleet.driverVehicles}`}>{filtrados.map(v => {
         const minha = v.minha_viagem !== null, pode = v.situacao === "disponivel";
+        const defeitoRecusado = recusadas.some(r => r.registro?.veiculo === v.id && recusaBloqueiaSaida(r));
         const guardados = fila.filter(p => p.veiculo === v.id), temChecklistGuardado = guardados.some(p => p.payload.tipo === "checklist"), temSaidaGuardada = guardados.some(p => p.payload.tipo === "saida"), temChegadaGuardada = guardados.some(p => p.payload.tipo === "chegada");
         return <li key={v.id} className={v.situacao === "nao_liberado" || v.situacao === "manutencao" ? styles.frotaRuim : v.situacao === "em_uso" ? styles.frotaAtencao : undefined}>
           <div><div className={styles.frotaCabecalho}><span className={styles.frotaIcone}><Truck size={25} aria-hidden/></span><span className={styles.frotaPlaca}>{v.placa}</span></div><strong>{v.nome}</strong><small>{v.km_atual.toLocaleString("pt-BR")} km no painel</small>
@@ -223,13 +270,13 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
             {v.situacao === "em_uso" && !minha && <small>Com {v.motorista ?? "outra pessoa"} · foi para {v.destino}{v.saida_em ? ` · saiu ${quando(v.saida_em)}` : ""}</small>}
             {v.situacao === "nao_liberado" && <small>Não liberado. Fale com o engenheiro.</small>}
             {v.situacao === "manutencao" && <small>Está na oficina.</small>}
-            {pode && <small>Checklist de hoje: {v.checklist_hoje ? ROTULO_RESULTADO_10A[v.checklist_hoje] : temChecklistGuardado ? "guardado no celular, será enviado" : "ainda não feito"}</small>}
+            {pode && <small>Checklist de hoje: {temChecklistGuardado ? "nova inspeção pendente de confirmação" : v.checklist_hoje ? ROTULO_RESULTADO_10A[v.checklist_hoje] : "ainda não feito"}</small>}
             {temSaidaGuardada && <small>Saída pendente de confirmação. Não inicie a viagem até o servidor confirmar.</small>}
             {temChegadaGuardada && <small>Chegada guardada no celular, será enviada.</small>}</div>
           <div className={styles.frotaBotoes}>
             {minha && !temChegadaGuardada && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("chegada", v)}>Registrar chegada</button>}
             {(pode || v.situacao === "nao_liberado") && <button type="button" disabled={enviando || carregando} className={v.checklist_hoje ? styles.recordsButton : styles.recordsDownload} onClick={() => abrir("checklist", v)}><ClipboardCheck size={18} aria-hidden/>{v.checklist_hoje ? "Refazer checklist" : "Fazer checklist"}</button>}
-            {pode && !temSaidaGuardada && v.checklist_hoje && v.checklist_hoje !== "nao_liberado" && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("saida", v)}>Registrar saída</button>}
+            {pode && !defeitoRecusado && !semSinal && guardados.length === 0 && v.checklist_hoje && v.checklist_hoje !== "nao_liberado" && <button type="button" disabled={enviando || carregando} className={styles.recordsDownload} onClick={() => abrir("saida", v)}>Registrar saída</button>}
           </div></li>; })}</ul>
       <details className={styles.frotaHistorico}><summary>Minhas últimas saídas <span>{viagens.length} registros</span></summary>
       {viagens.length === 0 ? <p>Nenhuma saída ainda.</p> : <ul className={styles.pedidosLista}>{(historicoCompleto ? viagens : viagens.slice(0, 5)).map(t => <li key={t.id}><div><strong>{t.veiculo} · {t.destino}</strong>
