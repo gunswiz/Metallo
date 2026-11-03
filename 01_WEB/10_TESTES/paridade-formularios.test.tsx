@@ -16,6 +16,19 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 const firstKey = "11111111-1111-4111-8111-111111111111";
 const secondKey = "22222222-2222-4222-8222-222222222222";
 describe("formulários de operação", () => {
+  it("cadastro sem chave recebe confirmação após atualização da tela e só então navega", async () => {
+    function Commit({finish}:{finish:()=>void}) { useEffect(finish,[finish]); return <p>Veículo gravado</p>; }
+    function Runtime() {
+      const [finish,setFinish]=useState<(()=>void)|null>(null);
+      const action=async()=>{await new Promise<void>(resolve=>setFinish(()=>resolve)); return {confirmed:true,destination:"/frota?ok=1"};};
+      return <><OperationForm action={action} label="Cadastrar" explicitConfirmation refreshOnComplete><input name="nome" defaultValue="Veículo fictício"/></OperationForm>{finish&&<Commit finish={finish}/>}</>;
+    }
+    const view=render(<Runtime/>);
+    fireEvent.submit(view.container.querySelector("form")!);
+    await waitFor(()=>expect(navigation.replace).toHaveBeenCalledWith("/frota?ok=1"));
+    expect(view.container.querySelector("form")).toBeNull();
+    expect(localStorage.length).toBe(0);
+  });
   it("recebe confirmação mesmo quando a ação aguarda a tela atualizada ser montada", async () => {
     function Commit({ finish }: { finish: () => void }) { useEffect(finish, [finish]); return <p>Registro atualizado</p>; }
     function Runtime() {

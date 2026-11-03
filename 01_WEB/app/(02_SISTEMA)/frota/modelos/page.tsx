@@ -40,7 +40,7 @@ export default async function ModelosFrotaPage({ searchParams }: { searchParams:
           {m.revisao !== data.atual && <p className="alert">Revisão histórica, somente leitura. <Link href={`/frota/modelos?categoria=${m.categoria}`}>Abrir revisão atual</Link></p>}
           {ETAPAS_MODELO_10G.filter(etapa => m.itens.some(i => i.etapa === etapa)).map(etapa => <section key={etapa}><h3>{etapa}</h3><ul>{m.itens.filter(i => i.etapa === etapa).map(i => <li key={i.codigo}>{i.nome} · {i.critico ? "bloqueio proposto" : "sem bloqueio proposto"}{i.permite_na ? " · aceita Não se aplica" : " · exige resposta"}{i.exige_foto ? " · foto obrigatória se não conforme" : ""}</li>)}</ul></section>)}
         </>}
-        {conferir && !aprovada && m.revisao===data.atual && (profile.role==="engineer" ? <OperationForm action={aprovarModeloFrota10i} label="Registrar aprovação técnica" pendingLabel="Registrando aprovação…">
+        {conferir && !aprovada && m.revisao===data.atual && (profile.role==="engineer" ? <OperationForm action={aprovarModeloFrota10i} label="Registrar aprovação técnica" pendingLabel="Registrando aprovação…" explicitConfirmation refreshOnComplete>
           <input type="hidden" name="categoria" value={m.categoria}/><input type="hidden" name="revisao" value={m.revisao}/>
           <label className="full">Parecer técnico<textarea name="parecer" required minLength={10} maxLength={600} rows={3}/></label>
           <label className="full"><input name="ciente" type="checkbox" required/> Revisei as perguntas, a criticidade, a aplicabilidade e as exigências de foto desta revisão. Esta aprovação não ativa o modelo no portal.</label>

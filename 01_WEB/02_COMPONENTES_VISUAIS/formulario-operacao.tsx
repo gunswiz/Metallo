@@ -14,11 +14,11 @@ function AtualizarAposConfirmacao({ destination }: { destination: string }) {
 }
 
 export function OperationForm({ action, children, label, pendingLabel = "Salvando…", operationKeyScope,
-  initialOperationKey, newOperationLabel = "Iniciar outra entrega", refreshOnComplete = false, completionHref }: {
+  initialOperationKey, newOperationLabel = "Iniciar outra entrega", refreshOnComplete = false, completionHref, explicitConfirmation = false }: {
   action: OperationAction; children: React.ReactNode; label: string; pendingLabel?: string;
   operationKeyScope?: string; initialOperationKey?: string;
   newOperationLabel?: string | null;
-  refreshOnComplete?: boolean; completionHref?: string;
+  refreshOnComplete?: boolean; completionHref?: string; explicitConfirmation?: boolean;
 }) {
   const execute = async (previous: OperationState, data: FormData): Promise<OperationState> => {
     let result: OperationState;
@@ -39,8 +39,9 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
   const [confirmedState, setConfirmedState] = useState<OperationState>({});
   const [confirmedPending, setConfirmedPending] = useState(false);
   const confirmedRunning = useRef(false);
-  const state = operationKeyScope ? confirmedState : actionState;
-  const pending = operationKeyScope ? confirmedPending : actionPending;
+  const explicit = Boolean(operationKeyScope || explicitConfirmation);
+  const state = explicit ? confirmedState : actionState;
+  const pending = explicit ? confirmedPending : actionPending;
   const operationKeyInput = useRef<HTMLInputElement>(null);
   const [storageError, setStorageError] = useState(false);
   const [changedElsewhere, setChangedElsewhere] = useState(false);
@@ -66,7 +67,7 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
     setStorageError(false);
     setChangedElsewhere(false);
   };
-  if (state.completedKey) return <div className="alert success" role="status">
+  if (state.completedKey || state.confirmed) return <div className="alert success" role="status">
     <p>Operação confirmada pelo sistema. Esta tentativa foi concluída.</p>
     {refreshOnComplete && (completionHref || state.destination) && <AtualizarAposConfirmacao destination={completionHref || state.destination!}/>}
     {state.error && <p role="alert">{state.error}</p>}
@@ -89,7 +90,7 @@ export function OperationForm({ action, children, label, pendingLabel = "Salvand
         setChangedElsewhere(false);
       } catch { setStorageError(true); return; }
     }
-    if (operationKeyScope) {
+    if (explicit) {
       // A confirmação explícita não participa da transição da atualização RSC.
       // O runtime pode atualizar a página antes de entregar o retorno da ação.
       confirmedRunning.current = true; setConfirmedPending(true);

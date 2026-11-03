@@ -13,7 +13,7 @@ const ficha = (id: number | string, extra = "") => `/frota/${id}?ok=1${extra}`;
 const num = (v: number | "") => (v === "" ? null : v);
 
 export async function aprovarModeloFrota10i(_p: unknown, formData: FormData) {
- return executeValidated({schema:aprovacaoModeloForm10i,capability:"epi:write",formData,paths:["/frota/modelos"],destination:d=>`/frota/modelos?categoria=${d.categoria}&revisao=${d.revisao}&conferir=1`,
+ return executeValidated({schema:aprovacaoModeloForm10i,capability:"epi:write",formData,paths:["/frota/modelos"],explicitConfirmation:true,destination:d=>`/frota/modelos?categoria=${d.categoria}&revisao=${d.revisao}&conferir=1`,
  operation:(client,d)=>{requireFrota10a();return client.rpc("admin_aprovar_modelo_10i" as never,{p_categoria:d.categoria,p_revisao:d.revisao,p_parecer:d.parecer,p_ciente:d.ciente==="on"} as never);}});
 }
 
@@ -36,7 +36,7 @@ export async function conferirRecusaFrota10e(_p: unknown, formData: FormData) {
 }
 
 export async function salvarCaminhao10a(_p: unknown, formData: FormData) {
-  return executeValidated({ schema: caminhaoForm10a, capability: "epi:write", formData, paths, destination: d => d.id ? ficha(d.id, "&aba=dados") : "/frota?ok=1",
+  return executeValidated({ schema: caminhaoForm10a, capability: "epi:write", formData, paths, explicitConfirmation:true, destination: d => d.id ? ficha(d.id, "&aba=dados") : "/frota?ok=1",
     operation: (client, d) => { requireFrota10a();
       return client.rpc("admin_save_veiculo_10a" as never, { p_id: d.id === "" || d.id === undefined ? null : d.id, p_placa: d.placa, p_nome: d.nome, p_modelo: d.modelo || null,
         p_ano: num(d.ano), p_km: d.km, p_ativo: d.ativo === "on" || d.id === "" || d.id === undefined } as never); } });

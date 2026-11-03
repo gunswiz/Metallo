@@ -24,7 +24,7 @@ export default async function FrotaPage({ searchParams }: { searchParams: Promis
       actions={podeCadastrar ? <Link className="button primary" href="/frota?novo=1">+ Cadastrar veículo</Link> : undefined}/>
     <SubNav profile={profile} grupo="frota"/>
     {podeCadastrar && query.novo === "1" && <section className="panel" id="novo-caminhao"><header className="panel-header"><h2>Cadastrar veículo</h2><Link href="/frota" className="button secondary">Cancelar cadastro</Link></header>
-      <div className="panel-body"><OperationForm action={salvarCaminhao10a} label="Cadastrar" pendingLabel="Salvando…">
+      <div className="panel-body"><OperationForm action={salvarCaminhao10a} label="Cadastrar" pendingLabel="Salvando…" explicitConfirmation refreshOnComplete>
         <label>Nome (ex.: Munck 06)<input name="nome" required minLength={2} maxLength={60}/></label>
         <label>Placa<input name="placa" required maxLength={8} placeholder="ABC1D23"/></label>
         <label>Modelo (opcional)<input name="modelo" maxLength={60}/></label>

@@ -5,7 +5,7 @@ import type { Capability } from "@metallo/core";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 
-export type OperationState = { error?: string; completedKey?: string; destination?: string };
+export type OperationState = { error?: string; completedKey?: string; destination?: string; confirmed?: boolean };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
   ["engenheiro_required", "A aprovação técnica exige um perfil ativo de engenheiro."],
@@ -43,6 +43,7 @@ export async function executeValidated<S extends z.ZodType>(options: {
   operation: (client: Client, data: z.output<S>) => PromiseLike<{ error: { message: string } | null }>;
   paths: string[]; destination: string | ((data: z.output<S>) => string);
   completionKey?: (data: z.output<S>) => string;
+  explicitConfirmation?: boolean;
 }): Promise<OperationState> {
   await requireCapability(options.capability);
   const parsed = options.schema.safeParse(Object.fromEntries(options.formData));
@@ -56,5 +57,6 @@ export async function executeValidated<S extends z.ZodType>(options: {
   for (const path of options.paths) revalidatePath(path, "layout");
   const destination = typeof options.destination === "function" ? options.destination(parsed.data) : options.destination;
   if (options.completionKey) return { completedKey: options.completionKey(parsed.data), destination };
+  if (options.explicitConfirmation) return { confirmed: true, destination };
   redirect(destination);
 }

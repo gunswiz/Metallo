@@ -174,7 +174,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       {categoria.categoria && <Link href={`/frota/modelos?categoria=${categoria.categoria}`}>Ver rascunho desta categoria</Link>}
     </div></section>}
     {podeCadastrar && aba === "dados" && <section className="panel" id="dados"><header className="panel-header"><div><h2>Dados do veículo</h2><p>Corrija o km se o painel mostrar outro valor. Desativar tira da lista do app.</p></div></header><div className="panel-body">
-      <OperationForm action={salvarCaminhao10a} label="Salvar dados" pendingLabel="Salvando…">
+      <OperationForm action={salvarCaminhao10a} label="Salvar dados" pendingLabel="Salvando…" explicitConfirmation refreshOnComplete>
         <input type="hidden" name="id" value={v.id}/>
         <label>Nome<input name="nome" defaultValue={v.nome} required minLength={2} maxLength={60}/></label><label>Placa<input name="placa" defaultValue={v.placa} required maxLength={8}/></label>
         <label>Modelo<input name="modelo" defaultValue={v.modelo ?? ""} maxLength={60}/></label><label>Ano<input name="ano" type="number" min={1980} max={2100} defaultValue={v.ano ?? ""}/></label>
