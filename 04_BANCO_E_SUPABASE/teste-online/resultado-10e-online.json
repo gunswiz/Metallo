@@ -1,7 +1,43 @@
 {
-  "at": "2026-11-03T18:36:38.776Z",
+  "at": "2026-11-03T23:51:57.390Z",
   "target": "metallo-teste",
   "checks": [
+    {
+      "name": "funcionário não consulta documentos de condutores",
+      "ok": true
+    },
+    {
+      "name": "Gestão consulta funcionários no cadastro documental",
+      "ok": true
+    },
+    {
+      "name": "funcionário não registra CNH",
+      "ok": true
+    },
+    {
+      "name": "administrador não confere como engenheiro",
+      "ok": true
+    },
+    {
+      "name": "documento simultâneo idêntico tem uma revisão",
+      "ok": true
+    },
+    {
+      "name": "mesma chave documental não aceita conteúdo trocado",
+      "ok": true
+    },
+    {
+      "name": "documento rejeita revisão antiga",
+      "ok": true
+    },
+    {
+      "name": "documento fictício invalidado ao terminar ensaio",
+      "ok": true
+    },
+    {
+      "name": "histórico conserva cadastro anterior à invalidação",
+      "ok": true
+    },
     {
       "name": "administrador sem perfil de engenheiro não aprova",
       "ok": true
@@ -211,12 +247,12 @@
       "ok": true
     }
   ],
-  "draftCategory": "ensaio_c9ad",
+  "draftCategory": "ensaio_3d0b",
   "fixture": {
-    "vehicle": 19,
-    "checklist": 18,
+    "vehicle": 20,
+    "checklist": 19,
     "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
   },
   "fixtureDeactivated": true,
-  "result": "52/52"
+  "result": "61/61"
 }

@@ -93,7 +93,7 @@ describe("Frota da Gestão", () => {
   });
 });
 
-describe("Caminhões do funcionário", () => {
+describe("Veículos do funcionário", () => {
   it("carrega perguntas do veículo e respeita NA e foto obrigatória",async()=>{
     const itensVeiculo=vi.fn(async()=>[{codigo:99,nome:"Gancho da categoria",critico:true,versao:"b".repeat(64),permite_na:false,exige_foto:true,etapa:"Içamento"}]);
     const api={...acoes(),itensVeiculo};
@@ -186,7 +186,7 @@ describe("Caminhões do funcionário", () => {
       render(<Frota acoes={api}/>);
       fireEvent.click(await screen.findByRole("button", { name: "Registrar chegada" }));
       localStorage.setItem("metallo-frota-fila-10d:conta-teste", JSON.stringify([{ id: "11111111-1111-4111-8111-111111111111", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), revisar: true, payload: { tipo: "chegada", viagem: 4, km: 10000, problema: "Freio", obs: "" } }]));
-      fireEvent.change(screen.getByLabelText("O caminhão teve algum problema? (deixe vazio se não)"), { target: { value: "Freio" } });
+      fireEvent.change(screen.getByLabelText("O veículo teve algum problema? (deixe vazio se não)"), { target: { value: "Freio" } });
       fireEvent.click(screen.getByRole("button", { name: "Registrar chegada" }));
       await screen.findByText(/Quando o sinal voltar, confira o registro e toque em Enviar agora/);
       expect(screen.queryByText(/Será enviado quando o sinal voltar/)).not.toBeInTheDocument();
@@ -249,7 +249,7 @@ describe("Caminhões do funcionário", () => {
     fireEvent.click(screen.getByRole("button", { name: "Enviar checklist" }));
     await screen.findByText(/bloqueios anteriores continuam válidos/);
     expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Checklist feito. Caminhão liberado.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Checklist feito. Veículo liberado.")).not.toBeInTheDocument();
   });
   it("não restaura o rascunho de outra conta ao trocar de identidade na mesma tela", async () => {
     const api = acoes();
@@ -274,14 +274,14 @@ describe("Caminhões do funcionário", () => {
       expect(screen.getByText(/Guardar no celular não libera/)).toBeInTheDocument();
     } finally { online.mockRestore(); }
   });
-  it("prioriza a chegada do caminhão com a pessoa e oferece saída só com checklist liberado", async () => {
-    const api = acoes([caminhao(), caminhao({ id: 2, nome: "Meu caminhão", situacao: "em_uso", minha_viagem: 55 }), caminhao({ id: 3, nome: "Liberado", checklist_hoje: "ressalvas" }), caminhao({ id: 4, nome: "Bloqueado", situacao: "nao_liberado", checklist_hoje: "nao_liberado" })]);
+  it("prioriza a chegada do veículo com a pessoa e oferece saída só com checklist liberado", async () => {
+    const api = acoes([caminhao(), caminhao({ id: 2, nome: "Meu veículo", situacao: "em_uso", minha_viagem: 55 }), caminhao({ id: 3, nome: "Liberado", checklist_hoje: "ressalvas" }), caminhao({ id: 4, nome: "Bloqueado", situacao: "nao_liberado", checklist_hoje: "nao_liberado" })]);
     const { container } = render(<Frota acoes={api}/>);
     await screen.findByRole("button", { name: "Registrar chegada" });
-    expect(container.querySelector("ul > li")).toHaveTextContent("Meu caminhão");
+    expect(container.querySelector("ul > li")).toHaveTextContent("Meu veículo");
     expect(screen.getAllByRole("button", { name: "Registrar saída" })).toHaveLength(1);
     fireEvent.click(screen.getByRole("button", { name: "Com você" }));
-    expect(screen.getByText("Meu caminhão")).toBeInTheDocument();
+    expect(screen.getByText("Meu veículo")).toBeInTheDocument();
     expect(screen.queryByText("Munck São José")).not.toBeInTheDocument();
   });
   it("retoma o checklist de onde parou se a página recarregar ao abrir a câmera", async () => {
@@ -361,7 +361,7 @@ describe("Caminhões do funcionário", () => {
     expect(screen.getByRole("status")).toHaveTextContent("10.000 ou mais");
     fireEvent.change(screen.getByLabelText("Km do painel agora"), { target: { value: "10.005" } });
     fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
-    await screen.findByText("Este caminhão já está na rua.");
+    await screen.findByText("Este veículo já está na rua.");
     expect(screen.getByLabelText("Para onde vai?")).toHaveValue("Obra Norte");
     fireEvent.click(screen.getByRole("button", { name: "Registrar saída" }));
     await screen.findByText("Saída registrada. Boa viagem!");
@@ -378,7 +378,7 @@ describe("Caminhões do funcionário", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
     expect(screen.getByRole("button", { name: "Enviar checklist" })).toBeDisabled();
     expect(api.checklist).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "Voltar aos caminhões" }));
+    fireEvent.click(screen.getByRole("button", { name: "Voltar aos veículos" }));
     expect(screen.getByRole("button", { name: "Fazer checklist" })).toBeInTheDocument();
   });
 });

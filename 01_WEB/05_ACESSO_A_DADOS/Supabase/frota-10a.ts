@@ -4,6 +4,7 @@ import { atencaoGestao10a, checklistDetalhe10a, fichaGestao10a, fotosChegadaGest
 import { createClient } from "./server";
 import { recusasGestao10e } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import { modelosGestao10g, categoriaVeiculo10h, aprovacoesModelo10i, ativacaoModelo10j } from "@/03_FUNCOES_E_LOGICA/Frota/modelos-10g";
+import { condutoresGestao10k } from "@/03_FUNCOES_E_LOGICA/Frota/condutores-10k";
 
 // Marco 10A: frota. Somente laboratório e teste online (produção ainda não tem estas funções).
 export function requireFrota10a() {
@@ -16,6 +17,7 @@ async function chamar(nome: string, args?: Record<string, unknown>) {
   return r.data;
 }
 export const lerPainelFrota10a = async () => painelGestao10a.parse(await chamar("admin_frota_painel_10a"));
+export const lerCondutores10k = async (employee?: string) => condutoresGestao10k.parse(await chamar("admin_condutores_10k", {p_employee: employee ?? null}));
 export const lerAtencaoFrota10a = async () => atencaoGestao10a.parse(await chamar("admin_frota_atencao_10a"));
 export const lerItensFrota10a = async () => itensGestao10a.parse(await chamar("admin_frota_itens_10a"));
 export const lerModelosFrota10g = async (categoria: string, revisao?: number) => modelosGestao10g.parse(await chamar("admin_modelos_frota_10g", { p_categoria: categoria, p_revisao: revisao ?? null }));

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Marco 10A: frota de caminhões munck (contratos de leitura e rótulos). Sem localização por GPS.
+// Marco 10A: frota de veículos munck (contratos de leitura e rótulos). Sem localização por GPS.
 export const SITUACAO_FROTA_10A = ["disponivel", "em_uso", "nao_liberado", "manutencao"] as const;
 export type SituacaoFrota10a = (typeof SITUACAO_FROTA_10A)[number];
 export const ROTULO_SITUACAO_FROTA_10A: Record<SituacaoFrota10a, string> = { disponivel: "Disponível", em_uso: "Na rua", nao_liberado: "Não liberado", manutencao: "Na oficina" };
@@ -89,16 +89,16 @@ export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
   regra_evidencia_checklist: "Confira as regras de Não se aplica e as fotos obrigatórias do modelo deste veículo. O envio não foi aceito.",
   idempotency_conflict: "Esta tentativa já foi registrada com outro conteúdo ou é anterior à conferência de conteúdo. Confira os registros antes de iniciar uma nova tentativa. Os dados guardados foram preservados.",
   fila_cheia: "Há registros demais guardados no celular. Conecte-se à internet para enviá-los.",
-  foto_pendente: "O registro não foi enviado porque uma foto está indisponível ou não foi aceita. Os dados continuam guardados. Na lista de caminhões, você pode enviar o relato sem as fotos pendentes. Avise o responsável.",
+  foto_pendente: "O registro não foi enviado porque uma foto está indisponível ou não foi aceita. Os dados continuam guardados. Na lista de veículos, você pode enviar o relato sem as fotos pendentes. Avise o responsável.",
   registro_pendente: "Há registros pendentes ou a disponibilidade não foi confirmada. Aguarde a confirmação do servidor antes de registrar a saída.",
   foto_sem_sinal: "Sem internet e não deu para guardar a foto no celular. Continue sem a foto ou conecte-se.",
-  checklist_do_dia_necessario: "Faça o checklist de hoje antes de sair.", veiculo_nao_liberado: "Este caminhão não está liberado. Fale com o engenheiro.",
-  veiculo_em_uso: "Este caminhão já está na rua.", veiculo_em_manutencao: "Este caminhão está na oficina.", voce_ja_esta_com_um_caminhao: "Você já está com um caminhão. Registre a chegada primeiro.",
-  km_menor_que_atual: "O km não pode ser menor que o do caminhão.", km_menor_que_saida: "O km de chegada não pode ser menor que o da saída.",
+  checklist_do_dia_necessario: "Faça o checklist de hoje antes de sair.", veiculo_nao_liberado: "Este veículo não está liberado. Fale com o engenheiro.",
+  veiculo_em_uso: "Este veículo já está na rua.", veiculo_em_manutencao: "Este veículo está na oficina.", voce_ja_esta_com_um_caminhao: "Você já está com um veículo. Registre a chegada primeiro.",
+  km_menor_que_atual: "O km não pode ser menor que o do veículo.", km_menor_que_saida: "O km de chegada não pode ser menor que o da saída.",
   descreva_o_problema: "Descreva o problema com pelo menos 3 letras.", itens_incompletos: "Responda todos os itens do checklist.", ciencia_obrigatoria: "Marque que você está ciente.",
   foto_invalida: "A foto não pôde ser usada. Tire de novo.", tipo_arquivo: "Esse arquivo não é uma foto. Tire a foto de novo.", arquivo_grande: "Foto grande demais. Tire de novo.",
   muitos_envios: "Muitas fotos hoje. Fale com o engenheiro.", sem_arquivo: "Tire a foto antes de enviar.",
-  destino_invalido: "Informe o destino.", veiculo_indisponivel: "Este caminhão não pode receber checklist agora.",
+  destino_invalido: "Informe o destino.", veiculo_indisponivel: "Este veículo não pode receber checklist agora.",
 };
 export function textoErroFrota10a(erro: unknown): string {
   if (erro && typeof erro === "object" && "message" in erro && typeof erro.message === "string") return erro.message;

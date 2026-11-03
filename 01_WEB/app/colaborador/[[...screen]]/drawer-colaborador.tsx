@@ -27,7 +27,7 @@ const groups: { label: string; items: Item[] }[] = [
     { screen: "equipe", label: "Minha equipe", icon: UsersRound },
     { screen: "obra", label: "Minha obra", icon: HardHat },
     { screen: "comunicados", label: "Comunicados", icon: Megaphone },
-    { screen: "frota", label: "Caminhões", icon: Truck },
+    { screen: "frota", label: "Veículos", icon: Truck },
   ] },
   { label: "Solicitações", items: [
     { screen: "epis", hash: "epi-solicitacoes", label: "Minhas solicitações", note: "Solicitações de EPI", icon: ClipboardList },

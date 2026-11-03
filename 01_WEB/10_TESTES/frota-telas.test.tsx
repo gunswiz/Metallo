@@ -12,6 +12,7 @@ vi.mock("@/09_CONFIGURACOES/ambiente-teste-online", () => ({ recursosNovosLibera
 vi.mock("@/03_FUNCOES_E_LOGICA/executarOperacaoValidada", () => ({ executeValidated: vi.fn(async () => ({ status: "success" })) }));
 vi.mock("@/02_COMPONENTES_VISUAIS/formulario-operacao", () => ({ OperationForm: ({ children, label }: { children: ReactNode; label: string }) => <form>{children}<button>{label}</button></form> }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
+  lerCondutores10k: vi.fn(async()=>({hoje:"2026-11-03",funcionarios:[{id:"12e671f3-3da3-4af9-9032-c23d4a950fd3",nome:"Condutor fictício",ativo:true}],historico:[]})),
   lerModelosFrota10g: vi.fn(async()=>({atual:1,categorias:[{codigo:"saveiro",nome:"Saveiro"}],modelo:{categoria:"saveiro",nome:"Saveiro",revisao:1,itens:[{codigo:1,nome:"Freios",etapa:"Rodagem",critico:true,permite_na:false,exige_foto:true}],motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z",autor:"Autor fictício"},historico:[{revisao:1,motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z"}]})),
   lerAprovacoesModelo10i: vi.fn(async()=>[]),
   lerAtivacaoModelo10j: vi.fn(async()=>({veiculos:0,atual:null})),
@@ -29,9 +30,31 @@ import FichaFrotaPage from "@/app/(02_SISTEMA)/frota/[id]/page";
 import ModelosFrotaPage from "@/app/(02_SISTEMA)/frota/modelos/page";
 import FrotaPage from "@/app/(02_SISTEMA)/frota/page";
 import ItensFrotaPage from "@/app/(02_SISTEMA)/frota/itens/page";
+import CondutoresPage from "@/app/(02_SISTEMA)/frota/condutores/page";
 import { lerFichaFrota10a, lerChecklistFrota10a, lerRecusasFrota10e } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
 import {lerAprovacoesModelo10i} from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+
+it("cadastro de CNH não oferece conferência ao administrador nem promete autorização",async()=>{
+  render(await CondutoresPage({searchParams:Promise.resolve({funcionario:"12e671f3-3da3-4af9-9032-c23d4a950fd3"})}));
+  expect(screen.getByText(/Esta etapa não autoriza dirigir/)).toBeInTheDocument();
+  expect(screen.queryByRole("option",{name:"Conferido pelo engenheiro"})).not.toBeInTheDocument();
+  expect(screen.getByRole("link",{name:"Consultar treinamentos e ASO"})).toHaveAttribute("href","/treinamentos?funcionario=12e671f3-3da3-4af9-9032-c23d4a950fd3");
+  expect(screen.getByLabelText("Validade informada no documento")).toBeRequired();
+});
+it("engenheiro pode registrar conferência documental sem autorização operacional",async()=>{
+  estado.role="engineer";
+  render(await CondutoresPage({searchParams:Promise.resolve({funcionario:"12e671f3-3da3-4af9-9032-c23d4a950fd3"})}));
+  expect(screen.getByRole("option",{name:"Conferido pelo engenheiro"})).toBeInTheDocument();
+  expect(screen.getByText(/não substitui a autorização de condução/)).toBeInTheDocument();
+});
+it("funcionário inativo conserva histórico sem formulário de CNH",async()=>{
+  const {lerCondutores10k}=await import("@/05_ACESSO_A_DADOS/Supabase/frota-10a");
+  vi.mocked(lerCondutores10k).mockResolvedValueOnce({hoje:"2026-11-03",funcionarios:[{id:"12e671f3-3da3-4af9-9032-c23d4a950fd3",nome:"Condutor fictício",ativo:false}],historico:[]});
+  render(await CondutoresPage({searchParams:Promise.resolve({funcionario:"12e671f3-3da3-4af9-9032-c23d4a950fd3"})}));
+  expect(screen.queryByRole("button",{name:"Registrar documento"})).not.toBeInTheDocument();
+  expect(screen.getByText(/Funcionário inativo. Histórico/)).toBeInTheDocument();
+});
 
 it("ativação só é oferecida na conferência de revisão aprovada ao engenheiro",async()=>{
   estado.role="engineer";

@@ -27,7 +27,7 @@ type Rascunho = { itens?: ItemChecklist10a[]; em: number; tipo: "checklist" | "s
 const quando = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 const lerKm = (t: string) => { const l = t.trim().replace(/\./g, ""); return /^\d{1,7}$/.test(l) ? Number(l) : null; };
 
-// Marco 10A — "Caminhões": checklist do dia, saída e chegada do munck. Sem localização.
+// Marco 10A — "Veículos": checklist do dia, saída e chegada do munck. Sem localização.
 export function Frota({ acoes }: { acoes: Acoes }) {
   return <FrotaDaConta key={acoes.quem ?? "sem-identidade"} acoes={acoes}/>;
 }
@@ -81,7 +81,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       if (guardado) {
         setCaminhoes(guardado.caminhoes); setItens(guardado.itens); setModelos(guardado.modelos??{}); setViagens(guardado.viagens); setSemSinal(true);
         setStatus(restaurar(guardado.caminhoes, guardado.itens,ref.current.itensVeiculo ? guardado.modelos??{} : undefined) ?? "Sem internet: consulta guardada no celular. A situação pode ter mudado. Aguarde a confirmação do servidor antes de sair.");
-      } else { setErroCarga(true); setStatus("Não foi possível atualizar os caminhões. Tente de novo."); }
+      } else { setErroCarga(true); setStatus("Não foi possível atualizar os veículos. Tente de novo."); }
     } finally { setCarregando(false); }
   }, [restaurar]);
   const atualizarFila = useCallback(() => { const q = ref.current.quem ?? ""; if (!q) return; setFila(lerFila(q)); setRecusadas(lerRecusadas(q)); }, []);
@@ -147,7 +147,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       const prova = await ref.current.conferirRecusa(r.registro);
       if (!guardarConferenciaRecusa(ref.current.quem, prova)) throw new Error("fila_cheia");
       atualizarFila(); await carregar();
-      setStatus(prova.conferido_em ? "A Gestão conferiu este relato. O histórico foi mantido. Confira a disponibilidade atual antes de sair." : "Relato recebido para conferência na ficha do caminhão. Aguarde o engenheiro ou administrador; não inicie a viagem.");
+      setStatus(prova.conferido_em ? "A Gestão conferiu este relato. O histórico foi mantido. Confira a disponibilidade atual antes de sair." : "Relato recebido para conferência na ficha do veículo. Aguarde o engenheiro ou administrador; não inicie a viagem.");
     } catch (e) { setStatus(mensagemErroFrota10a(e)); }
     finally { envioAtivo.current = false; setEnviando(false); }
   }
@@ -252,7 +252,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   const filtrados = caminhoes.filter(v => normalizar(`${v.nome} ${v.placa}`).includes(normalizar(busca)) && (filtro === "todos" || (filtro === "comigo" ? v.minha_viagem !== null : v.situacao === "disponivel"))).sort((a, b) => Number(b.minha_viagem !== null) - Number(a.minha_viagem !== null));
   return <section className={`${styles.records} ${styles.frotaPainel}`} aria-labelledby="frota-title" aria-busy={carregando || enviando}>
     <input ref={cameraFoto} type="file" accept="image/*" capture="environment" hidden onChange={e => { if (veiculoAtual) void fotoEscolhida(e.target.files?.[0], veiculoAtual); }}/>
-    <div className={fleet.driverHeader}><Truck size={30} aria-hidden/><div><span className={fleet.eyebrow}>SUA JORNADA COM SEGURANÇA</span><h2 id="frota-title">Caminhões</h2><p>{veiculoAtual ? `${veiculoAtual.nome} · ${veiculoAtual.placa}` : "Escolha o veículo. Confira os itens. Aguarde a confirmação para sair."}</p></div></div>
+    <div className={fleet.driverHeader}><Truck size={30} aria-hidden/><div><span className={fleet.eyebrow}>SUA JORNADA COM SEGURANÇA</span><h2 id="frota-title">Veículos</h2><p>{veiculoAtual ? `${veiculoAtual.nome} · ${veiculoAtual.placa}` : "Escolha o veículo. Confira os itens. Aguarde a confirmação para sair."}</p></div></div>
     {modo.tipo === "lista" && <ol className={fleet.driverSteps} aria-label="Etapas de uso do veículo"><li><span>01</span>Escolher veículo</li><li><span>02</span>Fazer inspeção</li><li><span>03</span>Registrar viagem</li></ol>}
     {status && <p role="status" aria-live="polite" className={styles.pointState}>{status}</p>}
     {semSinal && <p className={styles.frotaAtencao} role="status">Consulta offline · a disponibilidade não está confirmada. Não saia sem confirmação do servidor.</p>}
@@ -280,10 +280,10 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     {erroCarga && <button type="button" className={styles.recordsButton} disabled={carregando} onClick={() => void carregar()}>Tentar novamente</button>}
 
     {modo.tipo === "lista" && <>
-      {!carregando && !erroCarga && caminhoes.length === 0 && <div className={styles.frotaVazio}><Truck size={32} aria-hidden/><h3>Nenhum caminhão disponível na lista</h3><p>Os veículos cadastrados pela Gestão aparecerão aqui.</p></div>}
-      {caminhoes.length > 0 && <><div className={styles.frotaFiltros} role="group" aria-label="Filtrar caminhões">{[{ id: "todos", nome: "Todos" }, { id: "disponivel", nome: "Disponíveis" }, { id: "comigo", nome: "Com você" }].map(f => <button type="button" key={f.id} aria-pressed={filtro === f.id} onClick={() => setFiltro(f.id)}>{f.nome}</button>)}</div>
-      <label className={styles.frotaBusca}><Search size={18} aria-hidden/><input type="search" aria-label="Buscar caminhão ou placa" placeholder="Buscar nome ou placa" value={busca} onChange={e => setBusca(e.target.value)}/></label></>}
-      {caminhoes.length > 0 && filtrados.length === 0 && <p className={styles.frotaVazio}>Nenhum caminhão neste filtro. <button type="button" className={styles.recordsButton} onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button></p>}
+      {!carregando && !erroCarga && caminhoes.length === 0 && <div className={styles.frotaVazio}><Truck size={32} aria-hidden/><h3>Nenhum veículo disponível na lista</h3><p>Os veículos cadastrados pela Gestão aparecerão aqui.</p></div>}
+      {caminhoes.length > 0 && <><div className={styles.frotaFiltros} role="group" aria-label="Filtrar veículos">{[{ id: "todos", nome: "Todos" }, { id: "disponivel", nome: "Disponíveis" }, { id: "comigo", nome: "Com você" }].map(f => <button type="button" key={f.id} aria-pressed={filtro === f.id} onClick={() => setFiltro(f.id)}>{f.nome}</button>)}</div>
+      <label className={styles.frotaBusca}><Search size={18} aria-hidden/><input type="search" aria-label="Buscar veículo ou placa" placeholder="Buscar nome ou placa" value={busca} onChange={e => setBusca(e.target.value)}/></label></>}
+      {caminhoes.length > 0 && filtrados.length === 0 && <p className={styles.frotaVazio}>Nenhum veículo neste filtro. <button type="button" className={styles.recordsButton} onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button></p>}
       <ul className={`${styles.frotaLista} ${fleet.driverVehicles}`}>{filtrados.map(v => {
         const minha = v.minha_viagem !== null, pode = v.situacao === "disponivel";
         const defeitoRecusado = recusadas.some(r => r.registro?.veiculo === v.id && recusaBloqueiaSaida(r));
@@ -314,7 +314,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       <div className={styles.frotaProgresso}><span>{respondidos} de {itens.length} itens respondidos</span><progress aria-label="Progresso do checklist" value={respondidos} max={itens.length || 1}/></div>
       <p>Confira cada item. Se houver problema, descreva o que encontrou.</p>
       {!todosDaEtapaRespondidos && <button type="button" className={styles.recordsButton} disabled={subindo || enviando} onClick={tudoConforme}><Check size={18} aria-hidden/>Tudo conforme nesta etapa</button>}
-      {!itens.length && <p role="status">Os itens do checklist não estão disponíveis. Volte aos caminhões e atualize a página.</p>}
+      {!itens.length && <p role="status">Os itens do checklist não estão disponíveis. Volte aos veículos e atualize a página.</p>}
       <ol className={styles.frotaItens} start={etapa * 5 + 1}>{itensDaEtapa.map(i => { const r = respostas[i.codigo] ?? { s: "", obs: "" };
         return <li key={i.codigo} className={r.s === "N" ? styles.frotaRuim : undefined}>
           <span>{i.codigo}. {i.nome}{i.critico && <small className={styles.frotaCritico}>Crítico · problema impede a saída</small>}</span>
@@ -327,10 +327,10 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
         </li>; })}</ol>
       {ultimoPasso && <><label>Local (opcional)<input value={local} onChange={e => setLocal(e.target.value)} maxLength={80} placeholder="Ex.: pátio da empresa"/></label>
       <label>Observação geral (opcional)<input value={obs} onChange={e => setObs(e.target.value)} maxLength={300}/></label>
-      <label className={styles.frotaCiente}><input type="checkbox" checked={ciente} onChange={e => setCiente(e.target.checked)}/> Estou ciente de que o item marcado como crítico pode impedir a saída do caminhão.</label></>}
+      <label className={styles.frotaCiente}><input type="checkbox" checked={ciente} onChange={e => setCiente(e.target.checked)}/> Estou ciente de que o item marcado como crítico pode impedir a saída do veículo.</label></>}
       <div className={styles.frotaPassos}>{etapa > 0 && <button type="button" className={styles.recordsButton} disabled={enviando || subindo} onClick={() => { setStatus(""); setEtapa(e => e - 1); }}><ArrowLeft size={17} aria-hidden/>Anterior</button>}
         {ultimoPasso ? <button type="button" className={styles.recordsDownload} disabled={enviando || subindo || !itens.length} onClick={() => enviarChecklist(modo.v)}>{enviando ? "Enviando…" : "Enviar checklist"}</button> : <button type="button" className={styles.recordsDownload} disabled={enviando || subindo} onClick={proximaEtapa}>Continuar<ArrowRight size={17} aria-hidden/></button>}</div>
-      <button type="button" className={styles.recordsButton} disabled={enviando || subindo} onClick={voltar}>Voltar aos caminhões</button>
+      <button type="button" className={styles.recordsButton} disabled={enviando || subindo} onClick={voltar}>Voltar aos veículos</button>
     </div>}
 
     {modo.tipo === "saida" && <div className={styles.pedidoForm}>
@@ -348,7 +348,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       <h3 ref={tituloForm} tabIndex={-1}>Registrar chegada</h3><p className={styles.frotaContexto}>{modo.v.nome} · {modo.v.placa}<br/>Última leitura: {modo.v.km_atual.toLocaleString("pt-BR")} km</p>
       <label>Km do painel agora<input inputMode="numeric" value={km} onChange={e => setKm(e.target.value)} maxLength={9}/></label>
       {(() => { const k = lerKm(km); return k !== null && k >= modo.v.km_atual ? <small>{k === modo.v.km_atual ? "Igual à última leitura." : `${(k - modo.v.km_atual).toLocaleString("pt-BR")} km desde a última leitura.`}</small> : null; })()}
-      <label>O caminhão teve algum problema? (deixe vazio se não)<input value={problema} onChange={e => setProblema(e.target.value)} maxLength={250} placeholder="Ex.: freio fazendo barulho"/></label>
+      <label>O veículo teve algum problema? (deixe vazio se não)<input value={problema} onChange={e => setProblema(e.target.value)} maxLength={250} placeholder="Ex.: freio fazendo barulho"/></label>
       {problema.trim().length >= 3 && <button type="button" className={styles.recordsButton} disabled={subindo || enviando} onClick={() => pedirFoto("chegada")}><Camera size={20} aria-hidden/>{fotoChegada ? "Foto anexada ✓ (trocar)" : "Tirar foto do problema"}</button>}
       <label>Observação (opcional)<input value={obs} onChange={e => setObs(e.target.value)} maxLength={200}/></label>
       <div className={styles.frotaBotoes}><button type="button" className={styles.recordsDownload} disabled={enviando || subindo} onClick={() => enviarChegada(modo.v)}>{enviando ? "Enviando…" : "Registrar chegada"}</button>

@@ -39,8 +39,43 @@ before(async()=>{
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103071122_frota_categoria_veiculo_10h.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103072356_frota_aprovacao_modelos_10i.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103183604_frota_modelos_operacionais_10j.sql',import.meta.url),'utf8'));
+  await db.exec(`alter table public.epi_employees add column team_id uuid, add column active boolean default true;
+    create function private.gestao_pode_5a(p_team uuid) returns boolean language sql as $$ select exists(select 1 from public.profiles where id=auth.uid() and active and (role='admin' or (role='engineer' and p_team::text=current_setting('test.allowed_team',true)))) $$;`);
+  await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103235142_frota_documentos_condutores_10k.sql',import.meta.url),'utf8'));
 });
 after(()=>db.close());
+
+test('CNH preserva revisões, exige escopo e engenheiro para conferência, sem liberar condução',async()=>{
+  const team=randomUUID(), other=randomUUID(), key=randomUUID();
+  const salvar=(base=0,situacao='informado',k=key,validade='2027-01-10')=>one("select public.admin_salvar_cnh_10k($1,$2,'B',$3,$4,'Pasta fictícia','Cadastro documental fictício',$5)",[employee,base,validade,situacao,k]);
+  const ler=()=>one('select public.admin_condutores_10k($1)',[employee]);
+  await db.query("insert into public.epi_employees(id,full_name,team_id,active) values($1,'Outro funcionário',$2,true)",[other,team]);
+  const veiculoAntes=await one('select to_jsonb(v) from private.frota_veiculos_10a v where id=1');
+  const first=await salvar(); assert.equal(await salvar(),first);
+  await assert.rejects(salvar(0,'invalidado'),/idempotency_conflict/);
+  await assert.rejects(salvar(0,'informado',randomUUID()),/documento_revisao_conflito/);
+  await assert.rejects(salvar(1,'conferido',randomUUID()),/engenheiro_required/);
+  await assert.rejects(salvar(1,'informado',randomUUID(),'infinity'),/documento_condutor_invalido/);
+  await db.exec("update public.profiles set role='engineer'");
+  await db.query("select set_config('test.allowed_team',$1,false)",[team]);
+  await assert.rejects(ler(),/employee_forbidden/,'sem equipe não amplia escopo');
+  const lista=await one('select public.admin_condutores_10k()');
+  assert.deepEqual(lista.funcionarios.map(e=>e.id),[other]);
+  await db.query('update public.epi_employees set team_id=$1 where id=$2',[team,employee]);
+  await salvar(1,'conferido',randomUUID());
+  await salvar(2,'invalidado',randomUUID());
+  assert.deepEqual((await ler()).historico.map(h=>h.situacao),['invalidado','conferido','informado']);
+  await assert.rejects(db.exec('update private.frota_cnh_10k set motivo=motivo'),/imutavel/);
+  await db.query('update public.epi_employees set active=false where id=$1',[employee]);
+  await assert.rejects(salvar(3,'informado',randomUUID()),/funcionario_inativo/);
+  assert.equal((await ler()).historico.length,3,'histórico inativo continua consultável');
+  await db.exec("update public.profiles set role='employee'");
+  await assert.rejects(ler(),/gestao_required/);
+  assert.equal(await one("select has_function_privilege('anon','public.admin_condutores_10k(uuid)','execute')"),false);
+  assert.equal(await one("select has_table_privilege('authenticated','private.frota_cnh_10k','select')"),false);
+  assert.deepEqual(await one('select to_jsonb(v) from private.frota_veiculos_10a v where id=1'),veiculoAntes);
+  await db.exec("update public.profiles set role='admin'; update public.epi_employees set active=true,team_id=null");
+});
 
 const modelo = (categoria, revisao=null) => one('select public.admin_modelos_frota_10g($1,$2)',[categoria,revisao]);
 test('categoria não é presumida, guarda histórico e rejeita edição antiga e troca durante viagem',async()=>{
