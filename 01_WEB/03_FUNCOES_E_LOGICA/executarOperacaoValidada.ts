@@ -8,6 +8,8 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 export type OperationState = { error?: string; completedKey?: string; destination?: string };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["modelo_revisao_conflito", "Outra revisão já foi salva. Os seus campos foram mantidos; confira a revisão atual antes de reaplicar as mudanças."],
+  ["modelo_invalido", "Confira as perguntas, etapas e regras do rascunho. Os códigos precisam ser únicos."],
   ["environment_not_enabled", "Este recurso está disponível somente no ambiente de teste autorizado."],
   ["management_access_denied", "Seu perfil não tem permissão para esta operação."],
   ["forbidden_stock_location", "Este lote não corresponde à obra do funcionário ou ao seu escopo de acesso."],

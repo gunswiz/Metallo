@@ -20,6 +20,18 @@ const suffix = randomUUID().replaceAll("-", "").slice(0, 4).toUpperCase();
 const cadastro = { p_id: null, p_placa: `R5A${suffix}`, p_nome: `Auditoria R5 ${suffix}`, p_modelo: "Fictício", p_ano: 2020, p_km: 100, p_ativo: true };
 let vehicle;
 try {
+  const draft = {p_categoria:`ensaio_${suffix.toLowerCase()}`,p_nome:`Ensaio fictício ${suffix}`,p_base:0,p_itens:[{codigo:1,nome:'Pergunta fictícia',etapa:'Segurança',critico:true,permite_na:false,exige_foto:false}],p_motivo:'Prova automática 10G — sem uso operacional',p_key:randomUUID()};
+  check('funcionário não edita modelos', (await rpc(robo,'admin_salvar_modelo_frota_10g',draft)).status>=400);
+  check('funcionário não consulta configuração da Gestão', (await rpc(robo,'admin_modelos_frota_10g')).status>=400);
+  const same=await Promise.all([rpc(gestor,'admin_salvar_modelo_frota_10g',draft),rpc(gestor,'admin_salvar_modelo_frota_10g',draft)]);
+  check('rascunho simultâneo idêntico gera só uma revisão',same.every(r=>r.status===200&&r.data===1));
+  const next={...draft,p_base:1,p_key:randomUUID(),p_itens:[{...draft.p_itens[0],nome:'Pergunta revisada'}]};
+  check('nova revisão salva', (await rpc(gestor,'admin_salvar_modelo_frota_10g',next)).data===2);
+  check('edição antiga recusada', (await rpc(gestor,'admin_salvar_modelo_frota_10g',{...next,p_key:randomUUID()})).data?.message==='modelo_revisao_conflito');
+  check('chave com conteúdo alterado recusada', (await rpc(gestor,'admin_salvar_modelo_frota_10g',{...next,p_motivo:'Conteúdo corrigido'})).data?.message==='idempotency_conflict');
+  const oldDraft=await rpc(gestor,'admin_modelos_frota_10g',{p_categoria:draft.p_categoria,p_revisao:1});
+  check('histórico remoto conserva pergunta original',oldDraft.data?.modelo.itens[0].nome==='Pergunta fictícia'&&oldDraft.data?.historico.length===2);
+  evidence.draftCategory=draft.p_categoria;
   const created = await rpc(gestor, "admin_save_veiculo_10a", cadastro);
   check("veículo fictício exclusivo criado", created.status === 200 && typeof created.data === "number"); vehicle = created.data;
   const items = (await rpc(robo, "my_frota_itens_10f")).data;

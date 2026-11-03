@@ -16,13 +16,14 @@ before(async()=>{
     create schema private; create schema auth; create schema storage;
     create table auth.users(id uuid primary key);
     create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('test.user',true),'')::uuid $$;
-    create table public.profiles(id uuid primary key, active boolean, role text);
+    create table public.profiles(id uuid primary key, active boolean, role text, full_name text);
     create table public.epi_employees(id uuid primary key, full_name text);
     create table storage.buckets(id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
     create function private.funcionario_do_app_3t() returns uuid language sql as $$ select auth.uid() $$;
     create function private.pode_atender_3t() returns boolean language sql as $$ select current_setting('test.manager',true)='yes' $$;
     grant usage on schema public,auth to authenticated,anon;`);
   await db.query('insert into auth.users values($1)',[employee]);
+  await db.query("insert into public.profiles values($1,true,'admin','Gestor fictício')",[employee]);
   await db.query("insert into public.epi_employees values($1,'Fictício')",[employee]);
   await db.query("select set_config('test.user',$1,false)",[employee]);
   await db.exec("select set_config('test.manager','yes',false)");
@@ -34,8 +35,41 @@ before(async()=>{
   const old = (await db.query('select * from public.my_frota_itens_10a()')).rows;
   await enviar(old.map(i=>({codigo:i.codigo,situacao:'C',obs:''})));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103002924_frota_versao_e_historico_10f.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103010238_frota_modelos_por_categoria_10g.sql',import.meta.url),'utf8'));
 });
 after(()=>db.close());
+
+const modelo = (categoria, revisao=null) => one('select public.admin_modelos_frota_10g($1,$2)',[categoria,revisao]);
+const salvarModelo = (m, key=randomUUID(), base=m.revisao) => one('select public.admin_salvar_modelo_frota_10g($1,$2,$3,$4,$5,$6)',[m.categoria,m.nome,base,JSON.stringify(m.itens),'Revisão fictícia de ensaio',key]);
+
+test('rascunhos por categoria preservam o checklist operacional e separam equipamentos',async()=>{
+  const munck=await modelo('munck'), saveiro=await modelo('saveiro');
+  assert.equal(munck.atual,2);
+  assert.equal(saveiro.atual,1);
+  assert.ok(munck.modelo.itens.some(i=>i.etapa==='Estabilizadores'));
+  assert.ok(!saveiro.modelo.itens.some(i=>['Estabilizadores','Içamento','Hidráulica'].includes(i.etapa)));
+  const antes=await itens();
+  const key=randomUUID(), editado={...saveiro.modelo,itens:saveiro.modelo.itens.map(i=>({...i,nome:'Revisado '+i.codigo}))};
+  assert.equal(await salvarModelo(editado,key),2);
+  assert.equal(await salvarModelo(editado,key),2,'reenvio retorna a revisão sem duplicar');
+  assert.deepEqual(await itens(),antes,'rascunho não ativa regras no portal');
+  assert.deepEqual((await modelo('saveiro',1)).modelo.itens,saveiro.modelo.itens);
+  await assert.rejects(salvarModelo({...editado,itens:saveiro.modelo.itens},key),/idempotency_conflict/);
+  await assert.rejects(salvarModelo(editado),/modelo_revisao_conflito/);
+  await assert.rejects(db.exec("delete from private.frota_modelos_10g where categoria='saveiro'"),/modelo_historico_imutavel/);
+});
+
+test('modelo rejeita perguntas duplicadas ou inválidas e escrita sem papel autorizado',async()=>{
+  const m=(await modelo('saveiro')).modelo;
+  for (const invalidos of [[],[m.itens[0],m.itens[0]],[{...m.itens[0],critico:'sim'}],[{...m.itens[0],etapa:'Inventada'}]]) {
+    await assert.rejects(salvarModelo({...m,itens:invalidos}),/modelo_invalido/);
+  }
+  await db.exec("update public.profiles set role='employee'");
+  try { await assert.rejects(salvarModelo(m),/gestao_required/); }
+  finally { await db.exec("update public.profiles set role='admin'"); }
+  assert.equal(await one("select has_function_privilege('anon','public.admin_modelos_frota_10g(text,integer)','execute')"),false);
+  assert.equal(await one("select has_table_privilege('authenticated','private.frota_modelos_10g','insert')"),false);
+});
 
 test('histórico conserva texto e criticidade; mudança de regra altera versão e recusa envio antigo',async()=>{
   const before = await itens(), key=randomUUID(), payload=respostas(before);

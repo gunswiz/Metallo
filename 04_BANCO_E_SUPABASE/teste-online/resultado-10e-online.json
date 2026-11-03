@@ -1,7 +1,35 @@
 {
-  "at": "2026-11-03T00:29:39.112Z",
+  "at": "2026-11-03T01:03:30.718Z",
   "target": "metallo-teste",
   "checks": [
+    {
+      "name": "funcionário não edita modelos",
+      "ok": true
+    },
+    {
+      "name": "funcionário não consulta configuração da Gestão",
+      "ok": true
+    },
+    {
+      "name": "rascunho simultâneo idêntico gera só uma revisão",
+      "ok": true
+    },
+    {
+      "name": "nova revisão salva",
+      "ok": true
+    },
+    {
+      "name": "edição antiga recusada",
+      "ok": true
+    },
+    {
+      "name": "chave com conteúdo alterado recusada",
+      "ok": true
+    },
+    {
+      "name": "histórico remoto conserva pergunta original",
+      "ok": true
+    },
     {
       "name": "veículo fictício exclusivo criado",
       "ok": true
@@ -119,11 +147,12 @@
       "ok": true
     }
   ],
+  "draftCategory": "ensaio_c5e2",
   "fixture": {
-    "vehicle": 13,
-    "checklist": 14,
+    "vehicle": 14,
+    "checklist": 15,
     "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
   },
   "fixtureDeactivated": true,
-  "result": "29/29"
+  "result": "36/36"
 }
