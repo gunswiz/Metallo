@@ -207,7 +207,7 @@ describe("fila da frota sem internet (10D)", () => {
     guardarNaFila(quem, { ...pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-10-24T10:02:00Z"), veiculo: 2 });
     const r = await sincronizarFila(api, quem);
     expect(r.recusados).toHaveLength(1);
-    expect(lerRecusadas(quem)[0].motivo).toBe("Este caminhão já está na rua.");
+    expect(lerRecusadas(quem)[0].motivo).toBe("Este veículo já está na rua.");
     expect(lerRecusadas(quem)[0].registro?.payload.tipo).toBe("saida");
     expect(r.enviados).toHaveLength(1);
     expect(lerFila(quem)).toHaveLength(0);
