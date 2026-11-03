@@ -1,4 +1,4 @@
-// R5: prova no servidor de TESTE com contas fictícias existentes; sem Docker.
+// R5 + 10F: prova no servidor de TESTE com contas fictícias existentes; sem Docker.
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -22,10 +22,16 @@ let vehicle;
 try {
   const created = await rpc(gestor, "admin_save_veiculo_10a", cadastro);
   check("veículo fictício exclusivo criado", created.status === 200 && typeof created.data === "number"); vehicle = created.data;
-  const items = (await rpc(robo, "my_frota_itens_10a")).data;
-  const clean = { p_veiculo: vehicle, p_local: "Prova R5", p_obs: "Fictício", p_respostas: items.map(i => ({ codigo: i.codigo, situacao: "C", obs: "" })), p_ciente: true, p_key: randomUUID() };
+  const items = (await rpc(robo, "my_frota_itens_10f")).data;
+  const clean = { p_veiculo: vehicle, p_local: "Prova R5", p_obs: "Fictício", p_respostas: items.map(i => ({ codigo: i.codigo, situacao: "C", obs: "", versao: i.versao, nome: "Texto do cliente não deve substituir o modelo" })), p_ciente: true, p_key: randomUUID() };
+  check("itens recebidos têm uma versão íntegra", items.length > 0 && items.every(i => /^[a-f0-9]{64}$/.test(i.versao) && i.versao === items[0].versao));
+  check("checklist sem versão exige nova inspeção", (await rpc(robo, "create_checklist_10a", { ...clean, p_respostas: clean.p_respostas.map(({ versao, ...r }) => r), p_key: randomUUID() })).data?.message === "checklist_versao_desatualizada");
+  check("versão divergente é recusada", (await rpc(robo, "create_checklist_10a", { ...clean, p_respostas: clean.p_respostas.map(r => ({ ...r, versao: "0".repeat(64) })), p_key: randomUUID() })).data?.message === "checklist_versao_desatualizada");
   const pair = await Promise.all([rpc(robo, "create_checklist_10a", clean), rpc(robo, "create_checklist_10a", clean)]);
   check("checklist simultâneo igual tem um único resultado", pair.every(r => r.status === 200) && pair[0].data[0].id === pair[1].data[0].id);
+  const detail = await rpc(gestor, "admin_frota_checklist_10a", { p_id: pair[0].data[0].id });
+  check("histórico grava versão e nomes do servidor", detail.status === 200 && detail.data.checklist.modelo_versao === items[0].versao && detail.data.itens.every((i, n) => i.nome === items[n].nome && i.critico === items[n].critico));
+  evidence.fixture = { vehicle, checklist: pair[0].data[0].id, version: items[0].versao };
   for (const [field, value] of [["p_obs", "Corrigido"], ["p_ciente", false], ["p_veiculo", vehicle + 999999]]) {
     check(`mesma chave rejeita checklist alterado: ${field}`, (await rpc(robo, "create_checklist_10a", { ...clean, [field]: value })).data?.message === "idempotency_conflict");
   }

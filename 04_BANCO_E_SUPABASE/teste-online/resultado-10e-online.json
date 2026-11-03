@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-02T06:43:15.845Z",
+  "at": "2026-11-03T00:29:39.112Z",
   "target": "metallo-teste",
   "checks": [
     {
@@ -7,7 +7,23 @@
       "ok": true
     },
     {
+      "name": "itens recebidos têm uma versão íntegra",
+      "ok": true
+    },
+    {
+      "name": "checklist sem versão exige nova inspeção",
+      "ok": true
+    },
+    {
+      "name": "versão divergente é recusada",
+      "ok": true
+    },
+    {
       "name": "checklist simultâneo igual tem um único resultado",
+      "ok": true
+    },
+    {
+      "name": "histórico grava versão e nomes do servidor",
       "ok": true
     },
     {
@@ -103,6 +119,11 @@
       "ok": true
     }
   ],
+  "fixture": {
+    "vehicle": 13,
+    "checklist": 14,
+    "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
+  },
   "fixtureDeactivated": true,
-  "result": "25/25"
+  "result": "29/29"
 }

@@ -42,12 +42,14 @@ describe("fila da frota sem internet (10D)", () => {
   });
   it("novo checklist aceito com o mesmo defeito supera a recusa sem apagar o relato", async () => {
     const api = acoes();
-    const payload: Pendente["payload"] = { tipo: "checklist", local: "Obra", obs: "Original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio com vazamento" }] };
+    const payload: Pendente["payload"] = { tipo: "checklist", local: "Obra", obs: "Original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio com vazamento", versao: "a".repeat(64) }] };
     guardarNaFila(quem, pend("recusado", payload, "2026-11-01T10:00:00Z"));
     api.checklist = vi.fn().mockRejectedValueOnce({ message: "itens_incompletos" }).mockResolvedValue("nao_liberado");
     await sincronizarFila(api, quem);
     // Um novo relato diferente não comprova recebimento do defeito antigo.
     await executarPendente(api, quem, pend("outro", { ...payload, respostas: [{ codigo: 2, situacao: "N", obs: "Lâmpada" }] }, "2026-11-01T10:01:00Z"), true);
+    expect(lerRecusadas(quem)[0].recebidoEmRegistro).toBeUndefined();
+    await executarPendente(api, quem, pend("outra-versao", { ...payload, respostas: payload.respostas.map(x => ({ ...x, versao: "b".repeat(64) })) }, "2026-11-01T10:01:30Z"), true);
     expect(lerRecusadas(quem)[0].recebidoEmRegistro).toBeUndefined();
     await executarPendente(api, quem, pend("aceito", payload, "2026-11-01T10:02:00Z"), true);
     expect(lerRecusadas(quem)[0]).toMatchObject({ recebidoEmRegistro: "aceito", registro: { payload } });
@@ -55,6 +57,17 @@ describe("fila da frota sem internet (10D)", () => {
     api.saida = vi.fn().mockRejectedValue(new Error("veiculo_nao_liberado"));
     await expect(executarPendente(api, quem, saida("s1", "2026-11-01T10:03:00Z"))).rejects.toThrow("veiculo_nao_liberado");
     expect(api.saida).toHaveBeenCalledTimes(1);
+  });
+  it("recusa versão antiga sem perder relato e não reconhece legado sem versão pelo mesmo código", async () => {
+    const api = acoes();
+    const payload: Pendente["payload"] = { tipo: "checklist", local: "", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Freio" }] };
+    guardarNaFila(quem, pend("antigo", payload, "2026-11-01T10:00:00Z"));
+    api.checklist = vi.fn().mockRejectedValueOnce(new Error("checklist_versao_desatualizada")).mockResolvedValue("nao_liberado");
+    const result = await sincronizarFila(api, quem);
+    expect(result.recusados).toHaveLength(1);
+    expect(lerRecusadas(quem)[0].registro?.payload).toEqual(payload);
+    await executarPendente(api, quem, pend("novo", payload, "2026-11-01T10:01:00Z"), true);
+    expect(recusaBloqueiaSaida(lerRecusadas(quem)[0])).toBe(true);
   });
   it("informa sincronização em andamento sem executar duas vezes", async () => {
     const api = acoes();

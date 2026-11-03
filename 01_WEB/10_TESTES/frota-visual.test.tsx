@@ -17,7 +17,7 @@ const painel = (patch: Partial<PainelGestao10a> = {}): PainelGestao10a => ({
   ...caminhao(), ativo: true, ano: 2024, acompanhantes: null, checklist_hoje: "liberado", checklist_hoje_em: null,
   checklist_hoje_por: null, manutencoes_abertas: 0, docs_vencidos: 0, docs_breve: 0, planos_vencidos: 0, planos_breve: 0, ...patch,
 });
-const itens: ItemChecklist10a[] = Array.from({ length: 26 }, (_, i) => ({ codigo: i + 1, nome: `Conferência ${i + 1}`, critico: i === 0 }));
+const itens: ItemChecklist10a[] = Array.from({ length: 26 }, (_, i) => ({ codigo: i + 1, nome: `Conferência ${i + 1}`, critico: i === 0, versao: "a".repeat(64) }));
 function acoes(veiculos: CaminhaoApp10a[] = [caminhao()], checklistItens = itens) {
   return {
     quem: "conta-teste",
@@ -111,7 +111,7 @@ describe("Caminhões do funcionário", () => {
     expect(JSON.parse(localStorage.getItem("metallo-frota-recusadas-10d:conta-teste")!)[0].registro.payload).toEqual(payload);
   });
   it("recupera os problemas recusados para o checklist atual sem apagar o histórico", async () => {
-    localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "antigo", nome: "Munck", tipo: "checklist", motivo: "Itens mudaram", registro: { id: "antigo", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "Pátio", obs: "Observação original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio vazando" }] } } }]));
+    localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "antigo", nome: "Munck", tipo: "checklist", motivo: "Itens mudaram", registro: { id: "antigo", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload: { tipo: "checklist", local: "Pátio", obs: "Observação original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio vazando", versao: "a".repeat(64) }] } } }]));
     const api = { ...acoes([caminhao()], [itens[0], itens[1]]), checklist: vi.fn(async () => "nao_liberado" as const) };
     render(<Frota acoes={api}/>);
     fireEvent.click(await screen.findByRole("button", { name: "Refazer checklist com este relato" }));
@@ -124,6 +124,36 @@ describe("Caminhões do funcionário", () => {
     const history = JSON.parse(localStorage.getItem("metallo-frota-recusadas-10d:conta-teste")!);
     expect(history[0].recebidoEmRegistro).toBeTruthy();
     expect(history[0].registro.payload.respostas[0].obs).toBe("Freio vazando");
+  });
+  it("rascunho conserva as perguntas recebidas mesmo quando a configuração muda", async () => {
+    const api = acoes([caminhao()], [itens[0]]);
+    const view = render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Fazer checklist" }));
+    fireEvent.click(screen.getByRole("button", { name: "Problema" }));
+    fireEvent.change(screen.getByLabelText("O que está errado: Conferência 1"), { target: { value: "Problema original" } });
+    view.unmount();
+    render(<Frota acoes={acoes([caminhao()], [{ ...itens[0], nome: "Pergunta diferente", versao: "b".repeat(64) }])}/>);
+    expect(await screen.findByDisplayValue("Problema original")).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Conferência 1" })).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "Pergunta diferente" })).not.toBeInTheDocument();
+    expect(screen.getByText(/Rascunho de uma versão anterior/)).toBeInTheDocument();
+  });
+  it("recusa de versão no envio direto preserva defeito e não preenche nova pergunta pelo código", async () => {
+    const api = { ...acoes([caminhao({ checklist_hoje: "liberado" })], [itens[0]]), checklist: vi.fn().mockRejectedValue(new Error("checklist_versao_desatualizada")) };
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button", { name: "Refazer checklist" }));
+    fireEvent.click(screen.getByRole("button", { name: "Problema" }));
+    fireEvent.change(screen.getByLabelText("O que está errado: Conferência 1"), { target: { value: "Defeito guardado" } });
+    fireEvent.click(screen.getByRole("checkbox"));
+    api.itens.mockResolvedValue([{ ...itens[0], nome: "Pergunta diferente", versao: "b".repeat(64) }]);
+    fireEvent.click(screen.getByRole("button", { name: "Enviar checklist" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Refazer checklist com este relato" }));
+    expect(screen.getByRole("group", { name: "Pergunta diferente" })).toBeInTheDocument();
+    expect(screen.queryByDisplayValue("Defeito guardado")).not.toBeInTheDocument();
+    const original = JSON.parse(localStorage.getItem("metallo-frota-recusadas-10d:conta-teste")!)[0];
+    expect(original.registro.payload.respostas[0]).toMatchObject({ versao: "a".repeat(64), nome: "Conferência 1", obs: "Defeito guardado" });
+    expect(original.recebidoEmRegistro).toBeUndefined();
+    expect(screen.queryByRole("button", { name: "Registrar saída" })).not.toBeInTheDocument();
   });
   it("falha de conexão em checkpoint sob revisão orienta reenvio manual", async () => {
     const api = acoes([caminhao({ situacao: "em_uso", minha_viagem: 4 })]);
@@ -282,8 +312,8 @@ describe("Caminhões do funcionário", () => {
     const [veiculo, local, obs, respostas, chave] = (api.checklist.mock.calls as unknown as [number, string, string, unknown[], string][])[0];
     expect([veiculo, local, obs]).toEqual([1, "", ""]);
     expect(respostas).toHaveLength(26);
-    expect(respostas[0]).toEqual({ codigo: 1, situacao: "N", obs: "Freio com ruído", foto: "foto-do-defeito" });
-    expect(respostas[25]).toEqual({ codigo: 26, situacao: "NA", obs: "" });
+    expect(respostas[0]).toEqual({ versao: "a".repeat(64), nome: "Conferência 1", codigo: 1, situacao: "N", obs: "Freio com ruído", foto: "foto-do-defeito" });
+    expect(respostas[25]).toEqual({ versao: "a".repeat(64), nome: "Conferência 26", codigo: 26, situacao: "NA", obs: "" });
     expect(chave).toMatch(/^[a-f0-9-]{36}$/);
     await screen.findByText(/Checklist registrado sem não conformidades/);
   });

@@ -13,19 +13,21 @@ const situacao = z.enum(SITUACAO_FROTA_10A), resultado = z.enum(["liberado", "re
 export const caminhoesApp10a = z.array(z.object({ id: z.coerce.number(), nome: z.string(), placa: z.string(), modelo: z.string().nullable(), situacao,
   km_atual: z.coerce.number(), checklist_hoje: resultado.nullable(), motorista: z.string().nullable(), destino: z.string().nullable(),
   saida_em: z.string().nullable(), minha_viagem: z.coerce.number().nullable() }));
-export const itensApp10a = z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), critico: z.boolean() }));
+export const itensApp10a = z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), critico: z.boolean(), versao: z.string().regex(/^[a-f0-9]{64}$/).optional() }));
+// O contrato opcional lê caches antigos; a consulta online exige a versão em todos os itens.
+export const itensVersionados10f = z.array(itensApp10a.element.required({ versao: true })).min(1).refine(itens => itens.every(i => i.versao === itens[0].versao), "Versões de checklist incompatíveis");
 export const viagensApp10a = z.array(z.object({ id: z.coerce.number(), veiculo: z.string(), destino: z.string(), saida_em: z.string(), chegada_em: z.string().nullable(),
   km_saida: z.coerce.number(), km_chegada: z.coerce.number().nullable() }));
 export const resultadoChecklistApp10a = z.array(z.object({ id: z.coerce.number(), resultado }));
 export type CaminhaoApp10a = z.infer<typeof caminhoesApp10a>[number];
 export type ItemChecklist10a = z.infer<typeof itensApp10a>[number];
 export type ViagemApp10a = z.infer<typeof viagensApp10a>[number];
-export type RespostaChecklist10a = { codigo: number; situacao: "C" | "N" | "NA"; obs: string; foto?: string };
+export type RespostaChecklist10a = { codigo: number; situacao: "C" | "N" | "NA"; obs: string; foto?: string; versao?: string; nome?: string };
 
 export const conferenciaRecusa10e = z.object({ chave: z.uuid(), veiculo: z.number(), relato: z.unknown(), recebido_em: z.string(), conferido_em: z.string().nullable(), motivo: z.string().nullable() });
 export type ConferenciaRecusa10e = z.infer<typeof conferenciaRecusa10e>;
 export const recusasGestao10e = z.array(z.object({ chave: z.uuid(), employee_id: z.uuid(), por: z.string(), recebido_em: z.string(), conferido_em: z.string().nullable(), motivo: z.string().nullable(),
-  relato: z.object({ tipo: z.enum(["checklist", "chegada"]), obs: z.string().optional(), problema: z.string().optional(), respostas: z.array(z.object({ codigo: z.number(), situacao: z.string(), obs: z.string() })).optional() }) }));
+  relato: z.object({ tipo: z.enum(["checklist", "chegada"]), obs: z.string().optional(), problema: z.string().optional(), respostas: z.array(z.object({ codigo: z.number(), situacao: z.string(), obs: z.string(), nome: z.string().optional(), versao: z.string().optional() })).optional() }) }));
 
 export const painelGestao10a = z.array(z.object({ id: z.coerce.number(), nome: z.string(), placa: z.string(), modelo: z.string().nullable(), ano: z.coerce.number().nullable(), situacao,
   km_atual: z.coerce.number(), ativo: z.boolean(), motorista: z.string().nullable(), destino: z.string().nullable(), acompanhantes: z.string().nullable(), saida_em: z.string().nullable(),
@@ -47,7 +49,7 @@ export const fichaGestao10a = z.object({
   eventos: z.array(z.object({ tipo: z.string(), texto: z.string(), em: z.string(), pessoa: z.string().nullable() })),
 });
 export const checklistDetalhe10a = z.object({
-  checklist: z.object({ id: z.coerce.number(), veiculo: z.string(), placa: z.string(), dia: z.string(), resultado, por: z.string(), local: z.string().nullable(), observacoes: z.string().nullable(), created_at: z.string() }),
+  checklist: z.object({ id: z.coerce.number(), veiculo: z.string(), placa: z.string(), dia: z.string(), resultado, por: z.string(), local: z.string().nullable(), observacoes: z.string().nullable(), created_at: z.string(), modelo_versao: z.string().nullable().optional() }),
   itens: z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), situacao: z.enum(["C", "N", "NA"]), obs: z.string().nullable(), critico: z.boolean(), foto: z.uuid().nullable().optional() })),
 });
 export const mesGestao10a = z.array(z.object({ dia: z.string(), codigo: z.coerce.number(), situacao: z.enum(["C", "N", "NA"]), por: z.string().nullable() }));
@@ -82,6 +84,7 @@ export const planoForm10a = z.object({ veiculoId: idNum, id: z.union([z.literal(
 export const concluirPlanoForm10a = z.object({ veiculoId: idNum, planoId: idNum, km: numOpc, data: dataOpc, custo: z.union([z.literal(""), z.string().regex(/^\d{1,8}([.,]\d{1,2})?$/)]), obs: texto(300) });
 
 export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
+  checklist_versao_desatualizada: "As perguntas do checklist mudaram ou este registro é anterior ao controle de versões. O relato foi preservado. Atualize a lista e faça uma nova inspeção; se houver defeito guardado, envie-o para conferência da Gestão.",
   idempotency_conflict: "Esta tentativa já foi registrada com outro conteúdo ou é anterior à conferência de conteúdo. Confira os registros antes de iniciar uma nova tentativa. Os dados guardados foram preservados.",
   fila_cheia: "Há registros demais guardados no celular. Conecte-se à internet para enviá-los.",
   foto_pendente: "O registro não foi enviado porque uma foto está indisponível ou não foi aceita. Os dados continuam guardados. Na lista de caminhões, você pode enviar o relato sem as fotos pendentes. Avise o responsável.",

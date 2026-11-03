@@ -88,7 +88,7 @@ function reconhecerRelatoRecebido(quem: string, recebido: Pendente) {
     const antigo = r.registro?.payload;
     if (!recusaBloqueiaSaida(r) || r.registro?.veiculo !== recebido.veiculo || !antigo || r.id === recebido.id) return r;
     const corresponde = antigo.tipo === "checklist" && novo.tipo === "checklist"
-      ? antigo.respostas.filter(x => x.situacao === "N").every(x => novo.respostas.some(y => y.codigo === x.codigo && y.situacao === "N" && y.obs.trim() === x.obs.trim()))
+      ? antigo.respostas.filter(x => x.situacao === "N").every(x => Boolean(x.versao) && novo.respostas.some(y => y.versao === x.versao && y.codigo === x.codigo && y.situacao === "N" && y.obs.trim() === x.obs.trim()))
       : antigo.tipo === "chegada" && novo.tipo === "chegada" && antigo.viagem === novo.viagem && antigo.problema.trim() === novo.problema.trim();
     return corresponde ? { ...r, recebidoEmRegistro: recebido.id } : r;
   });
@@ -246,7 +246,7 @@ export async function sincronizarFila(acoes: AcoesFila, quem: string, manual = f
           r.impedimento = `${p.nome}: ${mensagemErroFrota10a(e)}`; bloqueados.add(p.veiculo); continue;
         }
         if (ehFalhaDeConexao10d(e)) break;
-        const conhecido = ["veiculo_em_uso", "veiculo_nao_liberado", "veiculo_em_manutencao", "voce_ja_esta_com_um_caminhao", "km_menor_que_atual", "km_menor_que_saida", "checklist_do_dia_necessario", "itens_incompletos", "ciencia_obrigatoria", "destino_invalido", "veiculo_indisponivel"].includes(textoErroFrota10a(e));
+        const conhecido = ["checklist_versao_desatualizada", "veiculo_em_uso", "veiculo_nao_liberado", "veiculo_em_manutencao", "voce_ja_esta_com_um_caminhao", "km_menor_que_atual", "km_menor_que_saida", "checklist_do_dia_necessario", "itens_incompletos", "ciencia_obrigatoria", "destino_invalido", "veiculo_indisponivel"].includes(textoErroFrota10a(e));
         const registro = lerFila(quem).find(x => x.id === p.id) ?? p;
         bloqueados.add(p.veiculo);
         if (!conhecido) {

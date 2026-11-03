@@ -60,7 +60,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       {recusas.map(r => <article className="stock-card" key={`${r.employee_id}:${r.chave}`}>
         <h3>{r.por} · {r.relato.tipo === "checklist" ? "Checklist" : "Chegada"}</h3><p>Recebido em {fmt(r.recebido_em)}</p>
         {r.relato.obs && <p>{r.relato.obs}</p>}{r.relato.problema && <p>{r.relato.problema}</p>}
-        {r.relato.respostas?.filter(i => i.situacao === "N").map(i => <p key={i.codigo}>Item {i.codigo} do relato original: {i.obs}</p>)}
+        {r.relato.respostas?.filter(i => i.situacao === "N").map(i => <p key={i.codigo}>Item {i.codigo} do relato original{i.nome ? ` (${i.nome})` : ""}: {i.obs}</p>)}
         {r.conferido_em ? <p>Conferido em {fmt(r.conferido_em)}: {r.motivo}</p> : podeCadastrar && v.ativo && v.situacao === "disponivel" ? <OperationForm action={conferirRecusaFrota10e} label="Confirmar conferência deste relato">
           <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="employeeId" value={r.employee_id}/><input type="hidden" name="chave" value={r.chave}/>
           <label className="full">O que foi verificado e por que a pendência pode ser encerrada<input name="motivo" minLength={5} maxLength={300} required/></label>
@@ -148,17 +148,18 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
         <Link href={`/frota/${v.id}?checklist=${c.id}#detalhe-checklist`}><strong>{dia(c.dia)} · {ROTULO_RESULTADO_10A[c.resultado]}</strong></Link><span>{c.por}{c.local ? ` · ${c.local}` : ""}{c.itens_nao_conformes ? ` · ${c.itens_nao_conformes} item(ns) com problema` : ""}</span></li>)}</ul>}
       {detalhe && <div id="detalhe-checklist"><h3>Checklist de {dia(detalhe.checklist.dia)} · {detalhe.checklist.por}</h3>
         <p>{ROTULO_RESULTADO_10A[detalhe.checklist.resultado]}{detalhe.checklist.local ? ` · ${detalhe.checklist.local}` : ""}{detalhe.checklist.observacoes ? ` · ${detalhe.checklist.observacoes}` : ""}</p>
+        <p className="alert" role="note">{detalhe.checklist.modelo_versao ? `Versão ${detalhe.checklist.modelo_versao.slice(0, 12)} · perguntas e criticidade preservadas na inspeção.` : "Registro anterior ao controle de versões. As respostas e a criticidade foram preservadas, mas o texto original das perguntas não pode ser comprovado."}</p>
         <ul className="frota-atencao">{detalhe.itens.map(i => <li key={i.codigo} className={i.situacao === "N" ? "bad" : ""}><strong>{i.codigo}. {i.nome}{i.critico ? " (crítico)" : ""}</strong><span>{i.situacao === "C" ? "Conforme" : i.situacao === "N" ? `Não conforme${i.obs ? ` — ${i.obs}` : ""}` : "Não se aplica"}{i.foto ? <> · <a href={`/frota/foto/${i.foto}`} target="_blank" rel="noreferrer">Ver foto</a></> : null}</span></li>)}</ul></div>}
     </div></section>}
 
     {aba === "checklists" && <details className="panel fleet-disclosure" id="grade" open={Boolean(query.mes)}><summary>Grade mensal do checklist<span>Ver planilha</span></summary><div className="panel-body">
       <p className="frota-mes"><Link className="button ghost" href={`/frota/${v.id}?mes=${anterior}#grade`}>← Mês anterior</Link> <strong>{String(mesBase.getMonth() + 1).padStart(2, "0")}/{mesBase.getFullYear()}</strong> <Link className="button ghost" href={`/frota/${v.id}?mes=${proximo}#grade`}>Próximo mês →</Link></p>
       <div className="data-table-wrap frota-grade-wrap" tabIndex={0} role="region" aria-label="Checklist por dia do mês; deslize para ver os demais dias"><table className="data-table frota-grade"><thead><tr><th>Item</th>{Array.from({ length: diasNoMes }, (_, i) => <th key={i}>{i + 1}</th>)}</tr></thead>
-        <tbody>{itens.filter(i => i.ativo || grade.some(g => g.codigo === i.codigo)).map(i => <tr key={i.codigo}><th scope="row">{i.codigo}. {i.nome}{i.critico ? " *" : ""}</th>
+        <tbody>{itens.filter(i => i.ativo || grade.some(g => g.codigo === i.codigo)).map(i => <tr key={i.codigo}><th scope="row">Item {i.codigo}</th>
           {Array.from({ length: diasNoMes }, (_, d) => { const chave = `${mesIni.slice(0, 8)}${String(d + 1).padStart(2, "0")}`, s = celula.get(`${chave}|${i.codigo}`);
             return <td key={d} className={s === "N" ? "bad" : s === "C" ? "good" : ""}>{s ?? ""}</td>; })}</tr>)}
           <tr><th scope="row">Feito</th>{Array.from({ length: diasNoMes }, (_, d) => <td key={d}>{diasComChecklist.has(`${mesIni.slice(0, 8)}${String(d + 1).padStart(2, "0")}`) ? "✓" : ""}</td>)}</tr></tbody></table></div>
-      <p className="muted">C = conforme · N = não conforme · NA = não se aplica. * item crítico.</p>
+      <p className="muted">C = conforme · N = não conforme · NA = não se aplica. Resumo por código; abra cada checklist para conferir o texto e a criticidade da versão usada.</p>
     </div></details>}
 
     {podeCadastrar && aba === "dados" && <section className="panel" id="dados"><header className="panel-header"><div><h2>Dados do caminhão</h2><p>Corrija o km se o painel mostrar outro valor. Desativar tira da lista do app.</p></div></header><div className="panel-body">
