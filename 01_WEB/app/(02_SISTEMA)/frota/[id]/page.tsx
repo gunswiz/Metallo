@@ -37,6 +37,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const fotoViagem = new Map(fotosChegada.map(f => [f.viagem_id, f.foto_id]));
   const celula = new Map(grade.map(g => [`${g.dia}|${g.codigo}`, g.situacao]));
   const diasComChecklist = new Set(grade.map(g => g.dia));
+  const codigosGrade=Array.from(new Set([...itens.filter(i=>i.ativo).map(i=>i.codigo),...grade.map(g=>g.codigo)])).sort((a,b)=>a-b);
   const abertas = ficha.manutencoes.filter(m => m.status === "aberta" || m.status === "na_oficina");
   const tom = v.situacao === "disponivel" ? "good" : v.situacao === "em_uso" ? "warn" : "bad";
   const hoje = iso(agora);
@@ -158,15 +159,15 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
     {aba === "checklists" && <details className="panel fleet-disclosure" id="grade" open={Boolean(query.mes)}><summary>Grade mensal do checklist<span>Ver planilha</span></summary><div className="panel-body">
       <p className="frota-mes"><Link className="button ghost" href={`/frota/${v.id}?mes=${anterior}#grade`}>← Mês anterior</Link> <strong>{String(mesBase.getMonth() + 1).padStart(2, "0")}/{mesBase.getFullYear()}</strong> <Link className="button ghost" href={`/frota/${v.id}?mes=${proximo}#grade`}>Próximo mês →</Link></p>
       <div className="data-table-wrap frota-grade-wrap" tabIndex={0} role="region" aria-label="Checklist por dia do mês; deslize para ver os demais dias"><table className="data-table frota-grade"><thead><tr><th>Item</th>{Array.from({ length: diasNoMes }, (_, i) => <th key={i}>{i + 1}</th>)}</tr></thead>
-        <tbody>{itens.filter(i => i.ativo || grade.some(g => g.codigo === i.codigo)).map(i => <tr key={i.codigo}><th scope="row">Item {i.codigo}</th>
-          {Array.from({ length: diasNoMes }, (_, d) => { const chave = `${mesIni.slice(0, 8)}${String(d + 1).padStart(2, "0")}`, s = celula.get(`${chave}|${i.codigo}`);
+        <tbody>{codigosGrade.map(codigo => <tr key={codigo}><th scope="row">Item {codigo}</th>
+          {Array.from({ length: diasNoMes }, (_, d) => { const chave = `${mesIni.slice(0, 8)}${String(d + 1).padStart(2, "0")}`, s = celula.get(`${chave}|${codigo}`);
             return <td key={d} className={s === "N" ? "bad" : s === "C" ? "good" : ""}>{s ?? ""}</td>; })}</tr>)}
           <tr><th scope="row">Feito</th>{Array.from({ length: diasNoMes }, (_, d) => <td key={d}>{diasComChecklist.has(`${mesIni.slice(0, 8)}${String(d + 1).padStart(2, "0")}`) ? "✓" : ""}</td>)}</tr></tbody></table></div>
       <p className="muted">C = conforme · N = não conforme · NA = não se aplica. Resumo por código; abra cada checklist para conferir o texto e a criticidade da versão usada.</p>
     </div></details>}
 
     {categoria && <section className="panel"><header className="panel-header"><h2>Categoria do veículo</h2></header><div className="panel-body">
-      <p>Classifique o cadastro como Munck, Saveiro ou outra categoria. Esta escolha ainda não ativa um modelo de checklist; os modelos aguardam aprovação técnica.</p>
+      <p>Classifique o cadastro como Munck, Saveiro ou outra categoria. Se houver modelo aprovado e ativado nessa categoria, ele será usado nas próximas inspeções. Trocar a categoria não aprova modelos nem libera o veículo.</p>
       <OperationForm action={definirCategoriaVeiculo10h} label="Salvar categoria" pendingLabel="Salvando categoria…">
         <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="base" value={categoria.revisao}/>
         <label>Categoria<select name="categoria" defaultValue={categoria.categoria ?? ""}><option value="">Sem categoria definida</option>{categoria.categorias.map(c => <option key={c.codigo} value={c.codigo}>{c.nome}</option>)}</select></label>

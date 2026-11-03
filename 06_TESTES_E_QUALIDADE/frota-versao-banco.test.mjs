@@ -38,6 +38,7 @@ before(async()=>{
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103010238_frota_modelos_por_categoria_10g.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103071122_frota_categoria_veiculo_10h.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103072356_frota_aprovacao_modelos_10i.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103183604_frota_modelos_operacionais_10j.sql',import.meta.url),'utf8'));
 });
 after(()=>db.close());
 
@@ -170,4 +171,43 @@ test('anon não consulta; autenticado sem identidade é negado; tabela privada c
   await assert.rejects(itens(),/portal_access_denied/);
   await db.exec('reset role');
   await db.query("select set_config('test.user',$1,false)",[employee]);
+});
+
+test('modelo ativado muda perguntas e aplica NA/foto, conserva histórico e exige inspeção atual na saída',async()=>{
+  const antigo=respostas(await itens()), antigaChave=randomUUID();
+  const registroAntigo=await enviar(antigo,antigaChave);
+  const m={categoria:'ensaio_10j',nome:'Ensaio modelo operacional',revisao:0,itens:[{codigo:99,nome:'Gancho específico de ensaio',etapa:'Içamento',critico:true,permite_na:false,exige_foto:true}]};
+  await salvarModelo(m);
+  const ativar=(base=0)=>db.query("select public.admin_ativar_modelo_10j('ensaio_10j',1,$1,'Ativação fictícia para regressão',true)",[base]);
+  await assert.rejects(ativar(),/engenheiro_required/);
+  await db.exec("update public.profiles set role='engineer'; update private.frota_veiculos_10a set situacao='disponivel',categoria='ensaio_10j',liberado_dia=private.frota_hoje_10a() where id=1");
+  try {
+    await assert.rejects(ativar(),/modelo_aprovado_necessario/);
+    await db.exec("select public.admin_aprovar_modelo_10i('ensaio_10j',1,'Parecer fictício para regressão',true)");
+    assert.deepEqual((await db.query('select * from public.my_frota_itens_10j(1)')).rows.map(i=>i.codigo),(await itens()).map(i=>i.codigo),'aprovar não ativa');
+    await ativar(); await ativar();
+    const ativos=(await db.query('select * from public.my_frota_itens_10j(1)')).rows;
+    assert.deepEqual(ativos.map(i=>i.codigo),[99]);
+    assert.equal((await db.query('select * from public.my_frota_10a() where id=1')).rows[0].checklist_hoje,null,'lista não oferece saída pela inspeção antiga');
+    assert.equal(ativos[0].exige_foto,true);
+    await assert.rejects(enviar(antigo),/checklist_versao_desatualizada/);
+    assert.deepEqual(await enviar(antigo,antigaChave),registroAntigo,'reenvio anterior continua idempotente');
+    const sair=()=>db.query("select public.create_saida_10a(1,'Destino fictício','',(select km_atual from private.frota_veiculos_10a where id=1),'',$1)",[randomUUID()]);
+    await assert.rejects(sair(),/checklist_versao_atual_necessaria/);
+    await assert.rejects(enviar([{...respostas(ativos)[0],situacao:'NA'}]),/regra_evidencia_checklist/);
+    const defeito={...respostas(ativos)[0],situacao:'N',obs:'Gancho danificado no ensaio'};
+    await assert.rejects(enviar([defeito]),/regra_evidencia_checklist/);
+    await assert.rejects(enviar([{...defeito,foto:randomUUID()}]),/foto_invalida/);
+    const foto=randomUUID();
+    await db.query("insert into private.frota_fotos_10b(id,veiculo_id,employee_id,caminho) values($1,1,$2,'foto-ficticia.jpg')",[foto,employee]);
+    const salvo=await enviar([{...defeito,foto}]);
+    const detalhe=await one('select public.admin_frota_checklist_10a($1)',[salvo.id]);
+    assert.equal(detalhe.itens[0].nome,m.itens[0].nome);
+    assert.equal(detalhe.itens[0].foto,foto);
+    const relatos=(await db.query('select * from public.admin_frota_relatos_10c(1)')).rows;
+    assert.ok(relatos.some(r=>r.relatos.some(x=>x.itens?.some(i=>i.item===m.itens[0].nome))));
+    await enviar(respostas(ativos));
+    await assert.rejects(sair(),/veiculo_nao_liberado/,'checklist limpo não desfaz bloqueio mecânico');
+    assert.equal(await one("select has_function_privilege('anon','public.my_frota_itens_10j(bigint)','execute')"),false);
+  } finally { await db.exec("update public.profiles set role='admin'"); }
 });

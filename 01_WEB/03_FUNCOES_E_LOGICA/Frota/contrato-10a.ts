@@ -13,7 +13,7 @@ const situacao = z.enum(SITUACAO_FROTA_10A), resultado = z.enum(["liberado", "re
 export const caminhoesApp10a = z.array(z.object({ id: z.coerce.number(), nome: z.string(), placa: z.string(), modelo: z.string().nullable(), situacao,
   km_atual: z.coerce.number(), checklist_hoje: resultado.nullable(), motorista: z.string().nullable(), destino: z.string().nullable(),
   saida_em: z.string().nullable(), minha_viagem: z.coerce.number().nullable() }));
-export const itensApp10a = z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), critico: z.boolean(), versao: z.string().regex(/^[a-f0-9]{64}$/).optional() }));
+export const itensApp10a = z.array(z.object({ codigo: z.coerce.number(), nome: z.string(), critico: z.boolean(), versao: z.string().regex(/^[a-f0-9]{64}$/).optional(), permite_na:z.boolean().optional(), exige_foto:z.boolean().optional(), etapa:z.string().nullable().optional() }));
 // O contrato opcional lê caches antigos; a consulta online exige a versão em todos os itens.
 export const itensVersionados10f = z.array(itensApp10a.element.required({ versao: true })).min(1).refine(itens => itens.every(i => i.versao === itens[0].versao), "Versões de checklist incompatíveis");
 export const viagensApp10a = z.array(z.object({ id: z.coerce.number(), veiculo: z.string(), destino: z.string(), saida_em: z.string(), chegada_em: z.string().nullable(),
@@ -85,6 +85,8 @@ export const concluirPlanoForm10a = z.object({ veiculoId: idNum, planoId: idNum,
 
 export const MENSAGEM_ERRO_FROTA_10A: Record<string, string> = {
   checklist_versao_desatualizada: "As perguntas do checklist mudaram ou este registro é anterior ao controle de versões. O relato foi preservado. Atualize a lista e faça uma nova inspeção; se houver defeito guardado, envie-o para conferência da Gestão.",
+  checklist_versao_atual_necessaria: "O modelo deste veículo mudou. Faça e envie o checklist da versão atual antes de registrar a saída.",
+  regra_evidencia_checklist: "Confira as regras de Não se aplica e as fotos obrigatórias do modelo deste veículo. O envio não foi aceito.",
   idempotency_conflict: "Esta tentativa já foi registrada com outro conteúdo ou é anterior à conferência de conteúdo. Confira os registros antes de iniciar uma nova tentativa. Os dados guardados foram preservados.",
   fila_cheia: "Há registros demais guardados no celular. Conecte-se à internet para enviá-los.",
   foto_pendente: "O registro não foi enviado porque uma foto está indisponível ou não foi aceita. Os dados continuam guardados. Na lista de caminhões, você pode enviar o relato sem as fotos pendentes. Avise o responsável.",

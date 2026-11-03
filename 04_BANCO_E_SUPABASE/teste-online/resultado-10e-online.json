@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-03T07:24:20.369Z",
+  "at": "2026-11-03T18:36:38.776Z",
   "target": "metallo-teste",
   "checks": [
     {
@@ -12,6 +12,22 @@
     },
     {
       "name": "Gestão consulta histórico de aprovação",
+      "ok": true
+    },
+    {
+      "name": "administrador não ativa modelo",
+      "ok": true
+    },
+    {
+      "name": "funcionário não ativa modelo",
+      "ok": true
+    },
+    {
+      "name": "funcionário não consulta ativações da Gestão",
+      "ok": true
+    },
+    {
+      "name": "Saveiro permanece sem ativação operacional",
       "ok": true
     },
     {
@@ -64,6 +80,18 @@
     },
     {
       "name": "categoria rejeita edição antiga",
+      "ok": true
+    },
+    {
+      "name": "categoria sem ativação mantém modelo legado por veículo",
+      "ok": true
+    },
+    {
+      "name": "consulta por veículo inválido é recusada",
+      "ok": true
+    },
+    {
+      "name": "listagem do motorista continua disponível",
       "ok": true
     },
     {
@@ -183,12 +211,12 @@
       "ok": true
     }
   ],
-  "draftCategory": "ensaio_440c",
+  "draftCategory": "ensaio_c9ad",
   "fixture": {
-    "vehicle": 16,
-    "checklist": 17,
+    "vehicle": 19,
+    "checklist": 18,
     "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
   },
   "fixtureDeactivated": true,
-  "result": "45/45"
+  "result": "52/52"
 }

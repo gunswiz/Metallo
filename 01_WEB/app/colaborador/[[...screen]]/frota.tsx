@@ -12,7 +12,7 @@ import { textoErroFrota10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 type Acoes = {
   quem?: string;
   conferirRecusa?: (p: Pendente) => Promise<ConferenciaRecusa10e>;
-  caminhoes: () => Promise<CaminhaoApp10a[]>; itens: () => Promise<ItemChecklist10a[]>; viagens: () => Promise<ViagemApp10a[]>;
+  caminhoes: () => Promise<CaminhaoApp10a[]>; itens: () => Promise<ItemChecklist10a[]>; itensVeiculo?: (id:number)=>Promise<ItemChecklist10a[]>; viagens: () => Promise<ViagemApp10a[]>;
   checklist: (veiculo: number, local: string, obs: string, respostas: RespostaChecklist10a[], chave: string) => Promise<"liberado" | "ressalvas" | "nao_liberado">;
   saida: (veiculo: number, destino: string, acompanhantes: string, km: number, obs: string, chave: string) => Promise<void>;
   foto: (veiculo: number, arquivo: Blob) => Promise<string>;
@@ -36,6 +36,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   const chaveRascunho = acoes.quem ? `${RASCUNHO}:${acoes.quem}` : null;
   const [caminhoes, setCaminhoes] = useState<CaminhaoApp10a[]>([]), [itensAtuais, setItens] = useState<ItemChecklist10a[]>([]), [viagens, setViagens] = useState<ViagemApp10a[]>([]);
   const [itensFormulario, setItensFormulario] = useState<ItemChecklist10a[]>([]);
+  const [modelos,setModelos]=useState<Record<string,ItemChecklist10a[]>>({});
   const [modo, setModo] = useState<Modo>({ tipo: "lista" }), [status, setStatus] = useState("Carregando…"), [enviando, setEnviando] = useState(false);
   const itens = modo.tipo === "checklist" ? itensFormulario : itensAtuais;
   const [busca, setBusca] = useState(""), [filtro, setFiltro] = useState("todos"), [etapa, setEtapa] = useState(0), [historicoCompleto, setHistoricoCompleto] = useState(false);
@@ -48,7 +49,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   const ref = useRef(acoes), chave = useRef<string | null>(null);
   useEffect(() => { ref.current = acoes; }, [acoes]);
   const restaurado = useRef(false);
-  const restaurar = useCallback((lista: CaminhaoApp10a[], itensCarregados: ItemChecklist10a[]) => {
+  const restaurar = useCallback((lista: CaminhaoApp10a[], itensCarregados: ItemChecklist10a[], modelosCarregados?:Record<string,ItemChecklist10a[]>) => {
     if (restaurado.current || !lista.length || !itensCarregados.length) return;
     restaurado.current = true;
     try {
@@ -63,7 +64,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       }
       chave.current = d.chave; setEtapa(d.etapa); setRespostas(d.respostas); setLocal(d.local); setObs(d.obs); setCiente(d.ciente); setDestino(d.destino); setAcomp(d.acomp); setKm(d.km); setProblema(d.problema); setFotoChegada(d.fotoChegada);
       setModo({ tipo: d.tipo, v });
-      return d.tipo === "checklist" && (!d.itens?.[0]?.versao || d.itens[0].versao !== itensCarregados[0]?.versao) ? "Rascunho de uma versão anterior. As respostas originais foram preservadas; o envio depende da conferência do servidor. Não use este rascunho como autorização para sair." : d.fotoPendente ? "A foto não chegou. Toque em Tirar foto de novo; o resto do checklist foi mantido." : "Continue de onde parou.";
+      return d.tipo === "checklist" && (!d.itens?.[0]?.versao || d.itens[0].versao !== (modelosCarregados ? modelosCarregados[d.veiculo] : itensCarregados)?.[0]?.versao) ? "Rascunho de uma versão anterior. As respostas originais foram preservadas; o envio depende da conferência do servidor. Não use este rascunho como autorização para sair." : d.fotoPendente ? "A foto não chegou. Toque em Tirar foto de novo; o resto do checklist foi mantido." : "Continue de onde parou.";
     } catch { /* sem rascunho */ }
   }, [chaveRascunho]);
   const carregar = useCallback(async () => {
@@ -71,13 +72,15 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     const quem = ref.current.quem ?? "";
     try {
       const [c, i, t] = await Promise.all([ref.current.caminhoes(), ref.current.itens(), ref.current.viagens()]);
-      setCaminhoes(c); setItens(i); setViagens(t); setSemSinal(false); setStatus(restaurar(c, i) ?? "");
-      if (quem) gravarCache(quem, { caminhoes: c, itens: i, viagens: t });
+      const porVeiculo=ref.current.itensVeiculo ? Object.fromEntries(await Promise.all(c.map(async v=>[v.id,await ref.current.itensVeiculo!(v.id).catch(()=>[])]))) : undefined;
+      setModelos(porVeiculo??{});
+      setCaminhoes(c); setItens(i); setViagens(t); setSemSinal(false); setStatus(restaurar(c, i,porVeiculo) ?? "");
+      if (quem) gravarCache(quem, { caminhoes: c, itens: i, viagens: t,modelos:porVeiculo });
     } catch (e) {
       const guardado = quem && ehFalhaDeConexao10d(e) ? lerCache(quem) : null;
       if (guardado) {
-        setCaminhoes(guardado.caminhoes); setItens(guardado.itens); setViagens(guardado.viagens); setSemSinal(true);
-        setStatus(restaurar(guardado.caminhoes, guardado.itens) ?? "Sem internet: consulta guardada no celular. A situação pode ter mudado. Aguarde a confirmação do servidor antes de sair.");
+        setCaminhoes(guardado.caminhoes); setItens(guardado.itens); setModelos(guardado.modelos??{}); setViagens(guardado.viagens); setSemSinal(true);
+        setStatus(restaurar(guardado.caminhoes, guardado.itens,ref.current.itensVeiculo ? guardado.modelos??{} : undefined) ?? "Sem internet: consulta guardada no celular. A situação pode ter mudado. Aguarde a confirmação do servidor antes de sair.");
       } else { setErroCarga(true); setStatus("Não foi possível atualizar os caminhões. Tente de novo."); }
     } finally { setCarregando(false); }
   }, [restaurar]);
@@ -113,9 +116,12 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   const limparRascunho = () => { try { if (chaveRascunho) sessionStorage.removeItem(chaveRascunho); } catch { /* ok */ } };
 
   function abrir(tipo: "checklist" | "saida" | "chegada", v: CaminhaoApp10a) {
-    setItensFormulario(itensAtuais);
+    const selecionados=acoes.itensVeiculo ? modelos[v.id] : itensAtuais;
+    if(tipo==="checklist"&&acoes.itensVeiculo&&!selecionados?.length){setStatus("O modelo deste veículo não está disponível. Atualize a lista com internet antes de iniciar a inspeção.");return false;}
+    setItensFormulario(selecionados??[]);
     chave.current = null; kmConfirmado.current = null; setEtapa(0); setStatus(""); setKm(String(v.km_atual)); setDestino(""); setAcomp(""); setProblema(""); setObs(""); setLocal(""); setCiente(false); setFotoChegada(null);
-    setRespostas(Object.fromEntries(itens.map(i => [i.codigo, { s: "" as const, obs: "", foto: undefined as string | undefined }]))); setModo({ tipo, v });
+    setRespostas(Object.fromEntries((selecionados??[]).map(i => [i.codigo, { s: "" as const, obs: "", foto: undefined as string | undefined }]))); setModo({ tipo, v });
+    return true;
   }
   function refazerRelato(r: Recusada) {
     const v = caminhoes.find(x => x.id === r.registro?.veiculo), payload = r.registro?.payload;
@@ -126,9 +132,9 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       setStatus("Confira a chegada. Se o defeito já foi resolvido, volte e envie o relato guardado para conferência da Gestão."); return;
     }
     if (payload.tipo !== "checklist") return;
-    abrir("checklist", v);
+    if(!abrir("checklist", v))return;
     setLocal(payload.local); setObs(payload.obs);
-    setRespostas(Object.fromEntries(itens.map(i => {
+    setRespostas(Object.fromEntries((acoes.itensVeiculo ? modelos[v.id] : itensAtuais).map(i => {
       const anterior = payload.respostas.find(x => Boolean(i.versao) && x.versao === i.versao && x.codigo === i.codigo);
       return [i.codigo, anterior ? { s: anterior.situacao, obs: anterior.obs, foto: anterior.foto } : { s: "" as const, obs: "" }];
     })));
@@ -201,6 +207,8 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     return false;
   }
   function enviarChecklist(v: CaminhaoApp10a) {
+    const regra=itens.find(i=>(respostas[i.codigo]?.s==="NA"&&i.permite_na===false)||(respostas[i.codigo]?.s==="N"&&i.exige_foto&&!respostas[i.codigo]?.foto));
+    if(regra){setStatus(`Confira ${regra.nome}: respeite a aplicabilidade e anexe a foto obrigatória do problema.`);return;}
     if (!itens.length) { setStatus("Os itens do checklist não estão disponíveis. Volte e atualize a lista."); return; }
     const lista = itens.map(i => ({ codigo: i.codigo, ...(i.versao ? { versao: i.versao, nome: i.nome } : {}), situacao: respostas[i.codigo]?.s ?? "", obs: respostas[i.codigo]?.obs.trim() ?? "", ...(respostas[i.codigo]?.s === "N" && respostas[i.codigo]?.foto ? { foto: respostas[i.codigo]?.foto } : {}) }));
     if (lista.some(r => r.situacao === "")) { setStatus("Responda todos os itens: Conforme, Problema ou Não se aplica."); return; }
@@ -236,8 +244,8 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     setStatus("Itens sem resposta marcados como conforme. Confira e corrija o que tiver problema.");
   }
   function proximaEtapa() {
-    const pendente = itensDaEtapa.find(i => !respostas[i.codigo]?.s || (respostas[i.codigo].s === "N" && respostas[i.codigo].obs.trim().length < 3));
-    if (pendente) { setStatus(`Confira o item ${pendente.codigo}: ${pendente.nome}. Escolha uma resposta e descreva o problema, se houver.`); return; }
+    const pendente = itensDaEtapa.find(i => !respostas[i.codigo]?.s || (respostas[i.codigo].s === "NA"&&i.permite_na===false) || (respostas[i.codigo].s === "N" && (respostas[i.codigo].obs.trim().length < 3 || (i.exige_foto&&!respostas[i.codigo].foto))));
+    if (pendente) { setStatus(`Confira o item ${pendente.codigo}: ${pendente.nome}. Escolha uma resposta, descreva o problema e anexe a foto quando obrigatória.`); return; }
     setStatus(""); setEtapa(e => Math.min(passos - 1, e + 1));
   }
   const normalizar = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -310,11 +318,12 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       <ol className={styles.frotaItens} start={etapa * 5 + 1}>{itensDaEtapa.map(i => { const r = respostas[i.codigo] ?? { s: "", obs: "" };
         return <li key={i.codigo} className={r.s === "N" ? styles.frotaRuim : undefined}>
           <span>{i.codigo}. {i.nome}{i.critico && <small className={styles.frotaCritico}>Crítico · problema impede a saída</small>}</span>
-          <div className={styles.frotaCNA} role="group" aria-label={i.nome}>{(["C", "N", "NA"] as const).map(s =>
+          {i.etapa && <small>{i.etapa}</small>}
+          <div className={styles.frotaCNA} role="group" aria-label={i.nome}>{(["C", "N", "NA"] as const).filter(s=>s!=="NA"||i.permite_na!==false).map(s =>
             <button key={s} type="button" disabled={subindo || enviando} aria-pressed={r.s === s} className={r.s === s ? `${styles.frotaCNAativo} ${s === "N" ? styles.frotaCNAruim : ""}` : undefined}
               onClick={() => setRespostas(a => ({ ...a, [i.codigo]: { s, obs: a[i.codigo]?.obs ?? "", foto: s === "N" ? a[i.codigo]?.foto : undefined } }))}>{r.s === s && <Check size={16} aria-hidden/>}{rotuloBotao[s]}</button>)}</div>
           {r.s === "N" && <><input aria-label={`O que está errado: ${i.nome}`} placeholder="O que está errado?" maxLength={200} value={r.obs} onChange={e => setRespostas(a => ({ ...a, [i.codigo]: { s: "N", obs: e.target.value, foto: a[i.codigo]?.foto } }))}/>
-            <button type="button" className={styles.recordsButton} disabled={subindo || enviando} onClick={() => pedirFoto(i.codigo)}><Camera size={20} aria-hidden/>{r.foto ? "Foto anexada ✓ (trocar)" : "Tirar foto do defeito"}</button></>}
+            <button type="button" className={styles.recordsButton} disabled={subindo || enviando} onClick={() => pedirFoto(i.codigo)}><Camera size={20} aria-hidden/>{r.foto ? "Foto anexada ✓ (trocar)" : i.exige_foto ? "Tirar foto obrigatória do defeito" : "Tirar foto do defeito"}</button></>}
         </li>; })}</ol>
       {ultimoPasso && <><label>Local (opcional)<input value={local} onChange={e => setLocal(e.target.value)} maxLength={80} placeholder="Ex.: pátio da empresa"/></label>
       <label>Observação geral (opcional)<input value={obs} onChange={e => setObs(e.target.value)} maxLength={300}/></label>

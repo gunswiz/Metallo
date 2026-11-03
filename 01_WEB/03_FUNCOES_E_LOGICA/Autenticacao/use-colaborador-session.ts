@@ -263,7 +263,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     if (result.error) throw result.error;
     return personalEpis(result.data);
   }, [demo, getClient]);
-  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l" | "my_contracheques_6a" | "my_atestados_6b" | "cancelar_atestado_6b" | "my_frota_10a" | "my_frota_itens_10f" | "my_frota_viagens_10a" | "create_checklist_10a" | "create_saida_10a" | "create_chegada_10a" | "anexar_foto_chegada_10b" | "my_relato_recusado_10e", args: Record<string, unknown> = {}) => {
+  const exchangeRpc = useCallback(async (name: "my_exchangeable_epi" | "my_epi_exchange_requests" | "create_epi_exchange_request" | "cancel_epi_exchange_request" | "my_epi_delivery_groups_3d" | "respond_epi_delivery_3d" | "my_epi_report_3e" | "my_personal_items_3g" | "confirm_personal_item_3g" | "report_personal_item_3g" | "my_communications_3h" | "open_communication_3h" | "my_epi_awareness_3i" | "accept_epi_awareness_3i" | "my_trainings_5a" | "jornada_padrao_4g" | "feriados_4h" | "my_ocorrencias_4h" | "my_materiais_3t" | "create_pedido_material_3t" | "my_pedidos_material_3t" | "cancel_pedido_material_3t" | "my_push_3u" | "save_my_push_3u" | "delete_my_push_3u" | "set_my_push_prefs_3u" | "my_fechamentos_4l" | "responder_fechamento_4l" | "my_contracheques_6a" | "my_atestados_6b" | "cancelar_atestado_6b" | "my_frota_10a" | "my_frota_itens_10f" | "my_frota_itens_10j" | "my_frota_viagens_10a" | "create_checklist_10a" | "create_saida_10a" | "create_chegada_10a" | "anexar_foto_chegada_10b" | "my_relato_recusado_10e", args: Record<string, unknown> = {}) => {
     if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");
     const ticket = generation.current;
     const result = await getClient().rpc(name, args);
@@ -321,6 +321,7 @@ export function useColaboradorSession(anonKey: string, demo: boolean, screen: Po
     conferirRecusa: async (p: Pendente) => conferenciaRecusa10e.parse(await exchangeRpc("my_relato_recusado_10e", { p_key: p.id, p_veiculo: p.veiculo, p_relato: p.payload })),
     caminhoes: async () => caminhoesApp10a.parse(await exchangeRpc("my_frota_10a")),
     itens: async () => itensVersionados10f.parse(await exchangeRpc("my_frota_itens_10f")),
+    itensVeiculo: async (id:number) => itensVersionados10f.parse(await exchangeRpc("my_frota_itens_10j",{p_veiculo:id})),
     viagens: async () => viagensApp10a.parse(await exchangeRpc("my_frota_viagens_10a")),
     foto: async (veiculo: number, arquivo: Blob) => {
       if (demo || endingClient.current || !profile) throw new Error("Sessão inválida.");

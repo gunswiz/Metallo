@@ -94,6 +94,29 @@ describe("Frota da Gestão", () => {
 });
 
 describe("Caminhões do funcionário", () => {
+  it("carrega perguntas do veículo e respeita NA e foto obrigatória",async()=>{
+    const itensVeiculo=vi.fn(async()=>[{codigo:99,nome:"Gancho da categoria",critico:true,versao:"b".repeat(64),permite_na:false,exige_foto:true,etapa:"Içamento"}]);
+    const api={...acoes(),itensVeiculo};
+    render(<Frota acoes={api}/>);
+    fireEvent.click(await screen.findByRole("button",{name:"Fazer checklist"}));
+    expect(itensVeiculo).toHaveBeenCalledWith(1);
+    const grupo=screen.getByRole("group",{name:"Gancho da categoria"});
+    expect(within(grupo).queryByRole("button",{name:"Não se aplica"})).not.toBeInTheDocument();
+    expect(screen.queryByRole("group",{name:"Conferência 1"})).not.toBeInTheDocument();
+    fireEvent.click(within(grupo).getByRole("button",{name:"Problema"}));
+    fireEvent.change(screen.getByLabelText("O que está errado: Gancho da categoria"),{target:{value:"Gancho danificado"}});
+    expect(screen.getByRole("button",{name:"Tirar foto obrigatória do defeito"})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button",{name:"Enviar checklist"}));
+    expect(api.checklist).not.toHaveBeenCalled();
+    expect(screen.getByText(/anexe a foto obrigatória do problema/)).toBeInTheDocument();
+  });
+  it("não usa catálogo genérico quando falha a consulta do modelo do veículo",async()=>{
+    render(<Frota acoes={{...acoes(),itensVeiculo:vi.fn(async()=>{throw new Error("Modelo indisponível");})}}/>);
+    fireEvent.click(await screen.findByRole("button",{name:"Fazer checklist"}));
+    expect(screen.getByText(/O modelo deste veículo não está disponível/)).toBeInTheDocument();
+    expect(screen.queryByRole("button",{name:"Continuar"})).not.toBeInTheDocument();
+  });
   it("consulta conferência da Gestão sem recriar checklist do defeito resolvido", async () => {
     const payload = { tipo: "checklist", local: "Pátio", obs: "Original", respostas: [{ codigo: 1, situacao: "N", obs: "Freio antigo" }] };
     localStorage.setItem("metallo-frota-recusadas-10d:conta-teste", JSON.stringify([{ id: "antigo", nome: "Munck", tipo: "checklist", motivo: "Itens mudaram", registro: { id: "antigo", veiculo: 1, nome: "Munck", criado: new Date().toISOString(), payload } }]));

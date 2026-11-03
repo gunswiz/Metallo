@@ -5,12 +5,17 @@ import { abrirManutencaoForm10a, cancelarManutencaoForm10a, caminhaoForm10a, con
   lerCusto10a, liberarForm10a, oficinaForm10a, planoForm10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import { requireFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { conferirRecusaForm10e } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
-import { modeloForm10g, categoriaVeiculoForm10h, aprovacaoModeloForm10i } from "@/03_FUNCOES_E_LOGICA/Frota/modelos-10g";
+import { modeloForm10g, categoriaVeiculoForm10h, aprovacaoModeloForm10i, ativacaoModeloForm10j } from "@/03_FUNCOES_E_LOGICA/Frota/modelos-10g";
 
 // Marco 10A — Gestão da frota. Cadastro e liberação: administrador e engenheiro (a função do banco confere de novo). Manutenção e planos: quem opera equipamentos.
 const paths = ["/frota", "/dashboard"];
 const ficha = (id: number | string, extra = "") => `/frota/${id}?ok=1${extra}`;
 const num = (v: number | "") => (v === "" ? null : v);
+
+export async function ativarModeloFrota10j(_p:unknown,formData:FormData){
+ return executeValidated({schema:ativacaoModeloForm10j,capability:"epi:write",formData,paths:["/frota"],explicitConfirmation:true,destination:d=>`/frota/modelos?categoria=${d.categoria}&revisao=${d.revisao}&conferir=1`,
+ operation:(client,d)=>{requireFrota10a();return client.rpc("admin_ativar_modelo_10j" as never,{p_categoria:d.categoria,p_revisao:d.revisao,p_anterior:d.anterior,p_motivo:d.motivo,p_ciente:d.ciente==="on"} as never);}});
+}
 
 export async function aprovarModeloFrota10i(_p: unknown, formData: FormData) {
  return executeValidated({schema:aprovacaoModeloForm10i,capability:"epi:write",formData,paths:["/frota/modelos"],explicitConfirmation:true,destination:d=>`/frota/modelos?categoria=${d.categoria}&revisao=${d.revisao}&conferir=1`,

@@ -8,6 +8,7 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 export type OperationState = { error?: string; completedKey?: string; destination?: string; confirmed?: boolean };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["modelo_aprovado_necessario", "A ativação exige a revisão aprovada mais recente. Confira a aprovação e a versão já ativa."],
   ["engenheiro_required", "A aprovação técnica exige um perfil ativo de engenheiro."],
   ["parecer_obrigatorio", "Registre o parecer e confirme a revisão das perguntas e regras."],
   ["aprovacao_ja_registrada", "Esta revisão já tem uma aprovação registrada. Confira o histórico; o parecer original será preservado."],

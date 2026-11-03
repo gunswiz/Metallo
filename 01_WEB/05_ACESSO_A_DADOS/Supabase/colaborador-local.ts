@@ -27,7 +27,7 @@ export async function portalFetch(input: RequestInfo | URL, init?: RequestInit) 
     "/rest/v1/rpc/my_materiais_3t", "/rest/v1/rpc/create_pedido_material_3t", "/rest/v1/rpc/my_pedidos_material_3t", "/rest/v1/rpc/cancel_pedido_material_3t",
     "/rest/v1/rpc/my_push_3u", "/rest/v1/rpc/save_my_push_3u", "/rest/v1/rpc/delete_my_push_3u", "/rest/v1/rpc/set_my_push_prefs_3u",
     // 10A: caminhões (checklist, saída e chegada).
-    "/rest/v1/rpc/my_frota_10a", "/rest/v1/rpc/my_frota_itens_10a", "/rest/v1/rpc/my_frota_itens_10f", "/rest/v1/rpc/my_frota_viagens_10a", "/rest/v1/rpc/create_checklist_10a", "/rest/v1/rpc/create_saida_10a", "/rest/v1/rpc/create_chegada_10a",
+    "/rest/v1/rpc/my_frota_10a", "/rest/v1/rpc/my_frota_itens_10a", "/rest/v1/rpc/my_frota_itens_10f", "/rest/v1/rpc/my_frota_itens_10j", "/rest/v1/rpc/my_frota_viagens_10a", "/rest/v1/rpc/create_checklist_10a", "/rest/v1/rpc/create_saida_10a", "/rest/v1/rpc/create_chegada_10a",
     // 10B: foto do defeito (arquivo só pela função fotos-frota-10b).
     "/rest/v1/rpc/anexar_foto_chegada_10b", "/functions/v1/fotos-frota-10b",
     "/rest/v1/rpc/my_relato_recusado_10e",

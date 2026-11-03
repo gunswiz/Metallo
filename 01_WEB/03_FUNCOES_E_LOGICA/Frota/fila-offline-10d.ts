@@ -11,7 +11,7 @@ export type Payload =
   | { tipo: "chegada"; viagem: number; km: number; problema: string; obs: string; foto?: string };
 export type Pendente = { id: string; veiculo: number; nome: string; criado: string; payload: Payload; fotosLocais?: string[]; fotosEnviadas?: Record<string, string>; fotoPendente?: boolean; revisar?: boolean };
 export type Recusada = { id: string; nome: string; tipo: Payload["tipo"]; motivo: string; registro?: Pendente; recebidoEmRegistro?: string; conferencia?: ConferenciaRecusa10e };
-export type Cache = { em: string; caminhoes: CaminhaoApp10a[]; itens: ItemChecklist10a[]; viagens: ViagemApp10a[] };
+export type Cache = { em: string; caminhoes: CaminhaoApp10a[]; itens: ItemChecklist10a[]; viagens: ViagemApp10a[]; modelos?:Record<string,ItemChecklist10a[]> };
 
 /** O que a fila precisa do app (as mesmas ações da tela de caminhões). */
 export type AcoesFila = {

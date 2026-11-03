@@ -14,6 +14,7 @@ vi.mock("@/02_COMPONENTES_VISUAIS/formulario-operacao", () => ({ OperationForm: 
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
   lerModelosFrota10g: vi.fn(async()=>({atual:1,categorias:[{codigo:"saveiro",nome:"Saveiro"}],modelo:{categoria:"saveiro",nome:"Saveiro",revisao:1,itens:[{codigo:1,nome:"Freios",etapa:"Rodagem",critico:true,permite_na:false,exige_foto:true}],motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z",autor:"Autor fictício"},historico:[{revisao:1,motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z"}]})),
   lerAprovacoesModelo10i: vi.fn(async()=>[]),
+  lerAtivacaoModelo10j: vi.fn(async()=>({veiculos:0,atual:null})),
   lerCategoriaVeiculo10h: vi.fn(async()=>({categoria:null,revisao:0,categorias:[{codigo:"saveiro",nome:"Saveiro / veículo leve"}]})),
   lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
   lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
@@ -30,6 +31,17 @@ import FrotaPage from "@/app/(02_SISTEMA)/frota/page";
 import ItensFrotaPage from "@/app/(02_SISTEMA)/frota/itens/page";
 import { lerFichaFrota10a, lerChecklistFrota10a, lerRecusasFrota10e } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
+import {lerAprovacoesModelo10i} from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+
+it("ativação só é oferecida na conferência de revisão aprovada ao engenheiro",async()=>{
+  estado.role="engineer";
+  vi.mocked(lerAprovacoesModelo10i).mockResolvedValueOnce([{revisao:1,em:"2026-11-03T10:00:00Z",parecer:"Parecer fictício",autor:"Engenheiro fictício"}]);
+  render(await ModelosFrotaPage({searchParams:Promise.resolve({categoria:"saveiro",conferir:"1"})}));
+  expect(screen.getByRole("button",{name:"Ativar modelo para esta categoria"})).toBeInTheDocument();
+  expect(screen.getByLabelText("Motivo da ativação")).toBeRequired();
+  expect(screen.getByRole("checkbox",{name:/Confirmo a aplicação/})).toBeRequired();
+  expect(screen.queryByRole("button",{name:"Registrar aprovação técnica"})).not.toBeInTheDocument();
+});
 
 it("aprovação exige conferência completa e só oferece envio ao engenheiro",async()=>{
   const query={categoria:"saveiro",conferir:"1"};
@@ -49,7 +61,7 @@ it("cadastro permite classificar como Saveiro sem ativar modelo e usa Veículos 
   render(await FichaFrotaPage({params:Promise.resolve({id:"1"}),searchParams:Promise.resolve({aba:"dados"})}));
   expect(screen.getByLabelText("Categoria")).toHaveValue("");
   expect(screen.getByRole("option",{name:"Saveiro / veículo leve"})).toBeInTheDocument();
-  expect(screen.getByText(/Esta escolha ainda não ativa um modelo/)).toBeInTheDocument();
+  expect(screen.getByText(/Se houver modelo aprovado e ativado/)).toBeInTheDocument();
   expect(screen.getByRole("button",{name:"Salvar categoria"})).toBeInTheDocument();
   expect(screen.getAllByRole("link",{name:"Veículos"}).length).toBeGreaterThan(0);
 });

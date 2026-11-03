@@ -24,6 +24,11 @@ try {
   check('administrador sem perfil de engenheiro não aprova',(await rpc(gestor,'admin_aprovar_modelo_10i',aprovar)).data?.message==='engenheiro_required');
   check('funcionário não aprova modelo',(await rpc(robo,'admin_aprovar_modelo_10i',aprovar)).data?.message==='engenheiro_required');
   check('Gestão consulta histórico de aprovação',(await rpc(gestor,'admin_aprovacoes_modelo_10i',{p_categoria:'saveiro'})).status===200);
+  const ativar={p_categoria:'saveiro',p_revisao:1,p_anterior:0,p_motivo:'Ensaio negativo de ativação',p_ciente:true};
+  check('administrador não ativa modelo',(await rpc(gestor,'admin_ativar_modelo_10j',ativar)).data?.message==='engenheiro_required');
+  check('funcionário não ativa modelo',(await rpc(robo,'admin_ativar_modelo_10j',ativar)).data?.message==='engenheiro_required');
+  check('funcionário não consulta ativações da Gestão',(await rpc(robo,'admin_ativacao_modelo_10j',{p_categoria:'saveiro'})).status>=400);
+  check('Saveiro permanece sem ativação operacional',(await rpc(gestor,'admin_ativacao_modelo_10j',{p_categoria:'saveiro'})).data?.atual===null);
   const draft = {p_categoria:`ensaio_${suffix.toLowerCase()}`,p_nome:`Ensaio fictício ${suffix}`,p_base:0,p_itens:[{codigo:1,nome:'Pergunta fictícia',etapa:'Segurança',critico:true,permite_na:false,exige_foto:false}],p_motivo:'Prova automática 10G — sem uso operacional',p_key:randomUUID()};
   check('funcionário não edita modelos', (await rpc(robo,'admin_salvar_modelo_frota_10g',draft)).status>=400);
   check('funcionário não consulta configuração da Gestão', (await rpc(robo,'admin_modelos_frota_10g')).status>=400);
@@ -45,6 +50,10 @@ try {
   check('reenvio de categoria não duplica histórico',(await rpc(gestor,'admin_definir_categoria_10h',categoriaArgs)).status<300&&(await rpc(gestor,'admin_categoria_veiculo_10h',{p_veiculo:vehicle})).data?.revisao===1);
   check('categoria rejeita edição antiga',(await rpc(gestor,'admin_definir_categoria_10h',{...categoriaArgs,p_categoria:'munck'})).data?.message==='categoria_revisao_conflito');
   const items = (await rpc(robo, "my_frota_itens_10f")).data;
+  const vehicleItems=await rpc(robo,'my_frota_itens_10j',{p_veiculo:vehicle});
+  check('categoria sem ativação mantém modelo legado por veículo',vehicleItems.status===200&&vehicleItems.data.length===items.length&&vehicleItems.data.every((i,n)=>i.codigo===items[n].codigo&&i.versao===items[n].versao&&i.permite_na===true&&i.exige_foto===false));
+  check('consulta por veículo inválido é recusada',(await rpc(robo,'my_frota_itens_10j',{p_veiculo:vehicle+999999})).data?.message==='veiculo_invalido');
+  check('listagem do motorista continua disponível',(await rpc(robo,'my_frota_10a')).status===200);
   const clean = { p_veiculo: vehicle, p_local: "Prova R5", p_obs: "Fictício", p_respostas: items.map(i => ({ codigo: i.codigo, situacao: "C", obs: "", versao: i.versao, nome: "Texto do cliente não deve substituir o modelo" })), p_ciente: true, p_key: randomUUID() };
   check("itens recebidos têm uma versão íntegra", items.length > 0 && items.every(i => /^[a-f0-9]{64}$/.test(i.versao) && i.versao === items[0].versao));
   check("checklist sem versão exige nova inspeção", (await rpc(robo, "create_checklist_10a", { ...clean, p_respostas: clean.p_respostas.map(({ versao, ...r }) => r), p_key: randomUUID() })).data?.message === "checklist_versao_desatualizada");
