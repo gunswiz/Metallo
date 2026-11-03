@@ -75,7 +75,7 @@ describe("Frota da Gestão", () => {
     expect(screen.getByText("Obra Norte")).toBeInTheDocument();
     expect(screen.queryByText("Munck São José")).not.toBeInTheDocument();
     fireEvent.change(busca, { target: { value: "inexistente" } });
-    expect(screen.getByText("Nenhum caminhão neste filtro")).toBeInTheDocument();
+    expect(screen.getByText("Nenhum veículo neste filtro")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Limpar filtros" }));
     expect(screen.getAllByRole("article")).toHaveLength(2);
   });

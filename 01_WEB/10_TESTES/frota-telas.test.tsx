@@ -12,6 +12,7 @@ vi.mock("@/09_CONFIGURACOES/ambiente-teste-online", () => ({ recursosNovosLibera
 vi.mock("@/03_FUNCOES_E_LOGICA/executarOperacaoValidada", () => ({ executeValidated: vi.fn(async () => ({ status: "success" })) }));
 vi.mock("@/02_COMPONENTES_VISUAIS/formulario-operacao", () => ({ OperationForm: ({ children, label }: { children: ReactNode; label: string }) => <form>{children}<button>{label}</button></form> }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
+  lerCategoriaVeiculo10h: vi.fn(async()=>({categoria:null,revisao:0,categorias:[{codigo:"saveiro",nome:"Saveiro / veículo leve"}]})),
   lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
   lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
   lerPainelFrota10a: vi.fn(async () => []),
@@ -26,6 +27,15 @@ import FrotaPage from "@/app/(02_SISTEMA)/frota/page";
 import ItensFrotaPage from "@/app/(02_SISTEMA)/frota/itens/page";
 import { lerFichaFrota10a, lerChecklistFrota10a, lerRecusasFrota10e } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
+
+it("cadastro permite classificar como Saveiro sem ativar modelo e usa Veículos na navegação",async()=>{
+  render(await FichaFrotaPage({params:Promise.resolve({id:"1"}),searchParams:Promise.resolve({aba:"dados"})}));
+  expect(screen.getByLabelText("Categoria")).toHaveValue("");
+  expect(screen.getByRole("option",{name:"Saveiro / veículo leve"})).toBeInTheDocument();
+  expect(screen.getByText(/Esta escolha ainda não ativa um modelo/)).toBeInTheDocument();
+  expect(screen.getByRole("button",{name:"Salvar categoria"})).toBeInTheDocument();
+  expect(screen.getAllByRole("link",{name:"Veículos"}).length).toBeGreaterThan(0);
+});
 import { concluirPlano10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
 
 const ficha: FichaGestao10a = { veiculo: { id: 1, nome: "Munck 01", placa: "ABC1D23", modelo: null, ano: 2024, situacao: "disponivel", km_atual: 10000, ativo: true }, documentos: [], planos: [], manutencoes: [], viagens: [], checklists: [], eventos: [] };
@@ -38,7 +48,7 @@ it("a ficha abre somente o assunto escolhido e fornece links para os demais", as
   expect(screen.getByRole("heading", { name: "Documentos e vencimentos" })).toBeInTheDocument();
   expect(screen.queryByRole("heading", { name: "Manutenção" })).not.toBeInTheDocument();
   expect(screen.queryByRole("heading", { name: "Saídas e chegadas" })).not.toBeInTheDocument();
-  const abas = screen.getByRole("navigation", { name: "Assuntos do caminhão" });
+  const abas = screen.getByRole("navigation", { name: "Assuntos do veículo" });
   expect(within(abas).getByRole("link", { name: "Documentos" })).toHaveAttribute("aria-current", "page");
   expect(within(abas).getByRole("link", { name: "Preventivas" })).toHaveAttribute("href", "/frota/1?aba=planos");
   expect(within(abas).getAllByRole("link")).toHaveLength(7);
@@ -107,7 +117,7 @@ it("a configuração de cada item começa recolhida, mas mantém os campos edit�
   fireEvent.click(within(item).getByText("Editar"));
   expect(item).toHaveAttribute("open");
   expect(within(item).getByRole("textbox", { name: "1. Nome" })).toHaveValue("Freios");
-  expect(within(item).getByRole("checkbox", { name: "Crítico (bloqueia o caminhão)" })).toBeChecked();
+  expect(within(item).getByRole("checkbox", { name: "Crítico (bloqueia o veículo)" })).toBeChecked();
 });
 
 it("o gate de recursos novos continua protegendo as telas", async () => {

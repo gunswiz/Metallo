@@ -12,7 +12,7 @@ import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { salvarCaminhao10a } from "@/app/actions/frota-10a";
 
-// Marco 10A — Frota de caminhões munck: quem está com cada caminhão, checklist de hoje, manutenção e vencimentos. Sem GPS.
+// Marco 10A — Frota de veículos munck: quem está com cada veículo, checklist de hoje, manutenção e vencimentos. Sem GPS.
 export default async function FrotaPage({ searchParams }: { searchParams: Promise<{ ok?: string; novo?: string }> }) {
   const profile = await requireCapability("equipment:write");
   if (!recursosNovosLiberados(getSupabaseEnv().url)) notFound();
@@ -20,8 +20,8 @@ export default async function FrotaPage({ searchParams }: { searchParams: Promis
   const [frota, atencao] = await Promise.all([lerPainelFrota10a(), lerAtencaoFrota10a()]);
   const podeCadastrar = can(profile, "epi:write");
   return <>
-    <PageHeader eyebrow="FROTA" title="Frota de caminhões" description="Situação de cada veículo, viagens e cuidados em um só lugar."
-      actions={podeCadastrar ? <Link className="button primary" href="/frota?novo=1#novo-caminhao">+ Cadastrar caminhão</Link> : undefined}/>
+    <PageHeader eyebrow="FROTA" title="Frota de veículos" description="Situação de cada veículo, viagens e cuidados em um só lugar."
+      actions={podeCadastrar ? <Link className="button primary" href="/frota?novo=1#novo-caminhao">+ Cadastrar veículo</Link> : undefined}/>
     <SubNav profile={profile} grupo="frota"/>
     {query.ok && <div className="alert success" role="status">Salvo.</div>}
     {atencao.length > 0 && <ListaPrioridades titulo="Atenção na frota" limite={2} itens={atencao.map((a, i) => ({ id: String(i), titulo: a.nome, descricao: a.texto, href: `/frota/${a.veiculo_id}?aba=${a.tipo === "documento" ? "documentos" : a.tipo === "plano" ? "planos" : "manutencao"}`, urgente: a.gravidade === "vencido" }))}/>}
@@ -30,8 +30,8 @@ export default async function FrotaPage({ searchParams }: { searchParams: Promis
       <div className="panel-body"><form method="get" action="/frota/relatorio" className="filter-row">
         <label>Mês<input name="mes" type="month" lang="pt-BR" required defaultValue={new Date().toLocaleDateString("sv-SE", { timeZone: "America/Fortaleza" }).slice(0, 7)}/></label>
         <button className="button primary" type="submit">Baixar planilha</button></form>
-        <p className="muted">Saídas, km rodados, checklists, defeitos, dias parado e custo de manutenção de cada caminhão.</p></div></details>
-    {podeCadastrar && <details className="panel fleet-disclosure" id="novo-caminhao" open={query.novo === "1"}><summary>Cadastrar caminhão<span>Novo veículo</span></summary>
+        <p className="muted">Saídas, km rodados, checklists, defeitos, dias parado e custo de manutenção de cada veículo.</p></div></details>
+    {podeCadastrar && <details className="panel fleet-disclosure" id="novo-caminhao" open={query.novo === "1"}><summary>Cadastrar veículo<span>Novo veículo</span></summary>
       <div className="panel-body"><OperationForm action={salvarCaminhao10a} label="Cadastrar" pendingLabel="Salvando…">
         <label>Nome (ex.: Munck 06)<input name="nome" required minLength={2} maxLength={60}/></label>
         <label>Placa<input name="placa" required maxLength={8} placeholder="ABC1D23"/></label>

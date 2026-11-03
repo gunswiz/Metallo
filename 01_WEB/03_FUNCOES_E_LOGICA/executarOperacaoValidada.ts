@@ -8,6 +8,8 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 export type OperationState = { error?: string; completedKey?: string; destination?: string };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["categoria_revisao_conflito", "A categoria foi alterada por outra pessoa. Atualize a ficha e confira a classificação atual antes de salvar."],
+  ["categoria_veiculo_em_uso", "Conclua a viagem antes de alterar a categoria do veículo."],
   ["modelo_revisao_conflito", "Outra revisão já foi salva. Os seus campos foram mantidos; confira a revisão atual antes de reaplicar as mudanças."],
   ["modelo_invalido", "Confira as perguntas, etapas e regras do rascunho. Os códigos precisam ser únicos."],
   ["environment_not_enabled", "Este recurso está disponível somente no ambiente de teste autorizado."],

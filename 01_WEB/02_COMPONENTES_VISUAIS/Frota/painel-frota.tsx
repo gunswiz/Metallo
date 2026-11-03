@@ -21,14 +21,14 @@ export function PainelFrota({ frota }: { frota: PainelGestao10a[] }) {
   const bloqueados = ativos.filter(v => v.situacao === "nao_liberado" || v.situacao === "manutencao").length;
   const proximaAba = atual?.situacao === "nao_liberado" || atual?.situacao === "manutencao" || atual?.manutencoes_abertas ? "manutencao" : atual?.docs_vencidos ? "documentos" : atual?.planos_vencidos ? "planos" : "checklists";
   const assunto = { manutencao: "Revisar manutenção", documentos: "Regularizar documentos", planos: "Consultar preventiva", checklists: "Conferir inspeções" };
-  return <section className={styles.panel} aria-label="Caminhões da frota">
+  return <section className={styles.panel} aria-label="Veículos da frota">
     <div className={styles.overview}><div><span className={styles.eyebrow}>CONTROLE OPERACIONAL</span><h2>Uma visão de toda a operação.</h2><p>Inspeção, viagem e manutenção conectadas ao histórico de cada veículo.</p></div>
       <dl className={styles.metrics}><div><dt>Veículos ativos</dt><dd>{ativos.length}</dd></div><div><dt>Em viagem</dt><dd>{ativos.filter(v => v.situacao === "em_uso").length}</dd></div><div data-alert={bloqueados > 0}><dt>Bloqueados / oficina</dt><dd>{bloqueados}</dd></div></dl></div>
     <div className="fleet-toolbar"><div><h2>Sua frota</h2><p>Bloqueios primeiro, depois vencimentos e demais pendências.</p></div>
-      <label className="fleet-search"><Search size={18} aria-hidden/><input type="search" aria-label="Buscar caminhão, placa ou motorista" placeholder="Nome, placa ou motorista" value={busca} onChange={e => setBusca(e.target.value)}/></label></div>
-    <div className="fleet-filters" role="group" aria-label="Filtrar caminhões">{filtros.map(f => <button type="button" key={f.id} aria-pressed={filtro === f.id} onClick={() => setFiltro(f.id)}>{f.nome}<span>{frota.filter(v => pertence(v, f.id)).length}</span></button>)}</div>
-    <p className="fleet-results" role="status">{visiveis.length} {visiveis.length === 1 ? "caminhão encontrado" : "caminhões encontrados"}</p>
-    {visiveis.length === 0 ? <div className="fleet-empty"><Truck size={30} aria-hidden/><h3>{frota.length ? "Nenhum caminhão neste filtro" : "Sua frota começa aqui"}</h3><p>{frota.length ? "Tente outra placa, nome ou situação." : "Os caminhões cadastrados aparecerão aqui."}</p>{frota.length > 0 && <button type="button" className="button secondary" onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button>}</div> :
+      <label className="fleet-search"><Search size={18} aria-hidden/><input type="search" aria-label="Buscar veículo, placa ou motorista" placeholder="Nome, placa ou motorista" value={busca} onChange={e => setBusca(e.target.value)}/></label></div>
+    <div className="fleet-filters" role="group" aria-label="Filtrar veículos">{filtros.map(f => <button type="button" key={f.id} aria-pressed={filtro === f.id} onClick={() => setFiltro(f.id)}>{f.nome}<span>{frota.filter(v => pertence(v, f.id)).length}</span></button>)}</div>
+    <p className="fleet-results" role="status">{visiveis.length} {visiveis.length === 1 ? "veículo encontrado" : "veículos encontrados"}</p>
+    {visiveis.length === 0 ? <div className="fleet-empty"><Truck size={30} aria-hidden/><h3>{frota.length ? "Nenhum veículo neste filtro" : "Sua frota começa aqui"}</h3><p>{frota.length ? "Tente outra placa, nome ou situação." : "Os veículos cadastrados aparecerão aqui."}</p>{frota.length > 0 && <button type="button" className="button secondary" onClick={() => { setBusca(""); setFiltro("todos"); }}>Limpar filtros</button>}</div> :
       <div className={styles.workspace}><div className={styles.vehicles}>{visiveis.map(v => {
         const tom = !v.ativo ? "" : v.situacao === "disponivel" ? "good" : v.situacao === "em_uso" ? "warn" : "bad";
         const pendencias = v.manutencoes_abertas + v.docs_vencidos + v.docs_breve + v.planos_vencidos + v.planos_breve;

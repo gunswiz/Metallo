@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { lerCategoriaVeiculo10h } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { definirCategoriaVeiculo10h } from "@/app/actions/frota-10a";
 import { notFound } from "next/navigation";
 import { can } from "@metallo/core";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
@@ -11,7 +13,7 @@ import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { conferirRecusaFrota10e, abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
 
-// Marco 10A — ficha do caminhão: tudo de um caminhão em uma tela.
+// Marco 10A — ficha do veículo: tudo de um veículo em uma tela.
 const fmt = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Fortaleza", day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" });
 const dia = (d: string) => d.split("-").reverse().join("/");
 const brl = (n: number | null) => n === null ? "—" : n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -41,16 +43,17 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const relatosDe = (id: number) => relatosLista.find(r => r.manutencao_id === id)?.relatos ?? [];
   const abas = [{ id: "manutencao", nome: "Manutenção" }, { id: "documentos", nome: "Documentos" }, { id: "planos", nome: "Preventivas" }, { id: "viagens", nome: "Viagens" }, { id: "checklists", nome: "Checklists" }, { id: "historico", nome: "Histórico" }, ...(podeCadastrar ? [{ id: "dados", nome: "Cadastro" }] : [])];
   const aba = query.checklist || query.mes ? "checklists" : abas.some(a => a.id === query.aba) ? query.aba : "manutencao";
+  const categoria = podeCadastrar && aba === "dados" ? await lerCategoriaVeiculo10h(id) : null;
 
   return <>
-    <PageHeader eyebrow="FROTA" title={`${v.nome} · ${v.placa}`} description={`${v.modelo ?? "Caminhão munck"}${v.ano ? ` · ${v.ano}` : ""} · ${v.km_atual.toLocaleString("pt-BR")} km`}
-      actions={<Link className="button ghost" href="/frota">← Todos os caminhões</Link>}/>
+    <PageHeader eyebrow="FROTA" title={`${v.nome} · ${v.placa}`} description={`${v.modelo ?? "Modelo não informado"}${v.ano ? ` · ${v.ano}` : ""} · ${v.km_atual.toLocaleString("pt-BR")} km`}
+      actions={<Link className="button ghost" href="/frota">← Todos os veículos</Link>}/>
     <SubNav profile={profile} grupo="frota"/>
     {query.ok && <div className="alert success" role="status">Salvo.</div>}
     <div className="fleet-detail-status"><span className={`status-badge ${v.ativo ? tom : ""}`}>{v.ativo ? ROTULO_SITUACAO_FROTA_10A[v.situacao] : "Desativado"}</span><span>{abertas.length} manutenções abertas</span><span>{ficha.documentos.length} documentos cadastrados</span></div>
-    <nav className="fleet-tabs" aria-label="Assuntos do caminhão">{abas.map(a => <Link key={a.id} href={`/frota/${v.id}?aba=${a.id}`} aria-current={aba === a.id ? "page" : undefined}>{a.nome}</Link>)}</nav>
+    <nav className="fleet-tabs" aria-label="Assuntos do veículo">{abas.map(a => <Link key={a.id} href={`/frota/${v.id}?aba=${a.id}`} aria-current={aba === a.id ? "page" : undefined}>{a.nome}</Link>)}</nav>
 
-    {v.situacao === "nao_liberado" && <section className="panel"><header className="panel-header"><div><h2>Caminhão não liberado</h2>
+    {v.situacao === "nao_liberado" && <section className="panel"><header className="panel-header"><div><h2>Veículo não liberado</h2>
       <p>O motorista não consegue registrar a saída. Abra ou conclua o conserto na aba Manutenção{podeCadastrar ? " ou libere hoje, com um motivo, se o engenheiro decidir que pode sair." : ". Só administrador e engenheiro liberam."}</p></div></header>
       {podeCadastrar && <div className="panel-body"><OperationForm action={liberarCaminhao10a} label="Liberar para hoje" pendingLabel="Liberando…">
         <input type="hidden" name="veiculoId" value={v.id}/><label className="full">Motivo da liberação<input name="motivo" required minLength={5} maxLength={300} placeholder="Ex.: pneu conferido pelo engenheiro, está bom"/></label>
@@ -72,7 +75,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
     {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Defeito → oficina → concluído, com o custo.</p></div></header><div className="panel-body">
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}
       {abertas.map(m => <article className="stock-card" key={m.id}>
-        <div className="training-head"><div><h3>{m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o caminhão" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
+        <div className="training-head"><div><h3>{m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o veículo" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
         {relatosDe(m.id).map((r, i) => <div className="muted" key={i} style={{ marginTop: 8 }}>
           <strong>{r.tipo === "chegada" ? "Relato na chegada" : "Relato no checklist"}</strong> · {fmt(r.quando)}{r.por ? ` · ${r.por}` : ""}
           {r.problema && <p>{r.problema}{r.foto && <> · <a href={`/frota/foto/${r.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>}
@@ -94,7 +97,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
         <input type="hidden" name="veiculoId" value={v.id}/>
         <label>Tipo<select name="tipo" defaultValue="corretiva"><option value="corretiva">Corretiva (defeito)</option><option value="preventiva">Preventiva (revisão)</option></select></label>
         <label className="full">O que precisa fazer<input name="descricao" required minLength={3} maxLength={300}/></label>
-        <label><input type="checkbox" name="bloquear"/> Deixar o caminhão não liberado até resolver</label>
+        <label><input type="checkbox" name="bloquear"/> Deixar o veículo não liberado até resolver</label>
       </OperationForm></details>
       <details className="mais-filtros"><summary>Manutenções encerradas</summary>
       {ficha.manutencoes.filter(m => m.status === "concluida" || m.status === "cancelada").length === 0 ? <p className="muted">Ainda não há manutenção concluída.</p> :
@@ -118,7 +121,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       </OperationForm></details>}
     </div></section>}
 
-    {aba === "planos" && <section className="panel" id="planos"><header className="panel-header"><div><h2>Manutenção preventiva</h2><p>O que cada caminhão precisa e quando. Por km, por dias ou os dois.</p></div></header><div className="panel-body">
+    {aba === "planos" && <section className="panel" id="planos"><header className="panel-header"><div><h2>Manutenção preventiva</h2><p>O que cada veículo precisa e quando. Por km, por dias ou os dois.</p></div></header><div className="panel-body">
       <ul className="frota-atencao">{ficha.planos.length === 0 ? <li className="muted">Nenhum plano cadastrado.</li> : ficha.planos.map(p => <li key={p.id} className={!p.ativo ? "" : p.situacao === "vencido" ? "bad" : p.situacao === "breve" ? "warn" : "good"}>
         <strong>{p.descricao}{p.ativo ? "" : " (desligado)"}</strong>
         <span>{p.cada_km ? `a cada ${p.cada_km.toLocaleString("pt-BR")} km (última com ${p.ultimo_km?.toLocaleString("pt-BR")} km)` : ""}{p.cada_km && p.cada_dias ? " · " : ""}{p.cada_dias ? `a cada ${p.cada_dias} dias (última em ${p.ultima_data ? dia(p.ultima_data) : "—"})` : ""} · {p.situacao === "vencido" ? "VENCIDA" : p.situacao === "breve" ? "chegando" : "em dia"}</span>
@@ -162,13 +165,21 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       <p className="muted">C = conforme · N = não conforme · NA = não se aplica. Resumo por código; abra cada checklist para conferir o texto e a criticidade da versão usada.</p>
     </div></details>}
 
-    {podeCadastrar && aba === "dados" && <section className="panel" id="dados"><header className="panel-header"><div><h2>Dados do caminhão</h2><p>Corrija o km se o painel mostrar outro valor. Desativar tira da lista do app.</p></div></header><div className="panel-body">
+    {categoria && <section className="panel"><header className="panel-header"><h2>Categoria do veículo</h2></header><div className="panel-body">
+      <p>Classifique o cadastro como Munck, Saveiro ou outra categoria. Esta escolha ainda não ativa um modelo de checklist; os modelos aguardam aprovação técnica.</p>
+      <OperationForm action={definirCategoriaVeiculo10h} label="Salvar categoria" pendingLabel="Salvando categoria…">
+        <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="base" value={categoria.revisao}/>
+        <label>Categoria<select name="categoria" defaultValue={categoria.categoria ?? ""}><option value="">Sem categoria definida</option>{categoria.categorias.map(c => <option key={c.codigo} value={c.codigo}>{c.nome}</option>)}</select></label>
+      </OperationForm>
+      {categoria.categoria && <Link href={`/frota/modelos?categoria=${categoria.categoria}`}>Ver rascunho desta categoria</Link>}
+    </div></section>}
+    {podeCadastrar && aba === "dados" && <section className="panel" id="dados"><header className="panel-header"><div><h2>Dados do veículo</h2><p>Corrija o km se o painel mostrar outro valor. Desativar tira da lista do app.</p></div></header><div className="panel-body">
       <OperationForm action={salvarCaminhao10a} label="Salvar dados" pendingLabel="Salvando…">
         <input type="hidden" name="id" value={v.id}/>
         <label>Nome<input name="nome" defaultValue={v.nome} required minLength={2} maxLength={60}/></label><label>Placa<input name="placa" defaultValue={v.placa} required maxLength={8}/></label>
         <label>Modelo<input name="modelo" defaultValue={v.modelo ?? ""} maxLength={60}/></label><label>Ano<input name="ano" type="number" min={1980} max={2100} defaultValue={v.ano ?? ""}/></label>
         <label>Km atual<input name="km" type="number" min={0} max={3000000} defaultValue={v.km_atual} required/></label>
-        <label><input type="checkbox" name="ativo" defaultChecked={v.ativo}/> Caminhão ativo</label>
+        <label><input type="checkbox" name="ativo" defaultChecked={v.ativo}/> Veículo ativo</label>
       </OperationForm></div></section>}
 
     {aba === "historico" && <section className="panel" id="historico"><header className="panel-header"><div><h2>Histórico</h2></div></header><div className="panel-body">

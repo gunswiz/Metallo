@@ -37,7 +37,7 @@ export const GRUPOS_MENU: GrupoMenu[] = [
     { href: "/contracheques", label: "Contracheques", capability: "admin:manage", icone: "contracheque", newFeature: true },
   ] },
   { id: "frota", label: "Frota", icone: "frota", itens: [
-    { href: "/frota", label: "Caminhões", capability: "equipment:write", icone: "frota", newFeature: true },
+    { href: "/frota", label: "Veículos", capability: "equipment:write", icone: "frota", newFeature: true },
     { href: "/frota/itens", label: "Itens do checklist", capability: "equipment:write", icone: "lista", newFeature: true },
     { href: "/frota/modelos", label: "Modelos por categoria", capability: "equipment:write", icone: "lista", newFeature: true },
   ] },

@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-03T01:03:30.718Z",
+  "at": "2026-11-03T07:11:40.287Z",
   "target": "metallo-teste",
   "checks": [
     {
@@ -32,6 +32,26 @@
     },
     {
       "name": "veículo fictício exclusivo criado",
+      "ok": true
+    },
+    {
+      "name": "cadastro começa sem categoria presumida",
+      "ok": true
+    },
+    {
+      "name": "funcionário não altera categoria",
+      "ok": true
+    },
+    {
+      "name": "Gestão classifica veículo como Saveiro",
+      "ok": true
+    },
+    {
+      "name": "reenvio de categoria não duplica histórico",
+      "ok": true
+    },
+    {
+      "name": "categoria rejeita edição antiga",
       "ok": true
     },
     {
@@ -68,6 +88,10 @@
     },
     {
       "name": "saída registrada",
+      "ok": true
+    },
+    {
+      "name": "categoria não muda durante viagem",
       "ok": true
     },
     {
@@ -147,12 +171,12 @@
       "ok": true
     }
   ],
-  "draftCategory": "ensaio_c5e2",
+  "draftCategory": "ensaio_b554",
   "fixture": {
-    "vehicle": 14,
-    "checklist": 15,
+    "vehicle": 15,
+    "checklist": 16,
     "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
   },
   "fixtureDeactivated": true,
-  "result": "36/36"
+  "result": "42/42"
 }

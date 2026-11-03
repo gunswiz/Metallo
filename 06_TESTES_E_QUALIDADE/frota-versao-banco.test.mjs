@@ -36,10 +36,31 @@ before(async()=>{
   await enviar(old.map(i=>({codigo:i.codigo,situacao:'C',obs:''})));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103002924_frota_versao_e_historico_10f.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103010238_frota_modelos_por_categoria_10g.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103071122_frota_categoria_veiculo_10h.sql',import.meta.url),'utf8'));
 });
 after(()=>db.close());
 
 const modelo = (categoria, revisao=null) => one('select public.admin_modelos_frota_10g($1,$2)',[categoria,revisao]);
+test('categoria não é presumida, guarda histórico e rejeita edição antiga e troca durante viagem',async()=>{
+  const ler=()=>one('select public.admin_categoria_veiculo_10h(1)');
+  const definir=(c,b)=>db.query('select public.admin_definir_categoria_10h(1,$1,$2)',[c,b]);
+  assert.equal((await ler()).categoria,null);
+  const checklistAntes=await itens();
+  await definir('saveiro',0);
+  await definir('saveiro',0);
+  assert.equal((await ler()).revisao,1,'reenvio não duplica alteração');
+  await assert.rejects(definir('munck',0),/categoria_revisao_conflito/);
+  await assert.rejects(definir('inexistente',1),/modelo_invalido/);
+  await db.exec("update private.frota_veiculos_10a set situacao='em_uso' where id=1");
+  await assert.rejects(definir('munck',1),/categoria_veiculo_em_uso/);
+  await db.exec("update private.frota_veiculos_10a set situacao='disponivel' where id=1; update public.profiles set role='employee'");
+  try { await assert.rejects(definir('munck',1),/gestao_required/); }
+  finally { await db.exec("update public.profiles set role='admin'"); }
+  await definir(null,1);
+  assert.equal((await ler()).categoria,null);
+  assert.equal(await one("select count(*)::integer from private.frota_eventos_10a where veiculo_id=1 and tipo='categoria'"),2);
+  assert.deepEqual(await itens(),checklistAntes,'classificação não ativa rascunho');
+});
 const salvarModelo = (m, key=randomUUID(), base=m.revisao) => one('select public.admin_salvar_modelo_frota_10g($1,$2,$3,$4,$5,$6)',[m.categoria,m.nome,base,JSON.stringify(m.itens),'Revisão fictícia de ensaio',key]);
 
 test('rascunhos por categoria preservam o checklist operacional e separam equipamentos',async()=>{

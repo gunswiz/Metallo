@@ -34,6 +34,12 @@ try {
   evidence.draftCategory=draft.p_categoria;
   const created = await rpc(gestor, "admin_save_veiculo_10a", cadastro);
   check("veículo fictício exclusivo criado", created.status === 200 && typeof created.data === "number"); vehicle = created.data;
+  const categoriaArgs={p_veiculo:vehicle,p_categoria:'saveiro',p_base:0};
+  check('cadastro começa sem categoria presumida',(await rpc(gestor,'admin_categoria_veiculo_10h',{p_veiculo:vehicle})).data?.categoria===null);
+  check('funcionário não altera categoria',(await rpc(robo,'admin_definir_categoria_10h',categoriaArgs)).status>=400);
+  check('Gestão classifica veículo como Saveiro',(await rpc(gestor,'admin_definir_categoria_10h',categoriaArgs)).status<300);
+  check('reenvio de categoria não duplica histórico',(await rpc(gestor,'admin_definir_categoria_10h',categoriaArgs)).status<300&&(await rpc(gestor,'admin_categoria_veiculo_10h',{p_veiculo:vehicle})).data?.revisao===1);
+  check('categoria rejeita edição antiga',(await rpc(gestor,'admin_definir_categoria_10h',{...categoriaArgs,p_categoria:'munck'})).data?.message==='categoria_revisao_conflito');
   const items = (await rpc(robo, "my_frota_itens_10f")).data;
   const clean = { p_veiculo: vehicle, p_local: "Prova R5", p_obs: "Fictício", p_respostas: items.map(i => ({ codigo: i.codigo, situacao: "C", obs: "", versao: i.versao, nome: "Texto do cliente não deve substituir o modelo" })), p_ciente: true, p_key: randomUUID() };
   check("itens recebidos têm uma versão íntegra", items.length > 0 && items.every(i => /^[a-f0-9]{64}$/.test(i.versao) && i.versao === items[0].versao));
@@ -50,6 +56,7 @@ try {
   const start = { p_veiculo: vehicle, p_destino: "Obra fictícia R5", p_acompanhantes: "", p_km: 100, p_obs: "", p_key: randomUUID() };
   const trip = await rpc(robo, "create_saida_10a", start);
   check("saída registrada", trip.status === 200);
+  check('categoria não muda durante viagem',(await rpc(gestor,'admin_definir_categoria_10h',{...categoriaArgs,p_categoria:'munck',p_base:1})).data?.message==='categoria_veiculo_em_uso');
   check("saída repetida mantém viagem", (await rpc(robo, "create_saida_10a", start)).data === trip.data);
   check("saída alterada rejeitada", (await rpc(robo, "create_saida_10a", { ...start, p_km: 101 })).data?.message === "idempotency_conflict");
   const arrival = { p_viagem: trip.data, p_km: 105, p_problema: "", p_obs: "", p_key: randomUUID() };
