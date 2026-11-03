@@ -20,6 +20,10 @@ const suffix = randomUUID().replaceAll("-", "").slice(0, 4).toUpperCase();
 const cadastro = { p_id: null, p_placa: `R5A${suffix}`, p_nome: `Auditoria R5 ${suffix}`, p_modelo: "Fictício", p_ano: 2020, p_km: 100, p_ativo: true };
 let vehicle;
 try {
+  const aprovar={p_categoria:'saveiro',p_revisao:1,p_parecer:'Ensaio negativo, não aprovar',p_ciente:true};
+  check('administrador sem perfil de engenheiro não aprova',(await rpc(gestor,'admin_aprovar_modelo_10i',aprovar)).data?.message==='engenheiro_required');
+  check('funcionário não aprova modelo',(await rpc(robo,'admin_aprovar_modelo_10i',aprovar)).data?.message==='engenheiro_required');
+  check('Gestão consulta histórico de aprovação',(await rpc(gestor,'admin_aprovacoes_modelo_10i',{p_categoria:'saveiro'})).status===200);
   const draft = {p_categoria:`ensaio_${suffix.toLowerCase()}`,p_nome:`Ensaio fictício ${suffix}`,p_base:0,p_itens:[{codigo:1,nome:'Pergunta fictícia',etapa:'Segurança',critico:true,permite_na:false,exige_foto:false}],p_motivo:'Prova automática 10G — sem uso operacional',p_key:randomUUID()};
   check('funcionário não edita modelos', (await rpc(robo,'admin_salvar_modelo_frota_10g',draft)).status>=400);
   check('funcionário não consulta configuração da Gestão', (await rpc(robo,'admin_modelos_frota_10g')).status>=400);

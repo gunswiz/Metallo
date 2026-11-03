@@ -37,6 +37,7 @@ before(async()=>{
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103002924_frota_versao_e_historico_10f.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103010238_frota_modelos_por_categoria_10g.sql',import.meta.url),'utf8'));
   await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103071122_frota_categoria_veiculo_10h.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../04_BANCO_E_SUPABASE/laboratorio-marco-1a/supabase/migrations/20261103072356_frota_aprovacao_modelos_10i.sql',import.meta.url),'utf8'));
 });
 after(()=>db.close());
 
@@ -63,9 +64,31 @@ test('categoria não é presumida, guarda histórico e rejeita edição antiga e
 });
 const salvarModelo = (m, key=randomUUID(), base=m.revisao) => one('select public.admin_salvar_modelo_frota_10g($1,$2,$3,$4,$5,$6)',[m.categoria,m.nome,base,JSON.stringify(m.itens),'Revisão fictícia de ensaio',key]);
 
+test('aprovação exige engenheiro e ciência; preserva parecer e só aprova revisão atual',async()=>{
+  const aprovar=(r,p='Parecer fictício de ensaio',c=true)=>db.query("select public.admin_aprovar_modelo_10i('munck',$1,$2,$3)",[r,p,c]);
+  await assert.rejects(aprovar(2),/engenheiro_required/);
+  await db.exec("update public.profiles set role='engineer'");
+  try {
+    await assert.rejects(aprovar(1),/modelo_revisao_conflito/);
+    await assert.rejects(aprovar(2,'Parecer fictício',false),/parecer_obrigatorio/);
+    const operacional=await itens();
+    await aprovar(2); await aprovar(2);
+    await assert.rejects(aprovar(2,'Outro parecer fictício'),/aprovacao_ja_registrada/);
+    const m=(await modelo('munck')).modelo;
+    await salvarModelo(m);
+    assert.equal((await one("select public.admin_aprovacoes_modelo_10i('munck')")).length,1,'novo rascunho não substitui aprovação');
+    await aprovar(3);
+    const h=await one("select public.admin_aprovacoes_modelo_10i('munck')");
+    assert.deepEqual(h.map(a=>a.revisao),[3,2]);
+    await assert.rejects(db.exec("update private.frota_aprovacoes_10i set parecer='Alteração do histórico'"),/modelo_historico_imutavel/);
+    assert.deepEqual(await itens(),operacional,'aprovação documental não ativa modelo');
+    assert.equal(await one("select has_function_privilege('anon','public.admin_aprovar_modelo_10i(text,integer,text,boolean)','execute')"),false);
+  } finally { await db.exec("update public.profiles set role='admin'"); }
+});
+
 test('rascunhos por categoria preservam o checklist operacional e separam equipamentos',async()=>{
   const munck=await modelo('munck'), saveiro=await modelo('saveiro');
-  assert.equal(munck.atual,2);
+  assert.equal(munck.atual,3);
   assert.equal(saveiro.atual,1);
   assert.ok(munck.modelo.itens.some(i=>i.etapa==='Estabilizadores'));
   assert.ok(!saveiro.modelo.itens.some(i=>['Estabilizadores','Içamento','Hidráulica'].includes(i.etapa)));

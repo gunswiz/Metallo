@@ -8,6 +8,9 @@ import { createClient } from "@/05_ACESSO_A_DADOS/Supabase/server";
 export type OperationState = { error?: string; completedKey?: string; destination?: string };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const errors: Array<[string, string]> = [
+  ["engenheiro_required", "A aprovação técnica exige um perfil ativo de engenheiro."],
+  ["parecer_obrigatorio", "Registre o parecer e confirme a revisão das perguntas e regras."],
+  ["aprovacao_ja_registrada", "Esta revisão já tem uma aprovação registrada. Confira o histórico; o parecer original será preservado."],
   ["categoria_revisao_conflito", "A categoria foi alterada por outra pessoa. Atualize a ficha e confira a classificação atual antes de salvar."],
   ["categoria_veiculo_em_uso", "Conclua a viagem antes de alterar a categoria do veículo."],
   ["modelo_revisao_conflito", "Outra revisão já foi salva. Os seus campos foram mantidos; confira a revisão atual antes de reaplicar as mudanças."],

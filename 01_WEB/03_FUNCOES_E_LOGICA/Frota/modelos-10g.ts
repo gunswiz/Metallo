@@ -6,6 +6,8 @@ export const itemModelo10g = z.object({ codigo: z.number().int().min(1).max(99),
 export const itensModelo10g = z.array(itemModelo10g).min(1, "Inclua ao menos uma pergunta.").max(60).refine(itens => new Set(itens.map(i => i.codigo)).size === itens.length, "Há códigos de perguntas repetidos.");
 export type ItemModelo10g = z.infer<typeof itemModelo10g>;
 export const categoriaModelo10g = z.string().regex(/^[a-z][a-z0-9_]{1,29}$/, "Use de 2 a 30 letras minúsculas, números ou sublinhado no código.");
+export const aprovacaoModeloForm10i = z.object({categoria:categoriaModelo10g,revisao:z.coerce.number().int().positive(),parecer:z.string().trim().min(10).max(600),ciente:z.literal("on",{error:"Confirme a revisão das perguntas e regras."})});
+export const aprovacoesModelo10i = z.array(z.object({revisao:z.number().int(),em:z.string(),parecer:z.string(),autor:z.string()}));
 export const categoriaVeiculoForm10h = z.object({ veiculoId: z.coerce.number().int().positive(), categoria: z.union([categoriaModelo10g,z.literal("")]), base: z.coerce.number().int().min(0) });
 export const categoriaVeiculo10h = z.object({ categoria: categoriaModelo10g.nullable(), revisao: z.number().int().nonnegative(), categorias: z.array(z.object({ codigo: categoriaModelo10g, nome: z.string() })) });
 export const modeloForm10g = z.object({ categoria: categoriaModelo10g, nome: texto(2, 60), base: z.coerce.number().int().min(0), motivo: texto(5, 300), idempotencyKey: z.uuid(),

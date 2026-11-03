@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
+import { lerAprovacoesModelo10i } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { aprovarModeloFrota10i } from "@/app/actions/frota-10a";
 import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/02_COMPONENTES_VISUAIS/page-header";
@@ -9,7 +12,7 @@ import { categoriaModelo10g, ETAPAS_MODELO_10G } from "@/03_FUNCOES_E_LOGICA/Fro
 import { lerModelosFrota10g, requireFrota10a } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { salvarModeloFrota10g } from "@/app/actions/frota-10a";
 
-export default async function ModelosFrotaPage({ searchParams }: { searchParams: Promise<{ categoria?: string; revisao?: string; nova?: string }> }) {
+export default async function ModelosFrotaPage({ searchParams }: { searchParams: Promise<{ categoria?: string; revisao?: string; nova?: string; conferir?:string }> }) {
   const profile = await requireCapability("equipment:write");
   requireFrota10a();
   const query = await searchParams;
@@ -19,18 +22,30 @@ export default async function ModelosFrotaPage({ searchParams }: { searchParams:
   const edita = profile.role === "admin" || profile.role === "engineer";
   const nova = query.nova === "1" && edita;
   const m = data.modelo;
+  const aprovacoes=await lerAprovacoesModelo10i(m.categoria);
+  const aprovada=aprovacoes.find(a=>a.revisao===m.revisao);
+  const conferir=query.conferir==="1";
   return <>
     <PageHeader eyebrow="FROTA · CONFIGURAÇÃO" title="Modelos por categoria" description="Prepare as perguntas de cada tipo de veículo e acompanhe as revisões técnicas."/>
     <SubNav profile={profile} grupo="frota"/>
-    <p className="alert" role="note"><strong>Rascunhos — aguardam validação do engenheiro.</strong> Nenhum destes modelos está ativo no portal. Salvar conserva a revisão anterior e não altera inspeções, veículos ou autorizações de condutores.</p>
+    <p className="alert" role="note"><strong>Preparação e revisão técnica.</strong> Nenhum destes modelos está ativo no portal. Salvar ou aprovar conserva o histórico e não altera inspeções, veículos ou autorizações de condutores. A ativação operacional será uma etapa separada.</p>
     <nav className="filter-row" aria-label="Categorias de veículos">{data.categorias.map(c => <Link key={c.codigo} href={`/frota/modelos?categoria=${c.codigo}`} className="button secondary" aria-current={!nova && c.codigo === m.categoria ? "page" : undefined}>{c.nome}</Link>)}{edita && <Link className="button secondary" href="/frota/modelos?nova=1">Nova categoria</Link>}</nav>
     {nova ? <section className="panel"><header className="panel-header"><h2>Nova categoria em rascunho</h2></header><div className="panel-body"><EditorModeloFrota categoria="" nome="" revisao={0} actorId={profile.id} keyId={randomUUID()} action={salvarModeloFrota10g} itens={[{ codigo: 1, nome: "", etapa: "Segurança", critico: true, permite_na: false, exige_foto: false }]}/></div></section> : <>
       <section className="panel"><header className="panel-header"><div><h2>{m.nome} · revisão {m.revisao}</h2><p>{m.autor} · {new Date(m.em).toLocaleString("pt-BR", { timeZone: "America/Fortaleza" })}</p></div></header><div className="panel-body">
         <p>{m.motivo}</p><p className="muted">Bloqueio, “Não se aplica” e foto obrigatória são propostas a revisar. Uma resposta no checklist não substitui CNH, capacitação ou autorização para dirigir.</p>
-        {edita && m.revisao === data.atual ? <EditorModeloFrota key={`${m.categoria}:${m.revisao}`} categoria={m.categoria} nome={m.nome} revisao={m.revisao} itens={m.itens} actorId={profile.id} keyId={randomUUID()} action={salvarModeloFrota10g}/> : <>
+        <p role="status"><strong>{aprovada ? (aprovacoes[0].revisao===m.revisao ? "Aprovada tecnicamente — ainda não ativa no portal" : "Aprovação substituída por revisão posterior") : "Rascunho — sem aprovação técnica"}</strong></p>
+        {aprovada && <p>{aprovada.autor} · {new Date(aprovada.em).toLocaleString("pt-BR",{timeZone:"America/Fortaleza"})}<br/>{aprovada.parecer}</p>}
+        {!conferir && <p><Link className="button secondary" href={`/frota/modelos?categoria=${m.categoria}&revisao=${m.revisao}&conferir=1`}>Conferir revisão completa</Link></p>}
+        {edita && m.revisao === data.atual && !conferir ? <EditorModeloFrota key={`${m.categoria}:${m.revisao}`} categoria={m.categoria} nome={m.nome} revisao={m.revisao} itens={m.itens} actorId={profile.id} keyId={randomUUID()} action={salvarModeloFrota10g}/> : <>
           {m.revisao !== data.atual && <p className="alert">Revisão histórica, somente leitura. <Link href={`/frota/modelos?categoria=${m.categoria}`}>Abrir revisão atual</Link></p>}
           {ETAPAS_MODELO_10G.filter(etapa => m.itens.some(i => i.etapa === etapa)).map(etapa => <section key={etapa}><h3>{etapa}</h3><ul>{m.itens.filter(i => i.etapa === etapa).map(i => <li key={i.codigo}>{i.nome} · {i.critico ? "bloqueio proposto" : "sem bloqueio proposto"}{i.permite_na ? " · aceita Não se aplica" : " · exige resposta"}{i.exige_foto ? " · foto obrigatória se não conforme" : ""}</li>)}</ul></section>)}
         </>}
+        {conferir && !aprovada && m.revisao===data.atual && (profile.role==="engineer" ? <OperationForm action={aprovarModeloFrota10i} label="Registrar aprovação técnica" pendingLabel="Registrando aprovação…">
+          <input type="hidden" name="categoria" value={m.categoria}/><input type="hidden" name="revisao" value={m.revisao}/>
+          <label className="full">Parecer técnico<textarea name="parecer" required minLength={10} maxLength={600} rows={3}/></label>
+          <label className="full"><input name="ciente" type="checkbox" required/> Revisei as perguntas, a criticidade, a aplicabilidade e as exigências de foto desta revisão. Esta aprovação não ativa o modelo no portal.</label>
+        </OperationForm> : <p>A aprovação técnica deve ser registrada por um perfil ativo de engenheiro.</p>)}
+        {conferir && edita && m.revisao===data.atual && <p><Link href={`/frota/modelos?categoria=${m.categoria}`}>Preparar nova revisão</Link></p>}
       </div></section>
       <section className="panel"><header className="panel-header"><h2>Histórico de revisões</h2></header><div className="panel-body"><ul className="frota-atencao">{data.historico.map(h => <li key={h.revisao}><Link href={`/frota/modelos?categoria=${m.categoria}&revisao=${h.revisao}`}>Revisão {h.revisao}</Link><span>{h.motivo}</span></li>)}</ul></div></section>
     </>}

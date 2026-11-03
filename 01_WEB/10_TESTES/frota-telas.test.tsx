@@ -12,6 +12,8 @@ vi.mock("@/09_CONFIGURACOES/ambiente-teste-online", () => ({ recursosNovosLibera
 vi.mock("@/03_FUNCOES_E_LOGICA/executarOperacaoValidada", () => ({ executeValidated: vi.fn(async () => ({ status: "success" })) }));
 vi.mock("@/02_COMPONENTES_VISUAIS/formulario-operacao", () => ({ OperationForm: ({ children, label }: { children: ReactNode; label: string }) => <form>{children}<button>{label}</button></form> }));
 vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
+  lerModelosFrota10g: vi.fn(async()=>({atual:1,categorias:[{codigo:"saveiro",nome:"Saveiro"}],modelo:{categoria:"saveiro",nome:"Saveiro",revisao:1,itens:[{codigo:1,nome:"Freios",etapa:"Rodagem",critico:true,permite_na:false,exige_foto:true}],motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z",autor:"Autor fictício"},historico:[{revisao:1,motivo:"Rascunho fictício",em:"2026-11-03T10:00:00Z"}]})),
+  lerAprovacoesModelo10i: vi.fn(async()=>[]),
   lerCategoriaVeiculo10h: vi.fn(async()=>({categoria:null,revisao:0,categorias:[{codigo:"saveiro",nome:"Saveiro / veículo leve"}]})),
   lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
   lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
@@ -23,10 +25,25 @@ vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
   ]), requireFrota10a: vi.fn(),
 }));
 import FichaFrotaPage from "@/app/(02_SISTEMA)/frota/[id]/page";
+import ModelosFrotaPage from "@/app/(02_SISTEMA)/frota/modelos/page";
 import FrotaPage from "@/app/(02_SISTEMA)/frota/page";
 import ItensFrotaPage from "@/app/(02_SISTEMA)/frota/itens/page";
 import { lerFichaFrota10a, lerChecklistFrota10a, lerRecusasFrota10e } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { executeValidated } from "@/03_FUNCOES_E_LOGICA/executarOperacaoValidada";
+
+it("aprovação exige conferência completa e só oferece envio ao engenheiro",async()=>{
+  const query={categoria:"saveiro",conferir:"1"};
+  const {unmount}=render(await ModelosFrotaPage({searchParams:Promise.resolve(query)}));
+  expect(screen.queryByRole("button",{name:"Registrar aprovação técnica"})).not.toBeInTheDocument();
+  expect(screen.getByText(/A aprovação técnica deve ser registrada/)).toBeInTheDocument();
+  unmount(); estado.role="engineer";
+  render(await ModelosFrotaPage({searchParams:Promise.resolve(query)}));
+  expect(screen.getByRole("button",{name:"Registrar aprovação técnica"})).toBeInTheDocument();
+  expect(screen.getByLabelText("Parecer técnico")).toBeRequired();
+  expect(screen.getByRole("checkbox",{name:/Revisei as perguntas/})).toBeRequired();
+  expect(screen.getByText(/Freios · bloqueio proposto/)).toBeInTheDocument();
+  expect(screen.queryByRole("button",{name:"Adicionar pergunta"})).not.toBeInTheDocument();
+});
 
 it("cadastro permite classificar como Saveiro sem ativar modelo e usa Veículos na navegação",async()=>{
   render(await FichaFrotaPage({params:Promise.resolve({id:"1"}),searchParams:Promise.resolve({aba:"dados"})}));
@@ -104,10 +121,13 @@ it("os alertas levam ao assunto correspondente e o cadastro só abre quando soli
   const { unmount } = render(await FrotaPage({ searchParams: Promise.resolve({}) }));
   expect(screen.getByRole("link", { name: /Seguro vencido/ })).toHaveAttribute("href", "/frota/1?aba=documentos");
   expect(screen.getByRole("link", { name: /Troca de óleo/ })).toHaveAttribute("href", "/frota/2?aba=planos");
-  expect(screen.getByText("Novo veículo").closest("details")).not.toHaveAttribute("open");
+  expect(screen.queryByRole("button", { name: "Cadastrar" })).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "+ Cadastrar veículo" })).toHaveAttribute("href","/frota?novo=1");
   unmount();
   render(await FrotaPage({ searchParams: Promise.resolve({ novo: "1" }) }));
-  expect(screen.getByText("Novo veículo").closest("details")).toHaveAttribute("open");
+  expect(screen.getByRole("button", { name: "Cadastrar" })).toBeVisible();
+  expect(screen.getByRole("link",{name:"Cancelar cadastro"})).toHaveAttribute("href","/frota");
+  expect(screen.getByRole("heading",{name:"Cadastrar veículo"}).compareDocumentPosition(screen.getByRole("heading",{name:"Atenção na frota"})) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });
 
 it("a configuração de cada item começa recolhida, mas mantém os campos editáveis", async () => {

@@ -1,7 +1,19 @@
 {
-  "at": "2026-11-03T07:11:40.287Z",
+  "at": "2026-11-03T07:24:20.369Z",
   "target": "metallo-teste",
   "checks": [
+    {
+      "name": "administrador sem perfil de engenheiro não aprova",
+      "ok": true
+    },
+    {
+      "name": "funcionário não aprova modelo",
+      "ok": true
+    },
+    {
+      "name": "Gestão consulta histórico de aprovação",
+      "ok": true
+    },
     {
       "name": "funcionário não edita modelos",
       "ok": true
@@ -171,12 +183,12 @@
       "ok": true
     }
   ],
-  "draftCategory": "ensaio_b554",
+  "draftCategory": "ensaio_440c",
   "fixture": {
-    "vehicle": 15,
-    "checklist": 16,
+    "vehicle": 16,
+    "checklist": 17,
     "version": "22af281b777449d192f275dece7f00d36494026171abc32b708fc76f65c41617"
   },
   "fixtureDeactivated": true,
-  "result": "42/42"
+  "result": "45/45"
 }
