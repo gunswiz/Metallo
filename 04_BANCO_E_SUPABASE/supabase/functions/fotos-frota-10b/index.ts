@@ -112,8 +112,9 @@ async function avisar(token: string, veiculoId: unknown) {
 
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin") ?? "";
-  const cors: Record<string, string> = origin === COLABORADOR ? { "Access-Control-Allow-Origin": origin, "Vary": "Origin" } : {};
-  if (req.method === "OPTIONS") return new Response(null, { status: origin === COLABORADOR ? 204 : 403, headers: { ...cors,
+  const origemPermitida = origin === COLABORADOR || origin === GESTAO;
+  const cors: Record<string, string> = origemPermitida ? { "Access-Control-Allow-Origin": origin, "Vary": "Origin" } : {};
+  if (req.method === "OPTIONS") return new Response(null, { status: origemPermitida ? 204 : 403, headers: { ...cors,
     "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "authorization, content-type, apikey, x-client-info" } });
   const answer = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "no-store" } });
   try {

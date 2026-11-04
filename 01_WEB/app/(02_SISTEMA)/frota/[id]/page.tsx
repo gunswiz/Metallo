@@ -1,3 +1,4 @@
+import { ComprovanteOs } from "@/02_COMPONENTES_VISUAIS/Frota/comprovante-os";
 import Link from "next/link";
 import { lerCategoriaVeiculo10h } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { definirCategoriaVeiculo10h } from "@/app/actions/frota-10a";
@@ -20,7 +21,7 @@ const brl = (n: number | null) => n === null ? "—" : n.toLocaleString("pt-BR",
 const hojeFortaleza = () => new Date(new Date().toLocaleString("en-US", { timeZone: "America/Fortaleza" }));
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-export default async function FichaFrotaPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; comprovante?: string; checklist?: string; mes?: string; aba?: string }> }) {
+export default async function FichaFrotaPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; checklist?: string; mes?: string; aba?: string }> }) {
   const profile = await requireCapability("equipment:write");
   if (!recursosNovosLiberados(getSupabaseEnv().url)) notFound();
   const id = Number((await params).id), query = await searchParams;
@@ -63,11 +64,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
     const fotos = comprovantes?.filter(f => f.ordem === ordem);
     return <details className="mais-filtros"><summary>Comprovantes do reparo · OS {ordem}{fotos ? ` (${fotos.length})` : ""}</summary>
       {fotos?.map(f => <p key={f.foto}><a href={`/frota/foto/${f.foto}`} target="_blank" rel="noreferrer">Abrir foto do reparo</a> · {fmt(f.em)} · {f.autor ?? "Responsável sem nome disponível"}</p>)}
-      {fotos && !cancelada && <form action={`/frota/${id}/comprovante`} method="post" encType="multipart/form-data">
-        <input type="hidden" name="ordem_id" value={ordem}/>
-        <label>Foto do reparo da OS {ordem} (JPEG ou PNG, até 6 MB)<input name="arquivo" type="file" accept="image/jpeg,image/png" required/></label>
-        <button type="submit" className="button">Anexar à OS {ordem}</button>
-      </form>}
+      {fotos && !cancelada && <ComprovanteOs ordem={ordem} veiculo={id}/>}
     </details>;
   }
   return <>
@@ -99,8 +96,6 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
 
     {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Acompanhe cada ordem de serviço desde a abertura até o encerramento.</p></div></header><div className="panel-body">
       {comprovantes === null && <p role="alert">Não foi possível consultar os comprovantes. Atualize a ficha.</p>}
-      {query.comprovante === "salvo" && <p role="status">Confira a foto nos comprovantes da ordem de serviço.</p>}
-      {query.comprovante && query.comprovante !== "salvo" && <p role="alert">{query.comprovante === "invalido" ? "Escolha uma imagem JPEG ou PNG." : query.comprovante === "tamanho" ? "Escolha uma foto de até 6 MB." : "Não foi possível confirmar o anexo. Confira os comprovantes da ordem antes de reenviar."}</p>}
       {relatosLista === null && <p role="alert">Não foi possível consultar os relatos do motorista. Atualize a página para tentar novamente.</p>}
       <details className="mais-filtros"><summary>Conclusões de serviço e liberações do veículo</summary>
         <p>Decisões entre os 40 eventos mais recentes do veículo. A situação atual aparece no topo da ficha.</p>

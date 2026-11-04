@@ -5,7 +5,7 @@ import type { SessionProfile } from "@metallo/types";
 import { relatosGestao10c, type FichaGestao10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 
 const estado = vi.hoisted(() => ({ role: "admin", novo: true }));
-vi.mock("next/navigation", () => ({ usePathname: () => "/frota/1", notFound: () => { throw new Error("404"); } }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/frota/1", useRouter: () => ({ refresh: vi.fn() }), notFound: () => { throw new Error("404"); } }));
 vi.mock("@/03_FUNCOES_E_LOGICA/Autenticacao/session", () => ({ requireCapability: vi.fn(async () => ({ id: "gestor", fullName: "Gestor Teste", role: estado.role, active: true, operationPermissions: ["equipment:write"] } as SessionProfile)) }));
 vi.mock("@/09_CONFIGURACOES/ambienteSupabase", () => ({ getSupabaseEnv: () => ({ url: "https://teste.supabase.co" }) }));
 vi.mock("@/09_CONFIGURACOES/ambiente-teste-online", () => ({ recursosNovosLiberados: () => estado.novo }));
