@@ -20,7 +20,7 @@ const comoPessoa = (token: string) => createClient(URL_SB, ANON, { auth: { persi
   global: { headers: { Authorization: `Bearer ${token}` } } });
 
 class Falha extends Error { constructor(public status: number, public code: string) { super(code); } }
-const CONHECIDOS = ["portal_access_denied", "veiculo_invalido", "muitos_envios", "arquivo_indisponivel"];
+const CONHECIDOS = ["portal_access_denied", "veiculo_invalido", "muitos_envios", "arquivo_indisponivel", "ordem_indisponivel", "gestao_required"];
 function erroBanco(message: string | undefined) {
   const c = CONHECIDOS.find(k => (message ?? "").includes(k));
   return new Falha(c === "portal_access_denied" || c === "arquivo_indisponivel" ? 403 : 400, c ?? "falha");
@@ -32,7 +32,7 @@ function tipoReal(b: Uint8Array): "image/jpeg" | "image/png" | null {
 }
 async function sha256(b: Uint8Array) { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", b))].map(x => x.toString(16).padStart(2, "0")).join(""); }
 
-async function enviar(token: string, form: FormData) {
+async function enviar(token: string, form: FormData, reparo = false) {
   const veiculo = Number(form.get("veiculo_id"));
   const f = form.get("arquivo");
   if (!Number.isInteger(veiculo) || veiculo <= 0) throw new Falha(400, "pedido_invalido");
@@ -41,17 +41,32 @@ async function enviar(token: string, form: FormData) {
   const bytes = new Uint8Array(await f.arrayBuffer());
   const mime = tipoReal(bytes);
   if (!mime) throw new Falha(415, "tipo_arquivo");
-  const ini = await comoPessoa(token).rpc("iniciar_foto_frota_10b", { p_veiculo: veiculo });
-  if (ini.error) throw erroBanco(ini.error.message);
-  const id = String(ini.data);
+  const hash = await sha256(bytes);
+  const cliente = comoPessoa(token);
+  let id: string;
+  if (reparo) {
+    const ordem = Number(form.get("ordem_id"));
+    if (!Number.isSafeInteger(ordem) || ordem <= 0) throw new Falha(400, "pedido_invalido");
+    const r = await cliente.rpc("admin_reservar_foto_os_10m", { p_veiculo: veiculo, p_ordem: ordem, p_sha: hash });
+    if (r.error) throw erroBanco(r.error.message);
+    id = String(r.data?.[0]?.foto_id);
+    if (!UUID.test(id)) throw new Falha(500, "falha");
+    if (r.data[0].pronta) return { ok: true, id };
+  } else {
+    const ini = await cliente.rpc("iniciar_foto_frota_10b", { p_veiculo: veiculo });
+    if (ini.error) throw erroBanco(ini.error.message);
+    id = String(ini.data);
+  }
   if (!UUID.test(id)) throw new Falha(500, "falha");
   const caminho = `${veiculo}/${id}.${mime === "image/png" ? "png" : "jpg"}`;
   const up = await servidor.storage.from(BALDE).upload(caminho, bytes, { contentType: mime, upsert: false, cacheControl: "0" });
-  if (up.error) throw new Falha(502, "falha_armazenar");
+  // Uma reserva de reparo é exclusiva do autor, OS e hash. Um replay pode encontrar o objeto já gravado.
+  if (up.error && !(reparo && (up.error as { statusCode?: string }).statusCode === "409") &&
+      !(reparo && up.error.message === "The resource already exists")) throw new Falha(502, "falha_armazenar");
   try {
-    await sql.unsafe(`select private.concluir_foto_frota_10b($1::text::uuid, $2, $3, $4::text::int, $5)`, [id, caminho, mime, String(bytes.length), await sha256(bytes)]);
+    await sql.unsafe(`select private.concluir_foto_frota_10b($1::text::uuid, $2, $3, $4::text::int, $5)`, [id, caminho, mime, String(bytes.length), hash]);
   } catch {
-    await servidor.storage.from(BALDE).remove([caminho]).catch(() => undefined);
+    if (!reparo) await servidor.storage.from(BALDE).remove([caminho]).catch(() => undefined);
     throw new Falha(500, "falha");
   }
   return { ok: true, id };
@@ -110,6 +125,7 @@ Deno.serve(async (req) => {
     if ((req.headers.get("content-type") ?? "").startsWith("multipart/form-data")) {
       const form = await req.formData();
       if (String(form.get("acao") ?? "") === "enviar" && origin === COLABORADOR) return answer(await enviar(token, form), 201);
+      if (form.get("acao") === "comprovar_reparo" && origin === GESTAO) return answer(await enviar(token, form, true), 201);
       throw new Falha(400, "pedido_invalido");
     }
     const body = await req.json().catch(() => ({})) as { acao?: string; foto_id?: string; veiculo_id?: number };

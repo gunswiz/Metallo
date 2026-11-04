@@ -8,7 +8,7 @@ import { SubNav } from "@/02_COMPONENTES_VISUAIS/sidebar-nav";
 import { OperationForm } from "@/02_COMPONENTES_VISUAIS/formulario-operacao";
 import { requireCapability } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { ROTULO_DOCUMENTO_10A, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, ROTULO_STATUS_MANUTENCAO_10A } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
-import { lerRecusasFrota10e, lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a, lerRelatosFrota10c } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
+import { lerComprovantesOs10m, lerRecusasFrota10e, lerChecklistFrota10a, lerFichaFrota10a, lerFotosChegadaFrota10b, lerItensFrota10a, lerMesFrota10a, lerRelatosFrota10c } from "@/05_ACESSO_A_DADOS/Supabase/frota-10a";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { conferirRecusaFrota10e, abrirManutencao10a, cancelarManutencao10a, concluirManutencao10a, concluirPlano10a, enviarOficina10a, liberarCaminhao10a, salvarCaminhao10a, salvarDocumento10a, salvarPlano10a } from "@/app/actions/frota-10a";
@@ -20,7 +20,7 @@ const brl = (n: number | null) => n === null ? "—" : n.toLocaleString("pt-BR",
 const hojeFortaleza = () => new Date(new Date().toLocaleString("en-US", { timeZone: "America/Fortaleza" }));
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-export default async function FichaFrotaPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; checklist?: string; mes?: string; aba?: string }> }) {
+export default async function FichaFrotaPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; comprovante?: string; checklist?: string; mes?: string; aba?: string }> }) {
   const profile = await requireCapability("equipment:write");
   if (!recursosNovosLiberados(getSupabaseEnv().url)) notFound();
   const id = Number((await params).id), query = await searchParams;
@@ -58,6 +58,18 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const aba = query.checklist || query.mes ? "checklists" : abas.some(a => a.id === query.aba) ? query.aba : "manutencao";
   const categoria = podeCadastrar && aba === "dados" ? await lerCategoriaVeiculo10h(id) : null;
 
+  const comprovantes = aba === "manutencao" ? await lerComprovantesOs10m(id).catch(() => null) : [];
+  function comprovantesDaOrdem(ordem: number, cancelada = false) {
+    const fotos = comprovantes?.filter(f => f.ordem === ordem);
+    return <details className="mais-filtros"><summary>Comprovantes do reparo · OS {ordem}{fotos ? ` (${fotos.length})` : ""}</summary>
+      {fotos?.map(f => <p key={f.foto}><a href={`/frota/foto/${f.foto}`} target="_blank" rel="noreferrer">Abrir foto do reparo</a> · {fmt(f.em)} · {f.autor ?? "Responsável sem nome disponível"}</p>)}
+      {fotos && !cancelada && <form action={`/frota/${id}/comprovante`} method="post" encType="multipart/form-data">
+        <input type="hidden" name="ordem_id" value={ordem}/>
+        <label>Foto do reparo da OS {ordem} (JPEG ou PNG, até 6 MB)<input name="arquivo" type="file" accept="image/jpeg,image/png" required/></label>
+        <button type="submit" className="button">Anexar à OS {ordem}</button>
+      </form>}
+    </details>;
+  }
   return <>
     <PageHeader eyebrow="FROTA" title={`${v.nome} · ${v.placa}`} description={`${v.modelo ?? "Modelo não informado"}${v.ano ? ` · ${v.ano}` : ""} · ${v.km_atual.toLocaleString("pt-BR")} km`}
       actions={<Link className="button ghost" href="/frota">← Todos os veículos</Link>}/>
@@ -86,6 +98,9 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
     </div></section>}
 
     {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Acompanhe cada ordem de serviço desde a abertura até o encerramento.</p></div></header><div className="panel-body">
+      {comprovantes === null && <p role="alert">Não foi possível consultar os comprovantes. Atualize a ficha.</p>}
+      {query.comprovante === "salvo" && <p role="status">Confira a foto nos comprovantes da ordem de serviço.</p>}
+      {query.comprovante && query.comprovante !== "salvo" && <p role="alert">{query.comprovante === "invalido" ? "Escolha uma imagem JPEG ou PNG." : query.comprovante === "tamanho" ? "Escolha uma foto de até 6 MB." : "Não foi possível confirmar o anexo. Confira os comprovantes da ordem antes de reenviar."}</p>}
       {relatosLista === null && <p role="alert">Não foi possível consultar os relatos do motorista. Atualize a página para tentar novamente.</p>}
       <details className="mais-filtros"><summary>Conclusões de serviço e liberações do veículo</summary>
         <p>Decisões entre os 40 eventos mais recentes do veículo. A situação atual aparece no topo da ficha.</p>
@@ -97,7 +112,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}
       {abertas.map(m => <article className="stock-card" key={m.id}>
         <div className="training-head"><div><h3>OS {m.id} · {m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o veículo" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
-        {mostrarRelatos(m.id)}
+        {mostrarRelatos(m.id)}{comprovantesDaOrdem(m.id, m.status === "cancelada")}
         {m.status === "aberta" && <details className="mais-filtros"><summary>Enviar à oficina</summary><OperationForm action={enviarOficina10a} label="Enviar à oficina" pendingLabel="Salvando…">
           <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="manutencaoId" value={m.id}/>
           <label>Oficina<input name="oficina" required minLength={2} maxLength={80}/></label><label>Previsão de volta (opcional)<input name="previsao" type="date" lang="pt-BR"/></label>
@@ -123,7 +138,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
             <td data-label="Serviço"><strong>OS {m.id}</strong> · {m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}<div>Aberta em {fmt(m.aberta_em)}</div>
               {m.enviada_em && <div>Enviada à oficina em {fmt(m.enviada_em)}</div>}
               {m.obs && <div>{m.status === "cancelada" ? "Motivo do cancelamento" : "Serviço registrado"} · {m.obs}</div>}
-              {mostrarRelatos(m.id)}</td><td data-label="Situação">{ROTULO_STATUS_MANUTENCAO_10A[m.status]}</td><td data-label="Oficina">{m.oficina ?? "—"}</td>
+              {mostrarRelatos(m.id)}{comprovantesDaOrdem(m.id, m.status === "cancelada")}</td><td data-label="Situação">{ROTULO_STATUS_MANUTENCAO_10A[m.status]}</td><td data-label="Oficina">{m.oficina ?? "—"}</td>
             <td data-label="Km">{m.km?.toLocaleString("pt-BR") ?? "—"}</td><td data-label="Custo">{brl(m.custo)}</td></tr>)}</tbody></table></div>}
       </details><p>Custo total registrado: <strong>{brl(ficha.manutencoes.filter(m => m.status === "concluida").reduce((s, m) => s + (m.custo ?? 0), 0))}</strong></p>
     </div></section>}

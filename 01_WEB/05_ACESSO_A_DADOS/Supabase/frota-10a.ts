@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { getSupabaseEnv } from "@/09_CONFIGURACOES/ambienteSupabase";
 import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online";
 import { atencaoGestao10a, checklistDetalhe10a, fichaGestao10a, fotosChegadaGestao10b, itensGestao10a, mesGestao10a, painelGestao10a, relatorioGestao10d, relatosGestao10c } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
@@ -31,3 +32,8 @@ export const lerFotosChegadaFrota10b = async (id: number) => fotosChegadaGestao1
 export const lerRelatosFrota10c = async (id: number) => relatosGestao10c.parse(await chamar("admin_frota_relatos_10c", { p_veiculo: id }));
 export const lerRecusasFrota10e = async (id: number) => recusasGestao10e.parse(await chamar("admin_relatos_recusados_10e", { p_veiculo: id }));
 export const lerRelatorioFrota10d = async (mes: string) => relatorioGestao10d.parse(await chamar("admin_frota_relatorio_10d", { p_mes: `${mes}-01` }));
+
+export async function lerComprovantesOs10m(veiculo: number) {
+  const dados = await chamar("admin_comprovantes_os_10m", { p_veiculo: veiculo });
+  return z.array(z.object({ ordem: z.number().int(), foto: z.uuid(), em: z.string(), autor: z.string().nullable() })).parse(dados);
+}

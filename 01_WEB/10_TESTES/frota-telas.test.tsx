@@ -17,7 +17,7 @@ vi.mock("@/05_ACESSO_A_DADOS/Supabase/frota-10a", () => ({
   lerAprovacoesModelo10i: vi.fn(async()=>[]),
   lerAtivacaoModelo10j: vi.fn(async()=>({veiculos:0,atual:null})),
   lerCategoriaVeiculo10h: vi.fn(async()=>({categoria:null,revisao:0,categorias:[{codigo:"saveiro",nome:"Saveiro / veículo leve"}]})),
-  lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
+  lerComprovantesOs10m: vi.fn(async () => []), lerFichaFrota10a: vi.fn(), lerItensFrota10a: vi.fn(async () => [{ codigo: 1, nome: "Freios", critico: true, ativo: true }]),
   lerMesFrota10a: vi.fn(async () => []), lerFotosChegadaFrota10b: vi.fn(async () => []), lerRelatosFrota10c: vi.fn(async () => []), lerChecklistFrota10a: vi.fn(async () => null),
   lerPainelFrota10a: vi.fn(async () => []),
   lerRecusasFrota10e: vi.fn(async () => []),
@@ -192,17 +192,23 @@ it("salvar um assunto mantém o usuário na mesma aba", async () => {
 });
 
 it("mostra o relato do período e o serviço registrado na ordem encerrada", async () => {
-  const { lerRelatosFrota10c } = await import("@/05_ACESSO_A_DADOS/Supabase/frota-10a");
+  const { lerRelatosFrota10c, lerComprovantesOs10m } = await import("@/05_ACESSO_A_DADOS/Supabase/frota-10a");
   vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, manutencoes: [{
     id: 81, tipo: "corretiva", descricao: "Freio", origem: "chegada", status: "concluida", bloqueia: true,
     aberta_em: "2026-11-01T08:00:00Z", enviada_em: "2026-11-01T10:00:00Z", concluida_em: "2026-11-02T10:00:00Z",
     previsao: null, oficina: "Oficina teste", km: 10001, custo: 80, obs: "Pastilhas trocadas"
   }] });
+  vi.mocked(lerComprovantesOs10m).mockResolvedValueOnce([
+    { ordem: 81, foto: "11111111-1111-4111-a111-111111111111", em: "2026-11-01T10:00:00Z", autor: "Oficina 81" },
+    { ordem: 82, foto: "22222222-2222-4222-a222-222222222222", em: "2026-11-01T10:00:00Z", autor: "Oficina 82" }
+  ]);
   vi.mocked(lerRelatosFrota10c).mockResolvedValueOnce(relatosGestao10c.parse([{ manutencao_id: 81, relatos: [{
     tipo: "chegada", quando: "2026-11-01T08:00:00Z", por: "Motorista teste", problema: "Ruído ao frear", foto: null, itens: null
   }] }]));
   render(await pagina());
   const ordem = screen.getByText("OS 81").closest("tr")!;
+  expect(within(ordem).getByText("Abrir foto do reparo")).toHaveAttribute("href", "/frota/foto/11111111-1111-4111-a111-111111111111");
+  expect(ordem).not.toHaveTextContent("Oficina 82");
   expect(within(ordem).getByText("Ruído ao frear")).toBeInTheDocument();
   expect(within(ordem).getByText(/Serviço registrado · Pastilhas trocadas/)).toBeInTheDocument();
 });
