@@ -39,6 +39,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const diasComChecklist = new Set(grade.map(g => g.dia));
   const codigosGrade=Array.from(new Set([...itens.filter(i=>i.ativo).map(i=>i.codigo),...grade.map(g=>g.codigo)])).sort((a,b)=>a-b);
   const abertas = ficha.manutencoes.filter(m => m.status === "aberta" || m.status === "na_oficina");
+  const decisoes = ficha.eventos.filter(e => e.tipo === "liberado" || e.tipo === "manutencao_concluida");
   const tom = v.situacao === "disponivel" ? "good" : v.situacao === "em_uso" ? "warn" : "bad";
   const hoje = iso(agora);
   function mostrarRelatos(ordem: number) {
@@ -86,6 +87,13 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
 
     {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Acompanhe cada ordem de serviço desde a abertura até o encerramento.</p></div></header><div className="panel-body">
       {relatosLista === null && <p role="alert">Não foi possível consultar os relatos do motorista. Atualize a página para tentar novamente.</p>}
+      <details className="mais-filtros"><summary>Conclusões de serviço e liberações do veículo</summary>
+        <p>Decisões entre os 40 eventos mais recentes do veículo. A situação atual aparece no topo da ficha.</p>
+        {decisoes.length ? <ul className="frota-atencao">{decisoes.map((e, i) => <li key={i}>
+          <strong>{e.tipo === "liberado" ? "Liberação pela Gestão" : "Conclusão de serviço"}</strong>
+          <span>{fmt(e.em)} · {e.pessoa ?? "Responsável sem nome disponível"}</span><span>{e.texto}</span>
+        </li>)}</ul> : <p>Nenhuma conclusão ou liberação nesse trecho do histórico.</p>}
+      </details>
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}
       {abertas.map(m => <article className="stock-card" key={m.id}>
         <div className="training-head"><div><h3>OS {m.id} · {m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o veículo" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>

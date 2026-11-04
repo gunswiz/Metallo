@@ -206,3 +206,13 @@ it("mostra o relato do período e o serviço registrado na ordem encerrada", asy
   expect(within(ordem).getByText("Ruído ao frear")).toBeInTheDocument();
   expect(within(ordem).getByText(/Serviço registrado · Pastilhas trocadas/)).toBeInTheDocument();
 });
+
+it("distingue os responsáveis pela conclusão e pela liberação do veículo", async () => {
+  vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, eventos: [
+    { tipo: "liberado", em: "2026-11-02T12:00:00Z", pessoa: "Gestora teste", texto: "Freio conferido" },
+    { tipo: "manutencao_concluida", em: "2026-11-02T11:00:00Z", pessoa: "Responsável teste", texto: "Troca de pastilhas" }
+  ] });
+  render(await pagina());
+  expect(screen.getByText("Liberação pela Gestão").closest("li")).toHaveTextContent("Gestora teste");
+  expect(screen.getByText("Conclusão de serviço").closest("li")).toHaveTextContent("Responsável teste");
+});
