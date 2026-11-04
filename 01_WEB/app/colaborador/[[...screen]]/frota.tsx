@@ -167,7 +167,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     setSubindo(true); setStatus("Enviando a foto…");
     try {
       const pronta = await prepararFoto(arquivo);
-      const guardarLocal = async () => { const l = await guardarFotoLocal(pronta); if (!l) throw new Error("foto_sem_sinal"); setStatus("Sem internet: foto guardada no celular. Ela sobe junto com o registro."); return l; };
+      const guardarLocal = async () => { const l = await guardarFotoLocal(acoes.quem ?? "", v.id, pronta); if (!l) throw new Error("foto_sem_sinal"); setStatus("Sem internet: foto guardada no celular. Ela sobe junto com o registro."); return l; };
       let id: string, avisoLocal = false;
       if (typeof navigator !== "undefined" && !navigator.onLine) { id = await guardarLocal(); avisoLocal = true; }
       else { try { id = await acoes.foto(v.id, pronta); } catch (e) { if (!ehFalhaDeConexao10d(e)) throw e; id = await guardarLocal(); avisoLocal = true; } }

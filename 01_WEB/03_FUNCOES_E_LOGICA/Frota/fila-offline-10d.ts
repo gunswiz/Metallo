@@ -134,18 +134,29 @@ async function mexer<T>(modo: IDBTransactionMode, fazer: (loja: IDBObjectStore) 
     } catch { banco.close(); resolve(null); }
   });
 }
+// O código público continua cabendo nos rascunhos. A chave no aparelho inclui o dono e o veículo.
+function chaveFoto(quem: string, veiculo: number, id: string) {
+  return quem.trim() && Number.isSafeInteger(veiculo) && veiculo > 0 && FOTO_LOCAL.test(id)
+    ? JSON.stringify([quem, veiculo, id]) : null;
+}
 /** Guarda a foto no celular e devolve o código "local:…" (ou null se não deu). */
-export async function guardarFotoLocal(arquivo: Blob): Promise<string | null> {
+export async function guardarFotoLocal(quem: string, veiculo: number, arquivo: Blob): Promise<string | null> {
   const id = `local:${crypto.randomUUID()}`;
-  const ok = await mexer("readwrite", loja => loja.put({ id, blob: arquivo }));
+  const chave = chaveFoto(quem, veiculo, id);
+  if (!chave) return null;
+  const ok = await mexer("readwrite", loja => loja.put({ id: chave, blob: arquivo }));
   return ok === null ? null : id;
 }
-export async function lerFotoLocal(id: string): Promise<Blob | null> {
-  if (!FOTO_LOCAL.test(id)) return null;
-  const r = await mexer<{ id: string; blob: Blob } | undefined>("readonly", loja => loja.get(id) as IDBRequest<{ id: string; blob: Blob } | undefined>);
+export async function lerFotoLocal(quem: string, veiculo: number, id: string): Promise<Blob | null> {
+  const chave = chaveFoto(quem, veiculo, id);
+  if (!chave) return null;
+  const r = await mexer<{ id: string; blob: Blob } | undefined>("readonly", loja => loja.get(chave) as IDBRequest<{ id: string; blob: Blob } | undefined>);
   return r?.blob ?? null;
 }
-export async function apagarFotoLocal(id: string) { if (FOTO_LOCAL.test(id)) await mexer("readwrite", loja => loja.delete(id)); }
+async function apagarFotoLocal(quem: string, veiculo: number, id: string) {
+  const chave = chaveFoto(quem, veiculo, id);
+  if (chave) await mexer("readwrite", loja => loja.delete(chave));
+}
 
 // ---- Envio
 export const textoChecklist10d = (r: "liberado" | "ressalvas" | "nao_liberado") =>
@@ -173,7 +184,7 @@ async function subirFotos(acoes: AcoesFila, quem: string, p: Pendente): Promise<
   for (const f of [...new Set(fotosDo(atual))]) {
     if (!FOTO_LOCAL.test(f)) continue;
     if (!quem || !guardarNaFila(quem, atual)) throw new Error("fila_cheia");
-    const arquivo = await lerFotoLocal(f);
+    const arquivo = await lerFotoLocal(quem, p.veiculo, f);
     if (!arquivo) throw new FotoPendente();
     let remoto: string;
     try { remoto = await acoes.foto(p.veiculo, arquivo); }
@@ -215,7 +226,7 @@ export async function executarPendente(acoes: AcoesFila, quem: string, original:
       texto = x.problema ? `Chegada registrada. O problema foi avisado e o caminhão ficou não liberado.${fotoOk ? "" : " A foto não foi anexada: avise o engenheiro."}` : "Chegada registrada.";
     }
     tirarDaFila(quem, p.id);
-    for (const f of [...fotosDo(p), ...(p.fotosLocais ?? [])]) void apagarFotoLocal(f);
+    for (const f of [...fotosDo(p), ...(p.fotosLocais ?? [])]) void apagarFotoLocal(quem, p.veiculo, f);
     return texto;
   } catch (erro) {
     if (doFormulario) {

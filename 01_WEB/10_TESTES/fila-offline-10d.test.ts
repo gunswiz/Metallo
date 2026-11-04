@@ -120,7 +120,10 @@ describe("fila da frota sem internet (10D)", () => {
       queueMicrotask(() => pending.onsuccess?.()); return pending;
     };
     const apagar = vi.fn(() => request(undefined));
-    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: (id: string) => request(id === a ? { id, blob: new Blob(["sintética"]) } : undefined), delete: apagar }) }) }) });
+    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: (id: string) => request(id === JSON.stringify([quem, 1, a]) ? { id, blob: new Blob(["sintética"]) } : undefined), delete: apagar }) }) }) });
+    const { lerFotoLocal } = await import("../03_FUNCOES_E_LOGICA/Frota/fila-offline-10d");
+    expect(await lerFotoLocal("outra-conta", 1, a)).toBeNull();
+    expect(await lerFotoLocal(quem, 2, a)).toBeNull();
     const api = acoes();
     guardarNaFila(quem, pend("duas-fotos", { tipo: "checklist", local: "", obs: "", respostas: [{ codigo: 1, situacao: "N", obs: "Defeito A", foto: a }, { codigo: 2, situacao: "N", obs: "Defeito B", foto: b }] }, "2026-11-01T10:00:00Z"));
     await sincronizarFila(api, quem);
@@ -132,8 +135,8 @@ describe("fila da frota sem internet (10D)", () => {
     await sincronizarFila(api, quem, true);
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(api.checklist).toHaveBeenCalledWith(1, "", expect.any(String), [{ codigo: 1, situacao: "N", obs: "Defeito A", foto: "foto-real" }, { codigo: 2, situacao: "N", obs: "Defeito B" }], "duas-fotos");
-    expect(apagar).toHaveBeenCalledWith(a);
-    expect(apagar).toHaveBeenCalledWith(b);
+    expect(apagar).toHaveBeenCalledWith(JSON.stringify([quem, 1, a]));
+    expect(apagar).toHaveBeenCalledWith(JSON.stringify([quem, 1, b]));
   });
   it("foto recusada não é descartada nem permite confirmar a operação", async () => {
     const foto = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4";
