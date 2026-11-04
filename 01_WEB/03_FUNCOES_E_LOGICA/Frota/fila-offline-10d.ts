@@ -141,12 +141,63 @@ function chaveFoto(quem: string, veiculo: number, id: string) {
     ? JSON.stringify([quem, veiculo, id]) : null;
 }
 /** Guarda a foto no celular e devolve o código "local:…" (ou null se não deu). */
-export async function guardarFotoLocal(quem: string, veiculo: number, arquivo: Blob): Promise<string | null> {
-  const id = `local:${crypto.randomUUID()}`;
+export async function guardarFotoLocal(quem: string, veiculo: number, arquivo: Blob, id = `local:${crypto.randomUUID()}`): Promise<string | null> {
   const chave = chaveFoto(quem, veiculo, id);
   if (!chave) return null;
   const ok = await mexer("readwrite", loja => loja.put({ id: chave, blob: arquivo }));
   return ok === null ? null : id;
+}
+// Uma aba duplicada recebe sua própria cópia do sessionStorage. O anexo só passa
+// ao armazenamento compartilhado quando o motorista tenta enviar o registro.
+const prefixoFotoRascunho = (quem: string) => `metallo-frota-foto:${JSON.stringify(quem)}:`;
+const chaveAnexo = (quem: string, veiculo: number, id: string) => prefixoFotoRascunho(quem) + JSON.stringify([veiculo, id]);
+
+export async function guardarFotoRascunho(quem: string, veiculo: number, arquivo: Blob) {
+  if (!quem.trim()) return null;
+  const id = `rascunho:${crypto.randomUUID()}`;
+  try {
+    const dados = await new Promise<string>((resolve, reject) => {
+      const leitor = new FileReader();
+      leitor.onload = () => resolve(String(leitor.result));
+      leitor.onerror = reject;
+      leitor.readAsDataURL(arquivo);
+    });
+    sessionStorage.setItem(chaveAnexo(quem, veiculo, id), dados);
+    return id;
+  } catch {
+    // Preserva a capacidade de captura em aparelhos com pouco espaço por aba.
+    return guardarFotoLocal(quem, veiculo, arquivo);
+  }
+}
+
+export function limparFotosRascunho(quem: string) {
+  const prefixo = prefixoFotoRascunho(quem);
+  for (const chave of Object.keys(sessionStorage)) {
+    if (chave.startsWith(prefixo)) sessionStorage.removeItem(chave);
+  }
+}
+
+export async function prepararFotosDaFila(quem: string, p: Pendente): Promise<Pendente> {
+  const payload = p.payload;
+  const promover = async (foto: string | undefined) => {
+    if (!foto?.startsWith("rascunho:")) return foto;
+    const dados = sessionStorage.getItem(chaveAnexo(quem, p.veiculo, foto));
+    if (!dados) throw new Error("foto_sem_sinal");
+    const partes = /^data:([^;,]*);base64,(.*)$/.exec(dados);
+    if (!partes) throw new Error("foto_sem_sinal");
+    const arquivo = new Blob([Uint8Array.from(atob(partes[2]), c => c.charCodeAt(0))], { type: partes[1] });
+    // A mesma tentativa conserva o código; registros independentes têm cópias independentes.
+    const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify([p.id, foto])));
+    const hex = Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, "0")).join("");
+    const id = `local:${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20,32)}`;
+    if (!await guardarFotoLocal(quem, p.veiculo, arquivo, id)) throw new Error("foto_sem_sinal");
+    return id;
+  };
+  if (payload.tipo === "chegada" && payload.foto) return { ...p, payload: { ...payload, foto: await promover(payload.foto) } };
+  if (payload.tipo !== "checklist") return p;
+  const respostas = [];
+  for (const r of payload.respostas) respostas.push(r.foto ? { ...r, foto: await promover(r.foto) } : r);
+  return { ...p, payload: { ...payload, respostas } };
 }
 export async function lerFotoLocal(quem: string, veiculo: number, id: string): Promise<Blob | null> {
   const chave = chaveFoto(quem, veiculo, id);

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Check, ClipboardCheck, Search, Truck } from "lucide-react";
 import { prepararFoto } from "@/03_FUNCOES_E_LOGICA/Arquivos/contrato-6";
-import { guardarConferenciaRecusa, ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, gravarCache, guardarFotoLocal, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, temRelatoDeDefeito, recusaBloqueiaSaida, type Pendente, type Recusada } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { guardarConferenciaRecusa, ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, gravarCache, guardarFotoRascunho, limparFotosRascunho, prepararFotosDaFila, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, temRelatoDeDefeito, recusaBloqueiaSaida, type Pendente, type Recusada } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 import { mensagemErroFrota10a, ROTULO_RESULTADO_10A, ROTULO_SITUACAO_FROTA_10A, type ConferenciaRecusa10e, type CaminhaoApp10a, type ItemChecklist10a, type RespostaChecklist10a, type ViagemApp10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 import styles from "./colaborador.module.css";
 import fleet from "@/02_COMPONENTES_VISUAIS/Frota/painel-frota.module.css";
@@ -57,7 +57,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
       const bruto = sessionStorage.getItem(chaveRascunho); if (!bruto) return;
       const d = JSON.parse(bruto) as Rascunho;
       const v = lista.find(c => c.id === d.veiculo);
-      if (!v || Date.now() - d.em > 2 * 3600 * 1000 || !["checklist", "saida", "chegada"].includes(d.tipo)) { sessionStorage.removeItem(chaveRascunho); return; }
+      if (!v || Date.now() - d.em > 2 * 3600 * 1000 || !["checklist", "saida", "chegada"].includes(d.tipo)) { sessionStorage.removeItem(chaveRascunho); limparFotosRascunho(ref.current.quem ?? ""); return; }
       if (d.tipo === "checklist") {
         // Não reinterpretar respostas antigas com nomes/regras recebidos agora.
         setItensFormulario(d.itens?.length ? d.itens : Object.keys(d.respostas).map(codigo => ({ codigo: Number(codigo), nome: `Item ${codigo} (rascunho sem versão)`, critico: false })));
@@ -113,7 +113,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     if (modo.tipo === "lista" || !chaveRascunho) return;
     try { sessionStorage.setItem(chaveRascunho, JSON.stringify({ em: Date.now(), tipo: modo.tipo, veiculo: modo.v.id, itens: modo.tipo === "checklist" ? itensFormulario : undefined, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, chave: chave.current, fotoPendente: alvoFoto.current !== null && subindo } satisfies Rascunho)); } catch { /* sem armazenamento */ }
   }, [chaveRascunho, modo, itensFormulario, etapa, respostas, local, obs, ciente, destino, acomp, km, problema, fotoChegada, subindo]);
-  const limparRascunho = () => { try { if (chaveRascunho) sessionStorage.removeItem(chaveRascunho); } catch { /* ok */ } };
+  const limparRascunho = () => { try { if (chaveRascunho) { sessionStorage.removeItem(chaveRascunho); limparFotosRascunho(acoes.quem ?? ""); } } catch { /* ok */ } };
 
   function abrir(tipo: "checklist" | "saida" | "chegada", v: CaminhaoApp10a) {
     const selecionados=acoes.itensVeiculo ? modelos[v.id] : itensAtuais;
@@ -167,7 +167,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
     setSubindo(true); setStatus("Enviando a foto…");
     try {
       const pronta = await prepararFoto(arquivo);
-      const guardarLocal = async () => { const l = await guardarFotoLocal(acoes.quem ?? "", v.id, pronta); if (!l) throw new Error("foto_sem_sinal"); setStatus("Sem internet: foto guardada no celular. Ela sobe junto com o registro."); return l; };
+      const guardarLocal = async () => { const l = await guardarFotoRascunho(acoes.quem ?? "", v.id, pronta); if (!l) throw new Error("foto_sem_sinal"); setStatus("Sem internet: foto guardada no celular. Ela sobe junto com o registro."); return l; };
       let id: string, avisoLocal = false;
       if (typeof navigator !== "undefined" && !navigator.onLine) { id = await guardarLocal(); avisoLocal = true; }
       else { try { id = await acoes.foto(v.id, pronta); } catch (e) { if (!ehFalhaDeConexao10d(e)) throw e; id = await guardarLocal(); avisoLocal = true; } }
@@ -180,6 +180,7 @@ function FrotaDaConta({ acoes }: { acoes: Acoes }) {
   async function enviarOuGuardar(p: Pendente): Promise<string> {
     const q = ref.current.quem ?? "";
     if (p.payload.tipo === "saida" && (semSinal || lerFila(q).some(x => x.veiculo === p.veiculo) || lerRecusadas(q).some(r => r.registro?.veiculo === p.veiculo && recusaBloqueiaSaida(r)))) throw new Error("registro_pendente");
+    p = await prepararFotosDaFila(q, p);
     const guardar = () => {
       if (!q || !guardarNaFila(q, p)) throw new Error(q ? "fila_cheia" : "SEM_CONEXAO");
       atualizarFila();

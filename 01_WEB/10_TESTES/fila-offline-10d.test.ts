@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { csvRelatorio10d, MES_RELATORIO_10D } from "@/03_FUNCOES_E_LOGICA/Frota/relatorio-10d";
-import { guardarFotoLocal, anotarRecusa, guardarConferenciaRecusa, recusaBloqueiaSaida } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { guardarFotoRascunho, limparFotosRascunho, prepararFotosDaFila, guardarFotoLocal, anotarRecusa, guardarConferenciaRecusa, recusaBloqueiaSaida } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 import { ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, LIMITE_FILA_10D, type AcoesFila, type Pendente } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 
 const quem = "emp-1";
@@ -122,6 +122,30 @@ describe("fila da frota sem internet (10D)", () => {
     expect(lerFila(quem)[0]).toMatchObject({ revisar: true, fotoPendente: true });
     await sincronizarFila(api, quem);
     expect(api.chegada).not.toHaveBeenCalled();
+  });
+  it("descartar o rascunho preserva a cópia da fila e os anexos de outra conta", async () => {
+    sessionStorage.clear();
+    const foto = await guardarFotoRascunho(quem, 1, new Blob(["imagem"], { type: "image/jpeg" }));
+    expect(foto).toMatch(/^rascunho:/);
+    const p = pend("viagem-1", { tipo: "chegada", viagem: 1, km: 100, obs: "", problema: "Freio", foto: foto! }, "2026-11-01");
+    const outro = "outro-motorista";
+    await guardarFotoRascunho(outro, 1, new Blob(["outra"]));
+    await expect(prepararFotosDaFila(outro, p)).rejects.toThrow("foto_sem_sinal");
+    const put = vi.fn(() => ({ result: "gravada" }));
+    const banco = { close: vi.fn(), transaction: () => transacaoFoto({ put }, true) };
+    vi.stubGlobal("indexedDB", { open: () => {
+      const pedido = { result: banco, onsuccess: null as (() => void) | null };
+      queueMicrotask(() => pedido.onsuccess?.());
+      return pedido;
+    } });
+    const pronto = await prepararFotosDaFila(quem, p);
+    expect(pronto.payload).toMatchObject({ foto: expect.stringMatching(/^local:/) });
+    expect(await prepararFotosDaFila(quem, p)).toEqual(pronto);
+    limparFotosRascunho(quem);
+    expect(sessionStorage.length).toBe(1);
+    await expect(prepararFotosDaFila(quem, p)).rejects.toThrow("foto_sem_sinal");
+    expect(await prepararFotosDaFila(quem, pronto)).toEqual(pronto);
+    sessionStorage.clear();
   });
   it.each([true, false])("só confirma a foto quando a gravação termina (concluída=%s)", async concluir => {
     const put = vi.fn(() => ({ result: "chave gravada" }));
