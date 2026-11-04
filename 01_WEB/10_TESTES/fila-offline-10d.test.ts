@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { csvRelatorio10d, MES_RELATORIO_10D } from "@/03_FUNCOES_E_LOGICA/Frota/relatorio-10d";
-import { anotarRecusa, guardarConferenciaRecusa, recusaBloqueiaSaida } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
+import { guardarFotoLocal, anotarRecusa, guardarConferenciaRecusa, recusaBloqueiaSaida } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 import { ehFalhaDeConexao10d, enviarSemFotosPendentes, executarPendente, guardarNaFila, lerCache, lerFila, lerRecusadas, limparRecusadas, sincronizarFila, LIMITE_FILA_10D, type AcoesFila, type Pendente } from "@/03_FUNCOES_E_LOGICA/Frota/fila-offline-10d";
 
 const quem = "emp-1";
@@ -13,6 +13,16 @@ const acoes = (): AcoesFila & { ordem: string[] } => {
     saida: vi.fn(async (_v, _d, _a, _k, _o, chave: string) => { ordem.push("saida:" + chave); }),
     foto: vi.fn(async () => "foto-real"), chegada: vi.fn(async () => true) };
 };
+
+function transacaoFoto(loja: object, concluir = true) {
+  const transacao = {
+    objectStore: () => loja,
+    oncomplete: null as (() => void) | null,
+    onabort: null as (() => void) | null
+  };
+  queueMicrotask(() => concluir ? transacao.oncomplete?.() : transacao.onabort?.());
+  return transacao;
+}
 
 beforeEach(() => localStorage.clear());
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers(); });
@@ -113,6 +123,20 @@ describe("fila da frota sem internet (10D)", () => {
     await sincronizarFila(api, quem);
     expect(api.chegada).not.toHaveBeenCalled();
   });
+  it.each([true, false])("só confirma a foto quando a gravação termina (concluída=%s)", async concluir => {
+    const put = vi.fn(() => ({ result: "chave gravada" }));
+    const banco = { close: vi.fn(), transaction: () => transacaoFoto({ put }, concluir) };
+    vi.stubGlobal("indexedDB", { open: () => {
+      const pedido = { result: banco, onsuccess: null as (() => void) | null };
+      queueMicrotask(() => pedido.onsuccess?.());
+      return pedido;
+    } });
+    const id = await guardarFotoLocal(quem, 1, new Blob(["foto"]));
+    expect(put).toHaveBeenCalledOnce();
+    if (concluir) expect(id).toMatch(/^local:/);
+    else expect(id).toBeNull();
+    expect(banco.close).toHaveBeenCalledOnce();
+  });
   it("persiste cada foto enviada e limpa os originais somente após confirmar o relato", async () => {
     const a = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e4", b = "local:731cb0c4-c5ea-4fad-ab2e-fc632fdd39e5";
     const request = (result: unknown) => {
@@ -120,7 +144,7 @@ describe("fila da frota sem internet (10D)", () => {
       queueMicrotask(() => pending.onsuccess?.()); return pending;
     };
     const apagar = vi.fn(() => request(undefined));
-    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: (id: string) => request(id === JSON.stringify([quem, 1, a]) ? { id, blob: new Blob(["sintética"]) } : undefined), delete: apagar }) }) }) });
+    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => transacaoFoto({ get: (id: string) => request(id === JSON.stringify([quem, 1, a]) ? { id, blob: new Blob(["sintética"]) } : undefined), delete: apagar }) }) });
     const { lerFotoLocal } = await import("../03_FUNCOES_E_LOGICA/Frota/fila-offline-10d");
     expect(await lerFotoLocal("outra-conta", 1, a)).toBeNull();
     expect(await lerFotoLocal(quem, 2, a)).toBeNull();
@@ -147,7 +171,7 @@ describe("fila da frota sem internet (10D)", () => {
     };
     const arquivo = new Blob(["imagem sintética"], { type: "image/jpeg" });
     const apagar = vi.fn();
-    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => ({ objectStore: () => ({ get: () => request({ id: foto, blob: arquivo }), delete: apagar }) }) }) });
+    vi.stubGlobal("indexedDB", { open: () => request({ close: vi.fn(), transaction: () => transacaoFoto({ get: () => request({ id: foto, blob: arquivo }), delete: apagar }) }) });
     const api = acoes();
     api.foto = vi.fn(async () => { throw new Error("file_not_allowed"); });
     const registro = pend("rejeitada", { tipo: "chegada", viagem: 1, km: 101, problema: "Vazamento", obs: "", foto }, "2026-11-01T10:00:00Z");

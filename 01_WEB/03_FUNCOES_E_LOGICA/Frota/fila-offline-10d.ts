@@ -128,9 +128,10 @@ async function mexer<T>(modo: IDBTransactionMode, fazer: (loja: IDBObjectStore) 
   if (!banco) return null;
   return new Promise(resolve => {
     try {
-      const pedido = fazer(banco.transaction("fotos", modo).objectStore("fotos"));
-      pedido.onsuccess = () => { resolve(pedido.result ?? null); banco.close(); };
-      pedido.onerror = () => { resolve(null); banco.close(); };
+      const transacao = banco.transaction("fotos", modo);
+      const pedido = fazer(transacao.objectStore("fotos"));
+      transacao.oncomplete = () => { banco.close(); resolve(pedido.result ?? null); };
+      transacao.onabort = () => { banco.close(); resolve(null); };
     } catch { banco.close(); resolve(null); }
   });
 }
