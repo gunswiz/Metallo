@@ -10,6 +10,8 @@ import { recursosNovosLiberados } from "@/09_CONFIGURACOES/ambiente-teste-online
 import { manageEpiFeedback3d, registerEpiDelivery3d } from "@/app/actions/epi-completo";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { unstable_rethrow } from "next/navigation";
+import { ErrorPanel } from "@/02_COMPONENTES_VISUAIS/error-panel";
 
 export default async function Page({searchParams}:{searchParams:Promise<{employee?:string;exchange?:string;prepared?:string;delivered?:string;feedback?:string}>}){
  const profile=await requireCapability("epi:write"); const query=await searchParams;
@@ -17,15 +19,30 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
  const data=local?null:await (await getMetalloService()).siteSnapshot();
  const repo=local?await getEpiOperations():null;
  const employeeId=z.uuid().safeParse(query.employee).success?query.employee!:"";
- const [choices, flow, suggestion, awareness]=repo?await Promise.all([repo.choices(),repo.delivery3d(),employeeId?repo.kitSuggestion3d(employeeId):Promise.resolve([]),
-   repo.awareness3i().catch(()=>null)]):[null,null,[],null];
+ const exchangeId=z.uuid().safeParse(query.exchange).success?query.exchange!:"";
+ const selection=new URLSearchParams();
+ if(employeeId) selection.set("employee",employeeId);
+ if(exchangeId) selection.set("exchange",exchangeId);
+ const selectedHref=`/epis/entrega-em-lote${selection.size?`?${selection}`:""}`;
+ const load=()=>repo?Promise.all([repo.choices(),repo.delivery3d(),employeeId?repo.kitSuggestion3d(employeeId):Promise.resolve([]),
+   repo.awareness3i().catch(()=>null)]):Promise.resolve([null,null,[],null] as const);
+ let loaded:Awaited<ReturnType<typeof load>>;
+ try { loaded=await load(); }
+ catch(error){
+   unstable_rethrow(error);
+   return <><PageHeader eyebrow="ENTREGA INDIVIDUAL" title="Nova entrega de EPI" description="Consulte os registros antes de continuar a preparação ou entrega."/>
+     <section className="panel"><ErrorPanel title="Não foi possível conferir os dados de EPI" message="A consulta falhou ou retornou dados que o sistema não conseguiu validar. Tente carregar novamente. Se você acabou de enviar uma operação, confira o histórico antes de repeti-la."/>
+       <div className="panel-body"><a className="button secondary" href={selectedHref}>Tentar carregar novamente</a><p>A seleção de funcionário e de troca foi mantida no endereço. Nenhum novo registro foi enviado por esta consulta.</p></div>
+     </section></>;
+ }
+ const [choices, flow, suggestion, awareness]=loaded;
  const statusLabel:Record<string,string>={CONFIRMADO:"Recebimento confirmado pelo funcionário",DIVERGENCIA:"Divergência informada",EM_ANALISE:"Divergência em análise",RESOLVIDA:"Divergência resolvida; confirmação pendente",RECUSA:"Recusa registrada pela Gestão"};
  const employee=choices?.employees.find(entry=>entry.id===employeeId);
  const items=new Map(choices?.items.filter(entry=>entry.item_kind==="epi").map(entry=>[entry.id,entry])??[]);
  const batches=(choices?.batches??[]).filter(batch=>items.has(batch.item_id)).map(batch=>({id:batch.id,item_id:batch.item_id,name:items.get(batch.item_id)!.name,unit:items.get(batch.item_id)!.unit,quantity:batch.quantity,variant:batch.variant,ca_number:batch.ca_number}));
  return <><PageHeader eyebrow="ENTREGA INDIVIDUAL" title={local?"Nova entrega de EPI":"Entregar vários itens"} description={local?"Revise o kit, prepare os itens e registre a entrega física em etapas separadas.":"Monte a lista com lotes, C.A. e local; confirme todos os itens juntos."}/>
   {local&&choices&&flow&&<section className="panel" aria-labelledby="epi-3d-heading"><header className="panel-header"><div><h2 id="epi-3d-heading">Preparação e entrega de EPI · laboratório</h2><p>Kit sugerido, preparação e entrega são etapas separadas. SIMULAÇÃO SEM VALOR OFICIAL.</p></div></header>
-    {(query.prepared||query.delivered||query.feedback)&&<div className="alert success" role="status">Operação local registrada. Confira o estado atualizado abaixo.</div>}
+    {(query.prepared||query.delivered||query.feedback)&&<div className="alert" role="status">Consulta atualizada. Confira a situação de cada kit e entrega abaixo.</div>}
     <div className="panel-body"><form method="get" className="form-grid"><label className="full">Funcionário para preparar kit<select name="employee" defaultValue={employeeId}><option value="">Selecione</option>{choices.employees.map(entry=><option key={entry.id} value={entry.id}>{entry.full_name}</option>)}</select></label><div className="form-actions"><button className="button secondary" type="submit">Consultar kit sugerido</button></div></form></div>
     {employee&&<EpiPreparacao3d actorId={profile.id} employeeId={employee.id} employeeName={employee.full_name} batches={batches} suggestion={suggestion}
       approved={flow.approved.filter(request=>request.employee_id===employee.id)} key={`${employee.id}:${query.exchange ?? ""}`} initialExchangeId={query.exchange} keyId={randomUUID()}/>}
@@ -35,7 +52,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
           <span>{prep.lines.map(line=>`${line.item_name} · ${line.quantity} ${line.unit}${line.variant?` · ${line.variant}`:""}`).join("; ")}</span>
           {prep.exchange_request_id&&<span>Vinculado à solicitação de troca {prep.exchange_request_id.slice(0,8)}</span>}
           <span>{prep.delivery_group_id?"Entrega registrada — confirmação do funcionário separada":"Kit preparado — entrega não registrada"}</span></div>
-        {!prep.delivery_group_id&&<OperationForm action={registerEpiDelivery3d} label="Registrar entrega" pendingLabel="Registrando…"
+        {!prep.delivery_group_id&&<OperationForm action={registerEpiDelivery3d} label="Registrar entrega" pendingLabel="Registrando…" refreshOnComplete completionHref={`${selectedHref}#kits-preparados`}
           operationKeyScope={`metallo:3d:delivery:${profile.id}:${prep.preparation_id}`} initialOperationKey={randomUUID()} newOperationLabel={null}>
           <input type="hidden" name="preparationId" value={prep.preparation_id}/>
           <p className="full">Confira todos os itens do kit. Registre somente após a entrega física.</p>
@@ -53,7 +70,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{employe
         <label>Ação<select name="action" defaultValue={entry.feedback_status==="DIVERGENCIA"?"EM_ANALISE":"RESOLVIDA"}><option value="EM_ANALISE">Colocar em análise</option><option value="RESOLVIDA">Registrar resolução</option></select></label>
         <label>Mensagem ao funcionário<textarea name="publicMessage" maxLength={240} rows={2}/></label><label>Nota interna da Gestão<textarea name="internalNote" maxLength={240} rows={2}/></label>
       </OperationForm>}
-      {(entry.feedback_status===null||entry.feedback_status==="RESOLVIDA")&&<OperationForm action={manageEpiFeedback3d} label="Registrar recusa"
+      {(entry.feedback_status===null||entry.feedback_status==="RESOLVIDA")&&<OperationForm action={manageEpiFeedback3d} label="Registrar recusa" refreshOnComplete completionHref={`${selectedHref}#confirmacoes`}
         operationKeyScope={`metallo:3d:refusal:${profile.id}:${entry.group_id}:${entry.feedback_status ?? "pendente"}`} initialOperationKey={randomUUID()} newOperationLabel={null}>
         <input type="hidden" name="groupId" value={entry.group_id}/><input type="hidden" name="action" value="RECUSA"/>
         <p className="full">Use só se o funcionário recusou receber ou confirmar este EPI. O registro não pode ser apagado; o funcionário verá a mensagem e ainda poderá confirmar depois.</p>
