@@ -55,7 +55,7 @@ export const checklistDetalhe10a = z.object({
 export const mesGestao10a = z.array(z.object({ dia: z.string(), codigo: z.coerce.number(), situacao: z.enum(["C", "N", "NA"]), por: z.string().nullable() }));
 export const fotosChegadaGestao10b = z.array(z.object({ viagem_id: z.coerce.number(), foto_id: z.uuid() }));
 export const relatosGestao10c = z.array(z.object({ manutencao_id: z.coerce.number(), relatos: z.array(z.object({ quando: z.string(), tipo: z.enum(["checklist", "chegada"]), por: z.string().nullable(),
-  itens: z.array(z.object({ item: z.string(), obs: z.string().nullable().optional(), critico: z.boolean().optional(), foto: z.uuid().nullable().optional() })).optional(),
+  itens: z.array(z.object({ item: z.string(), obs: z.string().nullable().optional(), critico: z.boolean().optional(), foto: z.uuid().nullable().optional() })).nullish(),
   problema: z.string().nullable().optional(), foto: z.uuid().nullable().optional() })).nullable() }));
 export const relatorioGestao10d = z.array(z.object({ veiculo_id: z.coerce.number(), nome: z.string(), placa: z.string(), saidas: z.coerce.number(), km_rodados: z.coerce.number(), checklists: z.coerce.number(),
   itens_com_problema: z.coerce.number(), defeitos_abertos: z.coerce.number(), manutencoes_concluidas: z.coerce.number(), dias_parado: z.coerce.number(), custo: z.coerce.number() }));

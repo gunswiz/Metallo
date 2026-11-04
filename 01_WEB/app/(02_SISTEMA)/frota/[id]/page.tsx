@@ -32,7 +32,7 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const mesIni = iso(new Date(mesBase.getFullYear(), mesBase.getMonth(), 1)), diasNoMes = new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 0).getDate();
   const anterior = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() - 1, 15)).slice(0, 7), proximo = iso(new Date(mesBase.getFullYear(), mesBase.getMonth() + 1, 15)).slice(0, 7);
   const checklistId = Number(query.checklist);
-  const [recusas, grade, itens, fotosChegada, relatosLista, detalhe] = await Promise.all([lerRecusasFrota10e(id), lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id), lerRelatosFrota10c(id).catch(() => []),
+  const [recusas, grade, itens, fotosChegada, relatosLista, detalhe] = await Promise.all([lerRecusasFrota10e(id), lerMesFrota10a(id, mesIni), lerItensFrota10a(), lerFotosChegadaFrota10b(id), lerRelatosFrota10c(id).catch(() => null),
     Number.isInteger(checklistId) && checklistId > 0 ? lerChecklistFrota10a(checklistId).catch(() => null) : Promise.resolve(null)]);
   const fotoViagem = new Map(fotosChegada.map(f => [f.viagem_id, f.foto_id]));
   const celula = new Map(grade.map(g => [`${g.dia}|${g.codigo}`, g.situacao]));
@@ -41,7 +41,18 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
   const abertas = ficha.manutencoes.filter(m => m.status === "aberta" || m.status === "na_oficina");
   const tom = v.situacao === "disponivel" ? "good" : v.situacao === "em_uso" ? "warn" : "bad";
   const hoje = iso(agora);
-  const relatosDe = (id: number) => relatosLista.find(r => r.manutencao_id === id)?.relatos ?? [];
+  function mostrarRelatos(ordem: number) {
+    const relatos = relatosLista?.find(r => r.manutencao_id === ordem)?.relatos;
+    if (!relatos?.length) return null;
+    return <details className="mais-filtros"><summary>Relatos do veículo no período ({relatos.length})</summary>
+      <p>Checklist e chegada registrados entre a abertura da ordem e seu encerramento, ou até agora se ela estiver aberta.</p>
+      {relatos.map((r, i) => <div className="muted" key={i} style={{ marginTop: 8 }}>
+          <strong>{r.tipo === "chegada" ? "Relato na chegada" : "Relato no checklist"}</strong> · {fmt(r.quando)}{r.por ? ` · ${r.por}` : ""}
+          {r.problema && <p>{r.problema}{r.foto && <> · <a href={`/frota/foto/${r.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>}
+          {r.itens?.map((it, j) => <p key={j}>{it.item}{it.critico ? " (crítico)" : ""}{it.obs ? `: ${it.obs}` : ""}{it.foto && <> · <a href={`/frota/foto/${it.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>)}
+        </div>)}
+    </details>;
+  }
   const abas = [{ id: "manutencao", nome: "Manutenção" }, { id: "documentos", nome: "Documentos" }, { id: "planos", nome: "Preventivas" }, { id: "viagens", nome: "Viagens" }, { id: "checklists", nome: "Checklists" }, { id: "historico", nome: "Histórico" }, ...(podeCadastrar ? [{ id: "dados", nome: "Cadastro" }] : [])];
   const aba = query.checklist || query.mes ? "checklists" : abas.some(a => a.id === query.aba) ? query.aba : "manutencao";
   const categoria = podeCadastrar && aba === "dados" ? await lerCategoriaVeiculo10h(id) : null;
@@ -73,15 +84,12 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       </article>)}
     </div></section>}
 
-    {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Defeito → oficina → concluído, com o custo.</p></div></header><div className="panel-body">
+    {aba === "manutencao" && <section className="panel" id="manutencao"><header className="panel-header"><div><h2>Manutenção</h2><p>Acompanhe cada ordem de serviço desde a abertura até o encerramento.</p></div></header><div className="panel-body">
+      {relatosLista === null && <p role="alert">Não foi possível consultar os relatos do motorista. Atualize a página para tentar novamente.</p>}
       {abertas.length === 0 && <p className="muted">Nenhuma manutenção em aberto.</p>}
       {abertas.map(m => <article className="stock-card" key={m.id}>
-        <div className="training-head"><div><h3>{m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o veículo" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
-        {relatosDe(m.id).map((r, i) => <div className="muted" key={i} style={{ marginTop: 8 }}>
-          <strong>{r.tipo === "chegada" ? "Relato na chegada" : "Relato no checklist"}</strong> · {fmt(r.quando)}{r.por ? ` · ${r.por}` : ""}
-          {r.problema && <p>{r.problema}{r.foto && <> · <a href={`/frota/foto/${r.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>}
-          {r.itens?.map((it, j) => <p key={j}>{it.item}{it.critico ? " (crítico)" : ""}{it.obs ? `: ${it.obs}` : ""}{it.foto && <> · <a href={`/frota/foto/${it.foto}`} target="_blank" rel="noreferrer">Ver foto</a></>}</p>)}
-        </div>)}
+        <div className="training-head"><div><h3>OS {m.id} · {m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}</h3><small>Aberta em {fmt(m.aberta_em)} · {ROTULO_STATUS_MANUTENCAO_10A[m.status]}{m.bloqueia ? " · bloqueia o veículo" : ""}{m.oficina ? ` · ${m.oficina}` : ""}{m.previsao ? ` · previsão ${dia(m.previsao)}` : ""}</small></div></div>
+        {mostrarRelatos(m.id)}
         {m.status === "aberta" && <details className="mais-filtros"><summary>Enviar à oficina</summary><OperationForm action={enviarOficina10a} label="Enviar à oficina" pendingLabel="Salvando…">
           <input type="hidden" name="veiculoId" value={v.id}/><input type="hidden" name="manutencaoId" value={m.id}/>
           <label>Oficina<input name="oficina" required minLength={2} maxLength={80}/></label><label>Previsão de volta (opcional)<input name="previsao" type="date" lang="pt-BR"/></label>
@@ -103,8 +111,11 @@ export default async function FichaFrotaPage({ params, searchParams }: { params:
       <details className="mais-filtros"><summary>Manutenções encerradas</summary>
       {ficha.manutencoes.filter(m => m.status === "concluida" || m.status === "cancelada").length === 0 ? <p className="muted">Ainda não há manutenção concluída.</p> :
         <div className="data-table-wrap"><table className="data-table"><thead><tr><th>Quando</th><th>O que</th><th>Situação</th><th>Oficina</th><th>Km</th><th>Custo</th></tr></thead>
-          <tbody>{ficha.manutencoes.filter(m => m.status === "concluida" || m.status === "cancelada").map(m => <tr key={m.id}><td data-label="Quando">{m.concluida_em ? fmt(m.concluida_em) : fmt(m.aberta_em)}</td>
-            <td data-label="Serviço">{m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}{m.obs ? <small> — {m.obs}</small> : null}</td><td data-label="Situação">{ROTULO_STATUS_MANUTENCAO_10A[m.status]}</td><td data-label="Oficina">{m.oficina ?? "—"}</td>
+          <tbody>{ficha.manutencoes.filter(m => m.status === "concluida" || m.status === "cancelada").map(m => <tr key={m.id}><td data-label="Quando">{m.concluida_em ? fmt(m.concluida_em) : "Encerramento sem data informada"}</td>
+            <td data-label="Serviço"><strong>OS {m.id}</strong> · {m.tipo === "preventiva" ? "Preventiva" : "Corretiva"}: {m.descricao}<div>Aberta em {fmt(m.aberta_em)}</div>
+              {m.enviada_em && <div>Enviada à oficina em {fmt(m.enviada_em)}</div>}
+              {m.obs && <div>{m.status === "cancelada" ? "Motivo do cancelamento" : "Serviço registrado"} · {m.obs}</div>}
+              {mostrarRelatos(m.id)}</td><td data-label="Situação">{ROTULO_STATUS_MANUTENCAO_10A[m.status]}</td><td data-label="Oficina">{m.oficina ?? "—"}</td>
             <td data-label="Km">{m.km?.toLocaleString("pt-BR") ?? "—"}</td><td data-label="Custo">{brl(m.custo)}</td></tr>)}</tbody></table></div>}
       </details><p>Custo total registrado: <strong>{brl(ficha.manutencoes.filter(m => m.status === "concluida").reduce((s, m) => s + (m.custo ?? 0), 0))}</strong></p>
     </div></section>}

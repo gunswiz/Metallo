@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { SessionProfile } from "@metallo/types";
-import type { FichaGestao10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
+import { relatosGestao10c, type FichaGestao10a } from "@/03_FUNCOES_E_LOGICA/Frota/contrato-10a";
 
 const estado = vi.hoisted(() => ({ role: "admin", novo: true }));
 vi.mock("next/navigation", () => ({ usePathname: () => "/frota/1", notFound: () => { throw new Error("404"); } }));
@@ -189,4 +189,20 @@ it("salvar um assunto mantém o usuário na mesma aba", async () => {
     const destination = config.destination as (data: { id: number; veiculoId: number }) => string;
     expect(destination({ id: 1, veiculoId: 1 })).toBe(`/frota/1?ok=1&aba=${aba}`);
   }
+});
+
+it("mostra o relato do período e o serviço registrado na ordem encerrada", async () => {
+  const { lerRelatosFrota10c } = await import("@/05_ACESSO_A_DADOS/Supabase/frota-10a");
+  vi.mocked(lerFichaFrota10a).mockResolvedValueOnce({ ...ficha, manutencoes: [{
+    id: 81, tipo: "corretiva", descricao: "Freio", origem: "chegada", status: "concluida", bloqueia: true,
+    aberta_em: "2026-11-01T08:00:00Z", enviada_em: "2026-11-01T10:00:00Z", concluida_em: "2026-11-02T10:00:00Z",
+    previsao: null, oficina: "Oficina teste", km: 10001, custo: 80, obs: "Pastilhas trocadas"
+  }] });
+  vi.mocked(lerRelatosFrota10c).mockResolvedValueOnce(relatosGestao10c.parse([{ manutencao_id: 81, relatos: [{
+    tipo: "chegada", quando: "2026-11-01T08:00:00Z", por: "Motorista teste", problema: "Ruído ao frear", foto: null, itens: null
+  }] }]));
+  render(await pagina());
+  const ordem = screen.getByText("OS 81").closest("tr")!;
+  expect(within(ordem).getByText("Ruído ao frear")).toBeInTheDocument();
+  expect(within(ordem).getByText(/Serviço registrado · Pastilhas trocadas/)).toBeInTheDocument();
 });
