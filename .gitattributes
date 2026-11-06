@@ -1,0 +1,3 @@
+# Fim de linha: o Git guarda tudo com LF e cada sistema usa o seu (Windows converte sozinho). Arquivos que já estão com CRLF no repositório não são mexidos.
+* text=auto
+*.sh text eol=lf
