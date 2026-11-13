@@ -10,9 +10,9 @@ export async function salvarCnh10k(_previous: unknown, formData: FormData) {
     destination: d => `/frota/condutores?funcionario=${d.employeeId}`,
     operation: (client, d) => {
       requireFrota10a();
-      return client.rpc("admin_salvar_cnh_10k" as never, { p_employee: d.employeeId, p_base: d.base,
+      return client.rpc("admin_salvar_cnh_numero" as never, { p_employee: d.employeeId, p_base: d.base,
         p_categoria: d.categoria, p_validade: d.validade, p_situacao: d.situacao,
-        p_referencia: d.referencia, p_motivo: d.motivo, p_key: d.idempotencyKey } as never);
+        p_numero: d.numero || null, p_referencia: d.referencia, p_motivo: d.motivo, p_key: d.idempotencyKey } as never);
     },
   });
 }

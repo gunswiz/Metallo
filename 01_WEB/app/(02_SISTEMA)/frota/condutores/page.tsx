@@ -37,15 +37,16 @@ export default async function CondutoresPage({ searchParams }: { searchParams: P
         {!pessoa.ativo ? <p>Funcionário inativo. Histórico disponível somente para consulta.</p> : <OperationForm key={`${pessoa.id}:${revisao}`} action={salvarCnh10k} label={atual ? "Registrar nova revisão" : "Registrar documento"}
           operationKeyScope={`metallo:frota:cnh:${profile.id}:${pessoa.id}:${revisao}`} initialOperationKey={randomUUID()} refreshOnComplete newOperationLabel={null}>
           <input type="hidden" name="employeeId" value={pessoa.id}/><input type="hidden" name="base" value={revisao}/>
+          <label>Número de registro da CNH<input name="numero" type="text" inputMode="numeric" autoComplete="off" pattern="[0-9]{11}" maxLength={11} required={!atual?.final_numero} placeholder={atual?.final_numero ? `Final ${atual.final_numero} · preencha para alterar` : "11 dígitos, incluindo zeros iniciais"}/></label>
           <label>Categoria da CNH<select name="categoria" defaultValue={atual?.categoria ?? ""} required><option value="" disabled>Selecione</option>{categoriasCnh10k.map(c => <option key={c}>{c}</option>)}</select></label>
           <label>Validade informada no documento<input type="date" name="validade" min="1900-01-01" max="2200-12-31" defaultValue={atual?.validade ?? ""} required/></label>
           <label>Situação documental<select name="situacao" defaultValue="informado"><option value="informado">Aguardando conferência</option>{profile.role === "engineer" && <option value="conferido">Conferido pelo engenheiro</option>}<option value="invalidado">Invalidado</option></select></label>
           <label>Referência interna do documento<input name="referencia" defaultValue={atual?.referencia ?? ""} minLength={3} maxLength={160} required placeholder="Ex.: pasta documental do funcionário"/></label>
-          <p className="muted">Use uma referência interna para localizar o documento. Não informe CPF nem número completo da CNH. A conferência documental não substitui a autorização de condução.</p>
+          <p className="muted">Use uma referência interna para localizar o documento. Informe o número da CNH apenas no campo de registro. A conferência documental não substitui a autorização de condução.</p>
           <label className="full">Motivo da inclusão, conferência ou correção<textarea name="motivo" minLength={10} maxLength={600} rows={3} required/></label>
         </OperationForm>}
       </div></section>
-      <section className="panel"><header className="panel-header"><h2>Histórico documental</h2></header><div className="panel-body">{data.historico.length ? <ul>{data.historico.map(h => <li key={h.id}><strong>Revisão {h.revisao} · {rotulo[h.situacao]}</strong><p>CNH {h.categoria} · validade {dia(h.validade)} · {h.referencia}</p><p>{h.autor} · {new Date(h.em).toLocaleString("pt-BR", {timeZone: "America/Fortaleza"})}<br/>{h.motivo}</p></li>)}</ul> : <p>Nenhum documento registrado.</p>}</div></section>
+      <section className="panel"><header className="panel-header"><h2>Histórico documental</h2></header><div className="panel-body">{data.historico.length ? <ul>{data.historico.map(h => <li key={h.id}><strong>Revisão {h.revisao} · {rotulo[h.situacao]}</strong><p>CNH {h.categoria}{h.final_numero ? ` · registro final ${h.final_numero}` : ""} · validade {dia(h.validade)} · {h.referencia}</p><p>{h.autor} · {new Date(h.em).toLocaleString("pt-BR", {timeZone: "America/Fortaleza"})}<br/>{h.motivo}</p></li>)}</ul> : <p>Nenhum documento registrado.</p>}</div></section>
     </>}
   </>;
 }

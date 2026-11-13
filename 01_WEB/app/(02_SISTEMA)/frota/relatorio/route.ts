@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { pdfRelatorioFrota } from "@/03_FUNCOES_E_LOGICA/Frota/relatorio-10d-pdf";
 import { can } from "@metallo/core";
 import { getSessionProfile } from "@/03_FUNCOES_E_LOGICA/Autenticacao/session";
 import { csvRelatorio10d, MES_RELATORIO_10D } from "@/03_FUNCOES_E_LOGICA/Frota/relatorio-10d";
@@ -14,7 +15,14 @@ export async function GET(request: NextRequest) {
   const mes = request.nextUrl.searchParams.get("mes") ?? "";
   if (!profile?.active || !can(profile, "equipment:write") || !recursosNovosLiberados(getSupabaseEnv().url) || !MES_RELATORIO_10D.test(mes)) return new NextResponse(null, { status: 404 });
   try {
-    return new NextResponse(csvRelatorio10d(await lerRelatorioFrota10d(mes)), { headers: {
+    const linhas = await lerRelatorioFrota10d(mes);
+    if (request.nextUrl.searchParams.get("formato") === "pdf") {
+      const bytes = await pdfRelatorioFrota(mes, linhas);
+      return new NextResponse(new Uint8Array(bytes), { headers: {
+        "Content-Type": "application/pdf", "Content-Disposition": `inline; filename="frota-${mes}.pdf"`, "Cache-Control": "private, no-store"
+      } });
+    }
+    return new NextResponse(csvRelatorio10d(linhas), { headers: {
       "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="frota-${mes}.csv"`, "Cache-Control": "private, no-store" } });
   } catch {
     return new NextResponse("Relatório indisponível. Volte e tente de novo.", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "private, no-store" } });
