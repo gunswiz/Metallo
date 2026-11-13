@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-23T14:42:51.212Z",
+  "at": "2026-11-13T13:28:02.715Z",
   "scope": "Marco 10A — frota (teste online)",
   "checks": [
     {
@@ -59,7 +59,7 @@
       "ok": true
     },
     {
-      "name": "engenheiro libera com motivo",
+      "name": "Gestão autorizada libera com motivo",
       "ok": true
     },
     {

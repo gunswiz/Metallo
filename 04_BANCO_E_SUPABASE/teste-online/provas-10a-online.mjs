@@ -18,9 +18,9 @@ const idV = (await rpc(gestor, "admin_save_veiculo_10a", { p_id: null, p_placa: 
 check("Gestão cadastra caminhão de prova", Number.isInteger(idV));
 check("placa inválida recusada", (await rpc(gestor, "admin_save_veiculo_10a", { p_id: null, p_placa: "AB", p_nome: "x1", p_modelo: "", p_ano: null, p_km: 0, p_ativo: true })).status >= 400);
 check("funcionário não cadastra caminhão", (await rpc(robo, "admin_save_veiculo_10a", { p_id: null, p_placa: "ZZZ9Z99", p_nome: "xx", p_modelo: "", p_ano: null, p_km: 0, p_ativo: true })).status >= 400);
-const itens = await rpc(robo, "my_frota_itens_10a");
+const itens = await rpc(robo, "my_frota_itens_10j", { p_veiculo: idV });
 check("app lista os 26 itens do checklist", itens.status === 200 && itens.data.length === 26);
-const todosC = itens.data.map(i => ({ codigo: i.codigo, situacao: "C", obs: "" }));
+const todosC = itens.data.map(i => ({ codigo: i.codigo, nome: i.nome, versao: i.versao, situacao: "C", obs: "" }));
 const lista = await rpc(robo, "my_frota_10a");
 check("app lista os caminhões com a situação", lista.status === 200 && lista.data.some(v => v.id === idV && v.situacao === "disponivel"));
 const saida = (v, km = 1000) => rpc(robo, "create_saida_10a", { p_veiculo: v, p_destino: "Obra Teste", p_acompanhantes: "Maria", p_km: km, p_obs: "", p_key: randomUUID() });
@@ -38,7 +38,7 @@ let ficha = (await rpc(gestor, "admin_frota_ficha_10a", { p_veiculo: idV })).dat
 check("manutenção corretiva abriu sozinha e bloqueia", ficha.veiculo.situacao === "nao_liberado" && ficha.manutencoes.some(m => m.status === "aberta" && m.bloqueia && m.origem === "checklist"));
 check("funcionário não libera caminhão", (await rpc(robo, "admin_liberar_10a", { p_veiculo: idV, p_motivo: "quero sair" })).status >= 400);
 check("liberar sem motivo é recusado", (await rpc(gestor, "admin_liberar_10a", { p_veiculo: idV, p_motivo: "" })).status >= 400);
-check("engenheiro libera com motivo", (await rpc(gestor, "admin_liberar_10a", { p_veiculo: idV, p_motivo: "Pneu trocado na hora (prova)" })).status < 300);
+check("Gestão autorizada libera com motivo", (await rpc(gestor, "admin_liberar_10a", { p_veiculo: idV, p_motivo: "Pneu trocado na hora (prova)" })).status < 300);
 check("km menor que o atual é recusado", (await saida(idV, 10)).status >= 400);
 const s = await saida(idV, 1000);
 check("saída liberada", s.status === 200 && Number.isInteger(s.data));
