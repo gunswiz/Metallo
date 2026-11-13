@@ -12,6 +12,16 @@ const pertence = (v: PainelGestao10a, filtro: string) => filtro === "inativos" ?
 const normalizar = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 const prioridade = (v: PainelGestao10a) => !v.ativo ? 4 : v.situacao === "nao_liberado" || v.situacao === "manutencao" ? 0 : v.docs_vencidos + v.planos_vencidos > 0 ? 1 : atencao(v) ? 2 : 3;
 
+function assuntoDoVeiculo(v?: PainelGestao10a) {
+  if (!v) return "checklists";
+  if (v.situacao === "nao_liberado" || v.situacao === "manutencao" || v.manutencoes_abertas) return "manutencao";
+  if (v.docs_vencidos) return "documentos";
+  if (v.planos_vencidos) return "planos";
+  if (v.docs_breve) return "documentos";
+  if (v.planos_breve) return "planos";
+  return "checklists";
+}
+
 export function PainelFrota({ frota }: { frota: PainelGestao10a[] }) {
   const [filtro, setFiltro] = useState<string>("todos"), [busca, setBusca] = useState("");
   const [selecionado, setSelecionado] = useState<number | null>(null);
@@ -19,7 +29,7 @@ export function PainelFrota({ frota }: { frota: PainelGestao10a[] }) {
   const atual = visiveis.find(v => v.id === selecionado) ?? visiveis[0];
   const ativos = frota.filter(v => v.ativo);
   const bloqueados = ativos.filter(v => v.situacao === "nao_liberado" || v.situacao === "manutencao").length;
-  const proximaAba = atual?.situacao === "nao_liberado" || atual?.situacao === "manutencao" || atual?.manutencoes_abertas ? "manutencao" : atual?.docs_vencidos ? "documentos" : atual?.planos_vencidos ? "planos" : "checklists";
+  const proximaAba = assuntoDoVeiculo(atual);
   const assunto = { manutencao: "Revisar manutenção", documentos: "Regularizar documentos", planos: "Consultar preventiva", checklists: "Conferir inspeções" };
   return <section className={styles.panel} aria-label="Veículos da frota">
     <div className={styles.overview}><div><span className={styles.eyebrow}>CONTROLE OPERACIONAL</span><h2>Uma visão de toda a operação.</h2><p>Inspeção, viagem e manutenção conectadas ao histórico de cada veículo.</p></div>

@@ -48,6 +48,10 @@ describe("Início com prioridades", () => {
 });
 
 describe("Frota da Gestão", () => {
+  it("abre a preventiva próxima antes do vencimento", () => {
+    render(<PainelFrota frota={[painel({ planos_breve: 1 })]}/>);
+    expect(screen.getByRole("link", { name: "Consultar preventiva" })).toHaveAttribute("href", "/frota/1?aba=planos");
+  });
   it("seleciona o resumo e leva ao assunto pendente sem sair da lista", () => {
     render(<PainelFrota frota={[painel(), painel({ id: 2, nome: "Veículo com documento", docs_vencidos: 2 })]}/>);
     const resumo = screen.getByRole("complementary", { name: "Resumo do veículo selecionado" });
