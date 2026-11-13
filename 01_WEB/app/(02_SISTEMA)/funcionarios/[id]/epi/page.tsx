@@ -69,6 +69,7 @@ export default async function EmployeeEpiReportPage({ params, searchParams }:
         <ol className="list">{supplies.map((row, index) => <li className="list-row" key={index}><span className="list-row-main">
           <strong>{type === "current" ? row.item : row.title}</strong><span>{reportDate(row.at)}{type === "history" && <> · {row.item}</>}
             {" · "}CA: {row.ca} · {row.quantity}</span>
+          {report.type === "history" && <span>{row.situacaoAtual}</span>}
           <span>Responsável pela entrega: {row.responsible}</span>
         </span></li>)}</ol>}
       <p className="muted">O histórico impresso apresenta entregas e substituições. Solicitações, confirmações e divergências continuam nos registros do sistema.</p>

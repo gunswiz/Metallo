@@ -124,7 +124,7 @@ export const epiReportResponsible = (row: EpiReportPayload["deliveries"][number]
     : "Responsável pela entrega: não registrado nominalmente no histórico.";
 
 export type EpiPrintedSupply = { title: "ENTREGA" | "ENTREGA PARA TROCA" | "SUBSTITUIÇÃO"; at: string;
-  item: string; ca: string; quantity: string; responsible: string; receipt: string; code: string | null };
+  item: string; ca: string; quantity: string; responsible: string; situacaoAtual: string; receipt: string; code: string | null };
 
 // 3M: código de verificação em grupos de 4 (64 caracteres), fácil de ler e conferir em voz alta.
 export function epiVerificationCode(code: string | null | undefined) {
@@ -181,6 +181,8 @@ export function epiPrintedSupplies(report: EpiReport): EpiPrintedSupply[] {
       const ca = row.ca?.trim().replace(/^CA\s*[-:]?\s*(\d+)$/i, "$1") || "Não registrado";
       return { title: replacement ? "SUBSTITUIÇÃO" : forReplacement ? "ENTREGA PARA TROCA" : "ENTREGA", at: row.delivered_at,
         item: row.item_name, ca, quantity: epiReportQuantity(row.quantity, row.unit),
+        situacaoAtual: row.status === "active" ? "Em uso no cadastro" :
+          (statusLabel[row.status] ?? "Entrega encerrada") + (row.closed_at ? ` em ${reportDate(row.closed_at)}` : ""),
         responsible: row.responsible_name_snapshot?.trim() || "Não registrado",
         // Tamanho/variante (M, G, GG, 42…) fica só na trilha técnica: decisão do responsável para não poluir a via impressa.
         receipt: epiReceiptLabel(row.group_id, row.group_id ? latest.get(row.group_id) : null),

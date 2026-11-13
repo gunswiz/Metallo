@@ -79,6 +79,7 @@ export async function buildEpiReport3ePdf(report: EpiReport, logoBytes?: Uint8Ar
       report.type === "history" ? `EPI: ${row.item}` : "",
       `CA: ${row.ca}  |  Quantidade: ${row.quantity}`,
       `Responsável pela entrega: ${row.responsible}`,
+      report.type === "history" ? row.situacaoAtual : "",
       row.receipt,
       // 3M: código gravado na hora da confirmação; confirmações antigas por senha não têm (não se inventa depois).
       row.code ? `Código de verificação: ${epiVerificationCode(row.code)}` :

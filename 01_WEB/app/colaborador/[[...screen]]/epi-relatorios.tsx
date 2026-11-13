@@ -78,6 +78,7 @@ function PersonalReportContent({ read, readAwareness }: { read: () => Promise<Ep
         <ol className={styles.epiHistory}>{supplies.map((row, index) => <li key={index}>
           <strong>{type === "current" ? row.item : row.title}</strong>
           <p>{reportDate(row.at)}{type === "history" && <> · {row.item}</>} · CA: {row.ca} · {row.quantity}</p>
+          {type === "history" && <p>{row.situacaoAtual}</p>}
           <p>Responsável pela entrega: {row.responsible}</p></li>)}</ol>}
       <button type="button" onClick={() => void download()} disabled={!!busy} aria-busy={!!busy} className={styles.primary}>
         {busy || (type === "current" ? "Baixar minha ficha em PDF" : "Baixar meu histórico em PDF")}

@@ -148,6 +148,14 @@ describe("Marco 3E - ficha e histórico", () => {
     const pdf = await PDFDocument.load(await buildEpiReport3ePdf(report));
     expect(pdf.getPageCount()).toBeGreaterThan(1);
   });
+  it("distingue a devolução do original e a situação do substituto no histórico", () => {
+    const raw = structuredClone(payload);
+    raw.deliveries[0].status = "returned";
+    raw.deliveries[0].closed_at = "2026-09-16T12:00:00Z";
+    const linhas = epiPrintedSupplies(projectEpiReport(raw, "history", all));
+    expect(linhas[0].situacaoAtual).toBe(`Devolução registrada em ${reportDate(raw.deliveries[0].closed_at)}`);
+    expect(linhas[1].situacaoAtual).toBe("Em uso no cadastro");
+  });
   it("via impressa contém apenas fornecimentos sem modificar a trilha completa", async () => {
     const raw = structuredClone(payload);
     const report = projectEpiReport(raw, "history", all);
@@ -155,10 +163,10 @@ describe("Marco 3E - ficha e histórico", () => {
     const printed = epiPrintedSupplies(report);
     expect(printed).toEqual([
       { title: "ENTREGA", at: raw.deliveries[0].delivered_at, item: "Capacete sintético", ca: "12345",
-        quantity: "1 unidade", responsible: "Não registrado",
+        quantity: "1 unidade", responsible: "Não registrado", situacaoAtual: "Em uso no cadastro",
         receipt: `Recebimento confirmado pelo funcionário no portal em ${reportDate("2026-01-10T13:00:00Z")}`, code: null },
       { title: "ENTREGA PARA TROCA", at: raw.deliveries[1].delivered_at, item: "Capacete sintético", ca: "67890",
-        quantity: "2 unidades", responsible: "Não registrado",
+        quantity: "2 unidades", responsible: "Não registrado", situacaoAtual: "Em uso no cadastro",
         receipt: "Divergência resolvida; confirmação pendente", code: null },
     ]);
     expect(JSON.stringify(printed)).not.toMatch(/00000000-|Grupo 00|Entrega 00|DESGASTE|TAMANHO|L-9|Marca de teste/);
