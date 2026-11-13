@@ -3,7 +3,7 @@ import { z } from "zod";
 export const categoriasCnh10k = ["A", "B", "C", "D", "E", "AB", "AC", "AD", "AE"] as const;
 const validade = z.iso.date().refine(v => v >= "1900-01-01" && v <= "2200-12-31", "Informe uma data válida.");
 export const cnhForm10k = z.object({
-  numero: z.string().regex(/^([0-9]{11})?$/, "Informe os 11 d�gitos do registro da CNH.").optional(),
+  numero: z.string().regex(/^([0-9]{11})?$/, "Informe os 11 dígitos do registro da CNH.").optional(),
   employeeId: z.uuid(), base: z.coerce.number().int().min(0),
   categoria: z.enum(categoriasCnh10k), validade,
   situacao: z.enum(["informado", "conferido", "invalidado"]),
