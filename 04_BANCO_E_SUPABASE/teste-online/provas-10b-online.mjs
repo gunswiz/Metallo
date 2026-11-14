@@ -26,8 +26,8 @@ async function abrir(tok, id, origem = ORIGEM_GESTAO) {
 const robo = await login(cred.colaborador.robo), maria = await login(cred.colaborador.maria), gestor = await login(cred.gestao);
 const sufixo = randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase(), placa = "PRB" + sufixo;
 const idV = (await rpc(gestor, "admin_save_veiculo_10a", { p_id: null, p_placa: placa, p_nome: "Munck foto " + sufixo, p_modelo: "teste", p_ano: 2020, p_km: 500, p_ativo: true })).data;
-const itens = (await rpc(robo, "my_frota_itens_10a")).data;
-const respostas = (n, extra = {}) => itens.map(i => i.codigo === 8 ? { codigo: 8, situacao: "N", obs: "pneu careca", ...extra } : { codigo: i.codigo, situacao: "C", obs: "" });
+const itens = (await rpc(robo, "my_frota_itens_10j", { p_veiculo: idV })).data;
+const respostas = (n, extra = {}) => itens.map(i => i.codigo === 8 ? { codigo: 8, nome: i.nome, versao: i.versao, situacao: "N", obs: "pneu careca", ...extra } : { codigo: i.codigo, nome: i.nome, versao: i.versao, situacao: "C", obs: "" });
 
 const f1 = await enviar(robo, idV, PNG);
 check("foto PNG enviada pelo funcionário", f1.status === 201 && /^[0-9a-f-]{36}$/.test(f1.data.id ?? ""), JSON.stringify(f1));

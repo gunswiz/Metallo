@@ -26,8 +26,8 @@ async function abrir(tok, id, origem = ORIGEM_GESTAO) {
 const robo = await login(cred.colaborador.robo), maria = await login(cred.colaborador.maria), gestor = await login(cred.gestao);
 const sufixo = randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase(), placa = "PRB" + sufixo;
 const idV = (await rpc(gestor, "admin_save_veiculo_10a", { p_id: null, p_placa: placa, p_nome: "Munck foto " + sufixo, p_modelo: "teste", p_ano: 2020, p_km: 500, p_ativo: true })).data;
-const itens = (await rpc(robo, "my_frota_itens_10a")).data;
-const respostas = (n, extra = {}) => itens.map(i => i.codigo === n ? { codigo: n, situacao: "N", obs: "pneu careca", ...extra } : { codigo: i.codigo, situacao: "C", obs: "" });
+const itens = (await rpc(robo, "my_frota_itens_10j", { p_veiculo: idV })).data;
+const respostas = (n, extra = {}) => itens.map(i => i.codigo === n ? { codigo: n, nome: i.nome, versao: i.versao, situacao: "N", obs: "pneu careca", ...extra } : { codigo: i.codigo, nome: i.nome, versao: i.versao, situacao: "C", obs: "" });
 async function avisar(tok, veiculo, origem = ORIGEM_APP) {
   const r = await fetch(FN, { method: "POST", headers: { Authorization: `Bearer ${tok}`, apikey: KEY, Origin: origem, "Content-Type": "application/json" }, body: JSON.stringify({ acao: "avisar", veiculo_id: veiculo }) });
   return { status: r.status, data: await r.json().catch(() => ({})) };
