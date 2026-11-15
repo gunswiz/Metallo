@@ -112,7 +112,7 @@ export function PedidosObra({
               <summary>Histórico do pedido</summary>
               {order.events.map((e) => (
                 <p key={e.id}>
-                  {orderStatusLabels[e.event] ?? e.event}
+                  {e.event === "received" ? "Recebimento registrado" : (orderStatusLabels[e.event] ?? e.event)}
                   {e.quantity ? ` · ${e.quantity} un` : ""} · fato:{" "}
                   {formatDateTime(e.occurred_at)} · lançamento:{" "}
                   {formatDateTime(e.recorded_at)} {e.note}

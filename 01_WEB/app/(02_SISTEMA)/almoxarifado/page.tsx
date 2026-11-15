@@ -13,9 +13,28 @@ const modules = [
 
 export default async function WarehousePage() {
   const profile = await requireProfile();
+  const catalogs = modules.filter((module) => can(profile, module.capability));
   return (
-    <><PageHeader eyebrow="CENTRO DE CONTROLE" title="Almoxarifado" description="Ponto único para consultar e operar itens sem misturar seus controles." />
-      <section className="metric-grid">{modules.filter((module) => can(profile, module.capability)).map(({ icon: Icon, ...module }) => <Link className="metric-card" href={module.href} key={module.href}><span className="metric-icon"><Icon size={18} /></span><strong className="metric-link-title">{module.title}</strong><span>{module.description}</span></Link>)}</section>
+    <>
+      <PageHeader eyebrow="GESTÃO DE ESTOQUE" title="Almoxarifado" description="Consulte o saldo nas obras, acompanhe as movimentações e abra a ficha de cada item." />
+      {can(profile, "inventory:read") && (
+        <nav aria-label="Consultas de estoque" className="toolbar">
+          <Link href="/estoque" className="button primary">Consultar estoque das obras</Link>
+          <Link href="/movimentacoes" className="button">Ver histórico de movimentações</Link>
+        </nav>
+      )}
+      <section aria-labelledby="catalogos-almoxarifado">
+        <h2 id="catalogos-almoxarifado">Catálogos</h2>
+        <div className="metric-grid">
+          {catalogs.map(({ icon: Icon, href, title, description }) => (
+            <Link className="metric-card" href={href} key={href}>
+              <span className="metric-icon" aria-hidden="true"><Icon size={20} /></span>
+              <strong className="metric-link-title">{title}</strong>
+              <span>{description}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </>
   );
 }
