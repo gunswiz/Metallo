@@ -28,6 +28,11 @@ export async function signatureRequest3f<T>(token: string, body: object, signal?
     redirect: "error", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(body), signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) :
       AbortSignal.timeout(15000) });
+  if (!response.ok && "action" in body && body.action === "register_finish") {
+    const result = await response.json().catch(() => null);
+    if (result?.code === "senha_incorreta") throw new Error("Senha incorreta.");
+    if (result?.code === "muitas_tentativas") throw new Error("Muitas tentativas. Aguarde 15 minutos.");
+  }
   if (!response.ok) throw new Error(navigator.onLine ?
     "Não foi possível validar. Atualize seus dados e tente novamente." :
     "Sem conexão. Nenhuma assinatura foi registrada.");
@@ -45,7 +50,7 @@ export function cancelRegistrationCeremony3f() {
   WebAuthnAbortService.cancelCeremony();
 }
 
-export async function registerPasskey3f(getToken: () => Promise<string>, ceremony?: RegistrationCeremony3f) {
+export async function registerPasskey3f(getToken: () => Promise<string>, ceremony: RegistrationCeremony3f | undefined, password: string) {
   ceremony?.onStart();
   let cancelable = true;
   const endCancelableStage = () => {
@@ -62,7 +67,7 @@ export async function registerPasskey3f(getToken: () => Promise<string>, ceremon
     if (ceremony?.isCancelled()) throw new Error("Tentativa cancelada.");
     endCancelableStage();
     return await signatureRequest3f<{ saved: true }>(token,
-      { action: "register_finish", challenge_id: start.challenge_id, response });
+      { action: "register_finish", challenge_id: start.challenge_id, response, password });
   } finally { endCancelableStage(); }
 }
 
@@ -87,10 +92,10 @@ export async function prepareRegistration3f(getToken: () => Promise<string>) {
   const start = await signatureRequest3f<Omit<PreparedRegistration3f, "token">>(token, { action: "register_start" });
   return { ...start, token };
 }
-export async function finishRegistration3f(start: PreparedRegistration3f) {
+export async function finishRegistration3f(start: PreparedRegistration3f, password: string) {
   const response = await startRegistration({ optionsJSON: start.options });
   return signatureRequest3f<{ saved: true }>(start.token,
-    { action: "register_finish", challenge_id: start.challenge_id, response });
+    { action: "register_finish", challenge_id: start.challenge_id, response, password });
 }
 export function biometricSupported() {
   return typeof window !== "undefined" && window.isSecureContext && typeof window.PublicKeyCredential === "function";

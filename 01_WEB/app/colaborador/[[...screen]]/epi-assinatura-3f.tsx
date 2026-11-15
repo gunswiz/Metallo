@@ -81,17 +81,19 @@ export function ConfirmarRecebimento({ group, getAccessToken, sharedDevice = fal
     } finally { if (alive.current) setBusy(false); }
   }
   async function registerFingerprint() {
-    if (!registration || busy) return;
+    if (!registration || busy || !password) return;
     setBusy(true); setError("");
     try {
-      await finishRegistration3f(registration);
+      await finishRegistration3f(registration, password);
+      setPassword("");
       if (!alive.current) return;
       setJustRegistered(true); setRegistration(null);
       const prepared = await prepareSignature3f(getAccessToken!, group.group_id);
       if (alive.current) { setSign(prepared); setPhase("digital"); }
-    } catch {
+    } catch (cause) {
       if (!alive.current) return;
-      setError("A digital não foi cadastrada. Toque de novo ou use sua senha.");
+      setPassword("");
+      setError(cause instanceof Error && /^(Senha incorreta|Muitas tentativas)/.test(cause.message) ? cause.message : "A digital não foi cadastrada. Toque de novo ou use sua senha.");
       setRegistration(null);
       try { const again = await prepareRegistration3f(getAccessToken!); if (alive.current) setRegistration(again); }
       catch { if (alive.current) setPhase("senha"); }
@@ -133,8 +135,9 @@ export function ConfirmarRecebimento({ group, getAccessToken, sharedDevice = fal
         <KeyRound aria-hidden="true" size={22}/>Usar minha senha</button>}
     </div>}
     {phase === "cadastrar" && <div className={styles.bigActions}>
+      <label>Senha da conta<input type="password" autoComplete="current-password" maxLength={200} value={password} onChange={e => setPassword(e.target.value)} /></label>
       <p className={styles.wait}>Na primeira vez, o celular vai pedir sua digital para guardar. Depois é só tocar.</p>
-      <button type="button" className={styles.bigOk} onClick={() => void registerFingerprint()} disabled={busy || !registration}>
+      <button type="button" className={styles.bigOk} onClick={() => void registerFingerprint()} disabled={busy || !registration || !password}>
         <Fingerprint aria-hidden="true" size={30}/>{busy ? "Aguardando a digital…" : "Usar minha digital"}</button>
       {confirmWithPassword && <button type="button" className={styles.bigSoft} onClick={() => { setError(""); setPhase("senha"); }} disabled={busy}>
         <KeyRound aria-hidden="true" size={22}/>Usar minha senha</button>}

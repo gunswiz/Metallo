@@ -99,14 +99,18 @@ export function limparRecusadas(quem: string) {
   return gravar(chaveRecusadas(quem), lerRecusadas(quem).filter(r => temRelatoDeDefeito(r.registro)));
 }
 
+const diaFortaleza = (d: Date) => d.toLocaleDateString("sv-SE", { timeZone: "America/Fortaleza" });
+function checklistVencido(p: Pendente) {
+  return p.payload.tipo === "checklist" && diaFortaleza(new Date(p.criado)) !== diaFortaleza(new Date());
+}
+
 /** Última lista de caminhões/itens conferida com o servidor, para abrir a tela sem sinal. */
 export function lerCache(quem: string): Cache | null {
   const c = ler<Cache | null>(chaveCache(quem), null);
   if (!c || !Array.isArray(c.caminhoes) || !Array.isArray(c.itens) || !Array.isArray(c.viagens)) return null;
   const data = new Date(c.em), hoje = new Date();
   if (!Number.isFinite(data.getTime()) || data > hoje || hoje.getTime() - data.getTime() > 24 * 3600 * 1000) return null;
-  const dia = (d: Date) => d.toLocaleDateString("sv-SE", { timeZone: "America/Fortaleza" });
-  return dia(data) === dia(hoje) ? c : { ...c, caminhoes: c.caminhoes.map(v => ({ ...v, checklist_hoje: null })) };
+  return diaFortaleza(data) === diaFortaleza(hoje) ? c : { ...c, caminhoes: c.caminhoes.map(v => ({ ...v, checklist_hoje: null })) };
 }
 export function gravarCache(quem: string, c: Omit<Cache, "em">) { gravar(chaveCache(quem), { ...c, em: new Date().toISOString() }); }
 
@@ -252,6 +256,7 @@ async function subirFotos(acoes: AcoesFila, quem: string, p: Pendente): Promise<
 
 /** Faz o envio de verdade de um registro (usado ao enviar na hora e ao esvaziar a fila). */
 export async function executarPendente(acoes: AcoesFila, quem: string, original: Pendente, doFormulario = false): Promise<string> {
+  if (checklistVencido(original)) throw new Error("checklist_do_dia_necessario");
   let entrada = original;
   if (doFormulario) {
     const salvo = lerFila(quem).find(p => p.id === original.id);
@@ -299,7 +304,7 @@ export async function sincronizarFila(acoes: AcoesFila, quem: string, manual = f
   const bloqueados = new Set<number>();
   try {
     for (const p of [...lerFila(quem)].sort((a, b) => a.criado.localeCompare(b.criado))) {
-      if (bloqueados.has(p.veiculo) || (p.revisar && !manual)) { bloqueados.add(p.veiculo); continue; }
+      if (!checklistVencido(p) && (bloqueados.has(p.veiculo) || (p.revisar && !manual))) { bloqueados.add(p.veiculo); continue; }
       try {
         const texto = await executarPendente(acoes, quem, p);
         r.enviados.push({ nome: p.nome, texto });

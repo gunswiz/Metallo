@@ -12,6 +12,7 @@ const date = (value: string) => new Intl.DateTimeFormat("pt-BR", {
 
 export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<string> }) {
   const [state, setState] = useState<SignatureState3f | null>(null);
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [canCancel, setCanCancel] = useState(false);
   const cancelableAttempt = useRef(false);
@@ -36,7 +37,7 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
     return () => { active = false; };
   }, [getToken]);
   async function register() {
-    if (busy || !state) return;
+    if (busy || !state || !password) return;
     const currentAttempt = ++attempt.current;
     const controller = new AbortController();
     requestController.current = controller;
@@ -51,7 +52,8 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
           cancelableAttempt.current = false; setCanCancel(false); } },
         isCancelled: () => attempt.current !== currentAttempt,
         signal: controller.signal,
-      });
+      }, password);
+      setPassword("");
       if (attempt.current !== currentAttempt) return;
       try {
         await refresh();
@@ -61,7 +63,7 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
       }
     } catch (cause) {
       if (attempt.current !== currentAttempt) return;
-      setError(cause instanceof Error && (/^Este navegador|^Abra a prévia/.test(cause.message)) ? cause.message :
+      setError(cause instanceof Error && (/^Senha incorreta|^Muitas tentativas|^Este navegador|^Abra a prévia/.test(cause.message)) ? cause.message :
         "Cadastro não concluído. Se recusou a janela do Windows, você pode tentar novamente. Nenhuma credencial foi ativada.");
     } finally { if (attempt.current === currentAttempt) {
       cancelableAttempt.current = false; requestController.current = null;
@@ -109,8 +111,9 @@ export function AssinaturaSeguranca3f({ getToken }: { getToken: () => Promise<st
     </ul>}
     {state?.methods.filter(method => method.revoked_at).length ?
       <p className={styles.signatureNote}>Métodos revogados: {state.methods.filter(method => method.revoked_at).length}. As confirmações anteriores permanecem registradas.</p> : null}
+    <label>Senha da conta<input type="password" autoComplete="current-password" maxLength={200} value={password} onChange={e => setPassword(e.target.value)} /></label>
     <div className={styles.personalActions}>
-      <button type="button" disabled={busy || !state} onClick={() => void register()}>{busy ? "Aguarde…" : active.length ? "Adicionar outro dispositivo" : error ? "Tentar ativar novamente" : "Ativar proteção"}</button>
+      <button type="button" disabled={busy || !state || !password} onClick={() => void register()}>{busy ? "Aguarde…" : active.length ? "Adicionar outro dispositivo" : error ? "Tentar ativar novamente" : "Ativar proteção"}</button>
       {canCancel && <button type="button" onClick={cancelRegistration}>Cancelar tentativa</button>}
       {(error || initialError) && <button type="button" disabled={busy} onClick={() => void reloadMethods()}>Atualizar métodos</button>}
     </div>

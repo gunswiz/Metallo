@@ -24,7 +24,11 @@ function transacaoFoto(loja: object, concluir = true) {
   return transacao;
 }
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-01T12:00:00Z"));
+});
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers(); });
 
 describe("fila da frota sem internet (10D)", () => {
@@ -225,17 +229,17 @@ describe("fila da frota sem internet (10D)", () => {
     expect(api.saida).not.toHaveBeenCalled();
   });
   it("guarda por funcionário, sem duplicar a mesma chave, e respeita o limite", () => {
-    expect(guardarNaFila(quem, saida("a", "2026-10-24T10:00:00Z"))).toBe(true);
-    expect(guardarNaFila(quem, saida("a", "2026-10-24T10:00:00Z"))).toBe(true);
+    expect(guardarNaFila(quem, saida("a", "2026-11-01T10:00:00Z"))).toBe(true);
+    expect(guardarNaFila(quem, saida("a", "2026-11-01T10:00:00Z"))).toBe(true);
     expect(lerFila(quem)).toHaveLength(1);
     expect(lerFila("outra-pessoa")).toHaveLength(0);
-    for (let i = 0; i < LIMITE_FILA_10D; i++) guardarNaFila(quem, saida("x" + i, "2026-10-24T11:00:00Z"));
-    expect(guardarNaFila(quem, saida("estoura", "2026-10-24T12:00:00Z"))).toBe(false);
+    for (let i = 0; i < LIMITE_FILA_10D; i++) guardarNaFila(quem, saida("x" + i, "2026-11-01T11:00:00Z"));
+    expect(guardarNaFila(quem, saida("estoura", "2026-11-01T12:00:00Z"))).toBe(false);
   });
   it("envia na ordem em que foram feitos e esvazia a fila", async () => {
     const api = acoes();
-    guardarNaFila(quem, saida("s1", "2026-10-24T10:05:00Z"));
-    guardarNaFila(quem, pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-10-24T10:00:00Z"));
+    guardarNaFila(quem, saida("s1", "2026-11-01T10:05:00Z"));
+    guardarNaFila(quem, pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-11-01T10:00:00Z"));
     const r = await sincronizarFila(api, quem);
     expect(api.ordem).toEqual(["checklist:c1", "saida:s1"]);
     expect(r.enviados).toHaveLength(2);
@@ -244,8 +248,8 @@ describe("fila da frota sem internet (10D)", () => {
   it("para na falta de sinal e mantém o que não foi enviado", async () => {
     const api = acoes();
     api.saida = vi.fn(async () => { throw new Error("Failed to fetch"); });
-    guardarNaFila(quem, saida("s1", "2026-10-24T10:00:00Z"));
-    guardarNaFila(quem, saida("s2", "2026-10-24T10:01:00Z"));
+    guardarNaFila(quem, saida("s1", "2026-11-01T10:00:00Z"));
+    guardarNaFila(quem, saida("s2", "2026-11-01T10:01:00Z"));
     const r = await sincronizarFila(api, quem);
     expect(api.saida).toHaveBeenCalledTimes(1);
     expect(r.restam).toBe(2);
@@ -254,8 +258,8 @@ describe("fila da frota sem internet (10D)", () => {
   it("erro de regra guarda conteúdo recusado sem travar outro veículo", async () => {
     const api = acoes();
     api.saida = vi.fn(async () => { throw new Error("veiculo_em_uso"); });
-    guardarNaFila(quem, saida("s1", "2026-10-24T10:00:00Z"));
-    guardarNaFila(quem, { ...pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-10-24T10:02:00Z"), veiculo: 2 });
+    guardarNaFila(quem, saida("s1", "2026-11-01T10:00:00Z"));
+    guardarNaFila(quem, { ...pend("c1", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-11-01T10:02:00Z"), veiculo: 2 });
     const r = await sincronizarFila(api, quem);
     expect(r.recusados).toHaveLength(1);
     expect(lerRecusadas(quem)[0].motivo).toBe("Este veículo já está na rua.");
@@ -304,6 +308,19 @@ describe("fila da frota sem internet (10D)", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("quota"); });
     await sincronizarFila(api, quem);
     expect(lerFila(quem)).toHaveLength(1);
+  });
+  it("recusa checklist da véspera à meia-noite de Fortaleza, inclusive marcado para revisão", async () => {
+    vi.setSystemTime(new Date("2026-11-02T03:00:00Z"));
+    const api = acoes();
+    const antigo = pend("ontem", { tipo: "checklist", local: "", obs: "", respostas: [] }, "2026-11-02T02:59:59Z");
+    guardarNaFila(quem, { ...antigo, revisar: true });
+    const resultado = await sincronizarFila(api, quem);
+    expect(resultado.recusados.map(r => r.id)).toEqual(["ontem"]);
+    expect(lerFila(quem)).toHaveLength(0);
+    expect(api.checklist).not.toHaveBeenCalled();
+    guardarNaFila(quem, { ...antigo, id: "hoje", criado: "2026-11-02T03:00:00Z" });
+    await sincronizarFila(api, quem);
+    expect(api.ordem).toEqual(["checklist:hoje"]);
   });
   it("retira liberação de ontem e rejeita cache antigo ou inválido", () => {
     vi.useFakeTimers(); vi.setSystemTime(new Date("2026-11-01T11:00:00Z"));

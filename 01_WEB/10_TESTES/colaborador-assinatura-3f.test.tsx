@@ -84,6 +84,7 @@ it("cadastro é opcional, revogação preserva registro histórico e não mostra
     render(<AssinaturaSeguranca3f getToken={getToken}/>);
     expect(await screen.findByText("Não configurada")).toBeInTheDocument();
     expect(screen.getByText(/Ativar é uma escolha sua/)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Senha da conta"), { target: { value: "senha-teste" } });
     fireEvent.click(screen.getByRole("button", { name: "Ativar proteção" }));
     expect(await screen.findByText("Proteção ativada")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Revogar método" }));
@@ -110,6 +111,7 @@ it("recusa do Windows libera uma nova tentativa sem recarregar a página", async
   try {
     render(<AssinaturaSeguranca3f getToken={getToken}/>);
     expect(await screen.findByText("Não configurada")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Senha da conta"), { target: { value: "senha-teste" } });
     fireEvent.click(screen.getByRole("button", { name: "Ativar proteção" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("você pode tentar novamente");
     expect(screen.getByRole("button", { name: "Tentar ativar novamente" })).toBeEnabled();
@@ -138,6 +140,7 @@ it("tentativa pendente pode ser cancelada desde o início e o botão volta", asy
   try {
     render(<AssinaturaSeguranca3f getToken={getToken}/>);
     expect(await screen.findByText("Não configurada")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Senha da conta"), { target: { value: "senha-teste" } });
     fireEvent.click(screen.getByRole("button", { name: "Ativar proteção" }));
     fireEvent.click(await screen.findByRole("button", { name: "Cancelar tentativa" }));
     expect(cancelRegistrationCeremony3f).toHaveBeenCalledOnce();
@@ -159,7 +162,7 @@ it("cancelamento enquanto obtém a sessão não envia desafio ao servidor", asyn
   const fetchSpy = vi.spyOn(globalThis, "fetch");
   const pending = actual.registerPasskey3f(() => new Promise(resolve => { resolveToken = resolve; }), {
     onStart: vi.fn(), onEnd: vi.fn(), isCancelled: () => cancelled,
-  });
+  }, "senha-teste");
   cancelled = true;
   resolveToken("jwt-sintetico-do-teste");
   try {
@@ -178,6 +181,7 @@ it("falha ao consultar métodos não informa falsamente que não há credencial"
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Atualizar métodos" }));
   expect(await screen.findByText("Não configurada")).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText("Senha da conta"), { target: { value: "senha-teste" } });
   expect(screen.getByRole("button", { name: "Ativar proteção" })).toBeEnabled();
 });
 
@@ -237,10 +241,12 @@ it("sem digital cadastrada: cadastra ali mesmo (sem ir ao Perfil) e depois um to
   const onDone = vi.fn();
   render(<ConfirmarRecebimento group={pendingGroup} getAccessToken={getToken} confirmWithPassword={vi.fn()} onDone={onDone} onClose={vi.fn()}/>);
   const register = await screen.findByRole("button", { name: "Usar minha digital" });
+  expect(register).toBeDisabled();
+  fireEvent.change(screen.getByLabelText("Senha da conta"), { target: { value: "senha-teste" } });
   await waitFor(() => expect(register).toBeEnabled());
   expect(screen.queryByRole("link")).not.toBeInTheDocument();
   fireEvent.click(register);
-  expect(finishRegistration3f).toHaveBeenCalledWith(registration);
+  expect(finishRegistration3f).toHaveBeenCalledWith(registration, "senha-teste");
   expect(await screen.findByText("Digital cadastrada! Agora toque mais uma vez para confirmar.")).toBeInTheDocument();
   expect(onDone).not.toHaveBeenCalled();
   const confirm = screen.getByRole("button", { name: "Confirmar com a digital" });

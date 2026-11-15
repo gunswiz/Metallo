@@ -22,7 +22,7 @@ const authenticationResponse = webauthn.extend({ response: z.object({
 const payload = z.discriminatedUnion("action", [
   z.object({ action: z.literal("state") }).strict(),
   z.object({ action: z.literal("register_start") }).strict(),
-  z.object({ action: z.literal("register_finish"), challenge_id: id, response: registrationResponse }).strict(),
+  z.object({ action: z.literal("register_finish"), challenge_id: id, response: registrationResponse, password: z.string().min(1).max(200).optional() }).strict(),
   z.object({ action: z.literal("sign_start"), group_id: id, credential_id: credential.optional() }).strict(),
   z.object({ action: z.literal("sign_finish"), challenge_id: id, response: authenticationResponse }).strict(),
   z.object({ action: z.literal("revoke"), credential_id: credential }).strict(),

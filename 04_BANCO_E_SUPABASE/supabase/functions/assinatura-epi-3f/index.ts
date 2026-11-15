@@ -150,7 +150,8 @@ function registerStart(token: string) {
   });
 }
 
-function registerFinish(token: string, challengeId: string, response: RegistrationResponseJSON) {
+async function registerFinish(token: string, challengeId: string, response: RegistrationResponseJSON, password: string) {
+  await verifyAccountPassword(token, password);
   return withActor(token, async (tx, a) => {
     const challenge = await pendingChallenge(tx, a, challengeId, tokenHash(token), "register");
     const check = await verifyRegistrationResponse({ response, expectedChallenge: challenge.challenge,
@@ -248,26 +249,30 @@ function revoke(token: string, credentialId: string) {
 
 // Marco 3J: confirmação com a SENHA da conta (para quem não usa digital ou está no aparelho do almoxarifado).
 // A senha é conferida no Auth; a sessão criada para conferir é encerrada na hora. Limite: 5 erros em 15 minutos.
-async function passwordConfirm(token: string, groupId: string, password: string, key: string) {
-  const who = await withActor(token, async (tx, a) => {
+async function verifyAccountPassword(token: string, password: string) {
+  const valid = await withActor(token, async (tx, a) => {
+    await q(tx, "select pg_advisory_xact_lock(hashtextextended($1::text, 31415))", [a.accountId]);
     const [row] = await q<{ email: string }>(tx, "select email from auth.users where id=$1::text::uuid", [a.accountId]);
     const [fails] = await q<{ n: string }>(tx, `select count(*)::text n from private.epi_tentativa_senha_3j
       where account_id=$1::text::uuid and not ok and at>clock_timestamp()-interval '15 minutes'`, [a.accountId]);
     if (Number(fails.n) >= 5) throw new Error("muitas_tentativas");
-    return { actor: a, email: row?.email ?? "" };
+    const url = Deno.env.get("SUPABASE_URL")!, anon = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const check = await fetch(`${url}/auth/v1/token?grant_type=password`, { method: "POST", signal: AbortSignal.timeout(8000),
+      headers: { apikey: anon, "Content-Type": "application/json" }, body: JSON.stringify({ email: row?.email ?? "", password }) });
+    const ok = check.ok;
+    if (ok) {
+      const session = await check.json() as { access_token?: string };
+      if (session.access_token) await fetch(`${url}/auth/v1/logout?scope=local`, { method: "POST", signal: AbortSignal.timeout(8000), headers: { apikey: anon, Authorization: `Bearer ${session.access_token}` } });
+    } else await check.text();
+    await q(tx, "insert into private.epi_tentativa_senha_3j(account_id,ok) values($1::text::uuid,$2::text::boolean)", [a.accountId, String(ok)]);
+    return ok;
   });
-  const url = Deno.env.get("SUPABASE_URL")!, anon = Deno.env.get("SUPABASE_ANON_KEY")!;
-  const check = await fetch(`${url}/auth/v1/token?grant_type=password`, { method: "POST",
-    headers: { apikey: anon, "Content-Type": "application/json" }, body: JSON.stringify({ email: who.email, password }) });
-  const ok = check.ok;
-  if (ok) {
-    const session = await check.json() as { access_token?: string };
-    if (session.access_token) await fetch(`${url}/auth/v1/logout?scope=local`, { method: "POST", headers: { apikey: anon, Authorization: `Bearer ${session.access_token}` } });
-  } else await check.text();
-  await q(sql as unknown as Tx, "insert into private.epi_tentativa_senha_3j(account_id,ok) values($1::text::uuid,$2::text::boolean)", [who.actor.accountId, String(ok)]);
-  if (!ok) throw new Error("senha_incorreta");
+  if (!valid) throw new Error("senha_incorreta");
+}
+
+async function passwordConfirm(token: string, groupId: string, password: string, key: string) {
+  await verifyAccountPassword(token, password);
   return withActor(token, async (tx, a) => {
-    if (a.accountId !== who.actor.accountId) throw new Error("Sessão inválida.");
     await q(tx, "select pg_catalog.set_config('metallo.confirmacao_3j','ok',true)");
     // Código de verificação (3M): o mesmo resumo SHA-256 do formato 3F-v1, gravado na hora da confirmação.
     const projection = canonicalDelivery3f(await deliverySnapshot(tx, a, groupId), key);
@@ -293,7 +298,7 @@ const authenticationResponse = webauthn.extend({ response: z.object({ clientData
 const payloadSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("state") }).strict(),
   z.object({ action: z.literal("register_start") }).strict(),
-  z.object({ action: z.literal("register_finish"), challenge_id: id, response: registrationResponse }).strict(),
+  z.object({ action: z.literal("register_finish"), challenge_id: id, response: registrationResponse, password: z.string().min(1).max(200) }).strict(),
   z.object({ action: z.literal("sign_start"), group_id: id, credential_id: credentialText.optional() }).strict(),
   z.object({ action: z.literal("sign_finish"), challenge_id: id, response: authenticationResponse }).strict(),
   z.object({ action: z.literal("revoke"), credential_id: credentialText }).strict(),
@@ -324,7 +329,7 @@ Deno.serve(async (request) => {
     switch (body.action) {
       case "state": return answer(await state(token));
       case "register_start": return answer(await registerStart(token));
-      case "register_finish": return answer(await registerFinish(token, body.challenge_id, body.response as unknown as RegistrationResponseJSON));
+      case "register_finish": return answer(await registerFinish(token, body.challenge_id, body.response as unknown as RegistrationResponseJSON, body.password));
       case "sign_start": return answer(await signStart(token, body.group_id, body.credential_id));
       case "sign_finish": return answer(await signFinish(token, body.challenge_id, body.response as unknown as AuthenticationResponseJSON));
       case "revoke": return answer(await revoke(token, body.credential_id));
